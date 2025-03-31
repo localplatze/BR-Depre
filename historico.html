@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga de Palpites - Histórico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f0f2f5;
+            --card-background: white;
+            --text-color: #333;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .action-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #2980b9;
+        }
+
+        .rounds-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .round-tab {
+            padding: 10px 20px;
+            background-color: #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.3s;
+        }
+
+        .round-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .matches-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .match-card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .match-teams img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .match-result {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--primary-color);
+        }
+
+        .view-predictions-btn {
+            margin-top: 15px;
+        }
+
+        dialog {
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none;
+        }
+
+        .predictions-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .prediction-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .correct-prediction {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .no-rounds-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Histórico de Rodadas</h1>
+            <div>
+                <a href="home.html" class="action-button">Voltar</a>
+            </div>
+        </div>
+
+        <div class="rounds-tabs" id="rounds-tabs">
+            <!-- Tabs will be populated dynamically -->
+        </div>
+
+        <div id="round-content">
+            <div id="matches-container" class="matches-container">
+                <!-- Matches will be populated when a round is selected -->
+            </div>
+        </div>
+
+        <div id="no-rounds-message" class="no-rounds-message" style="display: none;">
+            <p>Nenhuma rodada concluída encontrada no histórico.</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Authentication State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadCompletedRounds();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load completed rounds (status = 2)
+        async function loadCompletedRounds() {
+            const roundsTabs = document.getElementById('rounds-tabs');
+            const noRoundsMessage = document.getElementById('no-rounds-message');
+            
+            try {
+                const roundsSnapshot = await database.ref('rounds').orderByChild('status').equalTo(2).once('value');
+                
+                if (!roundsSnapshot.exists()) {
+                    noRoundsMessage.style.display = 'block';
+                    return;
+                }
+                
+                const rounds = [];
+                roundsSnapshot.forEach(roundSnapshot => {
+                    const roundData = roundSnapshot.val();
+                    rounds.push({
+                        id: roundSnapshot.key,
+                        name: roundData.name || `Rodada ${roundSnapshot.key}`,
+                        finishTimestamp: roundData.finishTimestamp
+                    });
+                });
+                
+                // Sort rounds by finishTimestamp (newest first)
+                rounds.sort((a, b) => b.finishTimestamp - a.finishTimestamp);
+                
+                // Create tabs
+                roundsTabs.innerHTML = '';
+                rounds.forEach((round, index) => {
+                    const tab = document.createElement('div');
+                    tab.className = 'round-tab' + (index === 0 ? ' active' : '');
+                    tab.textContent = round.name;
+                    tab.dataset.roundId = round.id;
+                    
+                    tab.addEventListener('click', () => {
+                        // Set active tab
+                        document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        
+                        // Load round details
+                        loadRoundDetails(round.id);
+                    });
+                    
+                    roundsTabs.appendChild(tab);
+                });
+                
+                // Load first round by default
+                if (rounds.length > 0) {
+                    loadRoundDetails(rounds[0].id);
+                }
+            } catch (error) {
+                console.error('Error loading rounds:', error);
+                noRoundsMessage.style.display = 'block';
+            }
+        }
+
+        // Load details for a specific round
+        async function loadRoundDetails(roundId) {
+            const matchesContainer = document.getElementById('matches-container');
+            matchesContainer.innerHTML = '<p>Carregando jogos...</p>';
+            
+            try {
+                const [roundSnapshot, matchesSnapshot, teamsSnapshot] = await Promise.all([
+                    database.ref(`rounds/${roundId}`).once('value'),
+                    database.ref(`rounds/${roundId}/matches`).once('value'),
+                    database.ref('teams').once('value')
+                ]);
+                
+                const roundData = roundSnapshot.val();
+                const matches = matchesSnapshot.val() || {};
+                const teams = teamsSnapshot.val() || {};
+                
+                if (Object.keys(matches).length === 0) {
+                    matchesContainer.innerHTML = '<p>Nenhum jogo encontrado para esta rodada.</p>';
+                    return;
+                }
+                
+                let matchesHtml = '';
+                
+                for (const [matchId, match] of Object.entries(matches)) {
+                    const homeTeam = teams[match.homeTeam] || { name: 'Time Desconhecido', image: '' };
+                    const awayTeam = teams[match.awayTeam] || { name: 'Time Desconhecido', image: '' };
+                    
+                    // Check if the match has a result
+                    const hasResult = match.homeScore !== undefined && match.awayScore !== undefined;
+                    
+                    matchesHtml += `
+                        <div class="match-card" data-match-id="${matchId}">
+                            <div class="match-teams">
+                                <div>
+                                    <img src="${homeTeam.image}" alt="${homeTeam.name}" onerror="this.style.display='none'">
+                                    <p>${homeTeam.name}</p>
+                                </div>
+                                <p>vs</p>
+                                <div>
+                                    <img src="${awayTeam.image}" alt="${awayTeam.name}" onerror="this.style.display='none'">
+                                    <p>${awayTeam.name}</p>
+                                </div>
+                            </div>
+                            ${hasResult ? `
+                                <div class="match-result">
+                                    ${match.homeScore} x ${match.awayScore}
+                                </div>
+                            ` : '<p class="match-result">- x -</p>'}
+                            <button class="action-button view-predictions-btn" onclick="showPredictionsForMatch('${roundId}', '${matchId}')">
+                                Ver Palpites
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                matchesContainer.innerHTML = matchesHtml;
+            } catch (error) {
+                console.error('Error loading round details:', error);
+                matchesContainer.innerHTML = '<p>Erro ao carregar os jogos desta rodada.</p>';
+            }
+        }
+
+        // Create predictions dialog if it doesn't exist
+        function createPredictionsDialog() {
+            const dialog = document.createElement('dialog');
+            dialog.innerHTML = `
+                <style>
+                    dialog {
+                        width: 90%;
+                        max-width: 500px;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                        border-radius: 10px;
+                        padding: 20px;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    }
+                    .predictions-list {
+                        list-style-type: none;
+                        padding: 0;
+                    }
+                    .prediction-item {
+                        border-bottom: 1px solid #eee;
+                        padding: 10px 0;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    .close-btn {
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: none;
+                        border: none;
+                        font-size: 20px;
+                        cursor: pointer;
+                    }
+                    .dialog-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 15px;
+                    }
+                    .correct-prediction {
+                        color: #2ecc71;
+                        font-weight: bold;
+                    }
+                </style>
+                <button class="close-btn" onclick="document.querySelector('dialog').close()">&times;</button>
+                <div class="dialog-header">
+                    <h2>Palpites para este jogo</h2>
+                </div>
+                <ul class="predictions-list"></ul>
+            `;
+            document.body.appendChild(dialog);
+            return dialog;
+        }
+
+        // Show predictions for a specific match
+        async function showPredictionsForMatch(roundId, matchId) {
+            const dialog = document.querySelector('dialog') || createPredictionsDialog();
+            const predictionsList = dialog.querySelector('.predictions-list');
+            
+            // Clear previous content
+            predictionsList.innerHTML = '<p>Carregando palpites...</p>';
+            
+            // Show dialog
+            dialog.showModal();
+            
+            try {
+                // Get match data to check the actual result
+                const matchSnapshot = await database.ref(`rounds/${roundId}/matches/${matchId}`).once('value');
+                const match = matchSnapshot.val() || {};
+                const hasResult = match.homeScore !== undefined && match.awayScore !== undefined;
+                
+                // Get all predictions for this match
+                const predictionsSnapshot = await database.ref(`rounds/${roundId}/matches/${matchId}/predictions`).once('value');
+                const predictions = predictionsSnapshot.val() || {};
+                
+                // Get user data for all predictors
+                const userIds = Object.keys(predictions);
+                const usersPromises = userIds.map(userId => 
+                    database.ref(`users/${userId}`).once('value').then(snapshot => ({
+                        id: userId,
+                        data: snapshot.val()
+                    }))
+                );
+                
+                const users = await Promise.all(usersPromises);
+                const usersMap = users.reduce((acc, user) => {
+                    acc[user.id] = user.data || { name: 'Usuário Anônimo' };
+                    return acc;
+                }, {});
+                
+                // Clear loading message
+                predictionsList.innerHTML = '';
+                
+                if (Object.keys(predictions).length === 0) {
+                    predictionsList.innerHTML = '<p>Nenhum palpite registrado para este jogo.</p>';
+                    return;
+                }
+                
+                // Create list items for each prediction
+                for (const [userId, prediction] of Object.entries(predictions)) {
+                    const user = usersMap[userId];
+                    const listItem = document.createElement('li');
+                    listItem.className = 'prediction-item';
+                    
+                    // Check if prediction matches the actual result (if available)
+                    const isCorrect = hasResult && 
+                                       prediction.homeScore === match.homeScore && 
+                                       prediction.awayScore === match.awayScore;
+                    
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>${user.name}</strong>
+                            <p>Palpite: ${prediction.homeScore} x ${prediction.awayScore}</p>
+                        </div>
+                        ${hasResult ? `
+                            <div class="${isCorrect ? 'correct-prediction' : ''}">
+                                ${isCorrect ? '✓ Acertou' : ''}
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    predictionsList.appendChild(listItem);
+                }
+            } catch (error) {
+                console.error('Error loading predictions:', error);
+                predictionsList.innerHTML = '<p>Erro ao carregar os palpites.</p>';
+            }
+        }
+
+        // Make showPredictionsForMatch available globally
+        window.showPredictionsForMatch = showPredictionsForMatch;
+    </script>
+</body>
+</html>

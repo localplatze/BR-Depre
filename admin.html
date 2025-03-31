@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - BR de Prê</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .team-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .edit-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+        .match-edit-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .selected-highlight {
+            background-color: #e0e0e0;
+        }
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .subsection {
+            display: none;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .subsection.active {
+            display: block;
+        }
+
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+        }
+
+        .match-card {
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-players {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .match-player {
+            min-width: 120px;
+        }
+
+        .player-name {
+            font-weight: bold;
+        }
+
+        .match-result {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-0 { background-color: #6c757d; color: white; }
+        .status-1 { background-color: #28a745; color: white; }
+        .status-2 { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Painel de Administração</h1>
+            <button id="logout-button" class="btn btn-secondary">Sair</button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-section="rounds">Rodadas</div>
+            <div class="tab" data-section="supercopa">Supercopa</div>
+            <div class="tab" data-section="teams">Times</div>
+        </div>
+
+        <div id="rounds-section" class="section active">
+            <h2>Gerenciamento de Rodadas</h2>
+            
+            <div class="action-buttons">
+                <button id="create-round-btn" class="btn btn-primary">Criar Nova Rodada</button>
+            </div>
+
+            <div id="rounds-list">
+                <!-- Rounds will be dynamically populated here -->
+            </div>
+
+            <div id="create-round-form" style="display:none;">
+                <h3>Criar Nova Rodada</h3>
+                <form id="new-round-form">
+                    <div class="form-group">
+                        <label>Status da Rodada</label>
+                        <select id="round-status">
+                            <option value="0">Não Iniciada</option>
+                            <option value="1">Em Progresso</option>
+                            <option value="2">Finalizada</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Término</label>
+                        <input type="datetime-local" id="round-finish-timestamp">
+                    </div>
+                    <div class="form-group">
+                        <label>Torneios</label>
+                        <input type="text" id="round-tournaments" placeholder="Separar por vírgula">
+                    </div>
+
+                    <h4>Partidas</h4>
+                    <div id="matches-container">
+                        <div class="match-entry">
+                            <select class="home-team">
+                                <!-- Teams will be populated dynamically -->
+                            </select>
+                            <select class="away-team">
+                                <!-- Teams will be populated dynamically -->
+                            </select>
+                            <input type="number" placeholder="Placar Casa" class="home-score">
+                            <input type="number" placeholder="Placar Fora" class="away-score">
+                        </div>
+                    </div>
+                    <button type="button" id="add-match-btn" class="btn btn-secondary">Adicionar Partida</button>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Salvar Rodada</button>
+                        <button type="button" id="cancel-round-btn" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="supercopa-section" class="section">
+            <h2>Gerenciamento da Supercopa</h2>
+            
+            <div class="tabs">
+                <div class="tab active" data-subsection="rounds">Rodadas</div>
+                <div class="tab" data-subsection="groups">Grupos</div>
+                <div class="tab" data-subsection="knockout">Mata-Mata</div>
+            </div>
+        
+            <!-- Seção de Rodadas -->
+            <div id="rounds-subsection" class="subsection active">
+                <div class="action-buttons">
+                    <button id="create-supercopa-round" class="btn btn-primary">Criar Nova Rodada</button>
+                </div>
+                
+                <div id="supercopa-rounds-list">
+                    <!-- Lista de rodadas será preenchida aqui -->
+                </div>
+                
+                <!-- Formulário para criar/editar rodada -->
+                <div id="supercopa-round-form" style="display:none;">
+                    <h3>Gerenciar Rodada</h3>
+                    <form id="supercopa-round-form-data">
+                        <input type="hidden" id="supercopa-round-id">
+                        <div class="form-group">
+                            <label>Status da Rodada</label>
+                            <select id="supercopa-round-status">
+                                <option value="0">Não Iniciada</option>
+                                <option value="1">Em Progresso</option>
+                                <option value="2">Finalizada</option>
+                            </select>
+                        </div>
+                        
+                        <h4>Partidas</h4>
+                        <div id="supercopa-matches-container">
+                            <!-- Partidas serão adicionadas aqui -->
+                        </div>
+                        
+                        <button type="button" id="add-supercopa-match" class="btn btn-secondary">Adicionar Partida</button>
+                        
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">Salvar Rodada</button>
+                            <button type="button" id="cancel-supercopa-round" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+            <!-- Seção de Grupos -->
+            <div id="groups-subsection" class="subsection">
+                <div class="groups-container" id="groups-container">
+                    <!-- Grupos serão carregados aqui -->
+                </div>
+            </div>
+        
+            <!-- Seção de Mata-Mata -->
+            <div id="knockout-subsection" class="subsection">
+                <div id="knockout-matches-container">
+                    <!-- Partidas do mata-mata serão carregadas aqui -->
+                </div>
+            </div>
+        </div>
+
+        <div id="teams-section" class="section">
+            <h2>Gerenciamento de Times</h2>
+            
+            <div class="action-buttons">
+                <button id="create-team-btn" class="btn btn-primary">Criar Novo Time</button>
+            </div>
+    
+            <div class="team-filter">
+                <input type="text" id="team-search" placeholder="Filtrar times...">
+            </div>
+    
+            <div id="teams-list">
+                <!-- Times serão populados dinamicamente -->
+            </div>
+    
+            <div id="team-form" style="display:none;">
+                <h3>Cadastrar/Editar Time</h3>
+                <form id="new-team-form">
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="team-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Abreviação</label>
+                        <input type="text" id="team-abbr" required maxlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Origem</label>
+                        <input type="text" id="team-from">
+                    </div>
+                    <div class="form-group">
+                        <label>Cor Primária</label>
+                        <input type="color" id="team-color1">
+                    </div>
+                    <div class="form-group">
+                        <label>Cor Secundária</label>
+                        <input type="color" id="team-color2">
+                    </div>
+                    <div class="form-group">
+                        <label>URL da Imagem</label>
+                        <input type="url" id="team-image">
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Salvar Time</button>
+                        <button type="button" id="cancel-team-btn" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="edit-round-modal" class="edit-modal">
+            <div class="edit-modal-content">
+                <h2>Editar Rodada</h2>
+                <form id="edit-round-form">
+                    <input type="hidden" id="edit-round-id">
+                    <div class="form-group">
+                        <label>Status da Rodada</label>
+                        <select id="edit-round-status">
+                            <option value="0">Não Iniciada</option>
+                            <option value="1">Em Progresso</option>
+                            <option value="2">Finalizada</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Término</label>
+                        <input type="datetime-local" id="edit-round-finish-timestamp">
+                    </div>
+                    <div class="form-group">
+                        <label>Torneios</label>
+                        <input type="text" id="edit-round-tournaments" placeholder="Separar por vírgula">
+                    </div>
+    
+                    <h3>Partidas</h3>
+                    <div class="team-filter">
+                        <input type="text" id="match-team-search" placeholder="Filtrar times...">
+                    </div>
+                    <div id="edit-matches-container">
+                        <!-- Matches will be dynamically populated -->
+                    </div>
+                    <button type="button" id="add-edit-match-btn" class="btn btn-secondary">Adicionar Partida</button>
+    
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        <button type="button" id="cancel-edit-round" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration (same as home page)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Authentication and Authorization
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                const userRef = database.ref('users/' + user.uid);
+                userRef.once('value', (snapshot) => {
+                    const userData = snapshot.val();
+                    if (!userData.isAdmin) {
+                        alert('Acesso negado. Somente administradores podem acessar esta página.');
+                        window.location.href = 'home.html';
+                    }
+                });
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Logout
+        document.getElementById('logout-button').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html';
+            });
+        });
+
+        // Carrega os dados da Supercopa quando a aba é clicada
+        document.querySelector('.tab[data-section="supercopa"]').addEventListener('click', loadSupercopaData);
+
+        // Navegação entre as subseções da Supercopa
+        document.querySelectorAll('#supercopa-section .tab[data-subsection]').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const subsection = this.getAttribute('data-subsection');
+                
+                // Esconde todas as subseções
+                document.querySelectorAll('#supercopa-section .subsection').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Mostra a subseção clicada
+                document.getElementById(`${subsection}-subsection`).classList.add('active');
+                
+                // Atualiza as tabs ativas
+                document.querySelectorAll('#supercopa-section .tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // Botão para criar nova rodada
+        document.getElementById('create-supercopa-round').addEventListener('click', () => {
+            document.getElementById('supercopa-round-form').style.display = 'block';
+            document.getElementById('supercopa-round-id').value = '';
+            document.getElementById('supercopa-round-form-data').reset();
+            document.getElementById('supercopa-matches-container').innerHTML = '';
+        });
+
+        // Botão para cancelar edição de rodada
+        document.getElementById('cancel-supercopa-round').addEventListener('click', () => {
+            document.getElementById('supercopa-round-form').style.display = 'none';
+        });
+
+        // Botão para adicionar partida
+        document.getElementById('add-supercopa-match').addEventListener('click', () => {
+            const container = document.getElementById('supercopa-matches-container');
+            const matchDiv = document.createElement('div');
+            matchDiv.className = 'match-card';
+            matchDiv.innerHTML = `
+                <div class="form-group">
+                    <label>Jogador 1</label>
+                    <select class="supercopa-player1">
+                        <!-- Jogadores serão carregados aqui -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jogador 2</label>
+                    <select class="supercopa-player2">
+                        <!-- Jogadores serão carregados aqui -->
+                    </select>
+                </div>
+                <button type="button" class="btn btn-secondary remove-supercopa-match">Remover</button>
+            `;
+            
+            // Carrega os jogadores nos selects
+            loadSupercopaPlayers(matchDiv);
+            
+            // Adiciona evento para remover partida
+            matchDiv.querySelector('.remove-supercopa-match').addEventListener('click', () => {
+                container.removeChild(matchDiv);
+            });
+            
+            container.appendChild(matchDiv);
+        });
+
+        // Formulário de rodada
+        document.getElementById('supercopa-round-form-data').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const roundId = document.getElementById('supercopa-round-id').value || null;
+            const status = parseInt(document.getElementById('supercopa-round-status').value);
+            
+            // Coletar partidas - ESTRUTURA CORRIGIDA
+            const matches = {};
+            let matchIndex = 1; // Começa em 1 para manter m1, m2, etc.
+            
+            document.querySelectorAll('#supercopa-matches-container .match-card').forEach((matchDiv) => {
+                const player1 = matchDiv.querySelector('.supercopa-player1').value;
+                const player2 = matchDiv.querySelector('.supercopa-player2').value;
+                
+                if (player1 && player2) {
+                    matches[`m${matchIndex}`] = { // Usando m1, m2, etc. diretamente
+                        player1Id: player1,
+                        player2Id: player2,
+                        result: ""
+                    };
+                    matchIndex++;
+                }
+            });
+            
+            // Criar ou atualizar rodada
+            const roundData = {
+                status: status,
+                matches: matches,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            const ref = roundId ? 
+                database.ref(`tournaments/supercopa/groups/rounds/${roundId}`) :
+                database.ref('tournaments/supercopa/groups/rounds').push();
+            
+            ref.update(roundData)
+                .then(() => {
+                    alert('Rodada salva com sucesso!');
+                    document.getElementById('supercopa-round-form').style.display = 'none';
+                    loadSupercopaRounds();
+                })
+                .catch(error => {
+                    console.error('Erro ao salvar rodada:', error);
+                    alert('Erro ao salvar rodada.');
+                });
+        });
+
+        // Navegação entre as fases do mata-mata
+        document.querySelectorAll('.knockout-tabs .tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const stage = this.getAttribute('data-knockoutstage');
+                
+                // Atualiza as tabs ativas
+                document.querySelectorAll('.knockout-tabs .tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Carrega as partidas da fase selecionada
+                loadKnockoutMatches(stage);
+            });
+        });
+
+        // Tabs Navigation
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const section = tab.getAttribute('data-section');
+                const knockoutStage = tab.getAttribute('data-knockoutstage');
+                const subsection = tab.getAttribute('data-subsection');
+
+                // Handle main tabs
+                if (section) {
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(`${section}-section`).classList.add('active');
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                }
+
+                // Handle Supercopa subsections
+                if (subsection) {
+                    document.querySelectorAll('.subsection').forEach(s => s.classList.remove('active'));
+                    document.getElementById(`${subsection}-section`).classList.add('active');
+                    document.querySelectorAll('.tab[data-subsection]').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                }
+
+                // Handle knockout stages
+                if (knockoutStage) {
+                    // Future implementation for knockout stage management
+                }
+            });
+        });
+
+        // Create Round Functionality
+        document.getElementById('create-round-btn').addEventListener('click', () => {
+            document.getElementById('create-round-form').style.display = 'block';
+            populateTeamSelects();
+        });
+
+        document.getElementById('cancel-round-btn').addEventListener('click', () => {
+            document.getElementById('create-round-form').style.display = 'none';
+        });
+
+        document.getElementById('add-match-btn').addEventListener('click', () => {
+            const matchesContainer = document.getElementById('matches-container');
+            const newMatchEntry = document.createElement('div');
+            newMatchEntry.classList.add('match-entry');
+            newMatchEntry.innerHTML = `
+                <select class="home-team">
+                    <!-- Teams will be populated dynamically -->
+                </select>
+                <select class="away-team">
+                    <!-- Teams will be populated dynamically -->
+                </select>
+                <input type="number" placeholder="Placar Casa" class="home-score">
+                <input type="number" placeholder="Placar Fora" class="away-score">
+                <button type="button" class="remove-match-btn">Remover</button>
+            `;
+            populateTeamSelects(newMatchEntry);
+            matchesContainer.appendChild(newMatchEntry);
+
+            // Add remove functionality
+            newMatchEntry.querySelector('.remove-match-btn').addEventListener('click', () => {
+                matchesContainer.removeChild(newMatchEntry);
+            });
+        });
+
+        document.getElementById('new-round-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const roundData = {
+                status: parseInt(document.getElementById('round-status').value),
+                finishTimestamp: document.getElementById('round-finish-timestamp').value,
+                tournaments: document.getElementById('round-tournaments').value.split(',').map(t => t.trim()),
+                matches: []
+            };
+
+            // Collect match data
+            document.querySelectorAll('.match-entry').forEach(matchEntry => {
+                const homeTeam = matchEntry.querySelector('.home-team').value;
+                const awayTeam = matchEntry.querySelector('.away-team').value;
+                const homeScore = matchEntry.querySelector('.home-score').value;
+                const awayScore = matchEntry.querySelector('.away-score').value;
+
+                if (homeTeam && awayTeam) {
+                    roundData.matches.push({
+                        homeTeam,
+                        awayTeam,
+                        finalResult: {
+                            homeScore: homeScore ? parseInt(homeScore) : null,
+                            awayScore: awayScore ? parseInt(awayScore) : null
+                        }
+                    });
+                }
+            });
+
+            // Save to Firebase
+            const roundsRef = database.ref('rounds');
+            roundsRef.push(roundData).then(() => {
+                alert('Rodada criada com sucesso!');
+                document.getElementById('create-round-form').style.display = 'none';
+                document.getElementById('new-round-form').reset();
+                loadRoundsList();
+            }).catch(error => {
+                console.error('Erro ao criar rodada:', error);
+                alert('Erro ao criar rodada. Verifique os dados.');
+            });
+        });
+
+        function populateTeamSelects(container = document) {
+            const teamsRef = database.ref('teams');
+            teamsRef.once('value', (snapshot) => {
+                const teamSelects = container.querySelectorAll('.home-team, .away-team');
+                teamSelects.forEach(select => {
+                    select.innerHTML = '<option value="">Selecione um time</option>';
+                    snapshot.forEach((childSnapshot) => {
+                        const teamData = childSnapshot.val();
+                        const option = document.createElement('option');
+                        option.value = childSnapshot.key;
+                        option.textContent = teamData.name + "-" + teamData.from;
+                        select.appendChild(option);
+                    });
+                });
+            });
+        }
+
+        function loadRoundsList() {
+            const roundsRef = database.ref('rounds');
+            const roundsList = document.getElementById('rounds-list');
+
+            roundsRef.once('value', (snapshot) => {
+                let roundsHtml = '<table><thead><tr><th>ID</th><th>Status</th><th>Término</th><th>Torneios</th><th>Ações</th></tr></thead><tbody>';
+                
+                snapshot.forEach((childSnapshot) => {
+                    const roundData = childSnapshot.val();
+                    const statusText = {
+                        0: 'Não Iniciada',
+                        1: 'Em Progresso',
+                        2: 'Finalizada'
+                    }[roundData.status];
+
+                    roundsHtml += `
+                        <tr>
+                            <td>${childSnapshot.key}</td>
+                            <td>${statusText}</td>
+                            <td>${new Date(roundData.finishTimestamp).toLocaleString()}</td>
+                            <td>${roundData.tournaments.join(', ')}</td>
+                            <td>
+                                <button onclick="editRound('${childSnapshot.key}')">Editar</button>
+                                <button onclick="deleteRound('${childSnapshot.key}')">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                roundsHtml += '</tbody></table>';
+                roundsList.innerHTML = roundsHtml;
+            });
+        }
+
+        // Load rounds list on page load
+        loadRoundsList();
+
+        // Edit and Delete Round functions (placeholders)
+        function editRound(roundId) {
+            alert(`Editar rodada ${roundId} - Implementação futura`);
+        }
+
+        function deleteRound(roundId) {
+            if (confirm('Tem certeza que deseja excluir esta rodada?')) {
+                database.ref('rounds/' + roundId).remove()
+                    .then(() => {
+                        alert('Rodada excluída com sucesso!');
+                        loadRoundsList();
+                    })
+                    .catch(error => {
+                        console.error('Erro ao excluir rodada:', error);
+                        alert('Erro ao excluir rodada.');
+                    });
+            }
+        }
+
+        function loadTeamsList() {
+            const teamsRef = database.ref('teams');
+            const teamsList = document.getElementById('teams-list');
+            const searchInput = document.getElementById('team-search');
+
+            teamsRef.once('value', (snapshot) => {
+                let teamsHtml = '<table><thead><tr><th>Nome</th><th>Abreviação</th><th>Origem</th><th>Ações</th></tr></thead><tbody>';
+                
+                snapshot.forEach((childSnapshot) => {
+                    const teamData = childSnapshot.val();
+                    teamsHtml += `
+                        <tr data-team-name="${teamData.name.toLowerCase()}">
+                            <td>${teamData.name}</td>
+                            <td>${teamData.abbr}</td>
+                            <td>${teamData.from || '-'}</td>
+                            <td>
+                                <button onclick="editTeam('${childSnapshot.key}')">Editar</button>
+                                <button onclick="deleteTeam('${childSnapshot.key}')">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                teamsHtml += '</tbody></table>';
+                teamsList.innerHTML = teamsHtml;
+
+                // Filtro de times
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const teamRows = teamsList.querySelectorAll('tr');
+                    teamRows.forEach(row => {
+                        const teamName = row.getAttribute('data-team-name');
+                        row.style.display = teamName.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            });
+        }
+
+        function editTeam(teamId) {
+            const teamRef = database.ref('teams/' + teamId);
+            teamRef.once('value', (snapshot) => {
+                const teamData = snapshot.val();
+                
+                document.getElementById('team-name').value = teamData.name;
+                document.getElementById('team-abbr').value = teamData.abbr;
+                document.getElementById('team-from').value = teamData.from || '';
+                document.getElementById('team-color1').value = teamData.color1 || '#000000';
+                document.getElementById('team-color2').value = teamData.color2 || '#000000';
+                document.getElementById('team-image').value = teamData.image || '';
+
+                document.getElementById('team-form').style.display = 'block';
+                document.getElementById('new-team-form').onsubmit = (e) => {
+                    e.preventDefault();
+                    const updatedTeam = {
+                        name: document.getElementById('team-name').value,
+                        abbr: document.getElementById('team-abbr').value,
+                        from: document.getElementById('team-from').value,
+                        color1: document.getElementById('team-color1').value,
+                        color2: document.getElementById('team-color2').value,
+                        image: document.getElementById('team-image').value
+                    };
+
+                    teamRef.update(updatedTeam)
+                        .then(() => {
+                            alert('Time atualizado com sucesso!');
+                            document.getElementById('team-form').style.display = 'none';
+                            loadTeamsList();
+                        })
+                        .catch(error => {
+                            console.error('Erro ao atualizar time:', error);
+                            alert('Erro ao atualizar time.');
+                        });
+                };
+            });
+        }
+
+        function deleteTeam(teamId) {
+            if (confirm('Tem certeza que deseja excluir este time?')) {
+                database.ref('teams/' + teamId).remove()
+                    .then(() => {
+                        alert('Time excluído com sucesso!');
+                        loadTeamsList();
+                    })
+                    .catch(error => {
+                        console.error('Erro ao excluir time:', error);
+                        alert('Erro ao excluir time.');
+                    });
+            }
+        }
+
+        // Criar novo time
+        document.getElementById('create-team-btn').addEventListener('click', () => {
+            document.getElementById('new-team-form').reset();
+            document.getElementById('team-form').style.display = 'block';
+            
+            document.getElementById('new-team-form').onsubmit = (e) => {
+                e.preventDefault();
+                const newTeam = {
+                    name: document.getElementById('team-name').value,
+                    abbr: document.getElementById('team-abbr').value,
+                    from: document.getElementById('team-from').value,
+                    color1: document.getElementById('team-color1').value,
+                    color2: document.getElementById('team-color2').value,
+                    image: document.getElementById('team-image').value
+                };
+
+                const teamsRef = database.ref('teams');
+                teamsRef.push(newTeam)
+                    .then(() => {
+                        alert('Time criado com sucesso!');
+                        document.getElementById('team-form').style.display = 'none';
+                        loadTeamsList();
+                    })
+                    .catch(error => {
+                        console.error('Erro ao criar time:', error);
+                        alert('Erro ao criar time.');
+                    });
+            };
+        });
+
+        document.getElementById('cancel-team-btn').addEventListener('click', () => {
+            document.getElementById('team-form').style.display = 'none';
+        });
+
+        // Edição de Rodada
+        function openEditRoundModal(roundId) {
+            const roundRef = database.ref('rounds/' + roundId);
+            roundRef.once('value', (snapshot) => {
+                const roundData = snapshot.val();
+                
+                document.getElementById('edit-round-id').value = roundId;
+                document.getElementById('edit-round-status').value = roundData.status;
+                document.getElementById('edit-round-finish-timestamp').value = roundData.finishTimestamp;
+                document.getElementById('edit-round-tournaments').value = roundData.tournaments.join(', ');
+
+                const matchesContainer = document.getElementById('edit-matches-container');
+                matchesContainer.innerHTML = '';
+
+                // Adicionar matches existentes
+                if (roundData.matches) {
+                    Object.values(roundData.matches).forEach((match, index) => {
+                        addMatchToEditModal(match, index);
+                    });
+                }
+
+                document.getElementById('edit-round-modal').style.display = 'flex';
+            });
+        }
+
+        function addMatchToEditModal(match = {}, index = null) {
+            const matchesContainer = document.getElementById('edit-matches-container');
+            const matchDiv = document.createElement('div');
+            matchDiv.classList.add('match-edit-row');
+            
+            // Filtro de times
+            const teamFilter = document.createElement('input');
+            teamFilter.type = 'text';
+            teamFilter.placeholder = 'Filtrar times...';
+            teamFilter.addEventListener('input', filterTeams);
+
+            // Home Team Select
+            const homeTeamSelect = createTeamSelect('home', match.homeTeam);
+            
+            // Away Team Select
+            const awayTeamSelect = createTeamSelect('away', match.awayTeam);
+
+            // Scores
+            const homeScoreInput = document.createElement('input');
+            homeScoreInput.type = 'number';
+            homeScoreInput.placeholder = 'Placar Casa';
+            homeScoreInput.value = match.finalResult?.homeScore || '';
+
+            const awayScoreInput = document.createElement('input');
+            awayScoreInput.type = 'number';
+            awayScoreInput.placeholder = 'Placar Fora';
+            awayScoreInput.value = match.finalResult?.awayScore || '';
+
+            // Botão remover
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.type = 'button';
+            removeButton.addEventListener('click', () => {
+                matchesContainer.removeChild(matchDiv);
+            });
+
+            matchDiv.append(
+                teamFilter,
+                homeTeamSelect, 
+                homeScoreInput, 
+                awayTeamSelect, 
+                awayScoreInput, 
+                removeButton
+            );
+
+            matchesContainer.appendChild(matchDiv);
+        }
+
+        function createTeamSelect(prefix, selectedTeam = null) {
+            const select = document.createElement('select');
+            select.classList.add(`${prefix}-team`);
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = `Selecione ${prefix === 'home' ? 'time da casa' : 'time visitante'}`;
+            select.appendChild(defaultOption);
+
+            const teamsRef = database.ref('teams');
+            teamsRef.once('value', (snapshot) => {
+                snapshot.forEach((childSnapshot) => {
+                    const option = document.createElement('option');
+                    option.value = childSnapshot.key;
+                    option.textContent = childSnapshot.val().name + "-" + childSnapshot.val().from;
+                    
+                    if (childSnapshot.key === selectedTeam) {
+                        option.selected = true;
+                    }
+                    
+                    select.appendChild(option);
+                });
+            });
+
+            return select;
+        }
+
+        function filterTeams(event) {
+            const input = event.target;
+            const filter = input.value.toLowerCase();
+            const matchRow = input.closest('.match-edit-row');
+            const selects = matchRow.querySelectorAll('select option');
+
+            selects.forEach(option => {
+                const txtValue = option.textContent || option.innerText;
+                option.style.display = txtValue.toLowerCase().indexOf(filter) > -1 ? '' : 'none';
+            });
+        }
+
+        // Adicionar listener para o submit do formulário de edição
+        document.getElementById('edit-round-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const roundId = document.getElementById('edit-round-id').value;
+            const roundRef = database.ref('rounds/' + roundId);
+
+            // Primeiro, busque os dados existentes
+            roundRef.once('value')
+                .then((snapshot) => {
+                    const existingRoundData = snapshot.val();
+
+                    // Crie o objeto de atualização, preservando predictions e outros dados existentes
+                    const updatedRoundData = {
+                        ...existingRoundData, // Espalha os dados existentes
+                        status: parseInt(document.getElementById('edit-round-status').value),
+                        finishTimestamp: document.getElementById('edit-round-finish-timestamp').value,
+                        tournaments: document.getElementById('edit-round-tournaments').value.split(',').map(t => t.trim()),
+                        matches: existingRoundData.matches || [] // Mantém matches existentes como base
+                    };
+
+                    // Atualiza os matches com os novos dados
+                    const matchRows = document.querySelectorAll('#edit-matches-container .match-edit-row');
+                    matchRows.forEach((row, index) => {
+                        const homeTeam = row.querySelector('.home-team').value;
+                        const awayTeam = row.querySelector('.away-team').value;
+                        const homeScore = row.querySelector('input[placeholder="Placar Casa"]').value;
+                        const awayScore = row.querySelector('input[placeholder="Placar Fora"]').value;
+
+                        if (homeTeam && awayTeam) {
+                            // Se o índice existir em matches, atualiza; senão, adiciona novo
+                            if (updatedRoundData.matches[index]) {
+                                updatedRoundData.matches[index] = {
+                                    ...updatedRoundData.matches[index], // Preserva outros dados existentes do match
+                                    homeTeam,
+                                    awayTeam,
+                                    finalResult: {
+                                        homeScore: homeScore ? parseInt(homeScore) : null,
+                                        awayScore: awayScore ? parseInt(awayScore) : null
+                                    }
+                                };
+                            } else {
+                                updatedRoundData.matches.push({
+                                    homeTeam,
+                                    awayTeam,
+                                    finalResult: {
+                                        homeScore: homeScore ? parseInt(homeScore) : null,
+                                        awayScore: awayScore ? parseInt(awayScore) : null
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    // Atualiza o banco de dados
+                    return roundRef.update(updatedRoundData);
+                })
+                .then(() => {
+                    alert('Rodada atualizada com sucesso!');
+                    document.getElementById('edit-round-modal').style.display = 'none';
+                    loadRoundsList();
+                })
+                .catch(error => {
+                    console.error('Erro ao atualizar rodada:', error);
+                    alert('Erro ao atualizar rodada.');
+                });
+        });
+
+        // Botão de adicionar partida no modal de edição
+        document.getElementById('add-edit-match-btn').addEventListener('click', () => {
+            addMatchToEditModal();
+        });
+
+        // Fechar modal de edição
+        document.getElementById('cancel-edit-round').addEventListener('click', () => {
+            document.getElementById('edit-round-modal').style.display = 'none';
+        });
+
+        // Na função de carregar lista de rodadas, adicionar listener de edição
+        function loadRoundsList() {
+            const roundsRef = database.ref('rounds');
+            const roundsList = document.getElementById('rounds-list');
+
+            roundsRef.once('value', (snapshot) => {
+                let roundsHtml = '<table><thead><tr><th>ID</th><th>Status</th><th>Término</th><th>Torneios</th><th>Ações</th></tr></thead><tbody>';
+                
+                snapshot.forEach((childSnapshot) => {
+                    const roundData = childSnapshot.val();
+                    const statusText = {
+                        0: 'Não Iniciada',
+                        1: 'Em Progresso',
+                        2: 'Finalizada'
+                    }[roundData.status];
+
+                    roundsHtml += `
+                        <tr>
+                            <td>${childSnapshot.key}</td>
+                            <td>${statusText}</td>
+                            <td>${new Date(roundData.finishTimestamp).toLocaleString()}</td>
+                            <td>${roundData.tournaments.join(', ')}</td>
+                            <td>
+                                <button onclick="openEditRoundModal('${childSnapshot.key}')">Editar</button>
+                                <button onclick="deleteRound('${childSnapshot.key}')">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                roundsHtml += '</tbody></table>';
+                roundsList.innerHTML = roundsHtml;
+            });
+        }
+
+        // Tabs
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const section = tab.getAttribute('data-section');
+                const knockoutStage = tab.getAttribute('data-knockoutstage');
+                const subsection = tab.getAttribute('data-subsection');
+
+                // Resetar tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Mostrar seção
+                document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+                document.getElementById(`${section || 'rounds'}-section`).style.display = 'block';
+
+                // Carregar dados específicos
+                if (section === 'teams') {
+                    loadTeamsList();
+                }
+            });
+        });
+
+        // Carregamentos iniciais
+        loadRoundsList();
+
+        function calculateMatchPoints(finalResult, prediction) {
+            if (!finalResult || !prediction || 
+                finalResult.homeScore === null || finalResult.awayScore === null ||
+                prediction.homeScore === null || prediction.awayScore === null) {
+                return 0;
+            }
+
+            // Placar exato
+            if (finalResult.homeScore === prediction.homeScore && 
+                finalResult.awayScore === prediction.awayScore) {
+                return 3;
+            }
+
+            // Vencedor correto
+            const finalWinner = finalResult.homeScore > finalResult.awayScore ? 'home' :
+                                finalResult.homeScore < finalResult.awayScore ? 'away' : 'draw';
+            
+            const predictionWinner = prediction.homeScore > prediction.awayScore ? 'home' :
+                                    prediction.homeScore < prediction.awayScore ? 'away' : 'draw';
+
+            if (finalWinner === predictionWinner) {
+                return 1;
+            }
+
+            // Placar invertido
+            if (finalResult.homeScore === prediction.awayScore && 
+                finalResult.awayScore === prediction.homeScore) {
+                return -1;
+            }
+
+            return 0;
+        }
+
+        function getCurrentSuperligaStage(tournaments) {
+            if (tournaments.includes('Clausura')) return 'Clausura';
+            return 'Abertura'; // Padrão <--- ESSA VAR ESTÁ DEFINIDA MANUALMENTE !!!!!! TODO
+        }
+
+        // Executar processamento de pontuação quando status muda para 2
+        document.getElementById('edit-round-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const roundId = document.getElementById('edit-round-id').value;
+            const roundStatus = parseInt(document.getElementById('edit-round-status').value);
+
+            console.log('roundStatus: ' + roundStatus)
+            
+            try {
+                await saveRoundChanges(roundId);
+                
+                if (roundStatus === 2) { // Rodada finalizada
+                    // Processa a Superliga primeiro
+                    await processRoundScores(roundId);
+
+                    console.log('finalizado')
+                    
+                    // Depois processa a Supercopa se for o caso
+                    await processSupercopaScores(roundId);
+                    
+                    alert('Rodada finalizada e pontuações atualizadas com sucesso!');
+                } else {
+                    alert('Alterações salvas com sucesso!');
+                }
+                
+                document.getElementById('edit-round-modal').style.display = 'none';
+                loadRoundsList();
+            } catch (error) {
+                console.error("Erro ao processar rodada:", error);
+                alert('Ocorreu um erro ao processar a rodada.');
+            }
+        });
+
+        // Função auxiliar para salvar alterações na rodada
+        async function saveRoundChanges(roundId) {
+            const roundRef = database.ref('rounds/' + roundId);
+            const existingRoundData = (await roundRef.once('value')).val();
+            
+            const updatedRoundData = {
+                ...existingRoundData,
+                status: parseInt(document.getElementById('edit-round-status').value),
+                finishTimestamp: document.getElementById('edit-round-finish-timestamp').value,
+                tournaments: document.getElementById('edit-round-tournaments').value.split(',').map(t => t.trim()),
+            };
+            
+            // Atualiza os matches
+            const matchRows = document.querySelectorAll('#edit-matches-container .match-edit-row');
+            updatedRoundData.matches = existingRoundData.matches || [];
+            
+            matchRows.forEach((row, index) => {
+                const homeTeam = row.querySelector('.home-team').value;
+                const awayTeam = row.querySelector('.away-team').value;
+                const homeScore = row.querySelector('input[placeholder="Placar Casa"]').value;
+                const awayScore = row.querySelector('input[placeholder="Placar Fora"]').value;
+
+                if (homeTeam && awayTeam) {
+                    updatedRoundData.matches[index] = {
+                        ...(updatedRoundData.matches[index] || {}),
+                        homeTeam,
+                        awayTeam,
+                        finalResult: {
+                            homeScore: homeScore ? parseInt(homeScore) : null,
+                            awayScore: awayScore ? parseInt(awayScore) : null
+                        }
+                    };
+                }
+            });
+
+            await roundRef.update(updatedRoundData);
+        }
+
+        async function processSupercopaScores(roundId) {
+            const roundRef = database.ref('tournaments/');
+            const roundSnapshot = await roundRef.once('value');
+            const roundData = roundSnapshot.val();
+            
+            // Verifica se é uma rodada da Supercopa
+            if (!roundData.hasOwnProperty('supercopa')) {
+                return;
+            }
+
+            const supercopaRef = database.ref('tournaments/supercopa');
+            const supercopaSnapshot = await supercopaRef.once('value');
+            const supercopaData = supercopaSnapshot.val();
+
+            // Verifica se está na fase de grupos
+            if (supercopaData.groups?.status !== 1) {
+                return;
+            }
+
+            console.log('grupos')
+
+            // Encontra a rodada ativa na Supercopa
+            const activeRoundEntry = Object.entries(supercopaData.groups.rounds || {})
+                .find(([_, round]) => round.status === 1);
+
+            if (!activeRoundEntry) {
+                console.log('Nenhuma rodada ativa na Supercopa');
+                return;
+            }
+
+            console.log('rodada ativa')
+
+            const [activeRoundKey, activeRound] = activeRoundEntry;
+            const updates = {};
+
+            console.log('activeRound.matches: ' + JSON.stringify(activeRound.matches))
+            
+            // Processa cada partida da rodada ativa
+            for (const [matchGroupKey, matchGroup] of Object.entries(activeRound.matches || {})) {
+                const { player1Id, player2Id } = matchGroup;
+                if (!player1Id || !player2Id) continue;
+
+                const [player1, player2] = await Promise.all([
+                    getUserData(player1Id),
+                    getUserData(player2Id)
+                ]);
+
+                console.log('player1: ' + player1)
+                console.log('player2: ' + player2)
+
+                const currentLigaStage = getCurrentLigaStage();
+                const player1Points = player1[`lastRoundPointsLiga${currentLigaStage}`] || 0;
+                const player2Points = player2[`lastRoundPointsLiga${currentLigaStage}`] || 0;
+
+                // Define o resultado da partida
+                updates[`groups/rounds/${activeRoundKey}/matches/${matchGroupKey}/result`] = 
+                    `${player1Points} x ${player2Points}`;
+                    
+                // Atualiza os standings
+                updateStanding(updates, player1Id, player1Points, player2Points);
+                updateStanding(updates, player2Id, player2Points, player1Points);
+            }
+
+            await supercopaRef.update(updates);
+        }
+
+        function updateStanding(updates, playerId, goalsFor, goalsAg) {
+            const standingPath = `groups/standings/${playerId}/`;
+            
+            // Inicializa valores se não existirem
+            updates[standingPath + 'games'] = (updates[standingPath + 'games'] || 0) + 1;
+            updates[standingPath + 'goalsFor'] = (updates[standingPath + 'goalsFor'] || 0) + goalsFor;
+            updates[standingPath + 'goalsAg'] = (updates[standingPath + 'goalsAg'] || 0) + goalsAg;
+            
+            if (goalsFor > goalsAg) {
+                updates[standingPath + 'points'] = (updates[standingPath + 'points'] || 0) + 3;
+                updates[standingPath + 'wins'] = (updates[standingPath + 'wins'] || 0) + 1;
+            } else if (goalsFor === goalsAg) {
+                updates[standingPath + 'points'] = (updates[standingPath + 'points'] || 0) + 1;
+                updates[standingPath + 'draws'] = (updates[standingPath + 'draws'] || 0) + 1;
+            }
+        }
+
+        // Função para atualizar os standings no Firebase
+        function updateSupercopaStandings(standingsUpdates) {
+            const supercopaRef = database.ref('tournaments/supercopa');
+            const updates = {};
+            
+            for (const [path, data] of Object.entries(standingsUpdates)) {
+                updates[path] = data;
+            }
+            
+            return supercopaRef.update(updates);
+        }
+
+        // Função principal para carregar os dados da Supercopa
+        function loadSupercopaData() {
+            loadSupercopaRounds();
+            loadSupercopaGroups();
+        }
+
+        // Carrega as rodadas da Supercopa
+        function loadSupercopaRounds() {
+            const container = document.getElementById('supercopa-rounds-list');
+            container.innerHTML = '<p>Carregando rodadas...</p>';
+            
+            database.ref('tournaments/supercopa/groups/rounds').once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p>Nenhuma rodada criada ainda.</p>';
+                    return;
+                }
+                
+                let html = '<table class="table"><thead><tr><th>Rodada</th><th>Status</th><th>Partidas</th><th>Ações</th></tr></thead><tbody>';
+                
+                snapshot.forEach(roundSnapshot => {
+                    const roundData = roundSnapshot.val();
+                    const statusText = ['Não Iniciada', 'Em Progresso', 'Finalizada'][roundData.status];
+                    const statusClass = ['status-0', 'status-1', 'status-2'][roundData.status];
+                    
+                    html += `
+                        <tr>
+                            <td>${roundSnapshot.key}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>${Object.keys(roundData.matches || {}).length}</td>
+                            <td>
+                                <button onclick="editSupercopaRound('${roundSnapshot.key}')" class="btn btn-secondary">Editar</button>
+                                <button onclick="deleteSupercopaRound('${roundSnapshot.key}')" class="btn btn-danger">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            });
+        }
+
+        // Editar rodada existente
+        function editSupercopaRound(roundId) {
+            database.ref(`tournaments/supercopa/groups/rounds/${roundId}`).once('value').then(snapshot => {
+                const roundData = snapshot.val();
+                
+                document.getElementById('supercopa-round-id').value = roundId;
+                document.getElementById('supercopa-round-status').value = roundData.status;
+                
+                const container = document.getElementById('supercopa-matches-container');
+                container.innerHTML = '';
+                
+                // Adiciona as partidas existentes
+                Object.entries(roundData.matches || {}).forEach(([matchId, match]) => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'match-card';
+                    matchDiv.innerHTML = `
+                        <div class="form-group">
+                            <label>Jogador 1</label>
+                            <select class="supercopa-player1">
+                                <!-- Jogadores serão carregados aqui -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Jogador 2</label>
+                            <select class="supercopa-player2">
+                                <!-- Jogadores serão carregados aqui -->
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-secondary remove-supercopa-match">Remover</button>
+                    `;
+                    
+                    // Carrega os jogadores e seleciona os atuais
+                    loadSupercopaPlayers(matchDiv, match.player1Id, match.player2Id);
+                    
+                    // Adiciona evento para remover partida
+                    matchDiv.querySelector('.remove-supercopa-match').addEventListener('click', () => {
+                        container.removeChild(matchDiv);
+                    });
+                    
+                    container.appendChild(matchDiv);
+                });
+                
+                document.getElementById('supercopa-round-form').style.display = 'block';
+            });
+        }
+
+        // Excluir rodada
+        function deleteSupercopaRound(roundId) {
+            if (confirm('Tem certeza que deseja excluir esta rodada?')) {
+                database.ref(`tournaments/supercopa/groups/rounds/${roundId}`).remove()
+                    .then(() => {
+                        alert('Rodada excluída com sucesso!');
+                        loadSupercopaRounds();
+                    })
+                    .catch(error => {
+                        console.error('Erro ao excluir rodada:', error);
+                        alert('Erro ao excluir rodada.');
+                    });
+            }
+        }
+
+        // Carrega os grupos da Supercopa
+        function loadSupercopaGroups() {
+            const container = document.getElementById('groups-container');
+            container.innerHTML = '<p>Carregando grupos...</p>';
+            
+            database.ref('tournaments/supercopa/groups').once('value').then(snapshot => {
+                const groupsData = snapshot.val();
+                
+                let html = '';
+                for (let i = 1; i <= 4; i++) {
+                    const groupKey = `group${i}`;
+                    const players = groupsData[groupKey] || [];
+                    
+                    if (players.length === 0) continue;
+                    
+                    html += `
+                        <div class="group-card">
+                            <h3>Grupo ${i}</h3>
+                            <ul>
+                                ${players.map(playerId => `<li>${playerId}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html || '<p>Nenhum grupo configurado.</p>';
+            });
+        }
+
+        // Carrega os jogadores nos selects de partidas
+        function loadSupercopaPlayers(container, selectedPlayer1 = null, selectedPlayer2 = null) {
+            database.ref('users').once('value').then(snapshot => {
+                const player1Select = container.querySelector('.supercopa-player1');
+                const player2Select = container.querySelector('.supercopa-player2');
+                
+                player1Select.innerHTML = '<option value="">Selecione um jogador</option>';
+                player2Select.innerHTML = '<option value="">Selecione um jogador</option>';
+                
+                snapshot.forEach(userSnapshot => {
+                    const userData = userSnapshot.val();
+                    const option1 = document.createElement('option');
+                    const option2 = document.createElement('option');
+                    
+                    option1.value = userSnapshot.key;
+                    option1.textContent = userData.name;
+                    
+                    option2.value = userSnapshot.key;
+                    option2.textContent = userData.name;
+                    
+                    if (userSnapshot.key === selectedPlayer1) option1.selected = true;
+                    if (userSnapshot.key === selectedPlayer2) option2.selected = true;
+                    
+                    player1Select.appendChild(option1);
+                    player2Select.appendChild(option2);
+                });
+            });
+        }
+
+        // Função para carregar a fase de grupos
+        function loadGroupStage(groupsData) {
+            const container = document.getElementById('groups-container');
+            
+            // Verifica se há dados
+            if (!groupsData || !groupsData.group1) {
+                container.innerHTML = '<p>Nenhum grupo configurado ainda.</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            // Para cada grupo (group1, group2, group3, group4)
+            for (let i = 1; i <= 4; i++) {
+                const groupKey = `group${i}`;
+                const groupPlayers = groupsData[groupKey] || [];
+                
+                if (groupPlayers.length === 0) continue;
+                
+                html += `
+                    <div class="group-card">
+                        <h4>Grupo ${i}</h4>
+                        <table class="standings-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Jogador</th>
+                                    <th>Pts</th>
+                                    <th>J</th>
+                                    <th>V</th>
+                                    <th>E</th>
+                                    <th>GP</th>
+                                    <th>GC</th>
+                                    <th>SG</th>
+                                </tr>
+                            </thead>
+                            <tbody id="group-${i}-standings">
+                                <!-- Jogadores serão inseridos aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html || '<p>Nenhum grupo ativo no momento.</p>';
+            
+            // Agora carrega os standings para cada grupo
+            loadGroupStandings(groupsData);
+            
+            // Carrega as partidas da rodada atual
+            loadCurrentRoundMatches(groupsData.rounds);
+        }
+
+        function loadGroupMatches(roundsData) {
+            // Implementação para carregar as partidas dos grupos
+            // Pode ser exibido em uma seção separada ou modal
+            console.log('Partidas dos grupos:', roundsData);
+        }
+
+        function loadKnockoutStage(supercopaData) {
+            const knockoutContainer = document.getElementById('knockout-matches-container');
+            knockoutContainer.innerHTML = '';
+            
+            // Implementar carregamento das partidas do mata-mata
+            // Quartas, semifinais e final
+            console.log('Dados do mata-mata:', supercopaData);
+        }
+
+        // Função para determinar o estágio atual da Superliga
+        function getCurrentSuperligaStage(tournaments) {
+            if (tournaments.includes('Clausura')) return 'Clausura';
+            return 'Abertura'; // Padrão
+        }
+
+        // Função para carregar a classificação de cada grupo
+        function loadGroupStandings(groupsData) {
+            if (!groupsData.standings) return;
+            
+            // Para cada grupo (1 a 4)
+            for (let i = 1; i <= 4; i++) {
+                const groupKey = `group${i}`;
+                const groupPlayers = groupsData[groupKey] || [];
+                
+                if (groupPlayers.length === 0) continue;
+                
+                const tbody = document.getElementById(`group-${i}-standings`);
+                if (!tbody) continue;
+                
+                // Coleta os standings dos jogadores deste grupo
+                const groupStandings = [];
+                groupPlayers.forEach(playerId => {
+                    if (groupsData.standings[playerId]) {
+                        groupStandings.push(groupsData.standings[playerId]);
+                    }
+                });
+                
+                // Ordena por pontos, depois saldo de gols
+                groupStandings.sort((a, b) => {
+                    if (b.points !== a.points) return b.points - a.points;
+                    const saldoA = (a.goalsFor || 0) - (a.goalsAg || 0);
+                    const saldoB = (b.goalsFor || 0) - (b.goalsAg || 0);
+                    return saldoB - saldoA;
+                });
+                
+                // Limpa o tbody
+                tbody.innerHTML = '';
+                
+                // Adiciona cada jogador na tabela
+                groupStandings.forEach((standing, index) => {
+                    getUserData(standing.playerId).then(userData => {
+                        const tr = document.createElement('tr');
+                        if (index < 2) tr.classList.add('qualified');
+                        
+                        const saldo = (standing.goalsFor || 0) - (standing.goalsAg || 0);
+                        
+                        tr.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${userData.name}</td>
+                            <td>${standing.points || 0}</td>
+                            <td>${standing.games || 0}</td>
+                            <td>${standing.wins || 0}</td>
+                            <td>${standing.draws || 0}</td>
+                            <td>${standing.goalsFor || 0}</td>
+                            <td>${standing.goalsAg || 0}</td>
+                            <td>${saldo}</td>
+                        `;
+                        
+                        tbody.appendChild(tr);
+                    });
+                });
+            }
+        }
+
+        // Função para carregar as partidas da rodada atual
+        function loadCurrentRoundMatches(roundsData) {
+            const container = document.getElementById('current-round-matches');
+            if (!roundsData) {
+                container.innerHTML = '<p>Nenhuma rodada em andamento.</p>';
+                return;
+            }
+            
+            // Encontra a rodada ativa (status = 1)
+            let activeRound = null;
+            Object.entries(roundsData).forEach(([roundKey, round]) => {
+                if (round.status === 1) {
+                    activeRound = { key: roundKey, ...round };
+                }
+            });
+            
+            if (!activeRound) {
+                container.innerHTML = '<p>Nenhuma rodada em andamento.</p>';
+                return;
+            }
+            
+            container.innerHTML = `<h4>Rodada ${activeRound.key.replace('round', '')}</h4>`;
+            
+            // Para cada partida na rodada
+            Object.entries(activeRound.matches).forEach(([matchGroupKey, matchGroup]) => {
+                Object.entries(matchGroup).forEach(([matchKey, match]) => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'match-card';
+                    
+                    // Cria a estrutura básica
+                    matchDiv.innerHTML = `
+                        <div class="match-players">
+                            <div class="match-player" id="player1-${matchKey}">
+                                <div class="player-name">Carregando...</div>
+                                <div class="player-points">-</div>
+                            </div>
+                            <div class="match-vs">vs</div>
+                            <div class="match-player" id="player2-${matchKey}">
+                                <div class="player-name">Carregando...</div>
+                                <div class="player-points">-</div>
+                            </div>
+                        </div>
+                        <div class="match-result">${match.result || 'Pendente'}</div>
+                    `;
+                    
+                    container.appendChild(matchDiv);
+                    
+                    // Carrega os dados dos jogadores
+                    loadPlayerData(match.player1Id, `player1-${matchKey}`);
+                    loadPlayerData(match.player2Id, `player2-${matchKey}`);
+                });
+            });
+        }
+
+        // Função auxiliar para carregar dados de um jogador
+        function loadPlayerData(playerId, containerId) {
+            if (!playerId) return;
+            
+            getUserData(playerId).then(userData => {
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.querySelector('.player-name').textContent = userData.name;
+                    
+                    // Pega os pontos da última rodada da liga
+                    const currentLigaStage = getCurrentLigaStage(); // Implemente esta função conforme sua lógica
+                    const points = userData[`lastRoundPointsLiga${currentLigaStage}`] || 0;
+                    container.querySelector('.player-points').textContent = points;
+                }
+            });
+        }
+
+        // Função para carregar a fase de mata-mata
+        function loadKnockoutStage(supercopaData) {
+            // Implementação similar para carregar quartas, semifinais e final
+            // Você pode seguir o mesmo padrão das outras funções
+        }
+
+        // Funções auxiliares
+        function showLoading(selector) {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.innerHTML = '<div class="loading">Carregando...</div>';
+            }
+        }
+
+        function showError(selector, message) {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.innerHTML = `<div class="error">${message}</div>`;
+            }
+        }
+
+        function getUserData(userId) {
+            return new Promise((resolve, reject) => {
+                database.ref('users/' + userId).once('value')
+                    .then(snapshot => resolve(snapshot.val()))
+                    .catch(error => reject(error));
+            });
+        }
+
+        function getCurrentLigaStage() {
+            // Implemente conforme sua lógica para determinar Abertura/Clausura
+            return 'Abertura'; // Exemplo
+        }
+
+        async function processRoundScores(roundId) {
+            const roundRef = database.ref('rounds/' + roundId);
+            const roundSnapshot = await roundRef.once('value');
+            const roundData = roundSnapshot.val();
+            
+            if (!roundData.tournaments.includes('superliga')) {
+                return; // Não é uma rodada da Superliga
+            }
+
+            const currentSuperligaStage = getCurrentLigaStage();
+            const usersRef = database.ref('users');
+            const usersSnapshot = await usersRef.once('value');
+
+            const updates = {};
+            
+            usersSnapshot.forEach(userSnapshot => {
+                const userId = userSnapshot.key;
+                let userLastRoundPoints = 0;
+
+                roundData.matches.forEach(match => {
+                    const userPrediction = Object.values(match.predictions || {}).find(pred => pred.playerId === userId);
+                    if (userPrediction) {
+                        userLastRoundPoints += calculateMatchPoints(match.finalResult, userPrediction);
+                    }
+                });
+
+                if (userLastRoundPoints > 0) {
+                    updates[`${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userLastRoundPoints;
+                    updates[`${userId}/pointsSuperliga${currentSuperligaStage}`] = 
+                        (userSnapshot.val()[`pointsSuperliga${currentSuperligaStage}`] || 0) + userLastRoundPoints;
+                }
+            });
+
+            await usersRef.update(updates);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga de Palpites - Próxima Rodada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reutilizando estilos da Home */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f0f2f5;
+            --card-background: white;
+            --text-color: #333;
+            --border-radius: 12px;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --neutral-color: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .action-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .action-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Novo estilo para os cards de partida */
+        .matches-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .match-card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .match-header {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #eaeaea;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .match-content {
+            padding: 20px;
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+        }
+
+        .team img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .team-name {
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .versus {
+            font-size: 18px;
+            color: #999;
+        }
+
+        .match-score {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .score-divider {
+            margin: 0 15px;
+            font-size: 20px;
+            color: #999;
+        }
+
+        .prediction-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .prediction-inputs input {
+            width: 60px;
+            height: 40px;
+            font-size: 18px;
+            padding: 5px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .prediction-inputs input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+            outline: none;
+        }
+
+        .prediction-inputs span {
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .match-footer {
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estilos para o dialog de palpites */
+        dialog {
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: none;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .dialog-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            position: relative;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .dialog-content {
+            padding: 20px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .predictions-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .prediction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .prediction-item:last-child {
+            border-bottom: none;
+        }
+
+        .prediction-user {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .prediction-score {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+
+        .prediction-points {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-weight: bold;
+            color: white;
+        }
+
+        .points-3 {
+            background-color: var(--success-color);
+        }
+
+        .points-1 {
+            background-color: var(--warning-color);
+        }
+
+        .points-minus-1 {
+            background-color: var(--danger-color);
+        }
+
+        .points-0 {
+            background-color: var(--neutral-color);
+        }
+
+        /* Filtro de jogadores */
+        .filter-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-header {
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .players-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .player-chip {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .player-chip:hover {
+            background-color: #e0e0e0;
+        }
+
+        .player-chip.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .full-time-badge {
+            background-color: #222;
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .player-prediction {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .player-prediction-item {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .player-prediction-item span {
+            color: #666;
+        }
+
+        .player-prediction-item strong {
+            color: var(--primary-color);
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Próxima Rodada</h1>
+            <div>
+                <a href="home.html" class="action-button">Voltar</a>
+            </div>
+        </div>
+
+        <div id="timer-container" class="timer">
+            <i class="fas fa-clock"></i> Carregando temporizador...
+        </div>
+
+        <div class="filter-container" id="players-filter-container" style="display: none;">
+            <div class="filter-header">
+                <i class="fas fa-filter"></i> Filtrar por jogador:
+            </div>
+            <div class="players-filter" id="players-filter-list">
+                <!-- Jogadores serão adicionados dinamicamente -->
+            </div>
+        </div>
+
+        <div id="loader" class="loader-container">
+            <div class="loader"></div>
+        </div>
+
+        <div id="matches-container" class="matches-container" style="display: none;">
+            <!-- Matches will be dynamically populated -->
+        </div>
+
+        <div class="action-container" style="margin-top: 20px; text-align: center;">
+            <button id="save-predictions" class="action-button">
+                <i class="fas fa-save"></i> Salvar Palpites
+            </button>
+        </div>
+    </div>
+
+    <!-- Preload Dialog -->
+    <dialog id="predictions-dialog">
+        <div class="dialog-header">
+            <h2>Palpites para este jogo</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="dialog-content">
+            <div class="filter-container">
+                <div class="filter-header">
+                    <i class="fas fa-filter"></i> Filtrar por jogador:
+                </div>
+                <div class="players-filter" id="dialog-players-filter">
+                    <!-- Jogadores serão adicionados dinamicamente -->
+                </div>
+            </div>
+            <ul class="predictions-list"></ul>
+        </div>
+    </dialog>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.appspot.com",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Referencias globais para facilitar acesso
+        const matchesContainer = document.getElementById('matches-container');
+        const timerContainer = document.getElementById('timer-container');
+        const savePredictionsButton = document.getElementById('save-predictions');
+        const loader = document.getElementById('loader');
+        const playersFilterContainer = document.getElementById('players-filter-container');
+        const playersFilterList = document.getElementById('players-filter-list');
+        const predictionsDialog = document.getElementById('predictions-dialog');
+        const dialogPlayersFilter = document.getElementById('dialog-players-filter');
+
+        // Estado global da aplicação
+        let currentRoundKey = null;
+        let players = {};
+        let filteredPlayers = [];
+        let allMatches = {};
+        let isTimeExpired = false;
+
+        // Authentication State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                fetchAllPlayers();
+                fetchCurrentRound(user.uid);
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Função para buscar todos os jogadores
+        async function fetchAllPlayers() {
+            try {
+                const usersSnapshot = await database.ref('users').once('value');
+                players = usersSnapshot.val() || {};
+            } catch (error) {
+                console.error('Erro ao buscar jogadores:', error);
+            }
+        }
+
+        // Função para iniciar o temporizador
+        function startCountdown(finishTimestamp) {
+            console.log('finishTimestamp2: ' + finishTimestamp)
+            const updateCountdown = () => {
+                const now = new Date();
+                const end = new Date(finishTimestamp);
+                end.setHours(end.getHours()); // Ajuste para AMZ
+                const diff = end - now;
+                
+                if (diff <= 0) {
+                    timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo esgotado!';
+                    isTimeExpired = true;
+                    
+                    // Trocar botão de salvar por mensagem quando o tempo acabar
+                    savePredictionsButton.style.display = 'none';
+                    
+                    // Mostrar filtro de jogadores quando o tempo acabar
+                    playersFilterContainer.style.display = 'block';
+                    
+                    // Adicionar botões de Ver Palpites para todos os jogos
+                    updateMatchCardsForExpiredTime();
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            };
+            
+            updateCountdown();
+            const interval = setInterval(updateCountdown, 1000);
+            return interval;
+        }
+
+        // Função para calcular pontos baseado na predição
+        function calculateMatchPoints(finalResult, prediction) {
+            if (!finalResult || !prediction || 
+                finalResult.homeScore === null || finalResult.awayScore === null || 
+                prediction.homeScore === null || prediction.awayScore === null) {
+                return 0;
+            }
+            
+            // Placar exato
+            if (finalResult.homeScore === prediction.homeScore && finalResult.awayScore === prediction.awayScore) {
+                return 3;
+            }
+            
+            // Vencedor correto
+            const finalWinner = finalResult.homeScore > finalResult.awayScore ? 'home' : 
+                                finalResult.homeScore < finalResult.awayScore ? 'away' : 'draw';
+            
+            const predictionWinner = prediction.homeScore > prediction.awayScore ? 'home' : 
+                                    prediction.homeScore < prediction.awayScore ? 'away' : 'draw';
+            
+            if (finalWinner === predictionWinner) {
+                return 1;
+            }
+            
+            // Placar invertido
+            if (finalResult.homeScore === prediction.awayScore && finalResult.awayScore === prediction.homeScore) {
+                return -1;
+            }
+            
+            return 0;
+        }
+
+        // Função para buscar a rodada atual
+        async function fetchCurrentRound(userId) {
+            try {
+                const roundsRef = database.ref('rounds');
+                const roundsSnapshot = await roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value');
+                
+                if (!roundsSnapshot.exists()) {
+                    hideLoader();
+                    matchesContainer.innerHTML = '<p class="text-center">Não há rodadas disponíveis no momento.</p>';
+                    timerContainer.innerHTML = '<i class="fas fa-info-circle"></i> Nenhuma rodada ativa';
+                    return;
+                }
+                
+                let roundData, roundKey, finishTimestamp;
+                roundsSnapshot.forEach((roundSnapshot) => {
+                    roundData = roundSnapshot.val();
+                    roundKey = roundSnapshot.key;
+                    finishTimestamp = roundData.finishTimestamp;
+                    currentRoundKey = roundKey;
+                });
+
+                console.log('finishTimestamp1: ' + finishTimestamp)
+                
+                // Iniciar temporizador
+                startCountdown(finishTimestamp);
+                
+                // Verificar se o tempo já expirou
+                const now = new Date();
+                const end = new Date(finishTimestamp);
+                end.setHours(end.getHours() - 4); // Ajuste para AMZ
+                isTimeExpired = now > end;
+                
+                // Se expirou, mostrar filtro de jogadores
+                if (isTimeExpired) {
+                    playersFilterContainer.style.display = 'block';
+                    savePredictionsButton.style.display = 'none';
+                    createPlayerFilters();
+                }
+                
+                await loadMatchesData(roundKey, userId);
+            } catch (error) {
+                console.error('Erro ao buscar rodada atual:', error);
+                hideLoader();
+                matchesContainer.innerHTML = '<p class="text-center">Erro ao carregar dados. Tente novamente.</p>';
+            }
+        }
+
+        // Função para carregar os dados das partidas
+        async function loadMatchesData(roundKey, userId) {
+            try {
+                const teamsRef = database.ref('teams');
+                const matchesRef = database.ref(`rounds/${roundKey}/matches`);
+                
+                // Buscar partidas desta rodada
+                const matchesSnapshot = await matchesRef.once('value');
+                const matches = matchesSnapshot.val() || {};
+                allMatches = matches;
+                
+                // Se não houver partidas
+                if (Object.keys(matches).length === 0) {
+                    hideLoader();
+                    matchesContainer.innerHTML = '<p class="text-center">Não há partidas nesta rodada.</p>';
+                    return;
+                }
+                
+                // Processar cada partida
+                let matchPromises = [];
+                for (const matchId in matches) {
+                    const match = matches[matchId];
+                    
+                    // Buscar dados dos times
+                    const homeTeamPromise = teamsRef.child(match.homeTeam).once('value');
+                    const awayTeamPromise = teamsRef.child(match.awayTeam).once('value');
+                    
+                    matchPromises.push(Promise.all([homeTeamPromise, awayTeamPromise])
+                        .then(([homeTeamSnapshot, awayTeamSnapshot]) => {
+                            return {
+                                matchId,
+                                match,
+                                homeTeam: homeTeamSnapshot.val(),
+                                awayTeam: awayTeamSnapshot.val(),
+                                userPrediction: match.predictions?.[userId] || { homeScore: '', awayScore: '' }
+                            };
+                        }));
+                }
+                
+                const matchesData = await Promise.all(matchPromises);
+                renderMatchCards(matchesData);
+                
+                // Adicionar evento ao botão de salvar palpites
+                setupSavePredictionsButton(roundKey);
+                
+                // Se o tempo expirou, atualizar cards para mostrar botões de ver palpites
+                if (isTimeExpired) {
+                    updateMatchCardsForExpiredTime();
+                    createPlayerFilters();
+                }
+                
+                hideLoader();
+            } catch (error) {
+                console.error('Erro ao carregar dados das partidas:', error);
+                hideLoader();
+                matchesContainer.innerHTML = '<p class="text-center">Erro ao carregar partidas. Tente novamente.</p>';
+            }
+        }
+
+        // Função para renderizar os cards das partidas
+        function renderMatchCards(matchesData) {
+            let matchesHtml = '';
+            
+            matchesData.forEach(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
+                const matchDate = match.date ? new Date(match.date).toLocaleDateString('pt-BR') : 'Data não definida';
+                const matchTime = match.time || 'Horário não definido';
+                const hasResult = match.finalResult && match.finalResult.homeScore !== undefined && match.finalResult.awayScore !== undefined;
+                
+                matchesHtml += `
+                    <div class="match-card" data-match-id="${matchId}">
+                        <div class="match-header">
+                            ${matchDate} - ${matchTime}
+                        </div>
+                        <div class="match-content">
+                            <div class="match-teams">
+                                <div class="team">
+                                    <img src="${homeTeam.image}" alt="${homeTeam.name}">
+                                    <p class="team-name">${homeTeam.name}</p>
+                                </div>
+                                <span class="versus">VS</span>
+                                <div class="team">
+                                    <img src="${awayTeam.image}" alt="${awayTeam.name}">
+                                    <p class="team-name">${awayTeam.name}</p>
+                                </div>
+                            </div>
+                            
+                            ${hasResult ? `
+                                <div class="match-score">
+                                    <div class="score-display">
+                                        <span>${match.finalResult.homeScore}</span>
+                                        <span class="score-divider">:</span>
+                                        <span>${match.finalResult.awayScore}</span>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <span class="full-time-badge">RESULTADO FINAL</span>
+                                </div>
+                            ` : `
+                                <div class="prediction-inputs">
+                                    <input type="number" min="0" placeholder="0" 
+                                        data-team="home" 
+                                        value="${userPrediction.homeScore}" 
+                                        ${isTimeExpired ? 'disabled' : ''}>
+                                    <span>x</span>
+                                    <input type="number" min="0" placeholder="0" 
+                                        data-team="away" 
+                                        value="${userPrediction.awayScore}" 
+                                        ${isTimeExpired ? 'disabled' : ''}>
+                                </div>
+                            `}
+                        </div>
+                        <div class="match-footer" id="match-footer-${matchId}">
+                            ${isTimeExpired ? `
+                                <button class="action-button view-predictions-btn" data-match-id="${matchId}">
+                                    <i class="fas fa-eye"></i> Ver Palpites
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            matchesContainer.innerHTML = matchesHtml;
+            matchesContainer.style.display = 'grid';
+            
+            // Adicionar event listeners aos botões de ver palpites
+            if (isTimeExpired) {
+                document.querySelectorAll('.view-predictions-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const matchId = this.getAttribute('data-match-id');
+                        showPredictionsForMatch(matchId);
+                    });
+                });
+            }
+        }
+
+        // Configurar o botão de salvar palpites
+        function setupSavePredictionsButton(roundKey) {
+            savePredictionsButton.addEventListener('click', async () => {
+                try {
+                    const matchCards = document.querySelectorAll('.match-card');
+                    const predictions = {};
+                    const playerId = auth.currentUser.uid;
+                    let hasValidPredictions = false;
+                    
+                    matchCards.forEach(card => {
+                        const matchId = card.getAttribute('data-match-id');
+                        const homeInput = card.querySelector('input[data-team="home"]');
+                        const awayInput = card.querySelector('input[data-team="away"]');
+                        
+                        if (homeInput && awayInput && homeInput.value !== '' && awayInput.value !== '') {
+                            predictions[matchId] = {
+                                homeScore: parseInt(homeInput.value),
+                                awayScore: parseInt(awayInput.value),
+                                playerId: playerId
+                            };
+                            hasValidPredictions = true;
+                        }
+                    });
+                    
+                    if (!hasValidPredictions) {
+                        alert('Por favor, preencha pelo menos um palpite antes de salvar.');
+                        return;
+                    }
+                    
+                    // Salvar palpites no Firebase
+                    const updates = {};
+                    Object.keys(predictions).forEach(matchId => {
+                        updates[`rounds/${roundKey}/matches/${matchId}/predictions/${playerId}`] = predictions[matchId];
+                    });
+                    
+                    await database.ref().update(updates);
+                    
+                    // Feedback visual de sucesso
+                    savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Palpites Salvos!';
+                    savePredictionsButton.style.backgroundColor = 'var(--success-color)';
+                    
+                    // Restaurar botão após alguns segundos
+                    setTimeout(() => {
+                        savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                        savePredictionsButton.style.backgroundColor = 'var(--primary-color)';
+                    }, 3000);
+                } catch (error) {
+                    console.error('Erro ao salvar palpites:', error);
+                    alert('Erro ao salvar palpites. Tente novamente.');
+                }
+            });
+        }
+
+        // Atualizar cards quando o tempo expirar
+        function updateMatchCardsForExpiredTime() {
+            const matchCards = document.querySelectorAll('.match-card');
+            
+            matchCards.forEach(card => {
+                const matchId = card.getAttribute('data-match-id');
+                const inputs = card.querySelectorAll('input');
+                
+                // Desabilitar inputs
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
+                
+                // Adicionar botão de ver palpites se não existir
+                const footer = card.querySelector(`#match-footer-${matchId}`);
+                if (footer && !footer.querySelector('.view-predictions-btn')) {
+                    const viewBtn = document.createElement('button');
+                    viewBtn.classList.add('action-button', 'view-predictions-btn');
+                    viewBtn.setAttribute('data-match-id', matchId);
+                    viewBtn.innerHTML = '<i class="fas fa-eye"></i> Ver Palpites';
+                    
+                    viewBtn.addEventListener('click', function() {
+                        showPredictionsForMatch(matchId);
+                    });
+                    
+                    footer.appendChild(viewBtn);
+                }
+            });
+        }
+
+        // Criar filtros de jogadores
+        function createPlayerFilters() {
+            // Lista principal de jogadores
+            createPlayerFilterChips(playersFilterList, false);
+            
+            // Lista de jogadores no dialog
+            createPlayerFilterChips(dialogPlayersFilter, true);
+        }
+
+        // Criar chips de filtro de jogadores
+        function createPlayerFilterChips(container, isDialog) {
+            // Limpar container
+            container.innerHTML = '';
+            
+            // Adicionar opção "Todos"
+            const allChip = document.createElement('div');
+            allChip.classList.add('player-chip', 'active');
+            allChip.innerHTML = 'Todos';
+            allChip.setAttribute('data-player-id', 'all');
+            
+            allChip.addEventListener('click', function() {
+                // Desativar todos os outros chips
+                container.querySelectorAll('.player-chip').forEach(chip => {
+                    chip.classList.remove('active');
+                });
+                
+                // Ativar este chip
+                this.classList.add('active');
+                
+                // Filtrar palpites ou atualizar visualização
+                if (isDialog) {
+                    updateDialogPredictions('all');
+                } else {
+                    filteredPlayers = [];
+                    updateMatchesVisibility();
+                }
+            });
+            
+            container.appendChild(allChip);
+            
+            // Adicionar chips para cada jogador
+            for (const playerId in players) {
+                const playerChip = document.createElement('div');
+                playerChip.classList.add('player-chip');
+                playerChip.innerHTML = players[playerId].name;
+                playerChip.setAttribute('data-player-id', playerId);
+                
+                playerChip.addEventListener('click', function() {
+                    // Desativar todos os outros chips individuais
+                    container.querySelectorAll('.player-chip').forEach(chip => {
+                        if (chip.getAttribute('data-player-id') !== 'all') {
+                            chip.classList.remove('active');
+                        }
+                    });
+                    
+                    // Ativar/desativar este chip
+                    this.classList.toggle('active');
+                    
+                    // Desativar chip "Todos" e atualizar filteredPlayers
+                    const allChip = container.querySelector('.player-chip[data-player-id="all"]');
+                    allChip.classList.remove('active');
+                    
+                    if (isDialog) {
+                        updateDialogPredictions(playerId);
+                    } else {
+                        // Atualizar lista de jogadores filtrados
+                        const activePlayerIds = Array.from(container.querySelectorAll('.player-chip.active:not([data-player-id="all"])'))
+                            .map(chip => chip.getAttribute('data-player-id'));
+                        
+                        filteredPlayers = activePlayerIds;
+                        updateMatchesVisibility();
+                    }
+                });
+                
+                container.appendChild(playerChip);
+            }
+        }
+
+        // Atualizar visibilidade dos cards de partidas baseado nos filtros
+        function updateMatchesVisibility() {
+            const matchCards = document.querySelectorAll('.match-card');
+            
+            if (filteredPlayers.length === 0) {
+                // Mostrar todos os cards se nenhum filtro estiver ativo
+                matchCards.forEach(card => {
+                    card.style.display = 'block';
+                    // Remover qualquer exibição de palpite de jogador específico
+                    const playerPrediction = card.querySelector('.player-prediction');
+                    if (playerPrediction) {
+                        playerPrediction.remove();
+                    }
+                });
+                return;
+            }
+            
+            // Para cada partida, verificar se algum dos jogadores filtrados fez palpite
+            for (const matchId in allMatches) {
+                const match = allMatches[matchId];
+                const predictions = match.predictions || {};
+                const card = document.querySelector(`.match-card[data-match-id="${matchId}"]`);
+                
+                if (!card) continue;
+                
+                // Verificar se algum dos jogadores filtrados tem palpite para esta partida
+                const filteredPredictions = filteredPlayers
+                    .map(playerId => ({ playerId, prediction: predictions[playerId] }))
+                    .filter(item => item.prediction);
+                
+                if (filteredPredictions.length > 0) {
+                    card.style.display = 'block';
+                    
+                    // Adicionar ou atualizar a exibição do palpite do jogador
+                    let playerPrediction = card.querySelector('.player-prediction');
+                    if (!playerPrediction) {
+                        playerPrediction = document.createElement('div');
+                        playerPrediction.classList.add('player-prediction');
+                        card.querySelector('.match-content').appendChild(playerPrediction);
+                    }
+                    
+                    // Mostrar todos os palpites dos jogadores filtrados
+                    playerPrediction.innerHTML = filteredPredictions.map(item => {
+                        const playerName = players[item.playerId]?.name || 'Jogador desconhecido';
+                        return `
+                            <div class="player-prediction-item">
+                                <span>${playerName}:</span>
+                                <strong>${item.prediction.homeScore} x ${item.prediction.awayScore}</strong>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                } else {
+                    card.style.display = 'none';
+                    // Remover a exibição de palpite se existir
+                    const playerPrediction = card.querySelector('.player-prediction');
+                    if (playerPrediction) {
+                        playerPrediction.remove();
+                    }
+                }
+            }
+        }
+
+        // Mostrar diálogo com os palpites para uma partida
+        async function showPredictionsForMatch(matchId) {
+            const match = allMatches[matchId];
+            if (!match) return;
+            
+            const predictions = match.predictions || {};
+            const predictionsList = predictionsDialog.querySelector('.predictions-list');
+            predictionsList.innerHTML = '';
+            
+            // Guardar o matchId atual no diálogo para uso no filtro
+            predictionsDialog.setAttribute('data-match-id', matchId);
+            
+            // Título do diálogo
+            const dialogTitle = predictionsDialog.querySelector('.dialog-header h2');
+            
+            // Buscar informações dos times
+            const homeTeamSnapshot = await database.ref(`teams/${match.homeTeam}`).once('value');
+            const awayTeamSnapshot = await database.ref(`teams/${match.awayTeam}`).once('value');
+            const homeTeam = homeTeamSnapshot.val();
+            const awayTeam = awayTeamSnapshot.val();
+            
+            dialogTitle.textContent = `Palpites: ${homeTeam.name} vs ${awayTeam.name}`;
+            
+            // Inicializar dados para filtro no diálogo
+            updateDialogPredictions('all');
+            
+            // Adicionar evento de fechar o diálogo
+            const closeBtn = predictionsDialog.querySelector('.close-btn');
+            closeBtn.onclick = () => predictionsDialog.close();
+            
+            // Mostrar o diálogo
+            predictionsDialog.showModal();
+        }
+
+        // Atualizar lista de palpites no diálogo com base no filtro
+        function updateDialogPredictions(filterId) {
+            const matchId = predictionsDialog.getAttribute('data-match-id');
+            const match = allMatches[matchId];
+            if (!match) return;
+            
+            const predictions = match.predictions || {};
+            const predictionsList = predictionsDialog.querySelector('.predictions-list');
+            predictionsList.innerHTML = '';
+            
+            const finalResult = match.finalResult;
+            
+            // Filtrar palpites
+            let filteredPredictions = Object.entries(predictions);
+            if (filterId !== 'all') {
+                filteredPredictions = filteredPredictions.filter(([playerId]) => playerId === filterId);
+            }
+            
+            // Ordenar por pontos (se houver resultado)
+            if (finalResult && finalResult.homeScore !== undefined && finalResult.awayScore !== undefined) {
+                filteredPredictions.sort((a, b) => {
+                    const pointsA = calculateMatchPoints(finalResult, a[1]);
+                    const pointsB = calculateMatchPoints(finalResult, b[1]);
+                    return pointsB - pointsA;
+                });
+            }
+            
+            // Se não houver palpites após filtro
+            if (filteredPredictions.length === 0) {
+                predictionsList.innerHTML = '<p class="text-center">Nenhum palpite encontrado.</p>';
+                return;
+            }
+            
+            // Renderizar cada palpite
+            filteredPredictions.forEach(([playerId, prediction]) => {
+                const player = players[playerId] || { name: 'Usuário Desconhecido' };
+                const points = finalResult ? calculateMatchPoints(finalResult, prediction) : null;
+                
+                let pointsClass = '';
+                if (points !== null) {
+                    pointsClass = points === 3 ? 'points-3' : 
+                                points === 1 ? 'points-1' : 
+                                points === -1 ? 'points-minus-1' : 'points-0';
+                }
+                
+                const listItem = document.createElement('li');
+                listItem.classList.add('prediction-item');
+                
+                listItem.innerHTML = `
+                    <div class="prediction-user">${player.name}</div>
+                    <div class="prediction-score">
+                        ${prediction.homeScore} x ${prediction.awayScore}
+                    </div>
+                    ${points !== null ? `
+                        <div class="prediction-points ${pointsClass}">
+                            ${points}
+                        </div>
+                    ` : ''}
+                `;
+                
+                predictionsList.appendChild(listItem);
+            });
+        }
+
+        // Esconder o loader e mostrar o conteúdo
+        function hideLoader() {
+            loader.style.display = 'none';
+            matchesContainer.style.display = 'grid';
+        }
+
+        // Criar chips de filtro de jogadores
+        function createPlayerFilterChips(container, isDialog) {
+            // Limpar container
+            container.innerHTML = '';
+            
+            // Adicionar opção "Todos"
+            const allChip = document.createElement('div');
+            allChip.classList.add('player-chip', 'active');
+            allChip.innerHTML = 'Todos';
+            allChip.setAttribute('data-player-id', 'all');
+            
+            allChip.addEventListener('click', function() {
+                // Desativar todos os outros chips
+                container.querySelectorAll('.player-chip').forEach(chip => {
+                    chip.classList.remove('active');
+                });
+                
+                // Ativar este chip
+                this.classList.add('active');
+                
+                // Filtrar palpites ou atualizar visualização
+                if (isDialog) {
+                    updateDialogPredictions('all');
+                } else {
+                    filteredPlayers = [];
+                    updateMatchesVisibility();
+                }
+            });
+            
+            container.appendChild(allChip);
+            
+            // Adicionar chips para cada jogador
+            for (const playerId in players) {
+                const player = players[playerId];
+                const playerChip = document.createElement('div');
+                playerChip.classList.add('player-chip');
+                playerChip.innerHTML = player.name;
+                playerChip.setAttribute('data-player-id', playerId);
+                playerChip.setAttribute('title', player.name);
+                
+                playerChip.addEventListener('click', function() {
+                    const playerId = this.getAttribute('data-player-id');
+                    
+                    if (isDialog) {
+                        // No diálogo, seleção única
+                        container.querySelectorAll('.player-chip').forEach(chip => {
+                            chip.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        updateDialogPredictions(playerId);
+                    } else {
+                        // Na lista principal, seleção múltipla
+                        this.classList.toggle('active');
+                        
+                        // Atualizar lista de jogadores filtrados
+                        const activePlayerIds = Array.from(container.querySelectorAll('.player-chip.active:not([data-player-id="all"])'))
+                            .map(chip => chip.getAttribute('data-player-id'));
+                        
+                        // Desativar "Todos" se algum jogador específico estiver selecionado
+                        const allChip = container.querySelector('.player-chip[data-player-id="all"]');
+                        if (activePlayerIds.length > 0) {
+                            allChip.classList.remove('active');
+                        } else {
+                            allChip.classList.add('active');
+                        }
+                        
+                        filteredPlayers = activePlayerIds;
+                        updateMatchesVisibility();
+                    }
+                });
+                
+                container.appendChild(playerChip);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brasileirão da Depressão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #EDEEF5;
+            --card-background: white;
+            --text-color: #333;
+            --border-radius: 16px;
+            --top-card-radius: 0 0 32px 32px;
+            --box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --primary-color: #0000FF;
+            --text-on-primary: #FFFFFF;
+            --countdown-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            min-height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Top Card */
+        .top-card {
+            background-color: var(--primary-color);
+            border-radius: var(--top-card-radius);
+            padding: 24px;
+            color: var(--text-on-primary);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .toolbar-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .icon-button {
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            color: var(--text-on-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-name {
+            text-align: center;
+            font-weight: bold;
+            font-size: 42px;
+            margin: 16px 32px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .team-info-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 24px;
+        }
+
+        .team-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .team-stat {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .team-logo {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+        }
+
+        /* Content section */
+        .content {
+            padding: 0 24px 24px 24px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--text-color);
+            margin-bottom: 16px;
+        }
+
+        .round-card {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .round-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .round-time {
+            font-size: 16px;
+        }
+
+        .view-history {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 16px;
+            margin: 8px 0 16px;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
+
+        /* Respiro */
+        .respiro {
+            height: 64px;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Cards com estilos para a Supercopa */
+        .tournament-card {
+            cursor: pointer;
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .tournament-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-in-progress {
+            background-color: #f1c40f;
+            color: white;
+        }
+
+        .status-finished {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .status-not-started {
+            background-color: #95a5a6;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading screen -->
+    <div id="loading-screen">
+        <div style="text-align: center;">
+            <div class="loading-spinner"></div>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Top card section -->
+    <div class="top-card" id="top-card">
+        <div class="toolbar">
+            <button class="icon-button" id="admin-button">
+                <i class="fas fa-crown"></i>
+            </button>
+            <div class="toolbar-title">BR da Depressão</div>
+            <button class="icon-button" id="logout-button">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+
+        <div class="team-name" id="team-name">
+            NOME
+        </div>
+
+        <div class="team-info-container">
+            <div class="team-stats">
+                <div class="team-stat" id="team-sigla">ELN - Cruzeiro</div>
+                <div class="team-stat" id="team-pos-liga">11º Liga</div>
+                <div class="team-stat" id="team-pos-copa">3º Grupo B</div>
+            </div>
+            <img src="default-avatar.png" alt="Team Logo" class="team-logo" id="team-logo">
+        </div>
+    </div>
+
+    <!-- Content section -->
+    <div class="content">
+        <div class="section-title">Nova Rodada</div>
+        
+        <div class="round-card" id="next-round-card">
+            <div class="round-title" id="next-round-deadline">Palpite até 29/03 17:30</div>
+            <div class="round-time" id="next-round-countdown">Tempo restante: 2d 4h 30m 12s</div>
+        </div>
+        
+        <a href="historico.html" class="view-history">Ver Histórico</a>
+        
+        <div class="section-title">Supercopa</div>
+        
+        <div class="tournament-card" id="supercopa-card">
+            <div class="tournament-title">
+                Supercopa
+                <span class="status-badge status-not-started">Não Iniciada</span>
+            </div>
+            <p>Competição ainda não iniciada. Aguarde mais informações.</p>
+        </div>
+        
+        <div class="section-title">Superliga</div>
+        
+        <div class="tournament-card" id="superliga-card">
+            <div class="tournament-title">
+                Superliga
+                <span class="status-badge status-in-progress">Em Progresso</span>
+            </div>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; padding: 8px 4px;">Pos</th>
+                        <th style="text-align: left; padding: 8px 4px;">Jogador</th>
+                        <th style="text-align: right; padding: 8px 4px;">Pontos</th>
+                    </tr>
+                </thead>
+                <tbody id="superliga-table-body">
+                    <!-- Será preenchido dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="respiro"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Cache de dados
+        let cachedData = {
+            userProfile: null,
+            superliga: null,
+            supercopa: null,
+            nextRound: null,
+            pastRounds: null
+        };
+
+        const SESSION_CACHE_KEY = 'brdepre_home_cache';
+
+        // Função para salvar os dados em sessionStorage
+        function saveToSessionCache() {
+            sessionStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(cachedData));
+        }
+
+        // Função para carregar os dados do sessionStorage
+        function loadFromSessionCache() {
+            const cached = sessionStorage.getItem(SESSION_CACHE_KEY);
+            if (cached) {
+                try {
+                    return JSON.parse(cached);
+                } catch (e) {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        // Logout functionality
+        document.getElementById('logout-button').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                // Limpa o localStorage e redireciona
+                localStorage.clear();
+                window.location.replace('index.html');
+            }).catch((error) => {
+                console.error('Erro ao sair:', error);
+            });
+        });
+
+        // Configure admin button to be hidden initially
+        document.getElementById('admin-button').style.display = 'none';
+
+        // Recuperar usuário do localStorage
+        let user = JSON.parse(localStorage.getItem('user') || 'null');
+
+        // Observer de autenticação
+        auth.onAuthStateChanged((firebaseUser) => {
+            console.log('onAuthStateChanged fired');
+            
+            if (firebaseUser) {
+                // Tentar carregar do cache primeiro
+                const sessionCache = loadFromSessionCache();
+                if (sessionCache) {
+                    cachedData = sessionCache;
+                    updateUIFromCache();
+                    document.getElementById('loading-screen').style.display = 'none';
+                    
+                    // Atualizar os dados em segundo plano
+                    refreshAllData(firebaseUser.uid);
+                } else {
+                    // Carregar tudo do zero
+                    loadUserProfile(firebaseUser.uid)
+                        .then(() => loadSuperligaStandings())
+                        .then(() => loadSupercopaInfo())
+                        .then(() => loadNextRound())
+                        .then(() => loadPastRounds())
+                        .then(() => checkAdminStatus(firebaseUser.uid))
+                        .then(() => {
+                            saveToSessionCache();
+                            document.getElementById('loading-screen').style.display = 'none';
+                        })
+                        .catch((error) => {
+                            console.error('Erro no carregamento de dados:', error);
+                            document.getElementById('loading-screen').style.display = 'none';
+                        });
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        function updateUIFromCache() {
+            if (cachedData.userProfile) updateUserProfileUI(cachedData.userProfile);
+            if (cachedData.superliga) updateSuperligaUI(cachedData.superliga);
+            if (cachedData.supercopa) updateSupercopaUI(cachedData.supercopa);
+            if (cachedData.nextRound) {
+                updateNextRoundUI(cachedData.nextRound);
+                startCountdown(cachedData.nextRound.finishTimestamp);
+            }
+        }
+
+        function refreshAllData(userId) {
+            Promise.all([
+                loadUserProfile(userId, true),
+                loadSuperligaStandings(true),
+                loadSupercopaInfo(true),
+                loadNextRound(true),
+                checkAdminStatus(userId, true)
+            ]).then(() => {
+                saveToSessionCache();
+            }).catch(error => {
+                console.error('Erro ao atualizar dados em segundo plano:', error);
+            });
+        }
+
+        function loadUserProfile(userId, forceRefresh = false) {
+            if (!forceRefresh && cachedData.userProfile) {
+                return Promise.resolve(cachedData.userProfile);
+            }
+            console.log('Loading user profile for:', userId);
+            
+            const userProfileRef = database.ref('users/' + userId);
+            const teamsRef = database.ref('teams');
+
+            return new Promise((resolve, reject) => {
+                userProfileRef.once('value')
+                    .then((userSnapshot) => {
+                        console.log('User snapshot:', userSnapshot.exists(), userSnapshot.val());
+                        
+                        if (!userSnapshot.exists()) {
+                            reject(new Error('Usuário não encontrado'));
+                            return;
+                        }
+
+                        const userData = userSnapshot.val();
+                        
+                        return teamsRef.child(userData.teamId).once('value')
+                            .then((teamSnapshot) => {
+                                console.log('Team snapshot:', teamSnapshot.exists(), teamSnapshot.val());
+                                
+                                if (!teamSnapshot.exists()) {
+                                    reject(new Error('Time não encontrado'));
+                                    return;
+                                }
+
+                                const profileData = {
+                                    id: userId,
+                                    userData: userData,
+                                    teamData: teamSnapshot.val()
+                                };
+
+                                cachedData.userProfile = profileData;
+                                updateUserProfileUI(profileData);
+                                
+                                // Atualiza a cor do top card com a cor do time
+                                const teamColor = profileData.teamData.color1 || '#0000FF';
+                                const topCard = document.getElementById('top-card');
+                                const nextRoundCard = document.getElementById('next-round-card');
+                                
+                                topCard.style.backgroundColor = teamColor;
+                                nextRoundCard.style.backgroundColor = teamColor;
+                                
+                                // Verificar se a cor é escura para definir a cor do texto
+                                const isColorDark = isColorDarkEnough(teamColor);
+                                const textColor = isColorDark ? '#FFFFFF' : '#000000';
+                                
+                                // Atualizar cor de todos os elementos de texto no top card
+                                const textElements = topCard.querySelectorAll('.icon-button, .toolbar-title, .team-name, .team-stat');
+                                textElements.forEach(el => {
+                                    el.style.color = textColor;
+                                });
+                                
+                                // Atualizar cor de texto no card da próxima rodada
+                                const roundTextElements = nextRoundCard.querySelectorAll('.round-title, .round-time');
+                                roundTextElements.forEach(el => {
+                                    el.style.color = textColor;
+                                });
+                                
+                                resolve(profileData);
+                            });
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao carregar perfil do usuário:', error);
+                        reject(error);
+                    });
+            });
+        }
+
+        // Função para determinar se uma cor é escura o suficiente para texto branco
+        function isColorDarkEnough(hexColor) {
+            // Remove o # se presente
+            hexColor = hexColor.replace('#', '');
+            
+            // Converte para RGB
+            const r = parseInt(hexColor.substr(0, 2), 16);
+            const g = parseInt(hexColor.substr(2, 2), 16);
+            const b = parseInt(hexColor.substr(4, 2), 16);
+            
+            // Fórmula para calcular luminosidade (percepção humana)
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            
+            // Se luminance < 0.5, é considerada uma cor escura
+            return luminance < 0.5;
+        }
+
+        function updateUserProfileUI(profileData) {
+            // Atualizando o nome do time
+            document.getElementById('team-name').textContent = profileData.userData.name || 'NOME';
+            
+            // Atualizando a sigla e nome do time
+            document.getElementById('team-sigla').textContent = `${profileData.userData.abbr || 'SGL'} - ${profileData.teamData.name || 'Time'}`;
+            
+            // O logo do time
+            document.getElementById('team-logo').src = profileData.teamData.image || 'default-avatar.png';
+        }
+
+        function loadSuperligaStandings() {
+            if (cachedData.superliga) {
+                updateSuperligaUI(cachedData.superliga);
+                return Promise.resolve();
+            }
+
+            const usersRef = database.ref('users');
+            const superligaStagesRef = database.ref('tournaments/superliga/stages');
+            const currentUser = auth.currentUser;
+
+            return superligaStagesRef.once('value').then((snapshot) => {
+                let status = "";
+                snapshot.forEach((childSnapshot) => {
+                    const stageData = childSnapshot.val();
+                    if (stageData.status === 1) {
+                        status = childSnapshot.key;
+                    }
+                });
+
+                const pointsField = (status === 'abertura') ? 'pointsSuperligaAbertura' : 
+                                 (status === 'clausura') ? 'pointsSuperligaClausura' : 
+                                 'pointsSuperligaClausura';
+
+                return usersRef.once('value').then((snapshot) => {
+                    const allUsers = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const userData = childSnapshot.val();
+                        if (userData[pointsField] !== undefined) {
+                            allUsers.push({
+                                id: childSnapshot.key,
+                                name: userData.name,
+                                points: userData[pointsField] || 0,
+                                lastRoundPoints: userData.lastRoundPointsLigaAbertura || 0
+                            });
+                        }
+                    });
+
+                    // Ordenar por pontos e depois por pontos da última rodada
+                    allUsers.sort((a, b) => {
+                        if (b.points === a.points) {
+                            return b.lastRoundPoints - a.lastRoundPoints;
+                        }
+                        return b.points - a.points;
+                    });
+
+                    const standingsData = {
+                        allUsers: allUsers,
+                        currentUser: currentUser.uid,
+                        pointsField: pointsField,
+                        userPosition: allUsers.findIndex(user => user.id === currentUser.uid) + 1
+                    };
+
+                    cachedData.superliga = standingsData;
+                    updateSuperligaUI(standingsData);
+                    
+                    // Atualizar posição no top card
+                    document.getElementById('team-pos-liga').textContent = `${standingsData.userPosition}º Liga`;
+
+                    return standingsData;
+                });
+            });
+        }
+
+        function updateSuperligaUI(standingsData) {
+            const tableBody = document.getElementById('superliga-table-body');
+            const { allUsers, currentUser } = standingsData;
+            
+            // Encontrar a posição do usuário atual
+            const currentUserIndex = allUsers.findIndex(user => user.id === currentUser);
+            
+            // Determinar quais linhas mostrar
+            let rowsToShow = [];
+            if (currentUserIndex === 0) {
+                // Primeiro lugar: mostra ele + 2 abaixo
+                rowsToShow = allUsers.slice(0, 3);
+            } else if (currentUserIndex === allUsers.length - 1) {
+                // Último lugar: mostra ele + 2 acima
+                rowsToShow = allUsers.slice(-3);
+            } else {
+                // Meio da tabela: mostra 1 acima, ele, e 1 abaixo
+                rowsToShow = allUsers.slice(Math.max(0, currentUserIndex - 1), currentUserIndex + 2);
+            }
+
+            // Atualizar a tabela
+            tableBody.innerHTML = rowsToShow.map((user, indexInSlice) => {
+                const actualPosition = allUsers.findIndex(u => u.id === user.id) + 1;
+                const isCurrentUser = user.id === currentUser;
+                
+                return `
+                    <tr ${isCurrentUser ? 'style="background-color: #f0f8ff;"' : ''}>
+                        <td style="padding: 8px 4px;">${actualPosition}</td>
+                        <td style="padding: 8px 4px;">${user.name}</td>
+                        <td style="padding: 8px 4px; text-align: right;">${user.points}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Adicionar mensagem informando que é uma visualização parcial
+            if (allUsers.length > 3) {
+                const infoRow = document.createElement('tr');
+                infoRow.innerHTML = `<td colspan="3" style="text-align: center; font-size: 0.8em; color: #666; padding: 8px 4px;">
+                    Mostrando apenas sua posição e jogadores próximos. Clique para ver a tabela completa.
+                </td>`;
+                tableBody.appendChild(infoRow);
+            }
+        }
+
+        function loadSupercopaInfo() {
+            if (cachedData.supercopa) {
+                updateSupercopaUI(cachedData.supercopa);
+                return Promise.resolve();
+            }
+
+            const currentUser = auth.currentUser;
+            const supercopaRef = database.ref('tournaments/supercopa');
+            
+            return supercopaRef.once('value').then((snapshot) => {
+                const supercopaData = snapshot.val();
+                
+                // Determinar em qual grupo o usuário está
+                let userGroup = null;
+                let userPosition = 0;
+                
+                if (supercopaData && supercopaData.groups) {
+                    for (const groupKey in supercopaData.groups) {
+                        if (groupKey !== 'status' && supercopaData.groups[groupKey]) {
+                            const groupMembers = supercopaData.groups[groupKey];
+                            const userIndex = groupMembers.indexOf(currentUser.uid);
+                            
+                            if (userIndex !== -1) {
+                                userGroup = groupKey;
+                                userPosition = userIndex + 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                const supercopaInfo = { 
+                    data: supercopaData, 
+                    currentUser: currentUser.uid,
+                    userGroup: userGroup,
+                    userPosition: userPosition
+                };
+                
+                cachedData.supercopa = supercopaInfo;
+                updateSupercopaUI(supercopaInfo);
+                
+                // Atualizar informação no top card
+                if (userGroup) {
+                    const groupNameMap = {
+                        'group1': 'Grupo A',
+                        'group2': 'Grupo B',
+                        'group3': 'Grupo C',
+                        'group4': 'Grupo D'
+                    };
+                    
+                    document.getElementById('team-pos-copa').textContent = `${userPosition}º ${groupNameMap[userGroup] || userGroup}`;
+                }
+                
+                return supercopaInfo;
+            });
+        }
+
+        function updateSupercopaUI(supercopaInfo) {
+            const supercopaCard = document.getElementById('supercopa-card');
+            const { data: supercopaData, userGroup } = supercopaInfo;
+            
+            const groupNameMap = {
+                'group1': 'Grupo A',
+                'group2': 'Grupo B',
+                'group3': 'Grupo C',
+                'group4': 'Grupo D'
+            };
+            
+            // Verificar status da Supercopa
+            if (supercopaData && supercopaData.groups && supercopaData.groups.status === 1) {
+                // Atualizar o card da Supercopa para mostrar informações do grupo
+                if (userGroup) {
+                    supercopaCard.innerHTML = `
+                        <div class="tournament-title">
+                            Supercopa
+                            <span class="status-badge status-in-progress">Em Progresso</span>
+                        </div>
+                        <p>Você está no ${groupNameMap[userGroup] || userGroup}</p>
+                        <p>Clique para ver os detalhes do seu grupo.</p>
+                    `;
+                } else {
+                    supercopaCard.innerHTML = `
+                        <div class="tournament-title">
+                            Supercopa
+                            <span class="status-badge status-in-progress">Em Progresso</span>
+                        </div>
+                        <p>Você não está participando desta edição da Supercopa.</p>
+                    `;
+                }
+            } else {
+                // Supercopa não iniciada
+                supercopaCard.innerHTML = `
+                    <div class="tournament-title">
+                        Supercopa
+                        <span class="status-badge status-not-started">Não Iniciada</span>
+                    </div>
+                    <p>Competição ainda não iniciada. Aguarde mais informações.</p>
+                `;
+            }
+            
+            // Adicionar evento de clique para navegação
+            supercopaCard.style.cursor = 'pointer';
+            supercopaCard.addEventListener('click', () => {
+                window.location.href = 'supercopa.html';
+            });
+        }
+
+        function loadNextRound() {
+            if (cachedData.nextRound) {
+                updateNextRoundUI(cachedData.nextRound);
+                startCountdown(cachedData.nextRound.finishTimestamp);
+                return Promise.resolve();
+            }
+
+            const roundsRef = database.ref('rounds');
+            
+            return roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        const roundData = childSnapshot.val();
+                        cachedData.nextRound = roundData;
+                        updateNextRoundUI(roundData);
+                        startCountdown(roundData.finishTimestamp);
+                    });
+                } else {
+                    document.getElementById('next-round-card').innerHTML = `
+                        <div class="round-title">Nenhuma rodada disponível</div>
+                        <div class="round-time">Aguarde a próxima rodada</div>
+                    `;
+                    
+                    // Adicionar evento de clique para fazer palpites
+                    document.getElementById('next-round-card').addEventListener('click', () => {
+                        alert('Não há rodadas disponíveis no momento.');
+                    });
+                }
+            });
+        }
+
+        function updateNextRoundUI(roundData) {
+            const nextRoundDeadline = document.getElementById('next-round-deadline');
+            const nextRoundCountdown = document.getElementById('next-round-countdown');
+            
+            // Converter para AMZ (Amazon Time = UTC-4)
+            const finishDate = new Date(roundData.finishTimestamp);
+            finishDate.setHours(finishDate.getHours() - 4); // Ajuste para AMZ
+            
+            // Formatação da data em português
+            const options = { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' };
+            const formattedDate = finishDate.toLocaleDateString('pt-BR', options).replace(',', '');
+            
+            nextRoundDeadline.textContent = `Palpite até ${formattedDate}`;
+            nextRoundCountdown.textContent = `Tempo restante: calculando...`;
+            
+            // Adicionar evento de clique para fazer palpites
+            document.getElementById('next-round-card').style.cursor = 'pointer';
+            document.getElementById('next-round-card').addEventListener('click', () => {
+                window.location.href = 'palpites.html';
+            });
+        }
+
+        function startCountdown(finishTimestamp) {
+            const countdownElement = document.getElementById('next-round-countdown');
+            if (!countdownElement) return;
+
+            const updateCountdown = () => {
+                const now = new Date();
+                const end = new Date(finishTimestamp);
+                end.setHours(end.getHours()); // Ajuste para AMZ
+                
+                const diff = end - now;
+                
+                if (diff <= 0) {
+                    countdownElement.textContent = "Tempo esgotado!";
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                countdownElement.textContent = `Tempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            };
+            
+            updateCountdown();
+            const interval = setInterval(updateCountdown, 1000);
+        }
+
+        function loadPastRounds() {
+            // Adicionar evento de clique para histórico
+            document.querySelector('.view-history').addEventListener('click', () => {
+                window.location.href = 'historico.html';
+            });
+            
+            return Promise.resolve();
+        }
+
+        // Verificar se o usuário é admin
+        function checkAdminStatus(userId) {
+            console.log('oi4')
+            if (cachedData.userProfile && cachedData.userProfile.userData.isAdmin !== undefined) {
+                updateAdminButton(cachedData.userProfile.userData.isAdmin);
+                return Promise.resolve();
+            }
+
+            const userRef = database.ref('users/' + userId);
+            
+            return userRef.once('value').then((snapshot) => {
+                const userData = snapshot.val();
+                if (cachedData.userProfile) {
+                    cachedData.userProfile.userData.isAdmin = userData.isAdmin;
+                }
+                updateAdminButton(userData.isAdmin);
+            });
+        }
+
+        function updateAdminButton(isAdmin) {
+            const adminButton = document.getElementById('admin-button');
+            if (isAdmin) {
+                adminButton.style.display = 'inline-block';
+                adminButton.addEventListener('click', () => {
+                    window.location.href = 'admin.html';
+                });
+            }
+        }
+
+        document.getElementById('superliga-card').addEventListener('click', () => {
+            window.location.href = 'superliga.html';
+        });
+    </script>
+</body>
+</html>
