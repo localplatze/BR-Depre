@@ -1,0 +1,1730 @@
+{
+  "rounds": {
+    "-OMNvZUsHXUjD5RLmu9l": {
+      "finishTimestamp": "2025-03-29T17:30",
+      "matches": [
+        {
+          "awayTeam": "PE01",
+          "finalResult": {
+            "awayScore": 0,
+            "homeScore": 0
+          },
+          "homeTeam": "SP01",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 0,
+              "homeScore": 3,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "MG02",
+          "finalResult": {
+            "awayScore": 1,
+            "homeScore": 2
+          },
+          "homeTeam": "RS02",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 1,
+              "homeScore": 0,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "RJ03",
+          "finalResult": {
+            "awayScore": 0,
+            "homeScore": 2
+          },
+          "homeTeam": "CE01",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 2,
+              "homeScore": 2,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "SP06",
+          "finalResult": {
+            "awayScore": 1,
+            "homeScore": 2
+          },
+          "homeTeam": "MG01",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 1,
+              "homeScore": 3,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 0,
+              "homeScore": 3,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 0,
+              "homeScore": 4,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 1,
+              "homeScore": 3,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 0,
+              "homeScore": 3,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "BA02",
+          "finalResult": {
+            "awayScore": 0,
+            "homeScore": 2
+          },
+          "homeTeam": "RS03",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 2,
+              "homeScore": 0,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 1,
+              "homeScore": 0,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 0,
+              "homeScore": 3,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "RS01",
+          "finalResult": {
+            "awayScore": 1,
+            "homeScore": 1
+          },
+          "homeTeam": "RJ01",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 2,
+              "homeScore": 3,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 1,
+              "homeScore": 3,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 1,
+              "homeScore": 3,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "RJ04",
+          "finalResult": {
+            "awayScore": 0,
+            "homeScore": 0
+          },
+          "homeTeam": "SP02",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 2,
+              "homeScore": 2,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 1,
+              "homeScore": 0,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "SP04",
+          "finalResult": {
+            "awayScore": 1,
+            "homeScore": 2
+          },
+          "homeTeam": "RJ02",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 2,
+              "homeScore": 0,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 2,
+              "homeScore": 2,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 1,
+              "homeScore": 0,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "SP03",
+          "finalResult": {
+            "awayScore": 1,
+            "homeScore": 1
+          },
+          "homeTeam": "BA01",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 2,
+              "homeScore": 0,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 1,
+              "homeScore": 3,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 2,
+              "homeScore": 2,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 2,
+              "homeScore": 1,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 1,
+              "homeScore": 0,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 2,
+              "homeScore": 2,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 2,
+              "homeScore": 0,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        },
+        {
+          "awayTeam": "CE02",
+          "finalResult": {
+            "awayScore": 2,
+            "homeScore": 2
+          },
+          "homeTeam": "SP05",
+          "predictions": {
+            "09SfUegeHcMKfuNSOMLa2upzQL33": {
+              "awayScore": 2,
+              "homeScore": 0,
+              "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33"
+            },
+            "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+              "awayScore": 0,
+              "homeScore": 3,
+              "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+            },
+            "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+              "awayScore": 1,
+              "homeScore": 0,
+              "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2"
+            },
+            "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2"
+            },
+            "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2"
+            },
+            "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1"
+            },
+            "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+              "awayScore": 1,
+              "homeScore": 0,
+              "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33"
+            },
+            "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2"
+            },
+            "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+            },
+            "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+              "awayScore": 0,
+              "homeScore": 2,
+              "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2"
+            },
+            "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+              "awayScore": 1,
+              "homeScore": 1,
+              "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2"
+            },
+            "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+              "awayScore": 2,
+              "homeScore": 2,
+              "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2"
+            },
+            "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+              "awayScore": 0,
+              "homeScore": 0,
+              "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2"
+            },
+            "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3"
+            },
+            "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3"
+            },
+            "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+              "awayScore": 0,
+              "homeScore": 1,
+              "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2"
+            },
+            "shtVwjxDjcdoEVV35Ne637byKBt1": {
+              "awayScore": 1,
+              "homeScore": 2,
+              "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1"
+            },
+            "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+              "awayScore": 3,
+              "homeScore": 1,
+              "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2"
+            }
+          }
+        }
+      ],
+      "status": 2,
+      "tournaments": [
+        "superliga",
+        "supercopa"
+      ]
+    }
+  },
+  "teams": {
+    "-OMDfcBz6lMSsIEln10l": {
+      "abbr": "AMZ",
+      "color1": "#fbff00",
+      "color2": "#000000",
+      "from": "AM",
+      "image": "https://upload.wikimedia.org/wikipedia/pt/7/74/AmazonasFC.png",
+      "name": "Amazonas"
+    },
+    "BA01": {
+      "abbr": "BAH",
+      "color1": "#FF0000",
+      "color2": "#0000FF",
+      "from": "BA",
+      "image": "https://images.seeklogo.com/logo-png/24/2/bahia-logo-png_seeklogo-249387.png",
+      "name": "Bahia"
+    },
+    "BA02": {
+      "abbr": "VIT",
+      "color1": "#FF0000",
+      "color2": "#000000",
+      "from": "BA",
+      "image": "https://upload.wikimedia.org/wikipedia/pt/3/34/Esporte_Clube_Vit%C3%B3ria_logo.png",
+      "name": "Vitória"
+    },
+    "CE01": {
+      "abbr": "FOR",
+      "color1": "#0000AA",
+      "color2": "#FF0000",
+      "from": "CE",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Fortaleza_EC_2018.png",
+      "name": "Fortaleza"
+    },
+    "CE02": {
+      "abbr": "CEA",
+      "color1": "#000000",
+      "color2": "#FFFFFF",
+      "from": "CE",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Cear%C3%A1_Sporting_Club_logo.svg/1845px-Cear%C3%A1_Sporting_Club_logo.svg.png",
+      "name": "Ceará"
+    },
+    "MG01": {
+      "abbr": "CRU",
+      "color1": "#0000FF",
+      "color2": "#FFFFFF",
+      "from": "MG",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Logo_Cruzeiro_1996.png",
+      "name": "Cruzeiro"
+    },
+    "MG02": {
+      "abbr": "CAM",
+      "color1": "#000000",
+      "color2": "#FFFFFF",
+      "from": "MG",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Clube_Atl%C3%A9tico_Mineiro_logo.svg/1200px-Clube_Atl%C3%A9tico_Mineiro_logo.svg.png",
+      "name": "Atlético"
+    },
+    "PE01": {
+      "abbr": "SPT",
+      "color1": "#FF0000",
+      "color2": "#000000",
+      "from": "PE",
+      "image": "https://cdn.worldvectorlogo.com/logos/sport-club-recife-pe.svg",
+      "name": "Sport Recife"
+    },
+    "RJ01": {
+      "abbr": "FLA",
+      "color1": "#FF0000",
+      "color2": "#000000",
+      "from": "RJ",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/2/22/Logo_Flamengo_crest_1980-2018.png",
+      "name": "Flamengo"
+    },
+    "RJ02": {
+      "abbr": "VAS",
+      "color1": "#000000",
+      "color2": "#FFFFFF",
+      "from": "RJ",
+      "image": "https://images.seeklogo.com/logo-png/3/2/club-de-regatas-vasco-da-gama-logo-png_seeklogo-31929.png",
+      "name": "Vasco"
+    },
+    "RJ03": {
+      "abbr": "FLU",
+      "color1": "#009900",
+      "color2": "#990000",
+      "from": "RJ",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Fluminense_FC_escudo.png",
+      "name": "Fluminense"
+    },
+    "RJ04": {
+      "abbr": "BOT",
+      "color1": "#000000",
+      "color2": "#FFFFFF",
+      "from": "RJ",
+      "image": "https://cdn.freebiesupply.com/logos/large/2x/botafogo-de-futebol-e-regatas-do-rio-de-janeiro-rj-01-logo-png-transparent.png",
+      "name": "Botafogo"
+    },
+    "RS01": {
+      "abbr": "INT",
+      "color1": "#FF0000",
+      "color2": "#000000",
+      "from": "RS",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Escudo_do_Sport_Club_Internacional.svg/2048px-Escudo_do_Sport_Club_Internacional.svg.png",
+      "name": "Internacional"
+    },
+    "RS02": {
+      "abbr": "GRE",
+      "color1": "#0000FF",
+      "color2": "#000000",
+      "from": "RS",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Gremio_logo.svg/1718px-Gremio_logo.svg.png",
+      "name": "Grêmio"
+    },
+    "RS03": {
+      "abbr": "JUV",
+      "color1": "#00BB00",
+      "color2": "#FFFFFF",
+      "from": "RS",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/EC_Juventude.svg/2048px-EC_Juventude.svg.png",
+      "name": "Juventude"
+    },
+    "SP01": {
+      "abbr": "SAO",
+      "color1": "#FF0000",
+      "color2": "#000000",
+      "from": "SP",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Brasao_do_Sao_Paulo_Futebol_Clube.svg/2054px-Brasao_do_Sao_Paulo_Futebol_Clube.svg.png",
+      "name": "São Paulo"
+    },
+    "SP02": {
+      "abbr": "PAL",
+      "color1": "#009900",
+      "color2": "#FFFFFF",
+      "from": "SP",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Palmeiras_logo.svg/2048px-Palmeiras_logo.svg.png",
+      "name": "Palmeiras"
+    },
+    "SP03": {
+      "abbr": "COR",
+      "color1": "#FFFFFF",
+      "color2": "#000000",
+      "from": "SP",
+      "image": "https://images.seeklogo.com/logo-png/12/2/sc-corinthians-paulista-logo-png_seeklogo-123172.png",
+      "name": "Corinthians"
+    },
+    "SP04": {
+      "abbr": "SAN",
+      "color1": "#000000",
+      "color2": "#FFFFFF",
+      "from": "SP",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/15/Santos_Logo.png",
+      "name": "Santos"
+    },
+    "SP05": {
+      "abbr": "RBB",
+      "color1": "#FFFFFF",
+      "color2": "#00FFFF",
+      "from": "SP",
+      "image": "https://upload.wikimedia.org/wikipedia/pt/9/9e/RedBullBragantino.png",
+      "name": "Bragantino"
+    },
+    "SP06": {
+      "abbr": "MIR",
+      "color1": "#FFFF00",
+      "color2": "#00FF00",
+      "from": "SP",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Mirassol_FC_logo.png/800px-Mirassol_FC_logo.png",
+      "name": "Mirassol"
+    }
+  },
+  "tournaments": {
+    "supercopa": {
+      "final": {
+        "awayTeam": "",
+        "homeTeam": "",
+        "result": ""
+      },
+      "groups": {
+        "group1": [
+          "bslpt4kTc3bmMyTY9zV9lP4402G3",
+          "FJeAPIYZMiV6Gu66zzouGnsikky1",
+          "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2",
+          "5jpAJ7q71gdh435BFBRpM5S6NDx2",
+          "0xBBw0e8EAcyKF666TdzLoMNbLH3"
+        ],
+        "group2": [
+          "UTcyR47YFoRubgdTxqPLacyHgZb2",
+          "shtVwjxDjcdoEVV35Ne637byKBt1",
+          "42ke4QdoIPaLoxlmLbW5zQndw9m2",
+          "FsiMtTiV3YeazVyIrtGIAvapBu33",
+          "5B4C79itIHNGRle2AGEGzIgnB9c2"
+        ],
+        "group3": [
+          "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2",
+          "tn2APPQk12bHMfOz6D9LIe0xbmB2",
+          "fG5t7K7cRPQoWQKdBP0gAMmXOAG3",
+          "Xk6rGKdsjmR2YVBV0XPwiUTjXef2",
+          "UE3VTBGpB4PqEgumNEtmYPJZUtA2"
+        ],
+        "group4": [
+          "rJdl82A9m5NVlpAzw3PXBc7Bbsf2",
+          "UPfM6oX6pRaacAEU9HEMHz5s7QP2",
+          "09SfUegeHcMKfuNSOMLa2upzQL33",
+          "Zb2pBltW4VZctDn2wq8NEbnCjTy1",
+          "Rw8O5C6YyoZbXBz3O2UN1UCugAO2"
+        ],
+        "rounds": {
+          "-OMO_wZiuHS0schg9FYs": {
+            "matches": {
+              "m1": {
+                "player1Id": "UPfM6oX6pRaacAEU9HEMHz5s7QP2",
+                "player2Id": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2",
+                "result": ""
+              },
+              "m10": {
+                "player1Id": "5B4C79itIHNGRle2AGEGzIgnB9c2",
+                "player2Id": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2",
+                "result": ""
+              },
+              "m2": {
+                "player1Id": "Zb2pBltW4VZctDn2wq8NEbnCjTy1",
+                "player2Id": "Rw8O5C6YyoZbXBz3O2UN1UCugAO2",
+                "result": ""
+              },
+              "m3": {
+                "player1Id": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2",
+                "player2Id": "shtVwjxDjcdoEVV35Ne637byKBt1",
+                "result": ""
+              },
+              "m4": {
+                "player1Id": "UE3VTBGpB4PqEgumNEtmYPJZUtA2",
+                "player2Id": "UTcyR47YFoRubgdTxqPLacyHgZb2",
+                "result": ""
+              },
+              "m5": {
+                "player1Id": "FsiMtTiV3YeazVyIrtGIAvapBu33",
+                "player2Id": "09SfUegeHcMKfuNSOMLa2upzQL33",
+                "result": ""
+              },
+              "m6": {
+                "player1Id": "5jpAJ7q71gdh435BFBRpM5S6NDx2",
+                "player2Id": "bslpt4kTc3bmMyTY9zV9lP4402G3",
+                "result": ""
+              },
+              "m7": {
+                "player1Id": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3",
+                "player2Id": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2",
+                "result": ""
+              },
+              "m8": {
+                "player1Id": "42ke4QdoIPaLoxlmLbW5zQndw9m2",
+                "player2Id": "FJeAPIYZMiV6Gu66zzouGnsikky1",
+                "result": ""
+              },
+              "m9": {
+                "player1Id": "0xBBw0e8EAcyKF666TdzLoMNbLH3",
+                "player2Id": "tn2APPQk12bHMfOz6D9LIe0xbmB2",
+                "result": ""
+              }
+            },
+            "status": 2,
+            "timestamp": 1743469942682
+          }
+        },
+        "standings": {
+          "09SfUegeHcMKfuNSOMLa2upzQL33": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 6,
+            "goalsFor": 2,
+            "playerId": "09SfUegeHcMKfuNSOMLa2upzQL33",
+            "points": 0,
+            "wins": 0
+          },
+          "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 3,
+            "goalsFor": 2,
+            "playerId": "0xBBw0e8EAcyKF666TdzLoMNbLH3",
+            "points": 0,
+            "wins": 0
+          },
+          "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 5,
+            "goalsFor": 3,
+            "playerId": "42ke4QdoIPaLoxlmLbW5zQndw9m2",
+            "points": 0,
+            "wins": 0
+          },
+          "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 2,
+            "goalsFor": 4,
+            "playerId": "5B4C79itIHNGRle2AGEGzIgnB9c2",
+            "points": 3,
+            "wins": 1
+          },
+          "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 7,
+            "goalsFor": 6,
+            "playerId": "5jpAJ7q71gdh435BFBRpM5S6NDx2",
+            "points": 0,
+            "wins": 0
+          },
+          "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 3,
+            "goalsFor": 5,
+            "playerId": "FJeAPIYZMiV6Gu66zzouGnsikky1",
+            "points": 3,
+            "wins": 1
+          },
+          "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 2,
+            "goalsFor": 6,
+            "playerId": "FsiMtTiV3YeazVyIrtGIAvapBu33",
+            "points": 3,
+            "wins": 1
+          },
+          "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 4,
+            "goalsFor": 8,
+            "playerId": "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2",
+            "points": 3,
+            "wins": 1
+          },
+          "Rw8O5C6YyoZbXBz3O2UN1UCugAO2": {
+            "draws": 1,
+            "games": 1,
+            "goalsAg": 0,
+            "goalsFor": 0,
+            "playerId": "Rw8O5C6YyoZbXBz3O2UN1UCugAO2",
+            "points": 1,
+            "wins": 0
+          },
+          "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+            "draws": 1,
+            "games": 1,
+            "goalsAg": 6,
+            "goalsFor": 6,
+            "playerId": "UE3VTBGpB4PqEgumNEtmYPJZUtA2",
+            "points": 1,
+            "wins": 0
+          },
+          "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 8,
+            "goalsFor": 4,
+            "playerId": "UPfM6oX6pRaacAEU9HEMHz5s7QP2",
+            "points": 0,
+            "wins": 0
+          },
+          "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+            "draws": 1,
+            "games": 1,
+            "goalsAg": 6,
+            "goalsFor": 6,
+            "playerId": "UTcyR47YFoRubgdTxqPLacyHgZb2",
+            "points": 1,
+            "wins": 0
+          },
+          "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 7,
+            "goalsFor": 10,
+            "playerId": "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2",
+            "points": 3,
+            "wins": 1
+          },
+          "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 3,
+            "goalsFor": 4,
+            "playerId": "Xk6rGKdsjmR2YVBV0XPwiUTjXef2",
+            "points": 3,
+            "wins": 1
+          },
+          "Zb2pBltW4VZctDn2wq8NEbnCjTy1": {
+            "draws": 1,
+            "games": 1,
+            "goalsAg": 0,
+            "goalsFor": 0,
+            "playerId": "Zb2pBltW4VZctDn2wq8NEbnCjTy1",
+            "points": 1,
+            "wins": 0
+          },
+          "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 6,
+            "goalsFor": 7,
+            "playerId": "bslpt4kTc3bmMyTY9zV9lP4402G3",
+            "points": 3,
+            "wins": 1
+          },
+          "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 4,
+            "goalsFor": 3,
+            "playerId": "fG5t7K7cRPQoWQKdBP0gAMmXOAG3",
+            "points": 0,
+            "wins": 0
+          },
+          "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 4,
+            "goalsFor": 2,
+            "playerId": "rJdl82A9m5NVlpAzw3PXBc7Bbsf2",
+            "points": 0,
+            "wins": 0
+          },
+          "shtVwjxDjcdoEVV35Ne637byKBt1": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 10,
+            "goalsFor": 7,
+            "playerId": "shtVwjxDjcdoEVV35Ne637byKBt1",
+            "points": 0,
+            "wins": 0
+          },
+          "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+            "draws": 0,
+            "games": 1,
+            "goalsAg": 2,
+            "goalsFor": 3,
+            "playerId": "tn2APPQk12bHMfOz6D9LIe0xbmB2",
+            "points": 3,
+            "wins": 1
+          }
+        },
+        "status": 1
+      },
+      "quarterFinals": {
+        "matches": {
+          "q1": {
+            "awayTeam": "",
+            "homeTeam": "",
+            "result": ""
+          },
+          "q2": {
+            "awayTeam": "",
+            "homeTeam": "",
+            "result": ""
+          },
+          "q3": {
+            "awayTeam": "",
+            "homeTeam": "",
+            "result": ""
+          },
+          "q4": {
+            "awayTeam": "",
+            "homeTeam": "",
+            "result": ""
+          }
+        },
+        "status": 0
+      },
+      "semiFinals": {
+        "matches": {
+          "s1": {
+            "awayTeam": "",
+            "homeTeam": "",
+            "result": ""
+          },
+          "s2": {
+            "awayTeam": "",
+            "homeTeam": "",
+            "result": ""
+          }
+        },
+        "status": 0
+      }
+    },
+    "superliga": {
+      "id": "superliga_2025",
+      "name": "Superliga 2025",
+      "stages": {
+        "abertura": {
+          "endDate": "",
+          "startDate": "28/03/2025",
+          "status": 1,
+          "winner": ""
+        },
+        "clausura": {
+          "endDate": "data_fim",
+          "startDate": "data_inicio",
+          "status": 0,
+          "winner": ""
+        },
+        "final": {
+          "awayTeam": "",
+          "homeTeam": "",
+          "result": ""
+        }
+      }
+    }
+  },
+  "users": {
+    "09SfUegeHcMKfuNSOMLa2upzQL33": {
+      "abbr": "SER",
+      "email": "mainwolf17@gmail.com",
+      "lastRoundPointsLigaAbertura": 2,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Sérgio ",
+      "pointsSuperligaAbertura": 2,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP03"
+    },
+    "0xBBw0e8EAcyKF666TdzLoMNbLH3": {
+      "abbr": "Gui",
+      "email": "guilhermehrf001@gmail.com",
+      "lastRoundPointsLigaAbertura": 2,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Guilherme Farias",
+      "pointsSuperligaAbertura": 2,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ02"
+    },
+    "42ke4QdoIPaLoxlmLbW5zQndw9m2": {
+      "abbr": "YRE",
+      "email": "yudes872@gmail.com",
+      "lastRoundPointsLigaAbertura": 3,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Yure",
+      "pointsSuperligaAbertura": 3,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP03"
+    },
+    "5B4C79itIHNGRle2AGEGzIgnB9c2": {
+      "abbr": "CCK",
+      "email": "koidecarlos7@gmail.com",
+      "lastRoundPointsLigaAbertura": 4,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Carlos Koide",
+      "pointsSuperligaAbertura": 4,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ01"
+    },
+    "5jpAJ7q71gdh435BFBRpM5S6NDx2": {
+      "abbr": "TAS",
+      "email": "tarlonsouza@gmail.com",
+      "lastRoundPointsLigaAbertura": 6,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Tarlon Souza",
+      "pointsSuperligaAbertura": 6,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP03"
+    },
+    "FJeAPIYZMiV6Gu66zzouGnsikky1": {
+      "abbr": "IAN",
+      "email": "ian1andrade123@gmail.com",
+      "lastRoundPointsLigaAbertura": 5,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Ian Andrade",
+      "pointsSuperligaAbertura": 5,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ04"
+    },
+    "FsiMtTiV3YeazVyIrtGIAvapBu33": {
+      "abbr": "KMS",
+      "email": "kleisonsouzaadm@gmail.com",
+      "lastRoundPointsLigaAbertura": 6,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Kleison Miranda",
+      "pointsSuperligaAbertura": 6,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ01"
+    },
+    "R1l9Lv0xjKTkp6tm3HDz6GGBvSr2": {
+      "abbr": "CVF",
+      "email": "carlosviniciusfr18@gmail.com",
+      "lastRoundPointsLigaAbertura": 8,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Carlos Freire",
+      "pointsSuperligaAbertura": 8,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ02"
+    },
+    "Rw8O5C6YyoZbXBz3O2UN1UCugAO2": {
+      "abbr": "NSG",
+      "email": "nadsonsguimaraes@gmail.com",
+      "lastRoundPointsLigaAbertura": 0,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Nadson",
+      "pointsSuperligaAbertura": 0,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP01"
+    },
+    "UE3VTBGpB4PqEgumNEtmYPJZUtA2": {
+      "abbr": "TFF",
+      "email": "thiagoferreirafragata@gmail.com",
+      "lastRoundPointsLigaAbertura": 6,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Thiago Ferreira ",
+      "pointsSuperligaAbertura": 6,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ04"
+    },
+    "UPfM6oX6pRaacAEU9HEMHz5s7QP2": {
+      "abbr": "VSS",
+      "email": "vitorfabriciosoares0228@gmail.com",
+      "lastRoundPointsLigaAbertura": 4,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Fabrício Soares",
+      "pointsSuperligaAbertura": 4,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ01"
+    },
+    "UTcyR47YFoRubgdTxqPLacyHgZb2": {
+      "abbr": "ELN",
+      "email": "eliancap66@gmail.com",
+      "isAdmin": true,
+      "lastRoundPointsLigaAbertura": 6,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Elian Souza",
+      "pointsSuperligaAbertura": 6,
+      "pointsSuperligaClausura": 0,
+      "teamId": "MG01"
+    },
+    "X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2": {
+      "abbr": "MAR",
+      "email": "tavaresmarkson@gmail.com",
+      "lastRoundPointsLigaAbertura": 10,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Markson Tavares",
+      "pointsSuperligaAbertura": 10,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP03"
+    },
+    "Xk6rGKdsjmR2YVBV0XPwiUTjXef2": {
+      "abbr": "EDS",
+      "email": "ed17pc@gmail.com",
+      "lastRoundPointsLigaAbertura": 4,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Edson",
+      "pointsSuperligaAbertura": 4,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP03"
+    },
+    "Zb2pBltW4VZctDn2wq8NEbnCjTy1": {
+      "abbr": "THM",
+      "email": "machadot558@gmail.com",
+      "lastRoundPointsLigaAbertura": 0,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Thiago Machado ",
+      "pointsSuperligaAbertura": 0,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ01"
+    },
+    "bslpt4kTc3bmMyTY9zV9lP4402G3": {
+      "abbr": "FLU",
+      "email": "elianmonteiro8@gmail.com",
+      "lastRoundPointsLigaAbertura": 7,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Elian Monteiro",
+      "pointsSuperligaAbertura": 7,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ03"
+    },
+    "fG5t7K7cRPQoWQKdBP0gAMmXOAG3": {
+      "abbr": "TKV",
+      "email": "davizinhofilhomsn10@gmail.com",
+      "lastRoundPointsLigaAbertura": 3,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "David Vieira",
+      "pointsSuperligaAbertura": 3,
+      "pointsSuperligaClausura": 0,
+      "teamId": "RJ04"
+    },
+    "rJdl82A9m5NVlpAzw3PXBc7Bbsf2": {
+      "abbr": "MOD",
+      "email": "johnmodesto2002@gmail.com",
+      "lastRoundPointsLigaAbertura": 2,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Jonathas Modesto",
+      "pointsSuperligaAbertura": 2,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP01"
+    },
+    "shtVwjxDjcdoEVV35Ne637byKBt1": {
+      "abbr": "JCV",
+      "email": "juliockawakami@gmail.com",
+      "lastRoundPointsLigaAbertura": 7,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Júlio César",
+      "pointsSuperligaAbertura": 7,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP01"
+    },
+    "tn2APPQk12bHMfOz6D9LIe0xbmB2": {
+      "abbr": "KSB",
+      "email": "ksilvaa218@gmail.com",
+      "lastRoundPointsLigaAbertura": 3,
+      "lastRoundPointsLigaClausura": 0,
+      "name": "Kauã Silva",
+      "pointsSuperligaAbertura": 3,
+      "pointsSuperligaClausura": 0,
+      "teamId": "SP03"
+    }
+  }
+}

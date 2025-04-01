@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "772875821448",
+    "project_id": "laranjal-jari",
+    "storage_bucket": "laranjal-jari.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772875821448:android:d225dd5091740482959a3d",
+        "android_client_info": {
+          "package_name": "com.wellsystemsdev.laranjaldojari"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9eCOWKAUR_ILXKrovs-xktByWDs6zaRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "518178501674",
+    "firebase_url": "https://for-helpers-2ab8e-default-rtdb.firebaseio.com",
+    "project_id": "for-helpers-2ab8e",
+    "storage_bucket": "for-helpers-2ab8e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518178501674:android:461619c11ea521ecd6ff53",
+        "android_client_info": {
+          "package_name": "com.platze.forhelpers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518178501674-b21l58iupv0ts8d6oh2mmqdpdmk8ttg5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.platze.forhelpers",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "518178501674-b962r77his9jjnp4c65ln4i98ljsilmv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsHpscCjTq2qDylsrUKw_eZMkuaO7bT5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "518178501674-8bga4n6ji4tknd2btotq8dq0sbh9hif0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "518178501674-8bug1bq9gpcfna70m1av3ijcssuvuk1a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.platze.forhelpers"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
