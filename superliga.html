@@ -43,6 +43,8 @@
             color: #666;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
+            flex: 1;
+            text-align: center;
         }
         
         .tab:hover {
@@ -98,13 +100,13 @@
             font-weight: 500;
         }
         
-        /* Colorização apenas da célula de posição */
+        /* Colorização das posições */
         .position-1 .position-cell,
         .position-2 .position-cell,
         .position-3 .position-cell,
         .position-4 .position-cell {
-            background-color: rgba(46, 204, 113, 0.1);
-            color: #27ae60;
+            background-color: #7bff7b;
+            color: #004400;
         }
         
         .position-5 .position-cell,
@@ -312,6 +314,58 @@
         let currentRound = null;
         let currentRoundMatches = null;
         let userRoundPoints = {}; // Armazenar pontos da rodada ativa para cada jogador
+        
+        // Utility function to determine text color based on background color
+        function getTextColor(bgColor) {
+            // If no color or invalid format, return black as default
+            if (!bgColor || !bgColor.startsWith('#')) return '#000000';
+            
+            // Convert hex to RGB
+            const r = parseInt(bgColor.slice(1, 3), 16);
+            const g = parseInt(bgColor.slice(3, 5), 16);
+            const b = parseInt(bgColor.slice(5, 7), 16);
+            
+            // Calculate relative luminance
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            
+            // Return white for dark colors, black for light colors
+            return luminance > 0.5 ? '#000000' : '#ffffff';
+        }
+        
+        // Apply team colors to tabs based on user team
+        function applyTeamColorsToTabs() {
+            // Get logged in user
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            // Get user data
+            database.ref(`users/${user.uid}`).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (!userData || !userData.teamId) return;
+                
+                const teamId = userData.teamId;
+                const team = teams[teamId];
+                
+                if (team && team.color1) {
+                    const color1 = team.color1;
+                    const color2 = team.color2 || '#e0e0e0';
+                    const textColor1 = getTextColor(color1);
+                    const textColor2 = getTextColor(color2);
+                    
+                    // Apply to main tabs
+                    document.querySelectorAll('.tab').forEach(tab => {
+                        if (tab.classList.contains('active')) {
+                            tab.style.backgroundColor = color1;
+                            tab.style.color = textColor1;
+                            tab.style.borderBottomColor = color1;
+                        } else {
+                            tab.style.backgroundColor = color2;
+                            tab.style.color = textColor2;
+                        }
+                    });
+                }
+            });
+        }
     
         // Função para buscar times e usuários
         async function fetchTeamsAndUsers() {
@@ -334,6 +388,9 @@
                     }
                 }
                 Object.assign(users, usersData);
+                
+                // Apply team colors to tabs
+                applyTeamColorsToTabs();
                 
                 return true;
             } catch (error) {
@@ -453,55 +510,49 @@
             const table = document.getElementById(`${stage}-table`);
     
             tableBody.innerHTML = '';
-            const sortedUsers = Object.values(usersData)
+            
+            // Obter todos os usuários com pontos neste estágio
+            const usersWithPoints = Object.values(usersData)
                 .filter(user => user[`pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`] !== undefined)
-                .sort((a, b) => {
+                .map(user => {
                     // Calcular pontos totais (pontos do banco + pontos da rodada atual)
-                    const aPoints = (a[`pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`] || 0) +
-                                  (currentRound ? (userRoundPoints[a.id] || 0) : 0);
-                    const bPoints = (b[`pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`] || 0) +
-                                  (currentRound ? (userRoundPoints[b.id] || 0) : 0);
-                    return bPoints - aPoints;
+                    const storedPoints = user[`pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`] || 0;
+                    const roundPoints = currentRound ? (userRoundPoints[user.id] || 0) : 
+                                     (user[`lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`] || 0);
+                    
+                    return {
+                        ...user,
+                        storedPoints: storedPoints,
+                        roundPoints: roundPoints,
+                        totalPoints: storedPoints + (currentRound ? roundPoints : 0)
+                    };
                 });
+            
+            // Ordenar por pontos totais e depois por pontos da última rodada
+            const sortedUsers = usersWithPoints.sort((a, b) => {
+                if (b.totalPoints === a.totalPoints) {
+                    return b.roundPoints - a.roundPoints;
+                }
+                return b.totalPoints - a.totalPoints;
+            });
     
             sortedUsers.forEach((user, index) => {
                 const team = teams[user.teamId];
-                // Pontos armazenados no banco
-                const storedPoints = user[`pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`] || 0;
-                // Pontos da rodada atual
-                const roundPoints = currentRound ? (userRoundPoints[user.id] || 0) : 
-                                   (user[`lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`] || 0);
-                // Pontos totais (soma)
-                const totalPoints = storedPoints + (currentRound ? roundPoints : 0);
-    
-                let positionClass = '';
-                let rowClass = '';
+                const position = index + 1;
                 
-                if (index < 4) {
-                    positionClass = 'green';
-                    rowClass = 'top-4';
-                } else if (index < 6) {
-                    positionClass = 'blue';
-                    rowClass = `position-${index+1}`;
-                } else if (index >= sortedUsers.length - 4) {
-                    positionClass = 'red';
-                    rowClass = 'bottom-4';
-                }
-    
                 const row = document.createElement('tr');
-                if (rowClass) row.classList.add(rowClass);
+                row.classList.add(`position-${position}`);
                 
                 row.innerHTML = `
                     <td>
                         <div class="position-cell">
-                            <div class="position-bar ${positionClass}"></div>
-                            <span class="position-number">${index + 1}</span>
+                            <span class="position-number">${position}</span>
                         </div>
                     </td>
                     <td><img src="${team?.image || ''}" alt="${team?.name || ''}" class="team-logo"></td>
                     <td>${user.name}</td>
-                    <td>${totalPoints}</td>
-                    <td>${roundPoints}</td>
+                    <td>${user.totalPoints}</td>
+                    <td>${user.roundPoints}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -518,6 +569,11 @@
                 tab.classList.add('active');
                 const stage = tab.getAttribute('data-stage');
                 document.getElementById(`${stage}-content`).style.display = 'block';
+                
+                // Apply team colors
+                applyTeamColorsToTabs();
+                
+                loadStageData(stage);
             });
         });
     
@@ -607,8 +663,9 @@
             if (!user) {
                 window.location.href = 'login.html';
             } else {
-                fetchTeamsAndUsers();
-                loadStageData('abertura');
+                fetchTeamsAndUsers().then(() => {
+                    loadStageData('abertura');
+                });
             }
         });
     </script>

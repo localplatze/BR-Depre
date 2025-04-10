@@ -232,52 +232,54 @@
                 const roundsSnapshot = await database.ref('rounds').orderByChild('status').equalTo(2).once('value');
                 
                 if (!roundsSnapshot.exists()) {
-                    noRoundsMessage.style.display = 'block';
-                    return;
+                noRoundsMessage.style.display = 'block';
+                return;
                 }
                 
                 const rounds = [];
                 roundsSnapshot.forEach(roundSnapshot => {
-                    const roundData = roundSnapshot.val();
-                    rounds.push({
-                        id: roundSnapshot.key,
-                        name: roundData.name || `Rodada ${roundSnapshot.key}`,
-                        finishTimestamp: roundData.finishTimestamp
-                    });
+                const roundData = roundSnapshot.val();
+                rounds.push({
+                    id: roundSnapshot.key,
+                    name: roundData.name || `Rodada ${roundSnapshot.key}`,
+                    finishTimestamp: roundData.finishTimestamp
+                });
                 });
                 
-                // Sort rounds by finishTimestamp (newest first)
-                rounds.sort((a, b) => b.finishTimestamp - a.finishTimestamp);
+                // Ordenar as rodadas cronologicamente pelo timestamp de finalização
+                rounds.sort((a, b) => a.finishTimestamp - b.finishTimestamp);
                 
-                // Create tabs
+                // Criar abas com nomes numéricos (1, 2, 3...) baseados na ordem do timestamp
                 roundsTabs.innerHTML = '';
                 rounds.forEach((round, index) => {
-                    const tab = document.createElement('div');
-                    tab.className = 'round-tab' + (index === 0 ? ' active' : '');
-                    tab.textContent = round.name;
-                    tab.dataset.roundId = round.id;
+                const tab = document.createElement('div');
+                tab.className = 'round-tab' + (index === 0 ? ' active' : '');
+                
+                // Nome da rodada agora será sempre um número sequencial
+                tab.textContent = `Rodada ${index + 1}`;
+                
+                tab.dataset.roundId = round.id;
+                tab.addEventListener('click', () => {
+                    // Set active tab
+                    document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
                     
-                    tab.addEventListener('click', () => {
-                        // Set active tab
-                        document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
-                        tab.classList.add('active');
-                        
-                        // Load round details
-                        loadRoundDetails(round.id);
-                    });
-                    
-                    roundsTabs.appendChild(tab);
+                    // Load round details
+                    loadRoundDetails(round.id);
                 });
                 
-                // Load first round by default
+                roundsTabs.appendChild(tab);
+                });
+                
+                // Carregar primeira rodada por padrão
                 if (rounds.length > 0) {
-                    loadRoundDetails(rounds[0].id);
+                loadRoundDetails(rounds[0].id);
                 }
             } catch (error) {
                 console.error('Error loading rounds:', error);
                 noRoundsMessage.style.display = 'block';
             }
-        }
+            }
 
         // Load details for a specific round
         async function loadRoundDetails(roundId) {
@@ -306,8 +308,8 @@
                     const homeTeam = teams[match.homeTeam] || { name: 'Time Desconhecido', image: '' };
                     const awayTeam = teams[match.awayTeam] || { name: 'Time Desconhecido', image: '' };
                     
-                    // Check if the match has a result
-                    const hasResult = match.homeScore !== undefined && match.awayScore !== undefined;
+                    // Verificar se a partida tem resultado usando finalResult
+                    const hasResult = match.finalResult && match.finalResult.homeScore !== undefined && match.finalResult.awayScore !== undefined;
                     
                     matchesHtml += `
                         <div class="match-card" data-match-id="${matchId}">
@@ -324,7 +326,7 @@
                             </div>
                             ${hasResult ? `
                                 <div class="match-result">
-                                    ${match.homeScore} x ${match.awayScore}
+                                    ${match.finalResult.homeScore} x ${match.finalResult.awayScore}
                                 </div>
                             ` : '<p class="match-result">- x -</p>'}
                             <button class="action-button view-predictions-btn" onclick="showPredictionsForMatch('${roundId}', '${matchId}')">
@@ -400,23 +402,24 @@
             const dialog = document.querySelector('dialog') || createPredictionsDialog();
             const predictionsList = dialog.querySelector('.predictions-list');
             
-            // Clear previous content
+            // Limpar conteúdo anterior
             predictionsList.innerHTML = '<p>Carregando palpites...</p>';
             
-            // Show dialog
+            // Exibir o diálogo
             dialog.showModal();
             
             try {
-                // Get match data to check the actual result
+                // Obter dados da partida para verificar o resultado real
                 const matchSnapshot = await database.ref(`rounds/${roundId}/matches/${matchId}`).once('value');
                 const match = matchSnapshot.val() || {};
-                const hasResult = match.homeScore !== undefined && match.awayScore !== undefined;
+                // Usar finalResult para verificar se a partida tem resultado
+                const hasResult = match.finalResult && match.finalResult.homeScore !== undefined && match.finalResult.awayScore !== undefined;
                 
-                // Get all predictions for this match
+                // Obter todos os palpites para esta partida
                 const predictionsSnapshot = await database.ref(`rounds/${roundId}/matches/${matchId}/predictions`).once('value');
                 const predictions = predictionsSnapshot.val() || {};
                 
-                // Get user data for all predictors
+                // Obter dados de usuário para todos os palpiteiros
                 const userIds = Object.keys(predictions);
                 const usersPromises = userIds.map(userId => 
                     database.ref(`users/${userId}`).once('value').then(snapshot => ({
@@ -431,7 +434,7 @@
                     return acc;
                 }, {});
                 
-                // Clear loading message
+                // Limpar mensagem de carregamento
                 predictionsList.innerHTML = '';
                 
                 if (Object.keys(predictions).length === 0) {
@@ -439,16 +442,17 @@
                     return;
                 }
                 
-                // Create list items for each prediction
+                // Criar itens de lista para cada palpite
                 for (const [userId, prediction] of Object.entries(predictions)) {
                     const user = usersMap[userId];
                     const listItem = document.createElement('li');
                     listItem.className = 'prediction-item';
                     
-                    // Check if prediction matches the actual result (if available)
+                    // Verificar se o palpite corresponde ao resultado real (se disponível)
+                    // Usar finalResult para verificação
                     const isCorrect = hasResult && 
-                                       prediction.homeScore === match.homeScore && 
-                                       prediction.awayScore === match.awayScore;
+                                    prediction.homeScore === match.finalResult.homeScore && 
+                                    prediction.awayScore === match.finalResult.awayScore;
                     
                     listItem.innerHTML = `
                         <div>
