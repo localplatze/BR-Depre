@@ -196,6 +196,17 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
+        .match-timer {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .match-timer.expired {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
         .loader-container {
             display: flex;
             justify-content: center;
@@ -747,11 +758,11 @@
                 
                 // Buscar partidas desta rodada
                 const matchesSnapshot = await matchesRef.once('value');
-                const matches = matchesSnapshot.val() || {};
+                const matches = matchesSnapshot.val() || [];
                 allMatches = matches;
                 
                 // Se não houver partidas
-                if (Object.keys(matches).length === 0) {
+                if (matches.length === 0) {
                     hideLoader();
                     matchesContainer.innerHTML = '<p class="text-center">Não há partidas nesta rodada.</p>';
                     return;
@@ -759,8 +770,8 @@
                 
                 // Processar cada partida
                 let matchPromises = [];
-                for (const matchId in matches) {
-                    const match = matches[matchId];
+                for (let i = 0; i < matches.length; i++) {
+                    const match = matches[i];
                     
                     // Buscar dados dos times
                     const homeTeamPromise = teamsRef.child(match.homeTeam).once('value');
@@ -769,7 +780,7 @@
                     matchPromises.push(Promise.all([homeTeamPromise, awayTeamPromise])
                         .then(([homeTeamSnapshot, awayTeamSnapshot]) => {
                             return {
-                                matchId,
+                                matchId: i,
                                 match,
                                 homeTeam: homeTeamSnapshot.val(),
                                 awayTeam: awayTeamSnapshot.val(),
@@ -803,14 +814,25 @@
             let matchesHtml = '';
             
             matchesData.forEach(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
-                const matchDate = match.date ? new Date(match.date).toLocaleDateString('pt-BR') : 'Data não definida';
-                const matchTime = match.time || 'Horário não definido';
+                const matchDate = match.timestamp ? new Date(match.timestamp).toLocaleDateString('pt-BR') : 'Data não definida';
+                const matchTime = match.timestamp ? new Date(match.timestamp).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) : 'Horário não definido';
                 const hasResult = match.finalResult && match.finalResult.homeScore !== undefined && match.finalResult.awayScore !== undefined;
+                
+                // Verificar se o tempo para palpitar nesta partida já expirou
+                const now = new Date();
+                const matchTimestamp = match.timestamp ? new Date(match.timestamp) : null;
+                const isMatchTimeExpired = matchTimestamp && now > matchTimestamp;
                 
                 matchesHtml += `
                     <div class="match-card" data-match-id="${matchId}">
                         <div class="match-header">
                             ${matchDate} - ${matchTime}
+                            ${matchTimestamp ? `
+                                <div class="match-timer ${isMatchTimeExpired ? 'expired' : ''}">
+                                    <i class="fas fa-clock"></i> 
+                                    ${isMatchTimeExpired ? 'Tempo esgotado' : 'Até ${matchTime}'}
+                                </div>
+                            ` : ''}
                         </div>
                         <div class="match-content">
                             <div class="match-teams">
@@ -841,17 +863,17 @@
                                     <input type="number" min="0" placeholder="0" 
                                         data-team="home" 
                                         value="${userPrediction.homeScore}" 
-                                        ${isTimeExpired ? 'disabled' : ''}>
+                                        ${isTimeExpired || isMatchTimeExpired ? 'disabled' : ''}>
                                     <span>x</span>
                                     <input type="number" min="0" placeholder="0" 
                                         data-team="away" 
                                         value="${userPrediction.awayScore}" 
-                                        ${isTimeExpired ? 'disabled' : ''}>
+                                        ${isTimeExpired || isMatchTimeExpired ? 'disabled' : ''}>
                                 </div>
                             `}
                         </div>
                         <div class="match-footer" id="match-footer-${matchId}">
-                            ${isTimeExpired ? `
+                            ${isTimeExpired || isMatchTimeExpired ? `
                                 <button class="action-button view-predictions-btn" data-match-id="${matchId}">
                                     <i class="fas fa-eye"></i> Ver Palpites
                                 </button>
@@ -865,14 +887,12 @@
             matchesContainer.style.display = 'grid';
             
             // Adicionar event listeners aos botões de ver palpites
-            if (isTimeExpired) {
-                document.querySelectorAll('.view-predictions-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const matchId = this.getAttribute('data-match-id');
-                        showPredictionsForMatch(matchId);
-                    });
+            document.querySelectorAll('.view-predictions-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const matchId = this.getAttribute('data-match-id');
+                    showPredictionsForMatch(matchId);
                 });
-            }
+            });
         }
 
         // Configurar o botão de salvar palpites
@@ -888,6 +908,16 @@
                         const matchId = card.getAttribute('data-match-id');
                         const homeInput = card.querySelector('input[data-team="home"]');
                         const awayInput = card.querySelector('input[data-team="away"]');
+                        
+                        // Verificar se o tempo para esta partida já expirou
+                        const match = allMatches[matchId];
+                        const now = new Date();
+                        const matchTimestamp = match.timestamp ? new Date(match.timestamp) : null;
+                        const isMatchTimeExpired = matchTimestamp && now > matchTimestamp;
+                        
+                        if (isMatchTimeExpired) {
+                            return; // Pula partidas com tempo expirado
+                        }
                         
                         if (homeInput && awayInput && homeInput.value !== '' && awayInput.value !== '') {
                             predictions[matchId] = {
@@ -1000,32 +1030,38 @@
             
             // Adicionar chips para cada jogador
             for (const playerId in players) {
+                const player = players[playerId];
                 const playerChip = document.createElement('div');
                 playerChip.classList.add('player-chip');
-                playerChip.innerHTML = players[playerId].name;
+                playerChip.innerHTML = player.name;
                 playerChip.setAttribute('data-player-id', playerId);
+                playerChip.setAttribute('title', player.name);
                 
                 playerChip.addEventListener('click', function() {
-                    // Desativar todos os outros chips individuais
-                    container.querySelectorAll('.player-chip').forEach(chip => {
-                        if (chip.getAttribute('data-player-id') !== 'all') {
-                            chip.classList.remove('active');
-                        }
-                    });
-                    
-                    // Ativar/desativar este chip
-                    this.classList.toggle('active');
-                    
-                    // Desativar chip "Todos" e atualizar filteredPlayers
-                    const allChip = container.querySelector('.player-chip[data-player-id="all"]');
-                    allChip.classList.remove('active');
+                    const playerId = this.getAttribute('data-player-id');
                     
                     if (isDialog) {
+                        // No diálogo, seleção única
+                        container.querySelectorAll('.player-chip').forEach(chip => {
+                            chip.classList.remove('active');
+                        });
+                        this.classList.add('active');
                         updateDialogPredictions(playerId);
                     } else {
+                        // Na lista principal, seleção múltipla
+                        this.classList.toggle('active');
+                        
                         // Atualizar lista de jogadores filtrados
                         const activePlayerIds = Array.from(container.querySelectorAll('.player-chip.active:not([data-player-id="all"])'))
                             .map(chip => chip.getAttribute('data-player-id'));
+                        
+                        // Desativar "Todos" se algum jogador específico estiver selecionado
+                        const allChip = container.querySelector('.player-chip[data-player-id="all"]');
+                        if (activePlayerIds.length > 0) {
+                            allChip.classList.remove('active');
+                        } else {
+                            allChip.classList.add('active');
+                        }
                         
                         filteredPlayers = activePlayerIds;
                         updateMatchesVisibility();
@@ -1054,10 +1090,10 @@
             }
             
             // Para cada partida, verificar se algum dos jogadores filtrados fez palpite
-            for (const matchId in allMatches) {
-                const match = allMatches[matchId];
+            for (let i = 0; i < allMatches.length; i++) {
+                const match = allMatches[i];
                 const predictions = match.predictions || {};
-                const card = document.querySelector(`.match-card[data-match-id="${matchId}"]`);
+                const card = document.querySelector(`.match-card[data-match-id="${i}"]`);
                 
                 if (!card) continue;
                 
@@ -1203,90 +1239,17 @@
             matchesContainer.style.display = 'grid';
         }
 
-        // Criar chips de filtro de jogadores
-        function createPlayerFilterChips(container, isDialog) {
-            // Limpar container
-            container.innerHTML = '';
-            
-            // Adicionar opção "Todos"
-            const allChip = document.createElement('div');
-            allChip.classList.add('player-chip', 'active');
-            allChip.innerHTML = 'Todos';
-            allChip.setAttribute('data-player-id', 'all');
-            
-            allChip.addEventListener('click', function() {
-                // Desativar todos os outros chips
-                container.querySelectorAll('.player-chip').forEach(chip => {
-                    chip.classList.remove('active');
-                });
-                
-                // Ativar este chip
-                this.classList.add('active');
-                
-                // Filtrar palpites ou atualizar visualização
-                if (isDialog) {
-                    updateDialogPredictions('all');
-                } else {
-                    filteredPlayers = [];
-                    updateMatchesVisibility();
-                }
-            });
-            
-            container.appendChild(allChip);
-            
-            // Adicionar chips para cada jogador
-            for (const playerId in players) {
-                const player = players[playerId];
-                const playerChip = document.createElement('div');
-                playerChip.classList.add('player-chip');
-                playerChip.innerHTML = player.name;
-                playerChip.setAttribute('data-player-id', playerId);
-                playerChip.setAttribute('title', player.name);
-                
-                playerChip.addEventListener('click', function() {
-                    const playerId = this.getAttribute('data-player-id');
-                    
-                    if (isDialog) {
-                        // No diálogo, seleção única
-                        container.querySelectorAll('.player-chip').forEach(chip => {
-                            chip.classList.remove('active');
-                        });
-                        this.classList.add('active');
-                        updateDialogPredictions(playerId);
-                    } else {
-                        // Na lista principal, seleção múltipla
-                        this.classList.toggle('active');
-                        
-                        // Atualizar lista de jogadores filtrados
-                        const activePlayerIds = Array.from(container.querySelectorAll('.player-chip.active:not([data-player-id="all"])'))
-                            .map(chip => chip.getAttribute('data-player-id'));
-                        
-                        // Desativar "Todos" se algum jogador específico estiver selecionado
-                        const allChip = container.querySelector('.player-chip[data-player-id="all"]');
-                        if (activePlayerIds.length > 0) {
-                            allChip.classList.remove('active');
-                        } else {
-                            allChip.classList.add('active');
-                        }
-                        
-                        filteredPlayers = activePlayerIds;
-                        updateMatchesVisibility();
-                    }
-                });
-                
-                container.appendChild(playerChip);
-            }
-        }
-
         // Adicionar event listeners para as abas
         matchesTab.addEventListener('click', function() {
             this.classList.add('active');
             playerStatusTab.classList.remove('active');
+            document.getElementById('matches-container').style.display = 'grid';
         });
 
         playerStatusTab.addEventListener('click', function() {
             this.classList.add('active');
             matchesTab.classList.remove('active');
+            document.getElementById('matches-container').style.display = 'none';
             showPlayerStatusDialog();
         });
 
@@ -1295,6 +1258,7 @@
             playerStatusDialog.close();
             matchesTab.classList.add('active');
             playerStatusTab.classList.remove('active');
+            document.getElementById('matches-container').style.display = 'grid';
         });
 
         // Função para mostrar o diálogo de status dos jogadores
@@ -1308,7 +1272,7 @@
 
         // Função para preencher a tabela de status dos jogadores
         function populatePlayerStatusTable() {
-            if (!currentRoundKey || !allMatches || Object.keys(allMatches).length === 0) {
+            if (!currentRoundKey || !allMatches || allMatches.length === 0) {
                 return;
             }
             
@@ -1325,8 +1289,8 @@
             // Adicionar colunas para cada partida
             const matchPromises = [];
             
-            for (const matchId in allMatches) {
-                const match = allMatches[matchId];
+            for (let i = 0; i < allMatches.length; i++) {
+                const match = allMatches[i];
                 
                 // Buscar informações dos times
                 const homeTeamPromise = database.ref(`teams/${match.homeTeam}`).once('value');
@@ -1338,7 +1302,7 @@
                         const awayTeam = awayTeamSnapshot.val();
                         
                         return {
-                            matchId,
+                            matchId: i,
                             match,
                             homeTeam,
                             awayTeam
@@ -1392,123 +1356,6 @@
                     });
                     
                     tableBody.appendChild(tr);
-                }
-            });
-        }
-
-        // Modificar a função de carregar dados das partidas para também preencher a tabela de status
-        async function loadMatchesData(roundKey, userId) {
-            try {
-                const teamsRef = database.ref('teams');
-                const matchesRef = database.ref(`rounds/${roundKey}/matches`);
-                
-                // Buscar partidas desta rodada
-                const matchesSnapshot = await matchesRef.once('value');
-                const matches = matchesSnapshot.val() || {};
-                allMatches = matches;
-                
-                // Se não houver partidas
-                if (Object.keys(matches).length === 0) {
-                    hideLoader();
-                    matchesContainer.innerHTML = '<p class="text-center">Não há partidas nesta rodada.</p>';
-                    return;
-                }
-                
-                // Processar cada partida
-                let matchPromises = [];
-                for (const matchId in matches) {
-                    const match = matches[matchId];
-                    
-                    // Buscar dados dos times
-                    const homeTeamPromise = teamsRef.child(match.homeTeam).once('value');
-                    const awayTeamPromise = teamsRef.child(match.awayTeam).once('value');
-                    
-                    matchPromises.push(Promise.all([homeTeamPromise, awayTeamPromise])
-                        .then(([homeTeamSnapshot, awayTeamSnapshot]) => {
-                            return {
-                                matchId,
-                                match,
-                                homeTeam: homeTeamSnapshot.val(),
-                                awayTeam: awayTeamSnapshot.val(),
-                                userPrediction: match.predictions?.[userId] || { homeScore: '', awayScore: '' }
-                            };
-                        }));
-                }
-                
-                const matchesData = await Promise.all(matchPromises);
-                renderMatchCards(matchesData);
-                
-                // Adicionar evento ao botão de salvar palpites
-                setupSavePredictionsButton(roundKey);
-                
-                // Se o tempo expirou, atualizar cards para mostrar botões de ver palpites
-                if (isTimeExpired) {
-                    updateMatchCardsForExpiredTime();
-                    createPlayerFilters();
-                }
-                
-                hideLoader();
-            } catch (error) {
-                console.error('Erro ao carregar dados das partidas:', error);
-                hideLoader();
-                matchesContainer.innerHTML = '<p class="text-center">Erro ao carregar partidas. Tente novamente.</p>';
-            }
-        }
-
-        // Atualizar a função setupSavePredictionsButton para atualizar a tabela quando os palpites forem salvos
-        function setupSavePredictionsButton(roundKey) {
-            savePredictionsButton.addEventListener('click', async () => {
-                try {
-                    const matchCards = document.querySelectorAll('.match-card');
-                    const predictions = {};
-                    const playerId = auth.currentUser.uid;
-                    let hasValidPredictions = false;
-                    
-                    matchCards.forEach(card => {
-                        const matchId = card.getAttribute('data-match-id');
-                        const homeInput = card.querySelector('input[data-team="home"]');
-                        const awayInput = card.querySelector('input[data-team="away"]');
-                        
-                        if (homeInput && awayInput && homeInput.value !== '' && awayInput.value !== '') {
-                            predictions[matchId] = {
-                                homeScore: parseInt(homeInput.value),
-                                awayScore: parseInt(awayInput.value),
-                                playerId: playerId
-                            };
-                            hasValidPredictions = true;
-                        }
-                    });
-                    
-                    if (!hasValidPredictions) {
-                        alert('Por favor, preencha pelo menos um palpite antes de salvar.');
-                        return;
-                    }
-                    
-                    // Salvar palpites no Firebase
-                    const updates = {};
-                    Object.keys(predictions).forEach(matchId => {
-                        updates[`rounds/${roundKey}/matches/${matchId}/predictions/${playerId}`] = predictions[matchId];
-                    });
-                    
-                    await database.ref().update(updates);
-                    
-                    // Atualizar tabela de status se o diálogo estiver aberto
-                    if (playerStatusDialog.open) {
-                        populatePlayerStatusTable();
-                    }
-                    
-                    // Feedback visual de sucesso
-                    savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Palpites Salvos!';
-                    savePredictionsButton.style.backgroundColor = 'var(--success-color)';
-                    
-                    // Restaurar botão após alguns segundos
-                    setTimeout(() => {
-                        savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
-                        savePredictionsButton.style.backgroundColor = 'var(--primary-color)';
-                    }, 3000);
-                } catch (error) {
-                    console.error('Erro ao salvar palpites:', error);
-                    alert('Erro ao salvar palpites. Tente novamente.');
                 }
             });
         }
