@@ -803,10 +803,12 @@
             const countdownElement = document.getElementById('next-round-countdown');
             if (!countdownElement) return;
 
+            let interval;
+
             const updateCountdown = () => {
                 const now = new Date();
                 const end = new Date(finishTimestamp);
-                end.setHours(end.getHours()); // Ajuste para AMZ
+                end.setHours(end.getHours());
                 
                 const diff = end - now;
                 
@@ -825,7 +827,7 @@
             };
             
             updateCountdown();
-            const interval = setInterval(updateCountdown, 1000);
+            interval = setInterval(updateCountdown, 1000); // Now this assigns to the already declared variable
         }
 
         function loadPastRounds() {
