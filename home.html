@@ -781,9 +781,8 @@
             const nextRoundDeadline = document.getElementById('next-round-deadline');
             const nextRoundCountdown = document.getElementById('next-round-countdown');
             
-            // Converter para AMZ (Amazon Time = UTC-4)
             const finishDate = new Date(roundData.finishTimestamp);
-            finishDate.setHours(finishDate.getHours() - 4); // Ajuste para AMZ
+            finishDate.setHours(finishDate.getHours());
             
             // Formatação da data em português
             const options = { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' };
