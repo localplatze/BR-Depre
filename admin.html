@@ -2407,39 +2407,106 @@
         }
 
         async function processRoundScores(roundId) {
-            const roundRef = database.ref('rounds/' + roundId);
-            const roundSnapshot = await roundRef.once('value');
-            const roundData = roundSnapshot.val();
-            
-            if (!roundData.tournaments.includes('superliga')) {
-                return; // Não é uma rodada da Superliga
-            }
+            try {
+                console.log(`Iniciando processamento de pontos da Superliga para a rodada: ${roundId}`);
 
-            const currentSuperligaStage = getCurrentLigaStage();
-            const usersRef = database.ref('users');
-            const usersSnapshot = await usersRef.once('value');
+                const roundRef = database.ref('rounds/' + roundId);
+                const roundSnapshot = await roundRef.once('value');
+                const roundData = roundSnapshot.val();
 
-            const updates = {};
-            
-            usersSnapshot.forEach(userSnapshot => {
-                const userId = userSnapshot.key;
-                let userLastRoundPoints = 0;
-
-                roundData.matches.forEach(match => {
-                    const userPrediction = Object.values(match.predictions || {}).find(pred => pred.playerId === userId);
-                    if (userPrediction) {
-                        userLastRoundPoints += calculateMatchPoints(match.finalResult, userPrediction);
-                    }
-                });
-
-                if (userLastRoundPoints > 0) {
-                    updates[`${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userLastRoundPoints;
-                    updates[`${userId}/pointsSuperliga${currentSuperligaStage}`] = 
-                        (userSnapshot.val()[`pointsSuperliga${currentSuperligaStage}`] || 0) + userLastRoundPoints;
+                // Validação básica dos dados da rodada
+                if (!roundData || !roundData.tournaments || !Array.isArray(roundData.tournaments)) {
+                    console.error(`Dados inválidos ou ausentes para a rodada ${roundId}. Abortando processamento.`);
+                    return;
                 }
-            });
 
-            await usersRef.update(updates);
+                // Verifica se esta rodada pertence à Superliga (ajuste 'superliga' se o nome for diferente)
+                if (!roundData.tournaments.includes('superliga')) {
+                    console.log(`Rodada ${roundId} não pertence à Superliga. Pulando cálculo de pontos da Superliga.`);
+                    return; // Não é uma rodada da Superliga, então não faz nada aqui
+                }
+
+                // Determina o estágio atual da Superliga (Abertura/Clausura)
+                // Garanta que sua função getCurrentLigaStage receba os torneios da rodada
+                const currentSuperligaStage = getCurrentLigaStage(roundData.tournaments);
+                if (!currentSuperligaStage) {
+                    console.error(`Não foi possível determinar o estágio da Superliga (Abertura/Clausura) para a rodada ${roundId}.`);
+                    return; // Impede a continuação se o estágio não for determinado
+                }
+                console.log(`Estágio da Superliga determinado: ${currentSuperligaStage}`);
+
+                const usersRef = database.ref('users');
+                const usersSnapshot = await usersRef.once('value');
+
+                if (!usersSnapshot.exists()) {
+                    console.log("Nenhum usuário encontrado no banco de dados.");
+                    return; // Sai se não houver usuários
+                }
+
+                const allUsersData = usersSnapshot.val() || {}; // Busca todos os dados dos usuários de uma vez
+                const updates = {}; // Objeto para acumular todas as atualizações do Firebase
+
+                // Itera sobre cada usuário no banco de dados
+                usersSnapshot.forEach(userSnapshot => {
+                    const userId = userSnapshot.key;
+                    const currentUserData = allUsersData[userId] || {}; // Dados atuais do usuário iterado
+                    let userLastRoundPoints = 0; // Zera a pontuação desta rodada para este usuário
+
+                    // Verifica se a rodada tem partidas e se 'matches' é um array antes de iterar
+                    if (roundData.matches && Array.isArray(roundData.matches)) {
+                        roundData.matches.forEach((match, matchIndex) => {
+                            // Verifica se a partida tem resultado final válido
+                            if (match.finalResult && match.finalResult.homeScore !== null && match.finalResult.awayScore !== null) {
+                                // Verifica se existem previsões para a partida
+                                if (match.predictions && typeof match.predictions === 'object') {
+                                    // Encontra a previsão do usuário atual para esta partida
+                                    const userPrediction = Object.values(match.predictions).find(pred => pred && pred.playerId === userId);
+
+                                    // Se o usuário fez uma previsão válida para esta partida, calcula os pontos
+                                    if (userPrediction && userPrediction.homeScore !== null && userPrediction.awayScore !== null) {
+                                        const pointsForMatch = calculateMatchPoints(match.finalResult, userPrediction);
+                                        userLastRoundPoints += pointsForMatch;
+                                        // Log para depuração (opcional)
+                                        // console.log(` -> User ${userId}, Match ${matchIndex}, Pred: ${userPrediction.homeScore}x${userPrediction.awayScore}, Res: ${match.finalResult.homeScore}x${match.finalResult.awayScore}, Pts: ${pointsForMatch}`);
+                                    }
+                                    // Se não houve palpite do usuário para esta partida, userLastRoundPoints não aumenta (continua 0 ou o valor acumulado)
+                                }
+                                // Se não há 'predictions' na partida, nada a fazer para esta partida
+                            } else {
+                                // Se a partida não tem resultado final, não calcula pontos para ninguém nela
+                                console.warn(`   - Rodada ${roundId}, Partida ${matchIndex}: Resultado final ausente ou incompleto. Pontos não calculados para esta partida.`);
+                            }
+                        }); // Fim do loop de partidas
+                    } else {
+                        console.warn(`Rodada ${roundId} não contém 'matches' ou 'matches' não é um array.`);
+                    } // Fim da verificação de roundData.matches
+
+                    // --- PONTO CRÍTICO DA CORREÇÃO ---
+                    // Prepara a atualização para lastRoundPointsLiga... SEMPRE,
+                    // usando o valor calculado (userLastRoundPoints), que será 0 se não houve pontos/palpites.
+                    console.log(`   - Usuário ${userId}: Pontos calculados para esta rodada (${currentSuperligaStage}) = ${userLastRoundPoints}`);
+                    updates[`${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userLastRoundPoints;
+
+                    // Prepara a atualização para o total de pontos da Superliga para o estágio atual
+                    const currentTotalPoints = currentUserData[`pointsSuperliga${currentSuperligaStage}`] || 0;
+                    updates[`${userId}/pointsSuperliga${currentSuperligaStage}`] = currentTotalPoints + userLastRoundPoints;
+                    // console.log(`   - Usuário ${userId}: Pontos totais (${currentSuperligaStage}) atualizados para ${currentTotalPoints + userLastRoundPoints}`);
+
+                }); // Fim do loop de usuários
+
+                if (Object.keys(updates).length > 0) {
+                    console.log("Atualizando pontuações dos usuários no Firebase...");
+                    console.log("Objeto de atualizações:", updates);
+                    await usersRef.update(updates);
+                    console.log(`Pontuações da Superliga ${currentSuperligaStage} para a rodada ${roundId} atualizadas com sucesso no Firebase.`);
+                } else {
+                    console.log("Nenhuma atualização de pontuação de usuário foi gerada para esta rodada.");
+                }
+
+            } catch (error) {
+                console.error(`Erro GERAL ao processar pontuações da Superliga para a rodada ${roundId}:`, error);
+                alert(`Ocorreu um erro grave ao processar os pontos da rodada ${roundId}. Verifique o console para detalhes.`);
+            }
         }
     </script>
 </body>

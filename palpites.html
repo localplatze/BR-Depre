@@ -897,63 +897,110 @@
 
         // Configurar o botão de salvar palpites
         function setupSavePredictionsButton(roundKey) {
-            savePredictionsButton.addEventListener('click', async () => {
+            const newButton = savePredictionsButton.cloneNode(true);
+            savePredictionsButton.parentNode.replaceChild(newButton, savePredictionsButton);
+            const currentSaveButton = newButton; // Usar a referência do botão clonado/novo
+
+            currentSaveButton.addEventListener('click', async () => {
+                // --- OTIMIZAÇÃO 1: Desabilitar botão e feedback ---
+                currentSaveButton.disabled = true;
+                currentSaveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                currentSaveButton.style.backgroundColor = '#f0ad4e'; // Cor de "processando"
+
                 try {
                     const matchCards = document.querySelectorAll('.match-card');
                     const predictions = {};
                     const playerId = auth.currentUser.uid;
                     let hasValidPredictions = false;
-                    
+                    const now = new Date(); // Obter data atual uma vez
+
                     matchCards.forEach(card => {
                         const matchId = card.getAttribute('data-match-id');
                         const homeInput = card.querySelector('input[data-team="home"]');
                         const awayInput = card.querySelector('input[data-team="away"]');
-                        
-                        // Verificar se o tempo para esta partida já expirou
-                        const match = allMatches[matchId];
-                        const now = new Date();
-                        const matchTimestamp = match.timestamp ? new Date(match.timestamp) : null;
-                        const isMatchTimeExpired = matchTimestamp && now > matchTimestamp;
-                        
-                        if (isMatchTimeExpired) {
-                            return; // Pula partidas com tempo expirado
+
+                        // Pular se os inputs não existirem (jogo já finalizado/sem input)
+                        if (!homeInput || !awayInput) {
+                            console.log(`Inputs não encontrados para matchId ${matchId}, pulando.`);
+                            return;
                         }
-                        
-                        if (homeInput && awayInput && homeInput.value !== '' && awayInput.value !== '') {
+
+                        // Verificar se o tempo GERAL da rodada expirou (isTimeExpired)
+                        // OU se o tempo específico da PARTIDA expirou
+                        const match = allMatches[matchId]; // Assume que allMatches está populado corretamente
+                        const matchTimestamp = match?.timestamp ? new Date(match.timestamp) : null;
+                        const isMatchTimeExpired = matchTimestamp && now > matchTimestamp;
+
+                        // Não salvar se o tempo da rodada ou da partida expirou
+                        // E garantir que o input não esteja desabilitado (como segurança extra)
+                        if (isTimeExpired || isMatchTimeExpired || homeInput.disabled || awayInput.disabled) {
+                            console.log(`Tempo expirado ou input desabilitado para matchId ${matchId}, pulando.`);
+                            return;
+                        }
+
+                        // Validar se os palpites são números válidos e não vazios
+                        const homeScore = homeInput.value.trim();
+                        const awayScore = awayInput.value.trim();
+
+                        if (homeScore !== '' && awayScore !== '' && !isNaN(parseInt(homeScore)) && !isNaN(parseInt(awayScore))) {
                             predictions[matchId] = {
-                                homeScore: parseInt(homeInput.value),
-                                awayScore: parseInt(awayInput.value),
-                                playerId: playerId
+                                homeScore: parseInt(homeScore),
+                                awayScore: parseInt(awayScore),
+                                playerId: playerId // Redundante se já está sob a chave do playerID, mas pode ser útil
+                                // timestamp: firebase.database.ServerValue.TIMESTAMP // Opcional: salvar quando foi feito
                             };
                             hasValidPredictions = true;
+                            console.log(`Preparando palpite para matchId ${matchId}: ${homeScore}x${awayScore}`);
+                        } else {
+                            console.log(`Palpite inválido ou incompleto para matchId ${matchId}, pulando.`);
                         }
                     });
-                    
+
                     if (!hasValidPredictions) {
-                        alert('Por favor, preencha pelo menos um palpite antes de salvar.');
+                        alert('Nenhum palpite válido para salvar. Preencha os placares corretamente.');
+                        // --- OTIMIZAÇÃO 1: Reabilitar botão em caso de não ter nada para salvar ---
+                        currentSaveButton.disabled = false;
+                        currentSaveButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                        currentSaveButton.style.backgroundColor = 'var(--primary-color)';
                         return;
                     }
-                    
-                    // Salvar palpites no Firebase
+
+                    // Construir o objeto de updates para o Firebase
                     const updates = {};
                     Object.keys(predictions).forEach(matchId => {
-                        updates[`rounds/${roundKey}/matches/${matchId}/predictions/${playerId}`] = predictions[matchId];
+                        // Caminho exato onde o palpite do usuário para essa partida será salvo
+                        updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${playerId}`] = predictions[matchId];
                     });
-                    
-                    await database.ref().update(updates);
-                    
-                    // Feedback visual de sucesso
-                    savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Palpites Salvos!';
-                    savePredictionsButton.style.backgroundColor = 'var(--success-color)';
-                    
-                    // Restaurar botão após alguns segundos
-                    setTimeout(() => {
-                        savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
-                        savePredictionsButton.style.backgroundColor = 'var(--primary-color)';
-                    }, 3000);
+
+                    console.log("Enviando updates para o Firebase:", updates);
+
+                    // --- OTIMIZAÇÃO 2: Chamar função com retentativa ---
+                    const success = await writeToFirebaseWithRetry(updates);
+
+                    if (success) {
+                        // --- OTIMIZAÇÃO 1: Feedback visual de sucesso ---
+                        currentSaveButton.innerHTML = '<i class="fas fa-check"></i> Palpites Salvos!';
+                        currentSaveButton.style.backgroundColor = 'var(--success-color)';
+
+                        // Restaurar botão após alguns segundos (mantendo desabilitado até lá)
+                        setTimeout(() => {
+                            currentSaveButton.disabled = false;
+                            currentSaveButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                            currentSaveButton.style.backgroundColor = 'var(--primary-color)';
+                        }, 3000);
+                    } else {
+                        // Isso não deveria acontecer com a lógica de retry, mas por segurança
+                        throw new Error("Falha ao salvar após retentativas.");
+                    }
+
                 } catch (error) {
-                    console.error('Erro ao salvar palpites:', error);
-                    alert('Erro ao salvar palpites. Tente novamente.');
+                    console.error('Erro CRÍTICO ao salvar palpites:', error);
+                    // --- OTIMIZAÇÃO 1 & 3: Feedback visual de erro persistente ---
+                    currentSaveButton.disabled = false; // Reabilitar para permitir nova tentativa
+                    currentSaveButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Falha ao Salvar';
+                    currentSaveButton.style.backgroundColor = 'var(--danger-color)';
+                    // Poderia remover a cor de erro após um tempo maior, ou deixar até o próximo clique/sucesso
+                    alert(`Erro ao salvar palpites: ${error.message}. Verifique sua conexão e tente novamente.`);
                 }
             });
         }
@@ -1359,6 +1406,27 @@
                 }
             });
         }
+
+        async function writeToFirebaseWithRetry(updates, maxRetries = 3, delay = 1000) {
+    let attempts = 0;
+    while (attempts < maxRetries) {
+        try {
+            await database.ref().update(updates);
+            console.log("Dados salvos com sucesso no Firebase.");
+            return true; // Sucesso
+        } catch (error) {
+            attempts++;
+            console.error(`Falha ao salvar (tentativa ${attempts}/${maxRetries}):`, error);
+            if (attempts >= maxRetries) {
+                console.error("Número máximo de retentativas atingido.");
+                throw error; // Re-lança o erro após esgotar as tentativas
+            }
+            // Espera antes de tentar novamente (backoff exponencial simples)
+            await new Promise(resolve => setTimeout(resolve, delay * attempts));
+        }
+    }
+    return false; // Nunca deve chegar aqui, mas por segurança
+}
     </script>
 </body>
 </html>
