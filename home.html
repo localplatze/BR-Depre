@@ -657,15 +657,26 @@
                 
                 if (supercopaData && supercopaData.groups) {
                     for (const groupKey in supercopaData.groups) {
-                        if (groupKey !== 'status' && supercopaData.groups[groupKey]) {
-                            const groupMembers = supercopaData.groups[groupKey];
+                        // Primeiro, pule a chave 'status' explicitamente
+                        if (groupKey === 'status') {
+                            continue; // Pula para a próxima iteração do loop
+                        }
+
+                        const currentGroupData = supercopaData.groups[groupKey];
+
+                        // Agora, verifique se currentGroupData existe E é um array
+                        if (currentGroupData && Array.isArray(currentGroupData)) {
+                            const groupMembers = currentGroupData; // Agora sabemos que é um array
                             const userIndex = groupMembers.indexOf(currentUser.uid);
-                            
+
                             if (userIndex !== -1) {
                                 userGroup = groupKey;
-                                userPosition = userIndex + 1;
-                                break;
+                                userPosition = userIndex + 1; // Posição é 1-based
+                                break; // Encontrou o usuário, pode sair do loop
                             }
+                        } else {
+                            // Opcional: Logar um aviso se um grupo não for um array (para debugging dos dados)
+                            console.warn(`Dados do grupo '${groupKey}' em Supercopa não são um array válido:`, currentGroupData);
                         }
                     }
                 }
