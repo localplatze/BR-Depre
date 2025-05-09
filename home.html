@@ -275,6 +275,13 @@
             background-color: var(--primary-color, #0000FF); /* Cor da barra de progresso */
             transition: width 0.05s linear; /* Animação suave da barra */
         }
+
+        .ad-popup-link {
+            display: block; /* Importante para que o link possa ter dimensões */
+            text-decoration: none; /* Remove sublinhado padrão de links */
+            width: 100%; /* Faz o link ocupar a largura disponível */
+            margin-bottom: 10px; /* Espaço entre o link/imagem e a barra de progresso */
+        }
     </style>
 </head>
 <body>
@@ -952,12 +959,13 @@
             const adCloseButtonElement = document.getElementById('customAdCloseBtn');
             const adProgressBarElement = document.getElementById('customAdProgressBar');
             const adImageDisplayElement = document.getElementById('customAdImage');
+            const adLinkElement = document.getElementById('customAdLink');
 
             // **IMPORTANTE**: Substitua a URL abaixo pela URL da sua imagem de anúncio estática.
             // A URL atual é um placeholder.
             adImageDisplayElement.src = './dvd.jpg';
 
-            const AD_POPUP_STORAGE_KEY = 'customAdPopupShownDVD_v1.1'; // Chave para localStorage (mude a versão para resetar)
+            const AD_POPUP_STORAGE_KEY = 'customAdPopupShownDVD_v1.2'; // Chave para localStorage (mude a versão para resetar)
             const AD_POPUP_DURATION_MS = 7000; // Duração do anúncio em milissegundos (ex: 7 segundos)
             const AD_POPUP_PROGRESS_INTERVAL_MS = 50; // Intervalo de atualização da barra (em ms)
             const AD_TARGET_CLICK_URL = 'https://www.xvideos.com/?k=porno+gay+de+anao';
@@ -979,6 +987,7 @@
             }
             
             // Configura a imagem e o link do anúncio
+            const AD_IMAGE_SOURCE_URL = './dvd.jpg';
             adImageDisplayElement.src = AD_IMAGE_SOURCE_URL;
             adLinkElement.href = AD_TARGET_CLICK_URL;
             
