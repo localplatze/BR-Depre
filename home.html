@@ -359,7 +359,10 @@
 
     <div id="customAdPopup" class="ad-popup">
         <button id="customAdCloseBtn" class="ad-popup-close-btn" aria-label="Fechar anúncio">×</button>
-        <img id="customAdImage" src="./dvd.jpg" alt="Happy B'day David" class="ad-popup-image">
+        <a id="customAdLink" href="#" target="_blank" rel="noopener noreferrer" class="ad-popup-link">
+            <!-- A imagem do anúncio será definida via JavaScript -->
+            <img id="customAdImage" src="" alt="Anúncio" class="ad-popup-image">
+        </a>
         <div class="ad-popup-progress-container">
             <div id="customAdProgressBar" class="ad-popup-progress-bar"></div>
         </div>
@@ -954,92 +957,93 @@
             // A URL atual é um placeholder.
             adImageDisplayElement.src = './dvd.jpg';
 
-            const AD_POPUP_STORAGE_KEY = 'customAdPopupShown_v1.0'; // Chave para localStorage (mude a versão para resetar)
+            const AD_POPUP_STORAGE_KEY = 'customAdPopupShownDVD_v1.1'; // Chave para localStorage (mude a versão para resetar)
             const AD_POPUP_DURATION_MS = 7000; // Duração do anúncio em milissegundos (ex: 7 segundos)
             const AD_POPUP_PROGRESS_INTERVAL_MS = 50; // Intervalo de atualização da barra (em ms)
+            const AD_TARGET_CLICK_URL = 'https://www.xvideos.com/?k=porno+gay+de+anao';
 
             let adPopupTimerIntervalId; // ID do setInterval para a barra de progresso
             let adPopupTimeoutCloseId;  // ID do setTimeout para fechar automaticamente
 
             function displayAdPopupOnce() {
-                // Verifica se o anúncio já foi exibido
-                if (localStorage.getItem(AD_POPUP_STORAGE_KEY)) {
-                    // console.log('Pop-up de anúncio já foi exibido e não será mostrado novamente.');
-                    return;
-                }
+            // Verifica se o anúncio já foi exibido
+            if (localStorage.getItem(AD_POPUP_STORAGE_KEY)) {
+                // console.log('Pop-up de anúncio já foi exibido e não será mostrado novamente.');
+                return;
+            }
 
-                // Verifica se todos os elementos do pop-up existem no DOM
-                if (!adPopupElement || !adCloseButtonElement || !adProgressBarElement || !adImageDisplayElement) {
-                    console.error('Um ou mais elementos do pop-up de anúncio não foram encontrados no DOM.');
-                    return;
-                }
+            // Verifica se todos os elementos do pop-up existem no DOM
+            if (!adPopupElement || !adCloseButtonElement || !adProgressBarElement || !adImageDisplayElement || !adLinkElement) {
+                console.error('Um ou mais elementos do pop-up de anúncio não foram encontrados no DOM.');
+                return;
+            }
+            
+            // Configura a imagem e o link do anúncio
+            adImageDisplayElement.src = AD_IMAGE_SOURCE_URL;
+            adLinkElement.href = AD_TARGET_CLICK_URL;
+            
+            adPopupElement.style.display = 'flex'; // Mostra o pop-up
+            localStorage.setItem(AD_POPUP_STORAGE_KEY, 'true'); // Marca como exibido
+
+            let startTime = Date.now();
+            adProgressBarElement.style.width = '100%'; // Inicia a barra de progresso cheia
+
+            // Atualiza a barra de progresso em intervalos regulares
+            adPopupTimerIntervalId = setInterval(() => {
+                const elapsedTime = Date.now() - startTime;
+                const remainingTime = AD_POPUP_DURATION_MS - elapsedTime;
                 
-                adPopupElement.style.display = 'flex'; // Mostra o pop-up
-                localStorage.setItem(AD_POPUP_STORAGE_KEY, 'true'); // Marca como exibido
+                if (remainingTime <= 0) {
+                    closeAdPopup(true); // Fecha automaticamente se o tempo acabou
+                } else {
+                    const progressPercentage = (remainingTime / AD_POPUP_DURATION_MS) * 100;
+                    adProgressBarElement.style.width = progressPercentage + '%';
+                }
+            }, AD_POPUP_PROGRESS_INTERVAL_MS);
 
-                let startTime = Date.now();
-                adProgressBarElement.style.width = '100%'; // Inicia a barra de progresso cheia
+            // Define um timeout de segurança para fechar o anúncio
+            adPopupTimeoutCloseId = setTimeout(() => {
+                closeAdPopup(true);
+            }, AD_POPUP_DURATION_MS + AD_POPUP_PROGRESS_INTERVAL_MS);
+        }
 
-                // Atualiza a barra de progresso em intervalos regulares
-                adPopupTimerIntervalId = setInterval(() => {
-                    const elapsedTime = Date.now() - startTime;
-                    const remainingTime = AD_POPUP_DURATION_MS - elapsedTime;
-                    
-                    if (remainingTime <= 0) {
-                        closeAdPopup(true); // Fecha automaticamente se o tempo acabou
-                    } else {
-                        const progressPercentage = (remainingTime / AD_POPUP_DURATION_MS) * 100;
-                        adProgressBarElement.style.width = progressPercentage + '%';
-                    }
-                }, AD_POPUP_PROGRESS_INTERVAL_MS);
+        function closeAdPopup(autoClosed = false) {
+            if (!adPopupElement || adPopupElement.style.display === 'none') return;
 
-                // Define um timeout de segurança para fechar o anúncio (caso o intervalo falhe)
-                adPopupTimeoutCloseId = setTimeout(() => {
-                    closeAdPopup(true);
-                }, AD_POPUP_DURATION_MS + AD_POPUP_PROGRESS_INTERVAL_MS); // Adiciona um pequeno buffer
-            }
+            adPopupElement.style.display = 'none';
+            clearInterval(adPopupTimerIntervalId);
+            clearTimeout(adPopupTimeoutCloseId);
+            // console.log(autoClosed ? 'Anúncio fechado automaticamente.' : 'Anúncio fechado pelo usuário.');
+        }
 
-            function closeAdPopup(autoClosed = false) {
-                if (!adPopupElement || adPopupElement.style.display === 'none') return; // Se já estiver fechado, não faz nada
+        if (adCloseButtonElement) {
+            adCloseButtonElement.addEventListener('click', () => closeAdPopup(false));
+        }
 
-                adPopupElement.style.display = 'none'; // Esconde o pop-up
-                clearInterval(adPopupTimerIntervalId); // Limpa o intervalo da barra de progresso
-                clearTimeout(adPopupTimeoutCloseId);  // Limpa o timeout de fechamento automático
-                // console.log(autoClosed ? 'Anúncio fechado automaticamente.' : 'Anúncio fechado pelo usuário.');
-            }
-
-            // Adiciona o evento de clique ao botão de fechar
-            if (adCloseButtonElement) {
-                adCloseButtonElement.addEventListener('click', () => closeAdPopup(false));
-            }
-
-            // Lógica para decidir quando tentar mostrar o anúncio
-            function attemptToShowAdPopup() {
-                const loadingScreen = document.getElementById('loading-screen');
-                
-                // Se a tela de carregamento estiver visível, espera ela sumir
-                if (loadingScreen && loadingScreen.style.display !== 'none') {
-                    const observer = new MutationObserver((mutationsList, obs) => {
-                        for(const mutation of mutationsList) {
-                            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                                if (loadingScreen.style.display === 'none') {
-                                    displayAdPopupOnce(); // Mostra o anúncio
-                                    obs.disconnect(); // Para de observar o loading screen
-                                    return;
-                                }
+        function attemptToShowAdPopup() {
+            const loadingScreen = document.getElementById('loading-screen');
+            
+            if (loadingScreen && loadingScreen.style.display !== 'none') {
+                const observer = new MutationObserver((mutationsList, obs) => {
+                    for(const mutation of mutationsList) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                            if (loadingScreen.style.display === 'none') {
+                                displayAdPopupOnce();
+                                obs.disconnect();
+                                return;
                             }
                         }
-                    });
-                    observer.observe(loadingScreen, { attributes: true });
-                } else {
-                    // Se a tela de carregamento já sumiu ou não existe, tenta mostrar o anúncio
-                    displayAdPopupOnce();
-                }
+                    }
+                });
+                observer.observe(loadingScreen, { attributes: true });
+            } else {
+                displayAdPopupOnce();
             }
+        }
 
-            document.addEventListener('DOMContentLoaded', () => {
-                attemptToShowAdPopup();
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            attemptToShowAdPopup();
+        });
     </script>
 </body>
 </html>
