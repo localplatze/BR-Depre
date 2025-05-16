@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brasileirão da Depressão</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --background-color: #EDEEF5;
+            --background-color: #F4F6F9; /* Um pouco mais claro e moderno */
             --card-background: white;
             --text-color: #333;
-            --border-radius: 16px;
-            --top-card-radius: 0 0 32px 32px;
-            --box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            --primary-color: #0000FF;
+            --text-color-light: #555;
+            --border-radius: 12px; /* Um pouco menor para um look mais sharp */
+            --top-card-radius-desktop: 0 0 32px 32px;
+            --top-card-radius-mobile: 0 0 24px 24px;
+            --box-shadow: 0 6px 12px rgba(0,0,0,0.08); /* Sombra mais suave */
+            --primary-color: #0052cc; /* Um azul mais moderno, fallback */
             --text-on-primary: #FFFFFF;
-            --countdown-color: #e74c3c;
+            --sidebar-width: 280px;
+            --header-height: 60px; /* Altura do header para mobile */
         }
 
         * {
@@ -29,20 +33,31 @@
         body {
             background-color: var(--background-color);
             min-height: 100vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Top Card */
-        .top-card {
-            background-color: var(--primary-color);
-            border-radius: var(--top-card-radius);
-            padding: 24px;
+        body.sidebar-open {
+            overflow: hidden; /* Impede scroll do body quando sidebar aberto */
+        }
+
+        /* Header & Top Card */
+        .site-header {
+            background-color: var(--primary-color); /* Fallback, JS vai sobrescrever */
             color: var(--text-on-primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+
+        .top-card {
+            padding: 16px 24px; /* Ajuste no padding */
             box-shadow: var(--box-shadow);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 24px;
+            border-bottom-left-radius: var(--top-card-radius-desktop);
+            border-bottom-right-radius: var(--top-card-radius-desktop);
+            transition: background-color 0.3s ease;
         }
 
         .toolbar {
@@ -50,17 +65,20 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
+            height: var(--header-height);
+            padding: 0 10px; /* Padding para os ícones não colarem nas bordas */
         }
-
+        
         .toolbar-title {
-            text-align: center;
-            font-size: 20px;
+            font-size: clamp(18px, 4vw, 22px); /* Fonte responsiva */
             font-weight: 500;
+            text-align: center;
+            flex-grow: 1; /* Permite que o título ocupe o espaço e centralize */
         }
 
         .icon-button {
-            width: 32px;
-            height: 32px;
+            width: 40px; /* Área de toque maior */
+            height: 40px;
             background: none;
             border: none;
             color: var(--text-on-primary);
@@ -68,86 +86,288 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 20px; /* Tamanho do ícone */
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        .icon-button:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        #menu-toggle {
+            display: none; /* Escondido por padrão, aparece em mobile */
         }
 
         .team-name {
             text-align: center;
             font-weight: bold;
-            font-size: 42px;
-            margin: 16px 32px;
+            font-size: clamp(32px, 7vw, 42px); /* Fonte responsiva */
+            margin: 16px 0; /* Ajustado */
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            padding: 0 16px;
         }
 
         .team-info-container {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            justify-content: space-around; /* Melhor distribuição */
+            align-items: center; /* Alinhamento vertical */
             margin-top: 24px;
+            gap: 16px; /* Espaço entre stats e logo */
+            flex-wrap: wrap; /* Permite quebrar linha em telas menores */
         }
 
         .team-stats {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            text-align: left; /* Alinhado à esquerda para melhor leitura */
         }
 
         .team-stat {
-            font-size: 24px;
+            font-size: clamp(16px, 3.5vw, 20px); /* Fonte responsiva */
             font-weight: 500;
         }
 
         .team-logo {
-            width: 160px;
-            height: 160px;
+            width: clamp(100px, 25vw, 140px); /* Tamanho responsivo */
+            height: clamp(100px, 25vw, 140px);
             object-fit: contain;
+            border-radius: 8px; /* Suave arredondamento */
+        }
+
+        /* Sidebar Menu */
+        #sidebar-menu {
+            position: fixed;
+            top: 0;
+            left: -100%; /* Começa fora da tela */
+            width: var(--sidebar-width);
+            max-width: 85%; /* Não ocupar toda a tela em mobiles pequenos */
+            height: 100%;
+            background-color: var(--card-background);
+            box-shadow: 4px 0px 15px rgba(0,0,0,0.1);
+            z-index: 1002; /* Acima do overlay */
+            transition: left 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+        }
+
+        #sidebar-menu.active {
+            left: 0;
+        }
+
+        #sidebar-menu .sidebar-header {
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--primary-color); /* Usar cor primária do time se desejado */
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #sidebar-menu .sidebar-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-color-light);
+            cursor: pointer;
+        }
+
+        #sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        #sidebar-menu ul li a {
+            display: flex; /* Para alinhar ícone e texto */
+            align-items: center; /* Alinhamento vertical */
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-size: 16px;
+            font-weight: 400;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        #sidebar-menu ul li a i {
+            margin-right: 15px;
+            width: 20px; /* Para alinhar os textos mesmo sem ícones uniformes */
+            text-align: center;
+            color: var(--text-color-light); /* Cor do ícone */
+        }
+
+        #sidebar-menu ul li a:hover, #sidebar-menu ul li a.active-link {
+            background-color: var(--background-color);
+            color: var(--primary-color); /* Destaca link ativo/hover */
+        }
+        #sidebar-menu ul li a:hover i, #sidebar-menu ul li a.active-link i {
+            color: var(--primary-color);
+        }
+
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1001; /* Abaixo do sidebar, acima do conteúdo */
+        }
+        .sidebar-overlay.active {
+            display: block;
         }
 
         /* Content section */
-        .content {
-            padding: 0 24px 24px 24px;
+        .main-content {
+            padding: 24px;
         }
 
         .section-title {
-            font-weight: bold;
-            font-size: 20px;
+            font-weight: 500; /* Um pouco menos bold */
+            font-size: clamp(18px, 4vw, 20px);
             color: var(--text-color);
             margin-bottom: 16px;
+            margin-top: 24px; /* Espaço acima de cada título de seção */
+        }
+        .section-title:first-child {
+            margin-top: 0;
         }
 
         .round-card {
-            background-color: var(--primary-color);
+            background-color: var(--primary-color); /* Fallback */
             color: var(--text-on-primary);
             border-radius: var(--border-radius);
-            padding: 16px;
-            margin-bottom: 8px;
+            padding: 20px; /* Mais padding */
+            margin-bottom: 12px; /* Espaçamento consistente */
             box-shadow: var(--box-shadow);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+        }
+        .round-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
         }
 
         .round-title {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: clamp(16px, 3.5vw, 18px);
+            font-weight: 500;
             margin-bottom: 8px;
         }
 
         .round-time {
-            font-size: 16px;
+            font-size: clamp(14px, 3vw, 16px);
         }
 
         .view-history {
             color: var(--primary-color);
             text-align: center;
             font-size: 16px;
-            margin: 8px 0 16px;
+            font-weight: 500;
+            margin: 16px 0 24px;
             text-decoration: none;
             display: block;
-            cursor: pointer;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            transition: background-color 0.2s ease;
         }
+        .view-history:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        /* Cards */
+        .tournament-card {
+            cursor: pointer;
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .tournament-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        }
+        
+        .tournament-title {
+            font-size: clamp(17px, 3.8vw, 19px);
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tournament-card p {
+            font-size: clamp(14px, 3vw, 15px);
+            color: var(--text-color-light);
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            font-size: 11px; /* Menor */
+            padding: 5px 10px; /* Ajuste */
+            border-radius: 20px; /* Mais arredondado */
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-in-progress {
+            background-color: #ffab00; /* Amarelo/Laranja mais vibrante */
+            color: white;
+        }
+
+        .status-finished {
+            background-color: #00c853; /* Verde mais vibrante */
+            color: white;
+        }
+
+        .status-not-started {
+            background-color: #90a4ae; /* Cinza azulado */
+            color: white;
+        }
+
+        /* Tabela Superliga */
+        .superliga-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(14px, 3vw, 15px);
+        }
+        .superliga-table th, .superliga-table td {
+            padding: 10px 8px; /* Mais padding vertical */
+            text-align: left;
+            border-bottom: 1px solid #eee; /* Linhas mais suaves */
+        }
+        .superliga-table th {
+            font-weight: 500;
+            color: var(--text-color-light);
+        }
+        .superliga-table td:last-child, .superliga-table th:last-child {
+            text-align: right;
+        }
+        .superliga-table tr.current-user-row {
+            background-color: #e3f2fd; /* Destaque suave para usuário atual */
+            font-weight: 500;
+        }
+        .superliga-table .partial-view-info td {
+            text-align: center;
+            font-size: 0.85em;
+            color: #777;
+            padding: 10px 4px;
+            border-bottom: none;
+        }
+
 
         /* Respiro */
         .respiro {
-            height: 64px;
+            height: 80px; /* Um pouco mais */
         }
 
         /* Loading Screen */
@@ -162,16 +382,21 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            flex-direction: column; /* Para alinhar spinner e texto */
         }
 
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-color);
+            width: 40px; /* Ajuste no tamanho */
+            height: 40px;
+            border: 4px solid #e0e0e0; /* Cor base mais clara */
+            border-top: 4px solid var(--primary-color);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 15px;
+        }
+        #loading-screen p {
+            font-size: 16px;
+            color: var(--text-color-light);
         }
 
         @keyframes spin {
@@ -179,63 +404,22 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Cards com estilos para a Supercopa */
-        .tournament-card {
-            cursor: pointer;
-            background-color: var(--card-background);
-            border-radius: var(--border-radius);
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: var(--box-shadow);
-        }
-        
-        .tournament-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .status-badge {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .status-in-progress {
-            background-color: #f1c40f;
-            color: white;
-        }
-
-        .status-finished {
-            background-color: #2ecc71;
-            color: white;
-        }
-
-        .status-not-started {
-            background-color: #95a5a6;
-            color: white;
-        }
-
+        /* Ad Popup */
         .ad-popup {
-            display: none; /* Inicialmente escondido, JS controla a exibição */
+            display: none;
             position: fixed;
-            bottom: 20px; /* Posição na parte inferior da tela */
+            bottom: 20px;
             left: 50%;
-            transform: translateX(-50%); /* Centraliza horizontalmente */
+            transform: translateX(-50%);
             background-color: var(--card-background, white);
             border-radius: var(--border-radius, 16px);
-            box-shadow: var(--box-shadow, 0 4px 8px rgba(0,0,0,0.1));
-            z-index: 10000; /* Garante que fique acima de outros elementos */
-            width: 320px; /* Largura similar a um anúncio AdMob */
-            max-width: 90%; /* Para telas muito pequenas */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Sombra mais pronunciada para popup */
+            z-index: 10000;
+            width: 320px;
+            max-width: 90%;
             padding: 12px;
-            flex-direction: column; /* Para alinhar imagem e barra verticalmente */
-            align-items: center; /* Centraliza itens no eixo cruzado (horizontal) */
+            flex-direction: column;
+            align-items: center;
         }
 
         .ad-popup-close-btn {
@@ -244,91 +428,153 @@
             right: 8px;
             background: transparent;
             border: none;
-            font-size: 24px; /* Tamanho do ícone 'X' */
+            font-size: 24px;
             line-height: 1;
             cursor: pointer;
-            color: var(--text-color, #333);
-            padding: 4px; /* Aumenta a área de clique */
-            z-index: 1; /* Para garantir que o botão esteja acima da imagem se houver sobreposição */
+            color: var(--text-color-light, #555);
+            padding: 4px;
+            z-index: 1;
         }
 
         .ad-popup-image {
             max-width: 100%;
-            height: auto; /* Mantém a proporção da imagem */
-            max-height: 150px; /* Limita a altura da imagem, ajuste conforme necessário */
-            object-fit: contain; /* Garante que a imagem caiba sem ser cortada ou distorcida */
-            border-radius: 4px; /* Bordas arredondadas para a imagem */
-            margin-bottom: 10px; /* Espaço entre a imagem e a barra de progresso */
+            height: auto;
+            max-height: 150px;
+            object-fit: contain;
+            border-radius: 8px; /* Bordas suaves */
+            margin-bottom: 10px;
         }
 
         .ad-popup-progress-container {
             width: 100%;
-            height: 8px; /* Altura da barra de progresso */
-            background-color: #DDDDDD; /* Cor de fundo da área da barra de progresso */
-            border-radius: 4px;
-            overflow: hidden; /* Para que a barra interna arredondada não ultrapasse */
+            height: 6px; /* Mais fina */
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
         }
 
         .ad-popup-progress-bar {
-            width: 100%; /* Começa com a barra cheia */
+            width: 100%;
             height: 100%;
-            background-color: var(--primary-color, #0000FF); /* Cor da barra de progresso */
-            transition: width 0.05s linear; /* Animação suave da barra */
+            background-color: var(--primary-color, #0052cc);
+            transition: width 0.05s linear;
         }
 
         .ad-popup-link {
-            display: block; /* Importante para que o link possa ter dimensões */
-            text-decoration: none; /* Remove sublinhado padrão de links */
-            width: 100%; /* Faz o link ocupar a largura disponível */
-            margin-bottom: 10px; /* Espaço entre o link/imagem e a barra de progresso */
+            display: block;
+            text-decoration: none;
+            width: 100%;
+            margin-bottom: 10px;
         }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .top-card {
+                padding: 16px;
+                border-bottom-left-radius: var(--top-card-radius-mobile);
+                border-bottom-right-radius: var(--top-card-radius-mobile);
+            }
+            .toolbar {
+                padding: 0 8px; /* Menos padding lateral no toolbar mobile */
+            }
+            #menu-toggle {
+                display: flex; /* Mostra o botão hamburger */
+            }
+            /* Oculta botões de admin e logout no toolbar principal, eles podem ir para o sidebar */
+            /* Se preferir manter, ajuste o flex-grow do título ou remova esta regra */
+            /* .toolbar #admin-button, .toolbar #logout-button { display: none; } */
+
+            .team-name {
+                margin: 12px 0;
+            }
+            .team-info-container {
+                flex-direction: column; /* Empilha logo e stats */
+                align-items: center;
+                gap: 20px;
+            }
+            .team-stats {
+                text-align: center; /* Centraliza stats */
+                align-items: center;
+            }
+            .main-content {
+                padding: 16px;
+            }
+        }
+
     </style>
 </head>
 <body>
     <!-- Loading screen -->
     <div id="loading-screen">
-        <div style="text-align: center;">
-            <div class="loading-spinner"></div>
-            <p>Carregando...</p>
-        </div>
+        <div class="loading-spinner"></div>
+        <p>Carregando...</p>
     </div>
 
-    <!-- Top card section -->
-    <div class="top-card" id="top-card">
-        <div class="toolbar">
-            <button class="icon-button" id="admin-button">
-                <i class="fas fa-crown"></i>
-            </button>
-            <div class="toolbar-title">BR da Depressão</div>
-            <button class="icon-button" id="logout-button">
-                <i class="fas fa-sign-out-alt"></i>
+    <!-- Sidebar Menu -->
+    <nav id="sidebar-menu">
+        <div class="sidebar-header">
+            <span>Menu</span>
+            <button class="close-btn" id="sidebar-close-btn" aria-label="Fechar menu">×</button>
+        </div>
+        <ul>
+            <li><a href="home.html" class="active-link"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="palpites.html"><i class="fas fa-pencil-alt"></i> Fazer Palpite</a></li>
+            <li><a href="historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+            <li><a href="superliga.html"><i class="fas fa-trophy"></i> Superliga</a></li>
+            <li><a href="supercopa.html"><i class="fas fa-shield-alt"></i> Supercopa</a></li>
+            <!-- Adicionar Admin e Logout aqui se preferir -->
+             <li id="sidebar-admin-item" style="display:none;"><a href="admin.html"><i class="fas fa-crown"></i> Admin</a></li>
+        </ul>
+        <!-- Botão de Logout pode ficar fixo no final do sidebar -->
+        <div style="padding: 20px; border-top: 1px solid #eee;">
+            <button class="icon-button" id="sidebar-logout-button" style="width: 100%; background-color: #f8f9fa; color: var(--text-color-light); border: 1px solid #ddd; border-radius: var(--border-radius);">
+                <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Sair
             </button>
         </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-        <div class="team-name" id="team-name">
-            NOME
-        </div>
-
-        <div class="team-info-container">
-            <div class="team-stats">
-                <div class="team-stat" id="team-sigla">ELN - Cruzeiro</div>
-                <div class="team-stat" id="team-pos-liga">11º Liga</div>
-                <div class="team-stat" id="team-pos-copa">3º Grupo B</div>
+    <!-- Header -->
+    <header class="site-header" id="site-header">
+        <div class="top-card" id="top-card">
+            <div class="toolbar">
+                <button class="icon-button" id="menu-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="toolbar-title">BR da Depressão</div>
+                <button class="icon-button" id="admin-button" aria-label="Painel do Administrador">
+                    <i class="fas fa-crown"></i>
+                </button>
+                <button class="icon-button" id="logout-button" aria-label="Sair">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
-            <img src="default-avatar.png" alt="Team Logo" class="team-logo" id="team-logo">
+
+            <div class="team-name" id="team-name">
+                NOME
+            </div>
+
+            <div class="team-info-container">
+                <div class="team-stats">
+                    <div class="team-stat" id="team-sigla">ELN - Cruzeiro</div>
+                    <div class="team-stat" id="team-pos-liga">11º Liga</div>
+                    <div class="team-stat" id="team-pos-copa">3º Grupo B</div>
+                </div>
+                <img src="default-avatar.png" alt="Team Logo" class="team-logo" id="team-logo">
+            </div>
         </div>
-    </div>
+    </header>
 
     <!-- Content section -->
-    <div class="content">
-        <div class="section-title">Nova Rodada</div>
+    <main class="main-content">
+        <div class="section-title">Próxima Rodada</div>
         
         <div class="round-card" id="next-round-card">
             <div class="round-title" id="next-round-deadline">Palpite até 29/03 17:30</div>
             <div class="round-time" id="next-round-countdown">Tempo restante: 2d 4h 30m 12s</div>
         </div>
         
-        <a href="historico.html" class="view-history">Ver Histórico</a>
+        <a href="historico.html" class="view-history">Ver Histórico de Rodadas</a>
         
         <div class="section-title">Supercopa</div>
         
@@ -347,12 +593,12 @@
                 Superliga
                 <span class="status-badge status-in-progress">Em Progresso</span>
             </div>
-            <table style="width: 100%; border-collapse: collapse;">
+            <table class="superliga-table">
                 <thead>
                     <tr>
-                        <th style="text-align: left; padding: 8px 4px;">Pos</th>
-                        <th style="text-align: left; padding: 8px 4px;">Jogador</th>
-                        <th style="text-align: right; padding: 8px 4px;">Pontos</th>
+                        <th>Pos</th>
+                        <th>Jogador</th>
+                        <th>Pontos</th>
                     </tr>
                 </thead>
                 <tbody id="superliga-table-body">
@@ -362,12 +608,11 @@
         </div>
         
         <div class="respiro"></div>
-    </div>
+    </main>
 
     <div id="customAdPopup" class="ad-popup">
         <button id="customAdCloseBtn" class="ad-popup-close-btn" aria-label="Fechar anúncio">×</button>
         <a id="customAdLink" href="#" target="_blank" rel="noopener noreferrer" class="ad-popup-link">
-            <!-- A imagem do anúncio será definida via JavaScript -->
             <img id="customAdImage" src="" alt="Anúncio" class="ad-popup-image">
         </a>
         <div class="ad-popup-progress-container">
@@ -383,7 +628,7 @@
     <script>
         // Firebase Configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M", // Mantenha sua chave real aqui
             authDomain: "brdepre.firebaseapp.com",
             databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
             projectId: "brdepre",
@@ -404,10 +649,8 @@
             superliga: null,
             supercopa: null,
             nextRound: null,
-            pastRounds: null
         };
-
-        const SESSION_CACHE_KEY = 'brdepre_home_cache';
+        const SESSION_CACHE_KEY = 'brdepre_home_cache_v2'; // Nova versão para invalidar cache antigo
 
         // Função para salvar os dados em sessionStorage
         function saveToSessionCache() {
@@ -421,64 +664,108 @@
                 try {
                     return JSON.parse(cached);
                 } catch (e) {
+                    console.warn("Falha ao carregar cache da sessão:", e);
                     return null;
                 }
             }
             return null;
         }
 
-        // Logout functionality
-        document.getElementById('logout-button').addEventListener('click', () => {
-            auth.signOut().then(() => {
-                // Limpa o localStorage e redireciona
-                localStorage.clear();
-                window.location.replace('index.html');
-            }).catch((error) => {
-                console.error('Erro ao sair:', error);
+        // --- Sidebar Menu Logic ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebarMenu = document.getElementById('sidebar-menu');
+        const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() {
+            sidebarMenu.classList.add('active');
+            sidebarOverlay.classList.add('active');
+            document.body.classList.add('sidebar-open');
+        }
+
+        function closeSidebar() {
+            sidebarMenu.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
+        }
+
+        if (menuToggle) menuToggle.addEventListener('click', openSidebar);
+        if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+        
+        // Fechar sidebar ao clicar em um link (se for navegação na mesma página ou âncora)
+        sidebarMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Se for um link para outra página, não precisa fechar explicitamente,
+                // mas se for uma SPA ou link de âncora, fechar o menu é bom.
+                // Para este caso, vamos fechar sempre por simplicidade.
+                // Em uma SPA real, você verificaria se é um link interno.
+                if (!link.href.endsWith('#')) { // Evita fechar para links de placeholder
+                     // Não precisa fechar se vai navegar para outra página HTML
+                }
             });
         });
 
+
+        // Logout functionality
+        function handleLogout() {
+            auth.signOut().then(() => {
+                localStorage.clear();
+                sessionStorage.removeItem(SESSION_CACHE_KEY); // Limpa cache da sessão também
+                window.location.replace('index.html');
+            }).catch((error) => {
+                console.error('Erro ao sair:', error);
+                alert('Erro ao sair. Tente novamente.');
+            });
+        }
+        document.getElementById('logout-button').addEventListener('click', handleLogout);
+        document.getElementById('sidebar-logout-button').addEventListener('click', handleLogout);
+
+
         // Configure admin button to be hidden initially
         document.getElementById('admin-button').style.display = 'none';
+        document.getElementById('sidebar-admin-item').style.display = 'none';
 
-        // Recuperar usuário do localStorage
-        let user = JSON.parse(localStorage.getItem('user') || 'null');
 
-        // Observer de autenticação
         auth.onAuthStateChanged((firebaseUser) => {
             console.log('onAuthStateChanged fired');
+            const loadingScreen = document.getElementById('loading-screen');
             
             if (firebaseUser) {
-                // Tentar carregar do cache primeiro
                 const sessionCache = loadFromSessionCache();
-                if (sessionCache) {
+                if (sessionCache && sessionCache.userProfile && sessionCache.userProfile.id === firebaseUser.uid) { // Valida se o cache é do usuário atual
                     cachedData = sessionCache;
                     updateUIFromCache();
-                    document.getElementById('loading-screen').style.display = 'none';
-                    
-                    // Atualizar os dados em segundo plano
+                    if (loadingScreen) loadingScreen.style.display = 'none';
                     refreshAllData(firebaseUser.uid);
                 } else {
-                    // Carregar tudo do zero
-                    loadUserProfile(firebaseUser.uid)
-                        .then(() => loadSuperligaStandings())
-                        .then(() => loadSupercopaInfo())
-                        .then(() => loadNextRound())
-                        .then(() => loadPastRounds())
-                        .then(() => checkAdminStatus(firebaseUser.uid))
-                        .then(() => {
-                            saveToSessionCache();
-                            document.getElementById('loading-screen').style.display = 'none';
-                        })
-                        .catch((error) => {
-                            console.error('Erro no carregamento de dados:', error);
-                            document.getElementById('loading-screen').style.display = 'none';
-                        });
+                    sessionStorage.removeItem(SESSION_CACHE_KEY); // Limpa cache inválido
+                    fetchAllData(firebaseUser.uid);
                 }
             } else {
-                window.location.href = 'index.html';
+                window.location.replace('index.html');
             }
         });
+        
+        function fetchAllData(userId) {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) loadingScreen.style.display = 'flex';
+
+            Promise.all([
+                loadUserProfile(userId, true), // Force refresh for initial load
+                loadSuperligaStandings(true),
+                loadSupercopaInfo(true),
+                loadNextRound(true),
+                checkAdminStatus(userId, true)
+            ]).then(() => {
+                saveToSessionCache();
+                if (loadingScreen) loadingScreen.style.display = 'none';
+            }).catch((error) => {
+                console.error('Erro no carregamento inicial de dados:', error);
+                if (loadingScreen) loadingScreen.style.display = 'none';
+                // Tratar erro, talvez mostrar mensagem para o usuário
+            });
+        }
 
         function updateUIFromCache() {
             if (cachedData.userProfile) updateUserProfileUI(cachedData.userProfile);
@@ -488,181 +775,149 @@
                 updateNextRoundUI(cachedData.nextRound);
                 startCountdown(cachedData.nextRound.finishTimestamp);
             }
+            if (cachedData.userProfile && cachedData.userProfile.userData) {
+                 updateAdminButton(cachedData.userProfile.userData.isAdmin);
+            }
         }
 
         function refreshAllData(userId) {
+            // Não mostra loading screen para refresh em background
             Promise.all([
                 loadUserProfile(userId, true),
                 loadSuperligaStandings(true),
                 loadSupercopaInfo(true),
                 loadNextRound(true),
-                checkAdminStatus(userId, true)
+                checkAdminStatus(userId, true) // Re-check admin status on refresh
             ]).then(() => {
                 saveToSessionCache();
+                console.log("Dados atualizados em segundo plano.");
             }).catch(error => {
                 console.error('Erro ao atualizar dados em segundo plano:', error);
             });
         }
 
         function loadUserProfile(userId, forceRefresh = false) {
-            if (!forceRefresh && cachedData.userProfile) {
+            if (!forceRefresh && cachedData.userProfile && cachedData.userProfile.id === userId) {
+                updateUserProfileUI(cachedData.userProfile); // Garante que a UI seja atualizada mesmo com cache
                 return Promise.resolve(cachedData.userProfile);
             }
-            console.log('Loading user profile for:', userId);
             
             const userProfileRef = database.ref('users/' + userId);
             const teamsRef = database.ref('teams');
 
-            return new Promise((resolve, reject) => {
-                userProfileRef.once('value')
-                    .then((userSnapshot) => {
-                        console.log('User snapshot:', userSnapshot.exists(), userSnapshot.val());
-                        
-                        if (!userSnapshot.exists()) {
-                            reject(new Error('Usuário não encontrado'));
-                            return;
-                        }
+            return userProfileRef.once('value')
+                .then((userSnapshot) => {
+                    if (!userSnapshot.exists()) throw new Error('Usuário não encontrado no DB');
+                    const userData = userSnapshot.val();
+                    
+                    return teamsRef.child(userData.teamId).once('value')
+                        .then((teamSnapshot) => {
+                            if (!teamSnapshot.exists()) throw new Error('Time não encontrado no DB');
+                            const teamData = teamSnapshot.val();
 
-                        const userData = userSnapshot.val();
-                        
-                        return teamsRef.child(userData.teamId).once('value')
-                            .then((teamSnapshot) => {
-                                console.log('Team snapshot:', teamSnapshot.exists(), teamSnapshot.val());
-                                
-                                if (!teamSnapshot.exists()) {
-                                    reject(new Error('Time não encontrado'));
-                                    return;
-                                }
-
-                                const profileData = {
-                                    id: userId,
-                                    userData: userData,
-                                    teamData: teamSnapshot.val()
-                                };
-
-                                cachedData.userProfile = profileData;
-                                updateUserProfileUI(profileData);
-                                
-                                // Atualiza a cor do top card com a cor do time
-                                const teamColor = profileData.teamData.color1 || '#0000FF';
-                                const topCard = document.getElementById('top-card');
-                                const nextRoundCard = document.getElementById('next-round-card');
-                                
-                                topCard.style.backgroundColor = teamColor;
-                                nextRoundCard.style.backgroundColor = teamColor;
-                                
-                                // Verificar se a cor é escura para definir a cor do texto
-                                const isColorDark = isColorDarkEnough(teamColor);
-                                const textColor = isColorDark ? '#FFFFFF' : '#000000';
-                                
-                                // Atualizar cor de todos os elementos de texto no top card
-                                const textElements = topCard.querySelectorAll('.icon-button, .toolbar-title, .team-name, .team-stat');
-                                textElements.forEach(el => {
-                                    el.style.color = textColor;
-                                });
-                                
-                                // Atualizar cor de texto no card da próxima rodada
-                                const roundTextElements = nextRoundCard.querySelectorAll('.round-title, .round-time');
-                                roundTextElements.forEach(el => {
-                                    el.style.color = textColor;
-                                });
-                                
-                                resolve(profileData);
-                            });
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao carregar perfil do usuário:', error);
-                        reject(error);
-                    });
-            });
+                            const profileData = {
+                                id: userId,
+                                userData: userData,
+                                teamData: teamData
+                            };
+                            cachedData.userProfile = profileData;
+                            updateUserProfileUI(profileData);
+                            return profileData;
+                        });
+                })
+                .catch((error) => {
+                    console.error('Erro ao carregar perfil do usuário:', error);
+                    // Poderia redirecionar para logout ou mostrar erro
+                    throw error; // Re-throw para ser pego pelo Promise.all
+                });
         }
 
-        // Função para determinar se uma cor é escura o suficiente para texto branco
         function isColorDarkEnough(hexColor) {
-            // Remove o # se presente
             hexColor = hexColor.replace('#', '');
-            
-            // Converte para RGB
             const r = parseInt(hexColor.substr(0, 2), 16);
             const g = parseInt(hexColor.substr(2, 2), 16);
             const b = parseInt(hexColor.substr(4, 2), 16);
-            
-            // Fórmula para calcular luminosidade (percepção humana)
             const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-            
-            // Se luminance < 0.5, é considerada uma cor escura
             return luminance < 0.5;
         }
 
         function updateUserProfileUI(profileData) {
-            // Atualizando o nome do time
-            document.getElementById('team-name').textContent = profileData.userData.name || 'NOME';
-            
-            // Atualizando a sigla e nome do time
+            document.getElementById('team-name').textContent = profileData.userData.name || 'N/A';
             document.getElementById('team-sigla').textContent = `${profileData.userData.abbr || 'SGL'} - ${profileData.teamData.name || 'Time'}`;
-            
-            // O logo do time
             document.getElementById('team-logo').src = profileData.teamData.image || 'default-avatar.png';
+            document.getElementById('team-logo').alt = `Logo ${profileData.teamData.name || 'do Time'}`;
+
+            const teamColor = profileData.teamData.color1 || 'var(--primary-color)'; // Fallback para variável CSS
+            const siteHeader = document.getElementById('site-header');
+            const nextRoundCard = document.getElementById('next-round-card');
+            
+            siteHeader.style.backgroundColor = teamColor;
+            nextRoundCard.style.backgroundColor = teamColor;
+            
+            // Atualizar cor de texto baseado na cor do time
+            const textColor = isColorDarkEnough(teamColor) ? 'var(--text-on-primary)' : '#333333'; // #333 para cores claras
+            
+            siteHeader.style.color = textColor; // Define a cor do texto para todo o header
+            // Específico para botões se necessário, pois eles têm sua própria cor
+            siteHeader.querySelectorAll('.icon-button').forEach(btn => btn.style.color = textColor);
+            siteHeader.querySelector('.toolbar-title').style.color = textColor;
+            
+            nextRoundCard.style.color = textColor; // Para texto dentro do round-card
         }
 
-        function loadSuperligaStandings() {
-            if (cachedData.superliga) {
+        function loadSuperligaStandings(forceRefresh = false) {
+            if (!forceRefresh && cachedData.superliga) {
                 updateSuperligaUI(cachedData.superliga);
-                return Promise.resolve();
+                return Promise.resolve(cachedData.superliga);
             }
 
             const usersRef = database.ref('users');
             const superligaStagesRef = database.ref('tournaments/superliga/stages');
             const currentUser = auth.currentUser;
+            if (!currentUser) return Promise.reject(new Error("Usuário não autenticado para Superliga"));
 
             return superligaStagesRef.once('value').then((snapshot) => {
-                let status = "";
+                let activeStageKey = 'clausura'; // Default or determine active stage
                 snapshot.forEach((childSnapshot) => {
-                    const stageData = childSnapshot.val();
-                    if (stageData.status === 1) {
-                        status = childSnapshot.key;
-                    }
+                    if (childSnapshot.val().status === 1) activeStageKey = childSnapshot.key;
                 });
 
-                const pointsField = (status === 'abertura') ? 'pointsSuperligaAbertura' : 
-                                 (status === 'clausura') ? 'pointsSuperligaClausura' : 
-                                 'pointsSuperligaClausura';
+                const pointsField = `pointsSuperliga${activeStageKey.charAt(0).toUpperCase() + activeStageKey.slice(1)}`;
 
-                return usersRef.once('value').then((snapshot) => {
+                return usersRef.orderByChild(pointsField).once('value').then((snapshot) => { // Order by points directly in Firebase query
                     const allUsers = [];
                     snapshot.forEach((childSnapshot) => {
                         const userData = childSnapshot.val();
+                        // Firebase sorts ascending, so unshift to make it descending
                         if (userData[pointsField] !== undefined) {
-                            allUsers.push({
+                            allUsers.unshift({ 
                                 id: childSnapshot.key,
                                 name: userData.name,
                                 points: userData[pointsField] || 0,
-                                lastRoundPoints: userData.lastRoundPointsLigaAbertura || 0
+                                // Consider lastRoundPoints logic for tie-breaking if available
+                                lastRoundPoints: userData[`lastRoundPointsLiga${activeStageKey.charAt(0).toUpperCase() + activeStageKey.slice(1)}`] || 0
                             });
                         }
                     });
-
-                    // Ordenar por pontos e depois por pontos da última rodada
+                     // Se o Firebase não ordenou corretamente (ex: por causa de string vs number), re-sort aqui.
+                     // Mas orderByChild(pointsField) deveria funcionar se os pontos são números.
                     allUsers.sort((a, b) => {
                         if (b.points === a.points) {
-                            return b.lastRoundPoints - a.lastRoundPoints;
+                            return (b.lastRoundPoints || 0) - (a.lastRoundPoints || 0); // Tie-breaker
                         }
                         return b.points - a.points;
                     });
 
-                    const standingsData = {
-                        allUsers: allUsers,
-                        currentUser: currentUser.uid,
-                        pointsField: pointsField,
-                        userPosition: allUsers.findIndex(user => user.id === currentUser.uid) + 1
-                    };
 
+                    const userPosition = allUsers.findIndex(user => user.id === currentUser.uid) + 1;
+                    const standingsData = { allUsers, currentUserUid: currentUser.uid, userPosition };
+                    
                     cachedData.superliga = standingsData;
                     updateSuperligaUI(standingsData);
                     
-                    // Atualizar posição no top card
-                    document.getElementById('team-pos-liga').textContent = `${standingsData.userPosition}º Liga`;
-
+                    if (document.getElementById('team-pos-liga')) {
+                        document.getElementById('team-pos-liga').textContent = userPosition > 0 ? `${userPosition}º Liga` : 'N/A Liga';
+                    }
                     return standingsData;
                 });
             });
@@ -670,284 +925,248 @@
 
         function updateSuperligaUI(standingsData) {
             const tableBody = document.getElementById('superliga-table-body');
-            const { allUsers, currentUser } = standingsData;
+            if (!tableBody || !standingsData) return;
+
+            const { allUsers, currentUserUid } = standingsData;
             
-            // Encontrar a posição do usuário atual
-            const currentUserIndex = allUsers.findIndex(user => user.id === currentUser);
-            
-            // Determinar quais linhas mostrar
+            const currentUserIndex = allUsers.findIndex(user => user.id === currentUserUid);
             let rowsToShow = [];
-            if (currentUserIndex === 0) {
-                // Primeiro lugar: mostra ele + 2 abaixo
+
+            if (allUsers.length <= 5) { // Mostra todos se for poucos jogadores
+                rowsToShow = allUsers;
+            } else if (currentUserIndex === -1) { // Usuário não encontrado na lista (improvável se dados corretos)
+                rowsToShow = allUsers.slice(0, 3); 
+            } else if (currentUserIndex < 2) { // Perto do topo (0, 1)
                 rowsToShow = allUsers.slice(0, 3);
-            } else if (currentUserIndex === allUsers.length - 1) {
-                // Último lugar: mostra ele + 2 acima
-                rowsToShow = allUsers.slice(-3);
-            } else {
-                // Meio da tabela: mostra 1 acima, ele, e 1 abaixo
-                rowsToShow = allUsers.slice(Math.max(0, currentUserIndex - 1), currentUserIndex + 2);
+            } else if (currentUserIndex > allUsers.length - 3) { // Perto do fim
+                rowsToShow = allUsers.slice(allUsers.length - 3);
+            } else { // Meio da tabela
+                rowsToShow = allUsers.slice(currentUserIndex - 1, currentUserIndex + 2);
             }
 
-            // Atualizar a tabela
-            tableBody.innerHTML = rowsToShow.map((user, indexInSlice) => {
+            tableBody.innerHTML = rowsToShow.map((user) => {
                 const actualPosition = allUsers.findIndex(u => u.id === user.id) + 1;
-                const isCurrentUser = user.id === currentUser;
-                
+                const isCurrentUser = user.id === currentUserUid;
                 return `
-                    <tr ${isCurrentUser ? 'style="background-color: #f0f8ff;"' : ''}>
-                        <td style="padding: 8px 4px;">${actualPosition}</td>
-                        <td style="padding: 8px 4px;">${user.name}</td>
-                        <td style="padding: 8px 4px; text-align: right;">${user.points}</td>
+                    <tr ${isCurrentUser ? 'class="current-user-row"' : ''}>
+                        <td>${actualPosition}</td>
+                        <td>${user.name}</td>
+                        <td>${user.points}</td>
                     </tr>
                 `;
             }).join('');
 
-            // Adicionar mensagem informando que é uma visualização parcial
-            if (allUsers.length > 3) {
-                const infoRow = document.createElement('tr');
-                infoRow.innerHTML = `<td colspan="3" style="text-align: center; font-size: 0.8em; color: #666; padding: 8px 4px;">
-                    Mostrando apenas sua posição e jogadores próximos. Clique para ver a tabela completa.
-                </td>`;
-                tableBody.appendChild(infoRow);
+            if (allUsers.length > rowsToShow.length && rowsToShow.length > 0) { // Adiciona info se a lista foi cortada
+                const infoRow = `<tr class="partial-view-info"><td colspan="3">Mostrando sua posição e jogadores próximos. Clique para ver a tabela completa.</td></tr>`;
+                tableBody.insertAdjacentHTML('beforeend', infoRow);
+            } else if (allUsers.length === 0) {
+                 tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Nenhum dado da Superliga disponível.</td></tr>`;
             }
         }
-
-        function loadSupercopaInfo() {
-            if (cachedData.supercopa) {
+        
+        function loadSupercopaInfo(forceRefresh = false) {
+            if (!forceRefresh && cachedData.supercopa) {
                 updateSupercopaUI(cachedData.supercopa);
-                return Promise.resolve();
+                return Promise.resolve(cachedData.supercopa);
             }
 
             const currentUser = auth.currentUser;
+            if (!currentUser) return Promise.reject(new Error("Usuário não autenticado para Supercopa"));
             const supercopaRef = database.ref('tournaments/supercopa');
             
             return supercopaRef.once('value').then((snapshot) => {
                 const supercopaData = snapshot.val();
-                
-                // Determinar em qual grupo o usuário está
-                let userGroup = null;
-                let userPosition = 0;
-                
+                let userGroupKey = null;
+                let userPositionInGroup = 0; // 0 se não encontrado ou não aplicável
+                let groupDisplayName = 'N/A';
+
+                const groupNameMap = { 'group1': 'Grupo A', 'group2': 'Grupo B', 'group3': 'Grupo C', 'group4': 'Grupo D' };
+
                 if (supercopaData && supercopaData.groups) {
                     for (const groupKey in supercopaData.groups) {
-                        // Primeiro, pule a chave 'status' explicitamente
-                        if (groupKey === 'status') {
-                            continue; // Pula para a próxima iteração do loop
-                        }
-
-                        const currentGroupData = supercopaData.groups[groupKey];
-
-                        // Agora, verifique se currentGroupData existe E é um array
-                        if (currentGroupData && Array.isArray(currentGroupData)) {
-                            const groupMembers = currentGroupData; // Agora sabemos que é um array
-                            const userIndex = groupMembers.indexOf(currentUser.uid);
-
-                            if (userIndex !== -1) {
-                                userGroup = groupKey;
-                                userPosition = userIndex + 1; // Posição é 1-based
-                                break; // Encontrou o usuário, pode sair do loop
-                            }
-                        } else {
-                            // Opcional: Logar um aviso se um grupo não for um array (para debugging dos dados)
-                            console.warn(`Dados do grupo '${groupKey}' em Supercopa não são um array válido:`, currentGroupData);
+                        if (groupKey === 'status' || !supercopaData.groups.hasOwnProperty(groupKey)) continue;
+                        
+                        const groupMembers = supercopaData.groups[groupKey]; // Array de UIDs
+                        if (Array.isArray(groupMembers)) {
+                             const userIndex = groupMembers.indexOf(currentUser.uid);
+                             if (userIndex !== -1) {
+                                userGroupKey = groupKey;
+                                // A posição aqui é baseada na ordem do array, não em pontos.
+                                // Se precisar de posição baseada em pontos, precisaria de mais dados/lógica.
+                                // userPositionInGroup = userIndex + 1; // Exemplo, se a ordem no array for a posição
+                                groupDisplayName = groupNameMap[groupKey] || groupKey;
+                                break; 
+                             }
                         }
                     }
+                    // Se você tem um campo de pontos DENTRO de cada grupo, você precisaria buscar esses pontos
+                    // e calcular a posição do usuário. Por ora, vamos apenas identificar o grupo.
+                    // Exemplo: Se `supercopaData.groupDetails[userGroupKey].standings` existisse:
+                    // const groupStandings = supercopaData.groupDetails[userGroupKey].standings;
+                    // userPositionInGroup = groupStandings.findIndex(p => p.userId === currentUser.uid) + 1;
                 }
                 
-                const supercopaInfo = { 
-                    data: supercopaData, 
-                    currentUser: currentUser.uid,
-                    userGroup: userGroup,
-                    userPosition: userPosition
-                };
-                
+                const supercopaInfo = { data: supercopaData, userGroupKey, userPositionInGroup, groupDisplayName };
                 cachedData.supercopa = supercopaInfo;
                 updateSupercopaUI(supercopaInfo);
                 
-                // Atualizar informação no top card
-                if (userGroup) {
-                    const groupNameMap = {
-                        'group1': 'Grupo A',
-                        'group2': 'Grupo B',
-                        'group3': 'Grupo C',
-                        'group4': 'Grupo D'
-                    };
-                    
-                    document.getElementById('team-pos-copa').textContent = `${userPosition}º ${groupNameMap[userGroup] || userGroup}`;
+                if (document.getElementById('team-pos-copa')) {
+                    const posText = userPositionInGroup > 0 ? `${userPositionInGroup}º ${groupDisplayName}` : 
+                                    (userGroupKey ? `No ${groupDisplayName}` : 'N/A Copa');
+                    document.getElementById('team-pos-copa').textContent = posText;
                 }
-                
                 return supercopaInfo;
             });
         }
 
         function updateSupercopaUI(supercopaInfo) {
             const supercopaCard = document.getElementById('supercopa-card');
-            const { data: supercopaData, userGroup } = supercopaInfo;
-            
-            const groupNameMap = {
-                'group1': 'Grupo A',
-                'group2': 'Grupo B',
-                'group3': 'Grupo C',
-                'group4': 'Grupo D'
-            };
-            
-            // Verificar status da Supercopa
-            if (supercopaData && supercopaData.groups && supercopaData.groups.status === 1) {
-                // Atualizar o card da Supercopa para mostrar informações do grupo
-                if (userGroup) {
-                    supercopaCard.innerHTML = `
-                        <div class="tournament-title">
-                            Supercopa
-                            <span class="status-badge status-in-progress">Em Progresso</span>
-                        </div>
-                        <p>Você está no ${groupNameMap[userGroup] || userGroup}</p>
-                        <p>Clique para ver os detalhes do seu grupo.</p>
-                    `;
+            if (!supercopaCard || !supercopaInfo) return;
+
+            const { data, userGroupKey, groupDisplayName } = supercopaInfo;
+            let htmlContent = '';
+            let statusClass = 'status-not-started';
+            let statusText = 'Não Iniciada';
+
+            if (data && data.groups && data.groups.status === 1) { // Em progresso
+                statusClass = 'status-in-progress';
+                statusText = 'Em Progresso';
+                if (userGroupKey) {
+                    htmlContent = `<p>Você está no ${groupDisplayName}.</p><p>Clique para ver os detalhes do seu grupo.</p>`;
                 } else {
-                    supercopaCard.innerHTML = `
-                        <div class="tournament-title">
-                            Supercopa
-                            <span class="status-badge status-in-progress">Em Progresso</span>
-                        </div>
-                        <p>Você não está participando desta edição da Supercopa.</p>
-                    `;
+                    htmlContent = `<p>Você não está participando desta edição da Supercopa.</p>`;
                 }
-            } else {
-                // Supercopa não iniciada
-                supercopaCard.innerHTML = `
-                    <div class="tournament-title">
-                        Supercopa
-                        <span class="status-badge status-not-started">Não Iniciada</span>
-                    </div>
-                    <p>Competição ainda não iniciada. Aguarde mais informações.</p>
-                `;
+            } else if (data && data.groups && data.groups.status === 2) { // Finalizada
+                 statusClass = 'status-finished';
+                 statusText = 'Finalizada';
+                 htmlContent = `<p>Esta edição da Supercopa foi finalizada.</p><p>Clique para ver os resultados.</p>`;
+            }
+            else { // Não iniciada
+                htmlContent = `<p>Competição ainda não iniciada. Aguarde mais informações.</p>`;
             }
             
-            // Adicionar evento de clique para navegação
-            supercopaCard.style.cursor = 'pointer';
-            supercopaCard.addEventListener('click', () => {
-                window.location.href = 'supercopa.html';
-            });
+            supercopaCard.innerHTML = `
+                <div class="tournament-title">
+                    Supercopa
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </div>
+                ${htmlContent}
+            `;
+            supercopaCard.onclick = () => window.location.href = 'supercopa.html';
         }
-
-        function loadNextRound() {
-            if (cachedData.nextRound) {
+        
+        let countdownInterval; // Guardar o ID do intervalo para limpar depois
+        function loadNextRound(forceRefresh = false) {
+            if (!forceRefresh && cachedData.nextRound) {
                 updateNextRoundUI(cachedData.nextRound);
                 startCountdown(cachedData.nextRound.finishTimestamp);
-                return Promise.resolve();
+                return Promise.resolve(cachedData.nextRound);
             }
-
-            const roundsRef = database.ref('rounds');
             
+            const roundsRef = database.ref('rounds');
             return roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
-                    snapshot.forEach((childSnapshot) => {
+                    snapshot.forEach((childSnapshot) => { // Haverá apenas um
                         const roundData = childSnapshot.val();
                         cachedData.nextRound = roundData;
                         updateNextRoundUI(roundData);
                         startCountdown(roundData.finishTimestamp);
                     });
                 } else {
-                    document.getElementById('next-round-card').innerHTML = `
-                        <div class="round-title">Nenhuma rodada disponível</div>
-                        <div class="round-time">Aguarde a próxima rodada</div>
-                    `;
-                    
-                    // Adicionar evento de clique para fazer palpites
-                    document.getElementById('next-round-card').addEventListener('click', () => {
-                        alert('Não há rodadas disponíveis no momento.');
-                    });
+                    cachedData.nextRound = null; // Limpa o cache se não houver rodada
+                    updateNextRoundUI(null); // Chama com null para mostrar mensagem
                 }
+                return cachedData.nextRound;
             });
         }
 
         function updateNextRoundUI(roundData) {
-            const nextRoundDeadline = document.getElementById('next-round-deadline');
-            const nextRoundCountdown = document.getElementById('next-round-countdown');
-            
-            const finishDate = new Date(roundData.finishTimestamp);
-            finishDate.setHours(finishDate.getHours());
-            
-            // Formatação da data em português
-            const options = { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' };
-            const formattedDate = finishDate.toLocaleDateString('pt-BR', options).replace(',', '');
-            
-            nextRoundDeadline.textContent = `Palpite até ${formattedDate}`;
-            nextRoundCountdown.textContent = `Tempo restante: calculando...`;
-            
-            // Adicionar evento de clique para fazer palpites
-            document.getElementById('next-round-card').style.cursor = 'pointer';
-            document.getElementById('next-round-card').addEventListener('click', () => {
-                window.location.href = 'palpites.html';
-            });
+            const card = document.getElementById('next-round-card');
+            const deadlineEl = document.getElementById('next-round-deadline');
+            const countdownEl = document.getElementById('next-round-countdown');
+
+            if (!card || !deadlineEl || !countdownEl) return;
+
+            if (roundData && roundData.finishTimestamp) {
+                const finishDate = new Date(roundData.finishTimestamp);
+                const options = { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
+                const formattedDate = finishDate.toLocaleDateString('pt-BR', options).replace(',', '');
+                
+                deadlineEl.textContent = `Palpite até ${formattedDate}`;
+                countdownEl.textContent = `Tempo restante: calculando...`;
+                card.onclick = () => window.location.href = 'palpites.html';
+            } else {
+                deadlineEl.textContent = 'Nenhuma rodada aberta';
+                countdownEl.textContent = 'Aguarde a próxima rodada ser liberada.';
+                card.onclick = () => alert('Não há rodadas disponíveis para palpitar no momento.');
+            }
         }
 
         function startCountdown(finishTimestamp) {
             const countdownElement = document.getElementById('next-round-countdown');
-            if (!countdownElement) return;
+            if (!countdownElement || !finishTimestamp) return;
 
-            let interval;
+            clearInterval(countdownInterval); // Limpa intervalo anterior, se houver
 
-            const updateCountdown = () => {
-                const now = new Date();
-                const end = new Date(finishTimestamp);
-                end.setHours(end.getHours());
-                
-                const diff = end - now;
-                
-                if (diff <= 0) {
+            const update = () => {
+                const now = new Date().getTime();
+                const distance = finishTimestamp - now;
+
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
                     countdownElement.textContent = "Tempo esgotado!";
-                    clearInterval(interval);
+                    // Poderia chamar loadNextRound(true) aqui para buscar uma nova rodada se esta acabou
                     return;
                 }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                countdownElement.textContent = `Tempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                countdownElement.textContent = `Restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
             };
             
-            updateCountdown();
-            interval = setInterval(updateCountdown, 1000); // Now this assigns to the already declared variable
+            update(); // Primeira chamada imediata
+            countdownInterval = setInterval(update, 1000);
         }
 
-        function loadPastRounds() {
-            // Adicionar evento de clique para histórico
-            document.querySelector('.view-history').addEventListener('click', () => {
-                window.location.href = 'historico.html';
-            });
-            
-            return Promise.resolve();
-        }
+        // A função loadPastRounds não é necessária aqui para o home,
+        // o link "Ver Histórico" já direciona para historico.html
 
-        // Verificar se o usuário é admin
-        function checkAdminStatus(userId) {
-            console.log('oi4')
-            if (cachedData.userProfile && cachedData.userProfile.userData.isAdmin !== undefined) {
+        function checkAdminStatus(userId, forceRefresh = false) {
+             if (!forceRefresh && cachedData.userProfile && typeof cachedData.userProfile.userData.isAdmin !== 'undefined') {
                 updateAdminButton(cachedData.userProfile.userData.isAdmin);
                 return Promise.resolve();
             }
-
             const userRef = database.ref('users/' + userId);
-            
             return userRef.once('value').then((snapshot) => {
-                const userData = snapshot.val();
-                if (cachedData.userProfile) {
-                    cachedData.userProfile.userData.isAdmin = userData.isAdmin;
+                const isAdmin = snapshot.val()?.isAdmin || false;
+                if (cachedData.userProfile && cachedData.userProfile.userData) { // Garante que userData existe
+                    cachedData.userProfile.userData.isAdmin = isAdmin;
+                } else if (cachedData.userProfile) { // Se userProfile existe mas userData não
+                    cachedData.userProfile.userData = { isAdmin: isAdmin };
+                } else { // Se nem userProfile existe
+                    cachedData.userProfile = { userData: { isAdmin: isAdmin } };
                 }
-                updateAdminButton(userData.isAdmin);
+                updateAdminButton(isAdmin);
+                return isAdmin; // Retorna o status para quem chamou
             });
         }
 
         function updateAdminButton(isAdmin) {
-            const adminButton = document.getElementById('admin-button');
+            const adminButtonToolbar = document.getElementById('admin-button');
+            const adminButtonSidebar = document.getElementById('sidebar-admin-item');
+
             if (isAdmin) {
-                adminButton.style.display = 'inline-block';
-                adminButton.addEventListener('click', () => {
-                    window.location.href = 'admin.html';
-                });
+                if (adminButtonToolbar) {
+                    adminButtonToolbar.style.display = 'flex'; // Usar flex para alinhar com outros icon-buttons
+                    adminButtonToolbar.onclick = () => window.location.href = 'admin.html';
+                }
+                if (adminButtonSidebar) adminButtonSidebar.style.display = 'block';
+            } else {
+                if (adminButtonToolbar) adminButtonToolbar.style.display = 'none';
+                if (adminButtonSidebar) adminButtonSidebar.style.display = 'none';
             }
         }
 
@@ -955,104 +1174,93 @@
             window.location.href = 'superliga.html';
         });
 
+        // --- Lógica do Ad Popup ---
         const adPopupElement = document.getElementById('customAdPopup');
-            const adCloseButtonElement = document.getElementById('customAdCloseBtn');
-            const adProgressBarElement = document.getElementById('customAdProgressBar');
-            const adImageDisplayElement = document.getElementById('customAdImage');
-            const adLinkElement = document.getElementById('customAdLink');
+        const adCloseButtonElement = document.getElementById('customAdCloseBtn');
+        const adProgressBarElement = document.getElementById('customAdProgressBar');
+        const adImageDisplayElement = document.getElementById('customAdImage');
+        const adLinkElement = document.getElementById('customAdLink');
 
-            // **IMPORTANTE**: Substitua a URL abaixo pela URL da sua imagem de anúncio estática.
-            // A URL atual é um placeholder.
-            adImageDisplayElement.src = './dvd.jpg';
+        const AD_POPUP_STORAGE_KEY = 'customAdPopupShownDVD_v1.4'; // Mude a versão para resetar
+        const AD_POPUP_DURATION_MS = 7000;
+        const AD_POPUP_PROGRESS_INTERVAL_MS = 50;
+        const AD_TARGET_CLICK_URL = 'https://www.google.com/search?q=porno+gay+de+anao';
+        const AD_IMAGE_SOURCE_URL = './dvd.jpg'; // Caminho para sua imagem de anúncio
 
-            const AD_POPUP_STORAGE_KEY = 'customAdPopupShownDVD_v1.2'; // Chave para localStorage (mude a versão para resetar)
-            const AD_POPUP_DURATION_MS = 7000; // Duração do anúncio em milissegundos (ex: 7 segundos)
-            const AD_POPUP_PROGRESS_INTERVAL_MS = 50; // Intervalo de atualização da barra (em ms)
-            const AD_TARGET_CLICK_URL = 'https://www.xvideos.com/?k=porno+gay+de+anao';
+        let adPopupTimerIntervalId;
+        let adPopupTimeoutCloseId;
 
-            let adPopupTimerIntervalId; // ID do setInterval para a barra de progresso
-            let adPopupTimeoutCloseId;  // ID do setTimeout para fechar automaticamente
-
-            function displayAdPopupOnce() {
-            // Verifica se o anúncio já foi exibido
-            if (localStorage.getItem(AD_POPUP_STORAGE_KEY)) {
-                // console.log('Pop-up de anúncio já foi exibido e não será mostrado novamente.');
-                return;
-            }
-
-            // Verifica se todos os elementos do pop-up existem no DOM
+        function displayAdPopupOnce() {
+            if (localStorage.getItem(AD_POPUP_STORAGE_KEY)) return;
             if (!adPopupElement || !adCloseButtonElement || !adProgressBarElement || !adImageDisplayElement || !adLinkElement) {
-                console.error('Um ou mais elementos do pop-up de anúncio não foram encontrados no DOM.');
+                console.error('Elementos do AdPopup não encontrados.');
                 return;
             }
             
-            // Configura a imagem e o link do anúncio
-            const AD_IMAGE_SOURCE_URL = './dvd.jpg';
             adImageDisplayElement.src = AD_IMAGE_SOURCE_URL;
-            adLinkElement.href = AD_TARGET_CLICK_URL;
+            adLinkElement.href = AD_TARGET_CLICK_URL || '#'; // Fallback para # se não houver URL
             
-            adPopupElement.style.display = 'flex'; // Mostra o pop-up
-            localStorage.setItem(AD_POPUP_STORAGE_KEY, 'true'); // Marca como exibido
+            adPopupElement.style.display = 'flex';
+            localStorage.setItem(AD_POPUP_STORAGE_KEY, 'true');
 
             let startTime = Date.now();
-            adProgressBarElement.style.width = '100%'; // Inicia a barra de progresso cheia
+            adProgressBarElement.style.width = '100%';
 
-            // Atualiza a barra de progresso em intervalos regulares
             adPopupTimerIntervalId = setInterval(() => {
                 const elapsedTime = Date.now() - startTime;
                 const remainingTime = AD_POPUP_DURATION_MS - elapsedTime;
-                
                 if (remainingTime <= 0) {
-                    closeAdPopup(true); // Fecha automaticamente se o tempo acabou
+                    closeAdPopup(true);
                 } else {
-                    const progressPercentage = (remainingTime / AD_POPUP_DURATION_MS) * 100;
-                    adProgressBarElement.style.width = progressPercentage + '%';
+                    adProgressBarElement.style.width = (remainingTime / AD_POPUP_DURATION_MS) * 100 + '%';
                 }
             }, AD_POPUP_PROGRESS_INTERVAL_MS);
 
-            // Define um timeout de segurança para fechar o anúncio
-            adPopupTimeoutCloseId = setTimeout(() => {
-                closeAdPopup(true);
-            }, AD_POPUP_DURATION_MS + AD_POPUP_PROGRESS_INTERVAL_MS);
+            adPopupTimeoutCloseId = setTimeout(() => closeAdPopup(true), AD_POPUP_DURATION_MS + 100);
         }
 
         function closeAdPopup(autoClosed = false) {
             if (!adPopupElement || adPopupElement.style.display === 'none') return;
-
             adPopupElement.style.display = 'none';
             clearInterval(adPopupTimerIntervalId);
             clearTimeout(adPopupTimeoutCloseId);
-            // console.log(autoClosed ? 'Anúncio fechado automaticamente.' : 'Anúncio fechado pelo usuário.');
         }
 
-        if (adCloseButtonElement) {
-            adCloseButtonElement.addEventListener('click', () => closeAdPopup(false));
-        }
+        if (adCloseButtonElement) adCloseButtonElement.addEventListener('click', () => closeAdPopup(false));
 
         function attemptToShowAdPopup() {
             const loadingScreen = document.getElementById('loading-screen');
-            
-            if (loadingScreen && loadingScreen.style.display !== 'none') {
+            if (loadingScreen && window.getComputedStyle(loadingScreen).display !== 'none') {
                 const observer = new MutationObserver((mutationsList, obs) => {
-                    for(const mutation of mutationsList) {
-                        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                            if (loadingScreen.style.display === 'none') {
-                                displayAdPopupOnce();
-                                obs.disconnect();
-                                return;
-                            }
-                        }
+                    if (window.getComputedStyle(loadingScreen).display === 'none') {
+                        displayAdPopupOnce();
+                        obs.disconnect();
                     }
                 });
-                observer.observe(loadingScreen, { attributes: true });
+                observer.observe(loadingScreen, { attributes: true, attributeFilter: ['style'] });
             } else {
                 displayAdPopupOnce();
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            attemptToShowAdPopup();
+            // Adicionar active-link à página atual no sidebar
+            const currentPage = window.location.pathname.split("/").pop() || "home.html";
+            sidebarMenu.querySelectorAll('a').forEach(link => {
+                link.classList.remove('active-link');
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active-link');
+                }
+            });
+            
+            // Tentar mostrar o AdPopup após o DOM estar carregado e os dados iniciais serem buscados (para evitar sobrepor loading)
+            // A lógica de onAuthStateChanged agora controla o fim do loading, então o AdPopup pode ser chamado após isso.
+            // Uma forma mais robusta seria chamar `displayAdPopupOnce` após `loadingScreen.style.display = 'none'`
+            // na função `fetchAllData` e no `onAuthStateChanged` quando usa cache.
+            // Por simplicidade, vamos manter o attemptToShowAdPopup que observa o loading screen.
+             attemptToShowAdPopup();
         });
+
     </script>
 </body>
 </html>
