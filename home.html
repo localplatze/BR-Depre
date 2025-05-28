@@ -501,6 +501,86 @@
             }
         }
 
+        /* Adicione ou substitua este bloco na sua tag <style> principal */
+        .corinthians-blocker-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%); /* Fundo escuro com gradiente sutil */
+            color: #e0e0e0; /* Texto principal um pouco mais suave que branco puro */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 100000; /* Para garantir que fique na frente de tudo */
+            font-family: 'Roboto', sans-serif; /* Mantendo a consistência da fonte */
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0; /* Para animação de fade-in */
+            animation: blockerFadeIn 0.7s 0.2s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Animação de entrada */
+        }
+
+        @keyframes blockerFadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .corinthians-blocker-overlay img {
+            width: 280px; /* Ajustado, pode ser 300px se preferir */
+            height: 280px;
+            object-fit: cover; /* Garante que a imagem preencha sem distorcer (se não for quadrada) */
+            border-radius: 50%; /* Imagem redonda para um visual de "selo" ou "emblema" */
+            margin-bottom: 35px;
+            border: 5px solid #c00; /* Borda vermelha escura, combinando com o tema */
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5), 0 0 15px rgba(0,0,0,0.7); /* Sombra com brilho vermelho */
+            background-color: #333; /* Cor de fundo caso a imagem tenha transparência */
+        }
+
+        .corinthians-blocker-overlay h1 {
+            font-size: clamp(36px, 7vw, 58px); /* Tamanho bem destacado e responsivo */
+            font-weight: 900; /* Bem forte */
+            margin-bottom: 20px;
+            color: #FF1744; /* Um vermelho vibrante e moderno */
+            text-transform: uppercase;
+            letter-spacing: 1.5px; /* Espaçamento entre letras */
+            text-shadow: 
+                0 0 5px #FF1744, /* Brilho sutil */
+                2px 2px 8px rgba(0,0,0,0.6); /* Sombra para profundidade */
+            animation: pulseText 2s infinite alternate; /* Efeito de pulsação sutil */
+        }
+
+        @keyframes pulseText {
+            from { transform: scale(1); opacity: 0.9; }
+            to { transform: scale(1.03); opacity: 1; }
+        }
+
+        .corinthians-blocker-overlay p {
+            font-size: clamp(17px, 3.8vw, 21px); /* Ligeiramente maior */
+            font-weight: 300; /* Mais leve para contraste com o título */
+            line-height: 1.7;
+            max-width: 650px; /* Para boa legibilidade em telas largas */
+            margin-bottom: 18px;
+        }
+
+        .corinthians-blocker-overlay p:last-of-type { /* O parágrafo com o (Isso é uma brincadeira...) */
+            margin-bottom: 0;
+        }
+
+        .corinthians-blocker-overlay p strong {
+            color: #FFD600; /* Amarelo dourado para destaque */
+            font-weight: 600; /* Um pouco mais de peso */
+        }
+
+        .corinthians-blocker-overlay .small-text {
+            font-size: clamp(13px, 2.8vw, 15px);
+            margin-top: 45px; /* Mais espaço antes deste texto */
+            opacity: 0.5; /* Mais sutil */
+            font-style: italic;
+        }
+
     </style>
 </head>
 <body>
@@ -651,6 +731,30 @@
             nextRound: null,
         };
         const SESSION_CACHE_KEY = 'brdepre_home_cache_v2'; // Nova versão para invalidar cache antigo
+        const CORINTHIANS_TEAM_ID = 'SP03'; // ID do Corinthians
+        let isBlockedByCorinthians = true; // Flag para controlar o bloqueio
+
+        function showCorinthiansBlocker() {
+            isBlockedByCorinthians = true;
+            document.body.innerHTML = `
+                <div class="corinthians-blocker-overlay">
+                    <img src="./bdd.png" alt="Brasileirão da Depressão">
+                    <h1>ACESSO NEGADO</h1>
+                    <p>Nossos sistemas detectaram atividade suspeita relacionada ao seu time.</p>
+                    <p>Por motivos de segurança e bem-estar geral da nação, seu acesso foi temporariamente revogado.</p>
+                    <p><strong>Volte amanhã (ou talvez depois).</strong></p>
+                </div>
+            `;
+            // Parar qualquer outra execução de script que possa tentar modificar o DOM depois disso...
+        }
+
+        function checkAndApplyCorinthiansBlock(userProfileData) {
+            if (userProfileData && userProfileData.userData && userProfileData.userData.teamId === CORINTHIANS_TEAM_ID) {
+                showCorinthiansBlocker();
+                return true; // Indica que o bloqueio foi aplicado
+            }
+            return false; // Indica que não houve bloqueio
+        }
 
         // Função para salvar os dados em sessionStorage
         function saveToSessionCache() {
@@ -736,7 +840,8 @@
                 if (sessionCache && sessionCache.userProfile && sessionCache.userProfile.id === firebaseUser.uid) { // Valida se o cache é do usuário atual
                     cachedData = sessionCache;
                     updateUIFromCache();
-                    if (loadingScreen) loadingScreen.style.display = 'none';
+                    checkAndApplyCorinthiansBlock(cachedData.userProfile)
+                    if (loadingScreen) loadingScreen.style.display = 'none'; 
                     refreshAllData(firebaseUser.uid);
                 } else {
                     sessionStorage.removeItem(SESSION_CACHE_KEY); // Limpa cache inválido
