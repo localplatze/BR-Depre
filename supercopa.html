@@ -112,10 +112,25 @@
         }
         .match-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
         .match-players { display: flex; align-items: center; justify-content: space-between; }
-        .match-player { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; }
+        .match-player { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; position: relative; }
         .match-player .team-logo { width: 45px; height: 45px; object-fit: contain; margin-bottom: 8px; }
         .match-player .player-name { font-size: 14px; font-weight: 500; }
         .match-result { font-size: 22px; font-weight: 700; color: var(--primary-color); margin: 0 15px; }
+        .no-prediction-warning {
+            position: absolute;
+            bottom: -5px;
+            right: 50px;
+            width: 20px;
+            height: 20px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
         
         /* --- [CORRIGIDO] Estilo para o container de rounds com navegação --- */
         .rounds-navigation-container {
@@ -570,12 +585,19 @@
                 const p1Name = isMobile ? (player1.abbr || player1.name) : player1.name;
                 const p2Name = isMobile ? (player2.abbr || player2.name) : player2.name;
                 
+                // Verificar se os jogadores fizeram previsões
+                const p1HasPrediction = activeSuperligaRoundCache ? 
+                    Object.values(activeSuperligaRoundCache.matches).some(m => m.predictions?.[p1Id]) : false;
+                const p2HasPrediction = activeSuperligaRoundCache ? 
+                    Object.values(activeSuperligaRoundCache.matches).some(m => m.predictions?.[p2Id]) : false;
+
                 let result = "vs";
                 if (match.result) {
                     result = match.result;
                 } else if (activeSuperligaRoundCache) {
-                    const score1 = liveRoundPoints[p1Id] !== undefined ? liveRoundPoints[p1Id] : (player1.lastRoundPointsLigaAbertura || 0);
-                    const score2 = liveRoundPoints[p2Id] !== undefined ? liveRoundPoints[p2Id] : (player2.lastRoundPointsLigaAbertura || 0);
+                    // Ajuste para mostrar 0 quando não tem prediction
+                    const score1 = p1HasPrediction ? (liveRoundPoints[p1Id] || 0) : 0;
+                    const score2 = p2HasPrediction ? (liveRoundPoints[p2Id] || 0) : 0;
                     result = `${score1} x ${score2}`;
                 }
 
@@ -583,14 +605,30 @@
                 card.className = 'match-card';
                 card.innerHTML = `
                     <div class="match-players">
-                        <div class="match-player"><img src="${team1.image || ''}" alt="" class="team-logo"><span class="player-name">${p1Name || 'A Definir'}</span></div>
+                        <div class="match-player">
+                            <img src="${team1.image || ''}" alt="" class="team-logo">
+                            <span class="player-name">${p1Name || 'A Definir'}</span>
+                            ${!p1HasPrediction && activeSuperligaRoundCache ? '<div class="no-prediction-warning" title="Não apostou">!</div>' : ''}
+                        </div>
                         <div class="match-result">${result}</div>
-                        <div class="match-player"><img src="${team2.image || ''}" alt="" class="team-logo"><span class="player-name">${p2Name || 'A Definir'}</span></div>
+                        <div class="match-player">
+                            <img src="${team2.image || ''}" alt="" class="team-logo">
+                            <span class="player-name">${p2Name || 'A Definir'}</span>
+                            ${!p2HasPrediction && activeSuperligaRoundCache ? '<div class="no-prediction-warning" title="Não apostou">!</div>' : ''}
+                        </div>
                     </div>
                 `;
                 card.addEventListener('click', () => showMatchDetails(p1Id, p2Id));
                 container.appendChild(card);
             });
+
+            // Atualizar a tabela em tempo real se houver rodada ativa
+            if (activeSuperligaRoundCache) {
+                const activeGroup = document.querySelector('.group-tab.active')?.dataset.group;
+                if (activeGroup) {
+                    loadGroupStandings(activeGroup);
+                }
+            }
         }
 
         function calculateLiveRoundPoints(roundData) {
@@ -676,48 +714,64 @@
         }
 
         async function showMatchDetails(p1Id, p2Id) {
-            if (!activeSuperligaRoundCache || !activeSuperligaRoundCache.matches) {
-                alert("Não há rodada da Superliga em andamento para analisar palpites.");
-                return;
-            }
             const player1 = usersDataCache[p1Id];
             const player2 = usersDataCache[p2Id];
             ui.dialogTitle.innerHTML = `<i class="fas fa-chart-pie"></i> Análise: ${player1.name} vs ${player2.name}`;
+            
             let totalPointsInDispute = 0;
-            const predictionsHTML = Object.values(activeSuperligaRoundCache.matches).map(match => {
-                const p1Prediction = match.predictions?.[p1Id];
-                const p2Prediction = match.predictions?.[p2Id];
-                if (!p1Prediction || !p2Prediction) return '';
-                const homeTeam = teamsDataCache[match.homeTeam]?.name || 'Time A';
-                const awayTeam = teamsDataCache[match.awayTeam]?.name || 'Time B';
-                const p1Score = `${p1Prediction.homeScore} x ${p1Prediction.awayScore}`;
-                const p2Score = `${p2Prediction.homeScore} x ${p2Prediction.awayScore}`;
-                let comparisonResult = '', points = 0;
-                if (p1Prediction.homeScore === p2Prediction.homeScore && p1Prediction.awayScore === p2Prediction.awayScore) {
-                    comparisonResult = 'Palpites idênticos'; points = 3;
-                } else {
-                    const winner1 = Math.sign(p1Prediction.homeScore - p1Prediction.awayScore);
-                    const winner2 = Math.sign(p2Prediction.homeScore - p2Prediction.awayScore);
-                    if (winner1 === winner2) {
-                        comparisonResult = 'Apostaram no mesmo vencedor'; points = 1;
+            let predictionsHTML = '';
+            
+            if (activeSuperligaRoundCache && activeSuperligaRoundCache.matches) {
+                predictionsHTML = Object.values(activeSuperligaRoundCache.matches).map(match => {
+                    const p1Prediction = match.predictions?.[p1Id];
+                    const p2Prediction = match.predictions?.[p2Id];
+                    
+                    const homeTeam = teamsDataCache[match.homeTeam]?.name || 'Time A';
+                    const awayTeam = teamsDataCache[match.awayTeam]?.name || 'Time B';
+                    
+                    // Mostrar informações mesmo quando um ou ambos não apostaram
+                    const p1Score = p1Prediction ? `${p1Prediction.homeScore} x ${p1Prediction.awayScore}` : 'Não apostou';
+                    const p2Score = p2Prediction ? `${p2Prediction.homeScore} x ${p2Prediction.awayScore}` : 'Não apostou';
+                    
+                    let comparisonResult = '', points = 0;
+                    
+                    if (p1Prediction && p2Prediction) {
+                        if (p1Prediction.homeScore === p2Prediction.homeScore && p1Prediction.awayScore === p2Prediction.awayScore) {
+                            comparisonResult = 'Palpites idênticos'; 
+                            points = 3;
+                        } else {
+                            const winner1 = Math.sign(p1Prediction.homeScore - p1Prediction.awayScore);
+                            const winner2 = Math.sign(p2Prediction.homeScore - p2Prediction.awayScore);
+                            if (winner1 === winner2) {
+                                comparisonResult = 'Apostaram no mesmo vencedor'; 
+                                points = 1;
+                            } else {
+                                comparisonResult = 'Palpites totalmente diferentes'; 
+                                points = 0;
+                            }
+                        }
+                        totalPointsInDispute += points;
                     } else {
-                        comparisonResult = 'Palpites totalmente diferentes'; points = 0;
+                        comparisonResult = p1Prediction && !p2Prediction ? `${player2.name} não apostou` : 
+                                        !p1Prediction && p2Prediction ? `${player1.name} não apostou` : 
+                                        'Nenhum dos dois apostou';
                     }
-                }
-                totalPointsInDispute += points;
-                return `
-                    <li class="prediction-item">
-                        <div class="match-info">${homeTeam} vs ${awayTeam}</div>
-                        <div class="players-predictions">
-                            <div class="player-prediction"><span class="name">${player1.name}</span><span class="score">${p1Score}</span></div>
-                            <div class="player-prediction"><span class="name">${player2.name}</span><span class="score">${p2Score}</span></div>
-                        </div>
-                        <div class="comparison-result">${comparisonResult}</div>
-                    </li>
-                `;
-            }).join('');
-            ui.dialogPredictionList.innerHTML = predictionsHTML || '<div class="empty-state">Nenhum palpite em comum para analisar.</div>';
-            ui.dialogPointsDispute.textContent = `Total de Pontos em Disputa: ${totalPointsInDispute}`;
+                    
+                    return `
+                        <li class="prediction-item">
+                            <div class="match-info">${homeTeam} vs ${awayTeam}</div>
+                            <div class="players-predictions">
+                                <div class="player-prediction"><span class="name">${player1.name}</span><span class="score">${p1Score}</span></div>
+                                <div class="player-prediction"><span class="name">${player2.name}</span><span class="score">${p2Score}</span></div>
+                            </div>
+                            <div class="comparison-result">${comparisonResult}</div>
+                        </li>
+                    `;
+                }).join('');
+            }
+            
+            ui.dialogPredictionList.innerHTML = predictionsHTML || '<div class="empty-state">Nenhum jogo nesta rodada para analisar.</div>';
+            ui.dialogPointsDispute.textContent = activeSuperligaRoundCache ? `Total de Pontos em Disputa: ${totalPointsInDispute}` : 'Nenhuma rodada ativa no momento';
             ui.dialog.showModal();
         }
     </script>
