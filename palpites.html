@@ -23,132 +23,58 @@
             --neutral-color: #95a5a6;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .header h1 { font-size: 28px; font-weight: 700; }
         .action-button {
-            background-color: var(--primary-color);
-            color: white; border: none; padding: 10px 20px;
-            border-radius: 8px; cursor: pointer; transition: all 0.3s;
-            font-weight: 500; font-size: 15px; display: inline-flex;
-            align-items: center; gap: 8px;
+            background-color: var(--primary-color); color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s; font-weight: 500; font-size: 15px;
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
         }
         .action-button:hover { background-color: #3b50cb; transform: translateY(-2px); }
         .action-button:disabled { background-color: var(--neutral-color); cursor: not-allowed; transform: none; }
-        
-        .timer {
-            text-align: center; font-size: 1.1em; color: var(--text-color-light);
-            margin-bottom: 25px; padding: 12px; background-color: var(--card-bg-color);
-            border-radius: var(--border-radius); box-shadow: var(--shadow);
-        }
-
-        /* --- ABAS DE NAVEGAÇÃO MODERNIZADAS --- */
-        .main-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .tab-button {
-            padding: 12px 20px;
-            background-color: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--text-color-light);
-            transition: all 0.3s;
-        }
-        .tab-button:hover { color: var(--primary-color); }
-        .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-
-        /* --- CARDS DE JOGO REFINADOS --- */
-        .matches-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-        }
-        .match-card {
-            background-color: var(--card-bg-color);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .match-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .match-header {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.9em;
-            color: var(--text-color-light);
-            background-color: #fcfdff;
-        }
-        .match-content { padding: 20px; }
+        .timer { text-align: center; font-size: 1.1em; color: var(--text-color-light); margin-bottom: 25px; padding: 12px; background-color: var(--card-bg-color); border-radius: var(--border-radius); box-shadow: var(--shadow); }
+        .matches-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .match-card { background-color: var(--card-bg-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+        .match-header { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 0.9em; color: var(--text-color-light); background-color: #fcfdff; }
+        .match-content { padding: 20px; flex-grow: 1; }
         .match-teams { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .team { display: flex; flex-direction: column; align-items: center; width: 40%; text-align: center; }
         .team img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
         .team-name { font-weight: 500; }
         .versus { font-size: 18px; color: var(--text-color-light); }
-        .match-score { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
-        .score-display { font-size: 28px; font-weight: 700; }
-        .score-divider { margin: 0 15px; font-size: 20px; color: #bdc3c7; }
         .prediction-inputs { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .prediction-inputs input {
-            width: 60px; height: 45px; font-size: 18px; text-align: center;
-            border: 2px solid var(--border-color); border-radius: 8px;
-            background-color: var(--background-color); color: var(--text-color);
-            transition: all 0.3s ease;
-        }
+        .prediction-inputs input { width: 60px; height: 45px; font-size: 18px; text-align: center; border: 2px solid var(--border-color); border-radius: 8px; background-color: var(--background-color); color: var(--text-color); transition: all 0.3s ease; }
         .prediction-inputs input:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(74,101,245,0.2); outline: none; }
         .prediction-inputs span { font-size: 24px; font-weight: bold; }
         .match-footer { padding: 15px; text-align: center; border-top: 1px solid var(--border-color); }
-        .full-time-badge { background-color: #2c3e50; color: white; font-size: 12px; padding: 4px 10px; border-radius: 20px; margin-top: 10px; display: inline-block; font-weight: 500; }
         .loader-container { display: flex; justify-content: center; align-items: center; min-height: 300px; }
         .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- DIÁLOGO DE STATUS DOS JOGADORES MODERNIZADO --- */
-        #player-status-dialog {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 900px;
-            padding: 0;
-            margin: 0;
+        /* Diálogo de Palpites */
+        #predictions-dialog {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: none; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%; max-width: 500px; padding: 0; margin: 0;
         }
-        #player-status-dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); }
+        #predictions-dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); }
         .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); }
         .dialog-header h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .dialog-header .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-color-light); }
-        .dialog-content { padding: 24px; max-height: 65vh; overflow-y: auto; }
-        .table-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: 8px; }
-        .player-status-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .player-status-table th, .player-status-table td { padding: 12px; text-align: center; border-left: 1px solid var(--border-color); white-space: nowrap; }
-        .player-status-table th:first-child, .player-status-table td:first-child { border-left: none; }
-        .player-status-table thead { background-color: #f8f9fa; position: sticky; top: 0; z-index: 10; }
-        .player-status-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
-        .player-status-table tbody tr:hover { background-color: #f0f8ff; }
-        .status-table-player { text-align: left !important; font-weight: 500; }
-        .status-icon { font-size: 18px; }
-        .status-missing { color: var(--danger-color); }
-        .status-pending { color: var(--neutral-color); }
-        .points-3 { background-color: #d4edda; color: #155724; font-weight: bold; }
-        .points-1 { background-color: #fff3cd; color: #856404; font-weight: bold; }
-        .points-0 { background-color: #f8f9fa; color: #383d41; }
-        .points-minus-1 { background-color: #f8d7da; color: #721c24; font-weight: bold; }
-        .legend-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 15px; font-size: 13px; justify-content: center; }
-        .legend-item { display: flex; align-items: center; gap: 8px; }
-        .legend-color-box { width: 14px; height: 14px; border-radius: 3px; }
+        .dialog-content { padding: 16px; max-height: 60vh; overflow-y: auto; }
+        .predictions-list { list-style: none; padding: 0; }
+        .prediction-item { display: flex; align-items: center; padding: 12px 8px; border-bottom: 1px solid var(--border-color); }
+        .prediction-item:last-child { border-bottom: none; }
+        .prediction-player { flex-grow: 1; font-weight: 500; }
+        .prediction-score { font-weight: 600; font-size: 16px; margin-right: 15px; }
+        .prediction-points { width: 32px; height: 32px; border-radius: 50%; color: white; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+        .points-3 { background-color: var(--success-color); }
+        .points-1 { background-color: var(--warning-color); color: #333; }
+        .points-0 { background-color: var(--neutral-color); }
+        .points--1 { background-color: var(--danger-color); }
+        .points-none { background-color: #f0f2f5; color: #333; }
     </style>
 </head>
 <body>
@@ -157,57 +83,22 @@
             <h1>Próxima Rodada</h1>
             <a href="home.html" class="action-button">Voltar</a>
         </div>
-        <div id="timer-container" class="timer">
-            <i class="fas fa-clock"></i> Carregando temporizador...
-        </div>
-
-        <div class="main-tabs">
-            <button id="matches-tab" class="tab-button active">
-                <i class="fas fa-futbol"></i> Jogos
-            </button>
-            <button id="player-status-tab" class="tab-button">
-                <i class="fas fa-users"></i> Status dos Jogadores
-            </button>
-        </div>
-
-        <div id="loader" class="loader-container">
-            <div class="loader"></div>
-        </div>
-        <div id="matches-container" class="matches-container" style="display: none;">
-            <!-- Cards de jogos carregados pelo JS -->
-        </div>
+        <div id="timer-container" class="timer"><i class="fas fa-clock"></i> Carregando...</div>
+        <div id="loader" class="loader-container"><div class="loader"></div></div>
+        <div id="matches-container" class="matches-container" style="display: none;"></div>
         <div class="action-container" style="margin-top: 30px; text-align: center;">
-            <button id="save-predictions" class="action-button">
-                <i class="fas fa-save"></i> Salvar Palpites
-            </button>
+            <button id="save-predictions" class="action-button"><i class="fas fa-save"></i> Salvar Palpites</button>
         </div>
     </div>
 
-    <!-- DIÁLOGO DE STATUS DOS JOGADORES -->
-    <dialog id="player-status-dialog">
+    <!-- DIÁLOGO PARA VER PALPITES -->
+    <dialog id="predictions-dialog">
         <div class="dialog-header">
-            <h2><i class="fas fa-clipboard-check"></i>Status dos Palpites</h2>
+            <h2 id="predictions-dialog-title">Palpites do Jogo</h2>
             <button class="close-btn">×</button>
         </div>
         <div class="dialog-content">
-            <div class="table-container">
-                <table class="player-status-table">
-                    <thead id="player-status-header">
-                        <!-- Cabeçalho da tabela carregado pelo JS -->
-                    </thead>
-                    <tbody id="player-status-body">
-                        <!-- Corpo da tabela carregado pelo JS -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="legend-container">
-                <span class="legend-item"><span class="legend-color-box points-3"></span> 3 pts</span>
-                <span class="legend-item"><span class="legend-color-box points-1"></span> 1 pt</span>
-                <span class="legend-item"><span class="legend-color-box points-0"></span> 0 pts</span>
-                <span class="legend-item"><span class="legend-color-box points-minus-1"></span> -1 pt</span>
-                <span class="legend-item"><i class="fas fa-futbol status-icon status-pending"></i> Palpite Feito</span>
-                <span class="legend-item"><i class="fas fa-question-circle status-icon status-missing"></i> Não Palpitou</span>
-            </div>
+            <ul class="predictions-list" id="predictions-list-body"></ul>
         </div>
     </dialog>
 
@@ -237,12 +128,10 @@
             timerContainer: document.getElementById('timer-container'),
             savePredictionsButton: document.getElementById('save-predictions'),
             loader: document.getElementById('loader'),
-            matchesTab: document.getElementById('matches-tab'),
-            playerStatusTab: document.getElementById('player-status-tab'),
-            playerStatusDialog: document.getElementById('player-status-dialog'),
-            playerStatusHeader: document.getElementById('player-status-header'),
-            playerStatusBody: document.getElementById('player-status-body'),
             actionContainer: document.querySelector('.action-container'),
+            predictionsDialog: document.getElementById('predictions-dialog'),
+            predictionsDialogTitle: document.getElementById('predictions-dialog-title'),
+            predictionsListBody: document.getElementById('predictions-list-body'),
         };
 
         let currentRoundKey = null;
@@ -298,14 +187,13 @@
                 currentRoundKey = childSnapshot.key;
                 const roundData = childSnapshot.val();
                 allMatches = roundData.matches || [];
-                startCountdown(roundData.finishTimestamp);
+                startCountdown(roundData.finishTimestamp, userId);
             });
-
-            await loadMatchesData(currentRoundKey, userId);
         }
 
-        function startCountdown(finishTimestamp) {
-            clearInterval(countdownInterval);
+        function startCountdown(finishTimestamp, userId) {
+            if (countdownInterval) clearInterval(countdownInterval);
+
             const update = () => {
                 const diff = new Date(finishTimestamp) - new Date();
                 
@@ -313,16 +201,14 @@
                     clearInterval(countdownInterval);
                     ui.timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo esgotado!';
                     isTimeExpired = true;
-                    ui.savePredictionsButton.style.display = 'none';
-                    document.querySelectorAll('.prediction-inputs input').forEach(input => input.disabled = true);
-                    return;
+                    if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
+                    loadMatchesData(currentRoundKey, userId);
+                } else {
+                    const d = Math.floor(diff / 86400000);
+                    const h = Math.floor((diff % 86400000) / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    ui.timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante: ${d}d ${h}h ${m}m`;
                 }
-                
-                const d = Math.floor(diff / 86400000);
-                const h = Math.floor((diff % 86400000) / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                
-                ui.timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante: ${d}d ${h}h ${m}m`;
             };
             update();
             countdownInterval = setInterval(update, 1000 * 30);
@@ -332,15 +218,17 @@
             ui.loader.style.display = 'flex';
             ui.matchesContainer.style.display = 'none';
 
-            const matchPromises = allMatches.map((match, index) => {
+            const matchesData = allMatches.map((match, index) => {
                 const homeTeam = allTeams[match.homeTeam] || {};
                 const awayTeam = allTeams[match.awayTeam] || {};
-                const userPrediction = match.predictions?.[userId] || { homeScore: '', awayScore: '' };
+                const userPrediction = match.predictions?.[userId] || {};
                 return { matchId: index, match, homeTeam, awayTeam, userPrediction };
             });
             
-            renderMatchCards(matchPromises);
-            setupSavePredictionsButton(roundKey, userId);
+            renderMatchCards(matchesData);
+            if (!isTimeExpired) {
+                setupSavePredictionsButton(roundKey, userId);
+            }
             
             ui.loader.style.display = 'none';
             ui.matchesContainer.style.display = 'grid';
@@ -350,8 +238,7 @@
             ui.matchesContainer.innerHTML = matchesData.map(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
                 const matchDate = new Date(match.timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
                 const matchTime = new Date(match.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                const hasResult = match.finalResult && match.finalResult.homeScore !== undefined;
-
+                
                 return `
                     <div class="match-card" data-match-id="${matchId}">
                         <div class="match-header">${matchDate} - ${matchTime}</div>
@@ -361,45 +248,49 @@
                                 <span class="versus">vs</span>
                                 <div class="team"><img src="${awayTeam.image}" alt="${awayTeam.name}"><p class="team-name">${awayTeam.name}</p></div>
                             </div>
-                            ${hasResult ? `
-                                <div class="match-score">
-                                    <div class="score-display">
-                                        <span>${match.finalResult.homeScore}</span><span class="score-divider">:</span><span>${match.finalResult.awayScore}</span>
-                                    </div>
-                                </div>
-                                <div style="text-align:center;"><span class="full-time-badge">RESULTADO FINAL</span></div>
-                            ` : `
-                                <div class="prediction-inputs">
-                                    <input type="number" min="0" placeholder="-" data-team="home" value="${userPrediction.homeScore}" ${isTimeExpired ? 'disabled' : ''}>
-                                    <span>×</span>
-                                    <input type="number" min="0" placeholder="-" data-team="away" value="${userPrediction.awayScore}" ${isTimeExpired ? 'disabled' : ''}>
-                                </div>
-                            `}
+                            <div class="prediction-inputs">
+                                <input type="number" min="0" placeholder="-" data-team="home" value="${userPrediction.homeScore || ''}" ${isTimeExpired ? 'disabled' : ''}>
+                                <span>×</span>
+                                <input type="number" min="0" placeholder="-" data-team="away" value="${userPrediction.awayScore || ''}" ${isTimeExpired ? 'disabled' : ''}>
+                            </div>
+                        </div>
+                        <div class="match-footer">
+                            <button class="action-button view-predictions-btn" data-match-id="${matchId}"><i class="fas fa-eye"></i> Ver Palpites</button>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            document.querySelectorAll('.view-predictions-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const matchId = e.currentTarget.dataset.matchId;
+                    showPredictionsForMatch(matchId);
+                });
+            });
         }
 
         function setupSavePredictionsButton(roundKey, userId) {
+            const button = ui.savePredictionsButton.cloneNode(true);
+            if(ui.savePredictionsButton.parentNode) {
+                ui.savePredictionsButton.parentNode.replaceChild(button, ui.savePredictionsButton);
+            }
+            ui.savePredictionsButton = button;
+
             ui.savePredictionsButton.addEventListener('click', async () => {
                 ui.savePredictionsButton.disabled = true;
                 ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-
                 try {
                     const updates = {};
                     document.querySelectorAll('.match-card').forEach(card => {
                         const matchId = card.dataset.matchId;
                         const homeInput = card.querySelector('input[data-team="home"]');
                         const awayInput = card.querySelector('input[data-team="away"]');
-                        if (homeInput.disabled || homeInput.value === '' || awayInput.value === '') return;
-                        
+                        if (homeInput.disabled || homeInput.value.trim() === '' || awayInput.value.trim() === '') return;
                         updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${userId}`] = {
                             homeScore: parseInt(homeInput.value),
                             awayScore: parseInt(awayInput.value),
                         };
                     });
-
                     if (Object.keys(updates).length > 0) {
                         await database.ref().update(updates);
                         ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvos!';
@@ -422,7 +313,7 @@
         }
 
         function calculateMatchPoints(final, pred) {
-            if (final?.homeScore === null || pred?.homeScore === null) return null;
+            if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return null;
             if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
             const finalW = Math.sign(final.homeScore - final.awayScore);
             const predW = Math.sign(pred.homeScore - pred.awayScore);
@@ -431,60 +322,52 @@
             return 0;
         }
 
-        function populatePlayerStatusTable() {
-            const headerRow = document.createElement('tr');
-            headerRow.innerHTML = '<th>Jogador</th>';
-            allMatches.forEach(match => {
-                const homeTeam = allTeams[match.homeTeam];
-                const awayTeam = allTeams[match.awayTeam];
-                headerRow.innerHTML += `<th>${homeTeam.abbr} vs ${awayTeam.abbr}</th>`;
-            });
-            ui.playerStatusHeader.innerHTML = '';
-            ui.playerStatusHeader.appendChild(headerRow);
-            
-            ui.playerStatusBody.innerHTML = Object.entries(allPlayers).map(([playerId, player]) => {
-                let rowHtml = `<tr class="player-row"><td class="status-table-player">${player.name}</td>`;
-                allMatches.forEach(match => {
-                    const prediction = match.predictions?.[playerId];
-                    if (prediction !== undefined) {
-                        if (match.finalResult) {
-                            const points = calculateMatchPoints(match.finalResult, prediction);
-                            rowHtml += `<td class="points-${points}">${prediction.homeScore} x ${prediction.awayScore}</td>`;
-                        } else {
-                            rowHtml += `<td><i class="fas fa-futbol status-icon status-pending" title="Palpite: ${prediction.homeScore}x${prediction.awayScore}"></i></td>`;
-                        }
-                    } else {
-                        rowHtml += `<td><i class="fas fa-question-circle status-icon status-missing" title="Não palpitou"></i></td>`;
-                    }
+        function setupEventListeners() {
+            const predictionsDialogCloseBtn = ui.predictionsDialog.querySelector('.close-btn');
+            if(predictionsDialogCloseBtn) {
+                predictionsDialogCloseBtn.addEventListener('click', () => ui.predictionsDialog.close());
+                ui.predictionsDialog.addEventListener('click', (e) => {
+                    if (e.target === ui.predictionsDialog) ui.predictionsDialog.close();
                 });
-                rowHtml += '</tr>';
-                return rowHtml;
-            }).join('');
+            }
         }
 
-        function setupEventListeners() {
-            const dialogCloseBtn = ui.playerStatusDialog.querySelector('.close-btn');
+        async function showPredictionsForMatch(matchId) {
+            const matchData = allMatches[matchId];
+            if (!matchData) return;
+
+            const homeTeam = allTeams[matchData.homeTeam]?.name || "Time A";
+            const awayTeam = allTeams[matchData.awayTeam]?.name || "Time B";
+            ui.predictionsDialogTitle.innerHTML = `<i class="fas fa-futbol"></i> ${homeTeam} vs ${awayTeam}`;
             
-            ui.matchesTab.addEventListener('click', () => {
-                ui.matchesTab.classList.add('active');
-                ui.playerStatusTab.classList.remove('active');
-                ui.matchesContainer.style.display = 'grid';
-                ui.actionContainer.style.display = 'block';
+            const predictions = matchData.predictions || {};
+            let predictionsArray = Object.entries(predictions).map(([playerId, prediction]) => {
+                const player = allPlayers[playerId] || { name: "Desconhecido" };
+                const points = calculateMatchPoints(matchData.finalResult, prediction);
+                return { ...player, ...prediction, points };
             });
+
+            predictionsArray.sort((a, b) => {
+                if (a.points !== null && b.points !== null) {
+                    if (b.points !== a.points) return b.points - a.points;
+                }
+                return a.name.localeCompare(b.name);
+            });
+
+            ui.predictionsListBody.innerHTML = predictionsArray.map(p => {
+                const pointsClass = p.points !== null ? `points-${String(p.points).replace('-', '_')}` : 'points-none';
+                return `
+                    <li class="prediction-item">
+                        <span class="prediction-player">${p.name}</span>
+                        <span class="prediction-score">${p.homeScore} × ${p.awayScore}</span>
+                        <div class="prediction-points ${pointsClass}">
+                            ${p.points !== null ? p.points : '-'}
+                        </div>
+                    </li>
+                `;
+            }).join('') || '<li>Nenhum palpite para este jogo.</li>';
             
-            ui.playerStatusTab.addEventListener('click', () => {
-                ui.matchesTab.classList.remove('active');
-                ui.playerStatusTab.classList.add('active');
-                ui.matchesContainer.style.display = 'none';
-                ui.actionContainer.style.display = 'none';
-                populatePlayerStatusTable();
-                ui.playerStatusDialog.showModal();
-            });
-            
-            dialogCloseBtn.addEventListener('click', () => ui.playerStatusDialog.close());
-            ui.playerStatusDialog.addEventListener('click', (e) => {
-                if (e.target.id === 'player-status-dialog') ui.playerStatusDialog.close();
-            });
+            ui.predictionsDialog.showModal();
         }
     </script>
 </body>

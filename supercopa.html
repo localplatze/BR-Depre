@@ -18,6 +18,9 @@
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
             --shadow-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
             --border-radius: 12px;
+            --color-win: #28a745;
+            --color-draw: #6c757d;
+            --color-loss: #dc3545;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -54,9 +57,9 @@
             box-shadow: var(--shadow);
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
-        .tabs::-webkit-scrollbar { display: none; /* Chrome, Safari, Opera */ }
+        .tabs::-webkit-scrollbar { display: none; }
         .tab, .group-tab, .round-tab {
             padding: 10px 20px;
             cursor: pointer;
@@ -75,7 +78,6 @@
         .round-tab.active { background-color: var(--primary-color); color: white; }
         .rounds-tabs { gap: 10px; }
 
-        /* --- NOVA ESTRUTURA DE LAYOUT RESPONSIVO --- */
         .stage-content-wrapper { display: grid; grid-template-columns: 1fr; gap: 25px; }
         .stage-card {
             background-color: var(--card-bg-color);
@@ -83,32 +85,30 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
         }
-        /* Layout para Desktop (2 colunas) */
-        @media (min-width: 992px) {
-            .stage-content-wrapper { grid-template-columns: minmax(350px, 1fr) 2fr; }
-            .matches-container { grid-template-columns: repeat(2, 1fr); }
-        }
         
-        /* Tabela de Classificação */
-        .standings-table { width: 100%; border-collapse: collapse; }
+        .standings-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .standings-table th, .standings-table td { text-align: center; padding: 12px 8px; border-bottom: 1px solid var(--border-color); }
-        .standings-table th { font-weight: 500; color: var(--text-color-light); font-size: 13px; text-transform: uppercase; }
+        .standings-table th { font-weight: 500; color: var(--text-color-light); font-size: 12px; text-transform: uppercase; }
         .standings-table th:first-child, .standings-table td:first-child { text-align: left; }
         .standings-table .player-info { display: flex; align-items: center; gap: 12px; }
         .standings-table .team-logo { width: 28px; height: 28px; object-fit: contain; }
-        .standings-table .player-name { font-weight: 500; }
+        .standings-table .player-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .standings-table .points-column { font-weight: 700; font-size: 16px; }
 
-        /* Card de Confronto (Modernizado) */
+        .form-history { display: flex; gap: 5px; justify-content: center; align-items: center; }
+        .form-icon {
+            width: 20px; height: 20px; border-radius: 50%; color: white;
+            font-size: 11px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;
+        }
+        .form-win { background-color: var(--color-win); }
+        .form-draw { background-color: var(--color-draw); }
+        .form-loss { background-color: var(--color-loss); }
+
         .matches-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .match-card {
-            border-radius: var(--border-radius);
-            background-color: var(--card-bg-color);
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            box-shadow: var(--shadow-elevation);
+            border-radius: var(--border-radius); background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color); padding: 16px; cursor: pointer;
+            transition: all 0.2s ease-in-out; box-shadow: var(--shadow-elevation);
         }
         .match-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
         .match-players { display: flex; align-items: center; justify-content: space-between; }
@@ -116,103 +116,35 @@
         .match-player .team-logo { width: 45px; height: 45px; object-fit: contain; margin-bottom: 8px; }
         .match-player .player-name { font-size: 14px; font-weight: 500; }
         .match-result { font-size: 22px; font-weight: 700; color: var(--primary-color); margin: 0 15px; }
-        .no-prediction-warning {
-            position: absolute;
-            bottom: -5px;
-            right: 50px;
-            width: 20px;
-            height: 20px;
-            background-color: #dc3545;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
         
-        /* --- [CORRIGIDO] Estilo para o container de rounds com navegação --- */
-        .rounds-navigation-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+        .rounds-navigation-container { display: flex; align-items: center; margin-bottom: 15px; }
         .rounds-scroll-container {
-            flex: 1;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            min-width: 0; /* <<< ESSA É A CORREÇÃO CHAVE para evitar que o flex item empurre o layout */
+            flex-grow: 1; overflow-x: auto; scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; scrollbar-width: none; min-width: 0;
         }
         .rounds-scroll-container::-webkit-scrollbar { display: none; }
-        .rounds-tabs {
-            display: inline-flex; /* Usar inline-flex para que o container não ocupe a largura total desnecessariamente */
-            gap: 10px;
-            padding: 5px 0;
-        }
+        .rounds-tabs { display: inline-flex; gap: 10px; padding: 5px; }
         .nav-button {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--card-bg-color);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 0 5px;
-            flex-shrink: 0;
+            width: 36px; height: 36px; border-radius: 50%; background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color); display: flex; align-items: center;
+            justify-content: center; cursor: pointer; margin: 0 5px; flex-shrink: 0;
             transition: all 0.2s ease;
         }
-        .nav-button:hover {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-        .nav-button.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .nav-button.disabled:hover {
-            background-color: var(--card-bg-color);
-            color: inherit;
-            border-color: var(--border-color);
-        }
+        .nav-button:hover:not(.disabled) { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .nav-button.disabled { opacity: 0.4; cursor: not-allowed; }
         
-        /* --- DIÁLOGO (POP-UP) MODERNIZADO --- */
         #match-details-dialog {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: var(--border-radius);
-            border: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 600px;
-            padding: 0;
-            margin: 0;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: none; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%; max-width: 600px; padding: 0; margin: 0;
         }
         #match-details-dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); }
-        .dialog-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border-color);
-        }
+        .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); }
         .dialog-header h3 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .dialog-header .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-color-light); }
         .dialog-body { padding: 24px; max-height: 60vh; overflow-y: auto; }
         .prediction-comparison-list { list-style: none; }
-        .prediction-item {
-            background: var(--background-color);
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-        }
+        .prediction-item { background: var(--background-color); padding: 16px; border-radius: 10px; margin-bottom: 12px; }
         .prediction-item .match-info { font-weight: 600; margin-bottom: 10px; text-align: center; }
         .prediction-item .players-predictions { display: flex; justify-content: space-around; text-align: center; }
         .prediction-item .player-prediction span { display: block; }
@@ -222,11 +154,49 @@
         .dialog-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); text-align: center; font-weight: 600; }
         .empty-state { text-align: center; padding: 40px; color: var(--text-color-light); }
 
-        @media (max-width: 768px) { 
-            body, .stage-card { padding: 10px; } 
-            .container { padding: 10px; } 
+        @media (max-width: 991px) {
+            body { padding: 10px; }
+            .container { padding: 10px; }
+            .stage-card { padding: 15px; }
+            .header-title { font-size: 24px; }
+            .section-title { font-size: 20px; }
+            .stage-content-wrapper { grid-template-columns: 1fr; }
             .matches-container { grid-template-columns: 1fr; }
-            .match-card { width: 100%; }
+            .rounds-tabs { display: flex; flex-wrap: wrap; justify-content: center; }
+            .round-tab { margin-bottom: 5px; }
+        }
+
+        @media (min-width: 992px) {
+            .stage-content-wrapper { 
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .matches-container { 
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        /* Adicione isso para a paginação */
+        .rounds-pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .rounds-pagination-button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: var(--border-color);
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+        }
+
+        .rounds-pagination-button.active {
+            background-color: var(--primary-color);
+            color: white;
         }
     </style>
 </head>
@@ -247,42 +217,27 @@
                 <div class="group-tab" data-group="group3">Grupo C</div>
                 <div class="group-tab" data-group="group4">Grupo D</div>
             </div>
-
             <div class="stage-content-wrapper">
                 <div class="stage-card" id="standings-card">
                     <h2 class="section-title">Classificação</h2>
                     <table class="standings-table" id="group-standings-table">
                         <thead>
-                            <tr><th>Jogador</th><th>PTS</th><th>J</th><th>V</th><th>SG</th></tr>
-                        </thead>
-                        <tbody>
-                            <!-- Os dados da classificação serão carregados aqui pelo JavaScript -->
                             <tr>
-                                <td colspan="5" class="empty-state">Carregando classificação...</td>
+                                <th>Jogador</th>
+                                <th>Pts</th>
+                                <th>J</th>
+                                <th>V</th>
+                                <th>SG</th>
+                                <th>Últimos 5</th>
                             </tr>
-                        </tbody>
+                        </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div class="stage-card" id="matches-card">
                     <h2 class="section-title">Jogos</h2>
-                    <div class="rounds-navigation-container">
-                        <button class="nav-button prev-round" disabled><i class="fas fa-chevron-left"></i></button>
-                        <div class="rounds-scroll-container">
-                            <!-- Os tabs das rodadas serão carregados aqui pelo JavaScript -->
-                            <div class="tabs rounds-tabs">
-                                <div class="round-tab active">Rodada 1</div>
-                                <div class="round-tab">Rodada 2</div>
-                                <div class="round-tab">Rodada 3</div>
-                                <div class="round-tab">Rodada 4</div>
-                                <div class="round-tab">Rodada 5</div>
-                            </div>
-                        </div>
-                        <button class="nav-button next-round"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <div id="matches-container" class="matches-container">
-                        <!-- Os confrontos serão carregados aqui pelo JavaScript -->
-                         <div class="empty-state">Carregando jogos...</div>
-                    </div>
+                    <div class="rounds-scroll-container"></div>
+                    <div id="matches-container" class="matches-container"></div>
                 </div>
             </div>
         </div>
@@ -299,9 +254,7 @@
             <button class="close-btn" id="dialog-close-btn">×</button>
         </div>
         <div class="dialog-body">
-            <ul class="prediction-comparison-list" id="prediction-comparison-list">
-                <!-- Conteúdo gerado pelo JavaScript -->
-            </ul>
+            <ul class="prediction-comparison-list" id="prediction-comparison-list"></ul>
         </div>
         <div class="dialog-footer">
             <span id="dialog-points-dispute"></span>
@@ -330,9 +283,8 @@
         let teamsDataCache = null;
         let usersDataCache = null;
         let groupPlayersCache = null;
-        let activeSuperligaRoundCache = null;
-        let currentRoundIndex = 0;
-        let roundsArray = [];
+        let activeSuperligaRoundData = null;
+        let supercopaRoundsCache = null;
 
         const ui = {
             stageTabs: document.querySelectorAll('.tab'),
@@ -343,13 +295,12 @@
             knockoutMatchesContainer: document.getElementById('knockout-matches-container'),
             standingsTableBody: document.querySelector('#group-standings-table tbody'),
             roundsScrollContainer: document.querySelector('.rounds-scroll-container'),
-            roundsTabsContainer: null, // Será criado dinamicamente
             prevRoundButton: document.querySelector('.prev-round'),
             nextRoundButton: document.querySelector('.next-round'),
             matchesContainer: document.getElementById('matches-container'),
             dialog: document.getElementById('match-details-dialog'),
             dialogTitle: document.getElementById('dialog-title'),
-            dialogCloseBtn: document.getElementById('dialog-close-btn'),
+            dialogCloseBtn: document.querySelector('#match-details-dialog .close-btn'),
             dialogPredictionList: document.getElementById('prediction-comparison-list'),
             dialogPointsDispute: document.getElementById('dialog-points-dispute'),
         };
@@ -368,8 +319,9 @@
                     loadTeamsDataOnce(),
                     loadUsersDataOnce(),
                     loadGroupPlayersOnce(),
-                    findActiveSuperligaRoundOnce()
+                    loadSupercopaRoundsOnce(),
                 ]);
+                await findActiveSuperligaRoundAndListen();
                 loadStage('grupos');
                 setupEventListeners();
                 window.addEventListener('resize', handleResize);
@@ -407,10 +359,21 @@
             }
         }
 
-        async function findActiveSuperligaRoundOnce() {
-            if (activeSuperligaRoundCache !== null) return;
-            const snapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
-            activeSuperligaRoundCache = snapshot.exists() ? Object.values(snapshot.val())[0] : false;
+        async function loadSupercopaRoundsOnce() {
+            if (supercopaRoundsCache) return;
+            const snapshot = await database.ref('tournaments/supercopa/groups/rounds').once('value');
+            supercopaRoundsCache = snapshot.val() || {};
+        }
+
+        async function findActiveSuperligaRoundAndListen() {
+            const roundsRef = database.ref('rounds').orderByChild('status').equalTo(1);
+            roundsRef.on('value', (snapshot) => {
+                activeSuperligaRoundData = snapshot.exists() ? Object.values(snapshot.val())[0] : false;
+                const activeStage = document.querySelector('.tab.active')?.dataset.stage;
+                if (activeStage) {
+                    loadStage(activeStage);
+                }
+            });
         }
 
         function loadStage(stage) {
@@ -462,6 +425,8 @@
                 const player = usersDataCache[s.playerId] || {};
                 const team = teamsDataCache[player.teamId] || {};
                 const displayName = isMobile ? (player.abbr || player.name) : player.name;
+                const playerForm = getPlayerForm(s.playerId, supercopaRoundsCache);
+
                 return `
                     <tr>
                         <td><div class="player-info"><img src="${team.image || ''}" alt="" class="team-logo"><span class="player-name">${displayName || 'Desconhecido'}</span></div></td>
@@ -469,41 +434,92 @@
                         <td>${s.games || 0}</td>
                         <td>${s.wins || 0}</td>
                         <td>${(s.goalsFor || 0) - (s.goalsAg || 0)}</td>
+                        <td><div class="form-history">${playerForm}</div></td>
                     </tr>
                 `;
-            }).join('') || `<tr><td colspan="5" class="empty-state">Nenhum jogador neste grupo.</td></tr>`;
+            }).join('') || `<tr><td colspan="6" class="empty-state">Nenhum jogador neste grupo.</td></tr>`;
         }
 
-        async function loadGroupRounds(groupKey) {
-            const roundsSnapshot = await database.ref('tournaments/supercopa/groups/rounds').once('value');
-            const rounds = roundsSnapshot.val();
-
-            ui.roundsScrollContainer.innerHTML = '';
+        function getPlayerForm(playerId, allRounds) {
+            const results = [];
+            if (!allRounds) return '';
             
-            if (!rounds) {
+            const sortedRounds = Object.values(allRounds).sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+            for (const round of sortedRounds) {
+                if (round.matches) {
+                    for (const match of Object.values(round.matches)) {
+                        if ((match.player1Id === playerId || match.player2Id === playerId) && match.result) {
+                            const scores = match.result.split('x').map(s => parseInt(s.trim()));
+                            if (scores.length === 2 && !isNaN(scores[0]) && !isNaN(scores[1])) {
+                                const isPlayer1 = match.player1Id === playerId;
+                                const myScore = isPlayer1 ? scores[0] : scores[1];
+                                const opponentScore = isPlayer1 ? scores[1] : scores[0];
+                                if (myScore > opponentScore) results.push('W');
+                                else if (myScore < opponentScore) results.push('L');
+                                else results.push('D');
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return results.slice(-5).map(res => {
+                if (res === 'W') return '<div class="form-icon form-win"><i class="fas fa-check"></i></div>';
+                if (res === 'D') return '<div class="form-icon form-draw">-</div>';
+                if (res === 'L') return '<div class="form-icon form-loss"><i class="fas fa-times"></i></div>';
+                return '';
+            }).join('');
+        }
+
+
+        async function loadGroupRounds(groupKey) {
+            ui.roundsScrollContainer.innerHTML = '';
+            const rounds = supercopaRoundsCache || {};
+            
+            if (Object.keys(rounds).length === 0) {
                 ui.matchesContainer.innerHTML = '<div class="empty-state">Nenhuma rodada encontrada.</div>';
                 updateScrollButtons();
                 return;
             }
 
-            const roundsTabsDiv = document.createElement('div');
-            roundsTabsDiv.className = 'tabs rounds-tabs';
-            ui.roundsTabsContainer = roundsTabsDiv;
-            ui.roundsScrollContainer.appendChild(ui.roundsTabsContainer);
-
-            roundsArray = Object.entries(rounds).map(([id, data]) => ({ id, ...data }));
-            currentRoundIndex = roundsArray.findIndex(r => r.status === 1);
+            const roundsArray = Object.entries(rounds).map(([id, data], index) => ({ id, ...data, index }));
+            let currentRoundIndex = roundsArray.findIndex(r => r.status === 1);
             if (currentRoundIndex === -1 && roundsArray.length > 0) currentRoundIndex = roundsArray.length - 1;
 
-            updateRoundTabs();
-            
-            setTimeout(() => {
-                updateScrollButtons();
-                const activeTab = ui.roundsTabsContainer.querySelector('.round-tab.active');
-                if (activeTab) {
-                    activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            // Criar paginação se houver muitas rodadas
+            if (roundsArray.length > 4) {
+                const roundsPerPage = 4;
+                const pageCount = Math.ceil(roundsArray.length / roundsPerPage);
+                const currentPage = Math.floor(currentRoundIndex / roundsPerPage);
+                
+                const paginationDiv = document.createElement('div');
+                paginationDiv.className = 'rounds-pagination';
+                
+                for (let i = 0; i < pageCount; i++) {
+                    const button = document.createElement('button');
+                    button.className = `rounds-pagination-button ${i === currentPage ? 'active' : ''}`;
+                    button.textContent = i + 1;
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('.rounds-pagination-button').forEach(btn => 
+                            btn.classList.remove('active'));
+                        button.classList.add('active');
+                        showRoundsPage(i, roundsArray, roundsPerPage);
+                    });
+                    paginationDiv.appendChild(button);
                 }
-            }, 50);
+                
+                ui.roundsScrollContainer.appendChild(paginationDiv);
+                showRoundsPage(currentPage, roundsArray, roundsPerPage);
+            } else {
+                // Mostrar todas as rodadas se forem poucas
+                const roundsTabsDiv = document.createElement('div');
+                roundsTabsDiv.className = 'tabs rounds-tabs';
+                roundsTabsDiv.innerHTML = roundsArray.map(round =>
+                    `<div class="round-tab ${round.index === currentRoundIndex ? 'active' : ''}" data-round-id="${round.id}">Rodada ${round.index + 1}</div>`
+                ).join('');
+                ui.roundsScrollContainer.appendChild(roundsTabsDiv);
+            }
 
             const activeRoundId = roundsArray[currentRoundIndex]?.id;
             if (activeRoundId) {
@@ -511,57 +527,59 @@
             }
         }
 
-        function updateRoundTabs() {
-            if (!ui.roundsTabsContainer) return;
+        function showRoundsPage(page, roundsArray, roundsPerPage) {
+            const start = page * roundsPerPage;
+            const end = start + roundsPerPage;
+            const pageRounds = roundsArray.slice(start, end);
             
-            const VISIBLE_ROUNDS = 3; // Número de rodadas visíveis
-            const halfVisible = Math.floor(VISIBLE_ROUNDS / 2);
+            const roundsTabsDiv = document.createElement('div');
+            roundsTabsDiv.className = 'tabs rounds-tabs';
+            roundsTabsDiv.innerHTML = pageRounds.map(round =>
+                `<div class="round-tab" data-round-id="${round.id}">Rodada ${round.index + 1}</div>`
+            ).join('');
             
-            let startIndex = Math.max(0, currentRoundIndex - halfVisible);
-            let endIndex = Math.min(roundsArray.length, startIndex + VISIBLE_ROUNDS);
-            
-            // Ajusta se não há rodadas suficientes no final
-            if (endIndex - startIndex < VISIBLE_ROUNDS) {
-                startIndex = Math.max(0, endIndex - VISIBLE_ROUNDS);
+            // Encontrar a rodada ativa na página atual
+            const activeRound = roundsArray.find(r => r.status === 1) || roundsArray[roundsArray.length - 1];
+            if (activeRound && pageRounds.some(r => r.id === activeRound.id)) {
+                const activeTab = roundsTabsDiv.querySelector(`.round-tab[data-round-id="${activeRound.id}"]`);
+                if (activeTab) activeTab.classList.add('active');
+            } else if (pageRounds.length > 0) {
+                // Se não houver rodada ativa na página, selecionar a primeira
+                roundsTabsDiv.firstChild.classList.add('active');
             }
             
-            const visibleRounds = roundsArray.slice(startIndex, endIndex);
+            // Substituir os tabs existentes
+            const existingTabs = ui.roundsScrollContainer.querySelector('.rounds-tabs');
+            if (existingTabs) existingTabs.remove();
+            ui.roundsScrollContainer.insertBefore(roundsTabsDiv, ui.roundsScrollContainer.firstChild);
             
-            ui.roundsTabsContainer.innerHTML = visibleRounds.map((round, index) => {
-                const actualIndex = startIndex + index;
-                return `<div class="round-tab ${actualIndex === currentRoundIndex ? 'active' : ''}" 
-                            data-round-id="${round.id}" 
-                            data-round-index="${actualIndex}">
-                        Rodada ${actualIndex + 1}
-                        </div>`;
-            }).join('');
+            // Adicionar event listeners
+            roundsTabsDiv.addEventListener('click', e => {
+                const tab = e.target.closest('.round-tab');
+                if (tab && !tab.classList.contains('active')) {
+                    document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    loadRoundMatches(tab.dataset.roundId);
+                }
+            });
         }
 
         function updateScrollButtons() {
             const container = ui.roundsScrollContainer;
-            if (!container || !ui.roundsTabsContainer) {
+            if (!container || !container.hasChildNodes()) {
                 ui.prevRoundButton.classList.add('disabled');
                 ui.nextRoundButton.classList.add('disabled');
                 return;
             }
-            
-            const scrollLeft = container.scrollLeft;
-            const scrollWidth = container.scrollWidth;
-            const clientWidth = container.clientWidth;
-
-            const canScrollLeft = scrollLeft > 0;
-            const canScrollRight = scrollLeft < (scrollWidth - clientWidth - 1);
-
-            ui.prevRoundButton.disabled = !canScrollLeft;
-            ui.nextRoundButton.disabled = !canScrollRight;
-            
-            ui.prevRoundButton.classList.toggle('disabled', !canScrollLeft);
-            ui.nextRoundButton.classList.toggle('disabled', !canScrollRight);
+            const { scrollLeft, scrollWidth, clientWidth } = container;
+            ui.prevRoundButton.disabled = scrollLeft < 10;
+            ui.nextRoundButton.disabled = scrollLeft > scrollWidth - clientWidth - 10;
+            ui.prevRoundButton.classList.toggle('disabled', ui.prevRoundButton.disabled);
+            ui.nextRoundButton.classList.toggle('disabled', ui.nextRoundButton.disabled);
         }
 
         async function loadRoundMatches(roundId) {
-            const matchesSnapshot = await database.ref(`tournaments/supercopa/groups/rounds/${roundId}/matches`).once('value');
-            const matches = matchesSnapshot.val() || {};
+            const matches = supercopaRoundsCache[roundId]?.matches || {};
             renderMatches(Object.values(matches), ui.matchesContainer, true);
         }
 
@@ -571,7 +589,7 @@
                 return;
             }
             container.innerHTML = '';
-            const liveRoundPoints = calculateLiveRoundPoints(activeSuperligaRoundCache);
+            const { liveRoundPoints, playersWhoPredicted } = calculateLiveRoundPoints(activeSuperligaRoundData);
             const isMobile = window.innerWidth <= 991;
 
             matches.forEach(match => {
@@ -585,19 +603,14 @@
                 const p1Name = isMobile ? (player1.abbr || player1.name) : player1.name;
                 const p2Name = isMobile ? (player2.abbr || player2.name) : player2.name;
                 
-                // Verificar se os jogadores fizeram previsões
-                const p1HasPrediction = activeSuperligaRoundCache ? 
-                    Object.values(activeSuperligaRoundCache.matches).some(m => m.predictions?.[p1Id]) : false;
-                const p2HasPrediction = activeSuperligaRoundCache ? 
-                    Object.values(activeSuperligaRoundCache.matches).some(m => m.predictions?.[p2Id]) : false;
-
                 let result = "vs";
                 if (match.result) {
                     result = match.result;
-                } else if (activeSuperligaRoundCache) {
-                    // Ajuste para mostrar 0 quando não tem prediction
-                    const score1 = p1HasPrediction ? (liveRoundPoints[p1Id] || 0) : 0;
-                    const score2 = p2HasPrediction ? (liveRoundPoints[p2Id] || 0) : 0;
+                } else if (activeSuperligaRoundData) {
+                    const p1HasPrediction = playersWhoPredicted.has(p1Id);
+                    const p2HasPrediction = playersWhoPredicted.has(p2Id);
+                    const score1 = p1HasPrediction ? (liveRoundPoints[p1Id] || 0) : (player1.lastRoundPointsLigaAbertura || 0);
+                    const score2 = p2HasPrediction ? (liveRoundPoints[p2Id] || 0) : (player2.lastRoundPointsLigaAbertura || 0);
                     result = `${score1} x ${score2}`;
                 }
 
@@ -605,52 +618,36 @@
                 card.className = 'match-card';
                 card.innerHTML = `
                     <div class="match-players">
-                        <div class="match-player">
-                            <img src="${team1.image || ''}" alt="" class="team-logo">
-                            <span class="player-name">${p1Name || 'A Definir'}</span>
-                            ${!p1HasPrediction && activeSuperligaRoundCache ? '<div class="no-prediction-warning" title="Não apostou">!</div>' : ''}
-                        </div>
+                        <div class="match-player"><img src="${team1.image || ''}" alt="" class="team-logo"><span class="player-name">${p1Name || 'A Definir'}</span></div>
                         <div class="match-result">${result}</div>
-                        <div class="match-player">
-                            <img src="${team2.image || ''}" alt="" class="team-logo">
-                            <span class="player-name">${p2Name || 'A Definir'}</span>
-                            ${!p2HasPrediction && activeSuperligaRoundCache ? '<div class="no-prediction-warning" title="Não apostou">!</div>' : ''}
-                        </div>
+                        <div class="match-player"><img src="${team2.image || ''}" alt="" class="team-logo"><span class="player-name">${p2Name || 'A Definir'}</span></div>
                     </div>
                 `;
                 card.addEventListener('click', () => showMatchDetails(p1Id, p2Id));
                 container.appendChild(card);
             });
-
-            // Atualizar a tabela em tempo real se houver rodada ativa
-            if (activeSuperligaRoundCache) {
-                const activeGroup = document.querySelector('.group-tab.active')?.dataset.group;
-                if (activeGroup) {
-                    loadGroupStandings(activeGroup);
-                }
-            }
         }
 
         function calculateLiveRoundPoints(roundData) {
-            if (!roundData || !roundData.matches) return {};
+            const liveRoundPoints = {};
+            const playersWhoPredicted = new Set();
+            if (!roundData || !roundData.matches) return { liveRoundPoints, playersWhoPredicted };
             
-            const userRoundPoints = {};
-            const predictionsInRound = new Set();
             Object.values(roundData.matches).forEach(match => {
-                if(match.predictions){
-                    Object.keys(match.predictions).forEach(playerId => predictionsInRound.add(playerId));
+                if (match.predictions) {
+                    Object.keys(match.predictions).forEach(playerId => playersWhoPredicted.add(playerId));
                 }
             });
-            
-            predictionsInRound.forEach(playerId => {
-                userRoundPoints[playerId] = 0;
+
+            playersWhoPredicted.forEach(playerId => {
+                liveRoundPoints[playerId] = 0;
                 Object.values(roundData.matches).forEach(match => {
-                    if (match.finalResult && match.predictions && match.predictions[playerId]) {
-                        userRoundPoints[playerId] += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
+                    if (match.finalResult && match.predictions?.[playerId]) {
+                        liveRoundPoints[playerId] += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
                     }
                 });
             });
-            return userRoundPoints;
+            return { liveRoundPoints, playersWhoPredicted };
         }
 
         function calculateMatchPoints(final, pred) {
@@ -681,97 +678,78 @@
             ui.roundsScrollContainer.addEventListener('click', e => {
                 const tab = e.target.closest('.round-tab');
                 if (tab && !tab.classList.contains('active')) {
-                    currentRoundIndex = parseInt(tab.dataset.roundIndex);
-                    updateRoundTabs();
+                    document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
                     loadRoundMatches(tab.dataset.roundId);
                 }
             });
 
-            ui.prevRoundButton.addEventListener('click', () => {
-                const scrollAmount = ui.roundsScrollContainer.clientWidth * 0.8;
-                ui.roundsScrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            });
-            ui.nextRoundButton.addEventListener('click', () => {
-                const scrollAmount = ui.roundsScrollContainer.clientWidth * 0.8;
-                ui.roundsScrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            });
-
-            ui.roundsScrollContainer.addEventListener('scroll', updateScrollButtons);
-
             ui.dialogCloseBtn.addEventListener('click', () => ui.dialog.close());
-            ui.dialog.addEventListener('click', e => { if (e.target.id === 'match-details-dialog') ui.dialog.close(); });
+            ui.dialog.addEventListener('click', e => { if (e.target === ui.dialog) ui.dialog.close(); });
         }
 
         function handleResize() {
             updateScrollButtons();
-            
             const activeGroup = document.querySelector('.group-tab.active')?.dataset.group;
             if (activeGroup && ui.groupsStageContent.style.display !== 'none') {
                 loadGroupStandings(activeGroup);
-                const activeRoundId = roundsArray[currentRoundIndex]?.id;
-                if(activeRoundId) loadRoundMatches(activeRoundId);
+                const activeRoundTab = ui.roundsScrollContainer.querySelector('.round-tab.active');
+                if(activeRoundTab) loadRoundMatches(activeRoundTab.dataset.roundId);
             }
         }
 
         async function showMatchDetails(p1Id, p2Id) {
+            if (!activeSuperligaRoundData || !activeSuperligaRoundData.matches) {
+                alert("Não há rodada da Superliga em andamento para analisar palpites.");
+                return;
+            }
             const player1 = usersDataCache[p1Id];
             const player2 = usersDataCache[p2Id];
             ui.dialogTitle.innerHTML = `<i class="fas fa-chart-pie"></i> Análise: ${player1.name} vs ${player2.name}`;
-            
             let totalPointsInDispute = 0;
-            let predictionsHTML = '';
-            
-            if (activeSuperligaRoundCache && activeSuperligaRoundCache.matches) {
-                predictionsHTML = Object.values(activeSuperligaRoundCache.matches).map(match => {
-                    const p1Prediction = match.predictions?.[p1Id];
-                    const p2Prediction = match.predictions?.[p2Id];
-                    
-                    const homeTeam = teamsDataCache[match.homeTeam]?.name || 'Time A';
-                    const awayTeam = teamsDataCache[match.awayTeam]?.name || 'Time B';
-                    
-                    // Mostrar informações mesmo quando um ou ambos não apostaram
-                    const p1Score = p1Prediction ? `${p1Prediction.homeScore} x ${p1Prediction.awayScore}` : 'Não apostou';
-                    const p2Score = p2Prediction ? `${p2Prediction.homeScore} x ${p2Prediction.awayScore}` : 'Não apostou';
-                    
-                    let comparisonResult = '', points = 0;
-                    
-                    if (p1Prediction && p2Prediction) {
-                        if (p1Prediction.homeScore === p2Prediction.homeScore && p1Prediction.awayScore === p2Prediction.awayScore) {
-                            comparisonResult = 'Palpites idênticos'; 
-                            points = 3;
-                        } else {
-                            const winner1 = Math.sign(p1Prediction.homeScore - p1Prediction.awayScore);
-                            const winner2 = Math.sign(p2Prediction.homeScore - p2Prediction.awayScore);
-                            if (winner1 === winner2) {
-                                comparisonResult = 'Apostaram no mesmo vencedor'; 
-                                points = 1;
-                            } else {
-                                comparisonResult = 'Palpites totalmente diferentes'; 
-                                points = 0;
-                            }
-                        }
-                        totalPointsInDispute += points;
+            const predictionsHTML = Object.values(activeSuperligaRoundData.matches).map(match => {
+                const p1Prediction = match.predictions?.[p1Id];
+                const p2Prediction = match.predictions?.[p2Id];
+                const homeTeam = teamsDataCache[match.homeTeam]?.name || 'Time A';
+                const awayTeam = teamsDataCache[match.awayTeam]?.name || 'Time B';
+                const p1Score = p1Prediction ? `${p1Prediction.homeScore} x ${p1Prediction.awayScore}` : 'Não apostou';
+                const p2Score = p2Prediction ? `${p2Prediction.homeScore} x ${p2Prediction.awayScore}` : 'Não apostou';
+                
+                let comparisonResult = 'Análise indisponível';
+                if (p1Prediction && p2Prediction) {
+                    let points = 0;
+                    if (p1Prediction.homeScore === p2Prediction.homeScore && p1Prediction.awayScore === p2Prediction.awayScore) {
+                        comparisonResult = 'Palpites idênticos'; points = 3;
                     } else {
-                        comparisonResult = p1Prediction && !p2Prediction ? `${player2.name} não apostou` : 
-                                        !p1Prediction && p2Prediction ? `${player1.name} não apostou` : 
-                                        'Nenhum dos dois apostou';
+                        const winner1 = Math.sign(p1Prediction.homeScore - p1Prediction.awayScore);
+                        const winner2 = Math.sign(p2Prediction.homeScore - p2Prediction.awayScore);
+                        if (winner1 === winner2) {
+                            comparisonResult = 'Apostaram no mesmo vencedor'; points = 1;
+                        } else {
+                            comparisonResult = 'Palpites totalmente diferentes'; points = 0;
+                        }
                     }
-                    
-                    return `
-                        <li class="prediction-item">
-                            <div class="match-info">${homeTeam} vs ${awayTeam}</div>
-                            <div class="players-predictions">
-                                <div class="player-prediction"><span class="name">${player1.name}</span><span class="score">${p1Score}</span></div>
-                                <div class="player-prediction"><span class="name">${player2.name}</span><span class="score">${p2Score}</span></div>
-                            </div>
-                            <div class="comparison-result">${comparisonResult}</div>
-                        </li>
-                    `;
-                }).join('');
-            }
+                    totalPointsInDispute += points;
+                } else if (!p1Prediction && !p2Prediction) {
+                    comparisonResult = 'Nenhum dos dois apostou';
+                } else {
+                    comparisonResult = p1Prediction ? `${player2.name} não apostou` : `${player1.name} não apostou`;
+                }
+
+                return `
+                    <li class="prediction-item">
+                        <div class="match-info">${homeTeam} vs ${awayTeam}</div>
+                        <div class="players-predictions">
+                            <div class="player-prediction"><span class="name">${player1.name}</span><span class="score">${p1Score}</span></div>
+                            <div class="player-prediction"><span class="name">${player2.name}</span><span class="score">${p2Score}</span></div>
+                        </div>
+                        <div class="comparison-result">${comparisonResult}</div>
+                    </li>
+                `;
+            }).filter(html => html).join('');
             
-            ui.dialogPredictionList.innerHTML = predictionsHTML || '<div class="empty-state">Nenhum jogo nesta rodada para analisar.</div>';
-            ui.dialogPointsDispute.textContent = activeSuperligaRoundCache ? `Total de Pontos em Disputa: ${totalPointsInDispute}` : 'Nenhuma rodada ativa no momento';
+            ui.dialogPredictionList.innerHTML = predictionsHTML || '<div class="empty-state">Nenhum palpite em comum para analisar.</div>';
+            ui.dialogPointsDispute.textContent = `Total de Pontos em Disputa: ${totalPointsInDispute}`;
             ui.dialog.showModal();
         }
     </script>
