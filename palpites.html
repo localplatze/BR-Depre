@@ -3,608 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liga de Palpites - Próxima Rodada</title>
+    <title>Jogos da Rodada - BR Deprê</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Reutilizando estilos da Home */
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --background-color: #f0f2f5;
-            --card-background: white;
-            --text-color: #333;
+            --primary-color: #4a65f5;
+            --background-color: #f5f7fa;
+            --card-bg-color: #ffffff;
+            --text-color: #34495e;
+            --text-color-light: #7f8c8d;
+            --border-color: #eef2f7;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
             --border-radius: 12px;
             --success-color: #2ecc71;
             --warning-color: #f39c12;
             --danger-color: #e74c3c;
-            --neutral-color: #7f8c8d;
+            --neutral-color: #95a5a6;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
-            line-height: 1.6;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; font-weight: 700; }
         .action-button {
             background-color: var(--primary-color);
-            color: white;
+            color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s;
+            font-weight: 500; font-size: 15px; display: inline-flex;
+            align-items: center; gap: 8px;
+        }
+        .action-button:hover { background-color: #3b50cb; transform: translateY(-2px); }
+        .action-button:disabled { background-color: var(--neutral-color); cursor: not-allowed; transform: none; }
+        
+        .timer {
+            text-align: center; font-size: 1.1em; color: var(--text-color-light);
+            margin-bottom: 25px; padding: 12px; background-color: var(--card-bg-color);
+            border-radius: var(--border-radius); box-shadow: var(--shadow);
+        }
+
+        /* --- ABAS DE NAVEGAÇÃO MODERNIZADAS --- */
+        .main-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .tab-button {
+            padding: 12px 20px;
+            background-color: transparent;
             border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
+            border-bottom: 3px solid transparent;
             cursor: pointer;
-            transition: background-color 0.3s;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-color-light);
+            transition: all 0.3s;
         }
+        .tab-button:hover { color: var(--primary-color); }
+        .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
-        .action-button:hover {
-            background-color: #2980b9;
-        }
-
-        /* Novo estilo para os cards de partida */
+        /* --- CARDS DE JOGO REFINADOS --- */
         .matches-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
+            gap: 25px;
         }
-
         .match-card {
-            background-color: var(--card-background);
+            background-color: var(--card-bg-color);
             border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .match-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        }
-
+        .match-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         .match-header {
-            background-color: #f8f9fa;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
-            border-bottom: 1px solid #eaeaea;
+            border-bottom: 1px solid var(--border-color);
             font-size: 0.9em;
-            color: #666;
+            color: var(--text-color-light);
+            background-color: #fcfdff;
         }
-
-        .match-content {
-            padding: 20px;
-        }
-
-        .match-teams {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .team {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 40%;
-        }
-
-        .team img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-
-        .team-name {
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .versus {
-            font-size: 18px;
-            color: #999;
-        }
-
-        .match-score {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .score-display {
-            font-size: 28px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-        }
-
-        .score-divider {
-            margin: 0 15px;
-            font-size: 20px;
-            color: #999;
-        }
-
-        .prediction-inputs {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
+        .match-content { padding: 20px; }
+        .match-teams { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .team { display: flex; flex-direction: column; align-items: center; width: 40%; text-align: center; }
+        .team img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
+        .team-name { font-weight: 500; }
+        .versus { font-size: 18px; color: var(--text-color-light); }
+        .match-score { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+        .score-display { font-size: 28px; font-weight: 700; }
+        .score-divider { margin: 0 15px; font-size: 20px; color: #bdc3c7; }
+        .prediction-inputs { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
         .prediction-inputs input {
-            width: 60px;
-            height: 40px;
-            font-size: 18px;
-            padding: 5px;
-            text-align: center;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            color: #333;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            width: 60px; height: 45px; font-size: 18px; text-align: center;
+            border: 2px solid var(--border-color); border-radius: 8px;
+            background-color: var(--background-color); color: var(--text-color);
+            transition: all 0.3s ease;
         }
+        .prediction-inputs input:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(74,101,245,0.2); outline: none; }
+        .prediction-inputs span { font-size: 24px; font-weight: bold; }
+        .match-footer { padding: 15px; text-align: center; border-top: 1px solid var(--border-color); }
+        .full-time-badge { background-color: #2c3e50; color: white; font-size: 12px; padding: 4px 10px; border-radius: 20px; margin-top: 10px; display: inline-block; font-weight: 500; }
+        .loader-container { display: flex; justify-content: center; align-items: center; min-height: 300px; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .prediction-inputs input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
-            outline: none;
-        }
-
-        .prediction-inputs span {
-            font-size: 24px;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .match-footer {
-            padding: 15px;
-            text-align: center;
-            border-top: 1px solid #eaeaea;
-        }
-
-        .timer {
-            text-align: center;
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: white;
+        /* --- DIÁLOGO DE STATUS DOS JOGADORES MODERNIZADO --- */
+        #player-status-dialog {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            border: none;
             border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .match-timer {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .match-timer.expired {
-            color: var(--danger-color);
-            font-weight: bold;
-        }
-
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 300px;
-        }
-
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Estilos para o dialog de palpites */
-        dialog {
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: none;
-            border-radius: 12px;
-            padding: 0;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
-        .dialog-header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            position: relative;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-
-        .dialog-content {
-            padding: 20px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .predictions-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .prediction-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .prediction-item:last-child {
-            border-bottom: none;
-        }
-
-        .prediction-user {
-            flex: 1;
-            font-weight: 500;
-        }
-
-        .prediction-score {
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            margin: 0 10px;
-        }
-
-        .prediction-points {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            font-weight: bold;
-            color: white;
-        }
-
-        .points-3 {
-            background-color: var(--success-color);
-        }
-
-        .points-1 {
-            background-color: var(--warning-color);
-        }
-
-        .points-minus-1 {
-            background-color: var(--danger-color);
-        }
-
-        .points-0 {
-            background-color: var(--neutral-color);
-        }
-
-        /* Filtro de jogadores */
-        .filter-container {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .filter-header {
-            font-size: 1.1em;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .players-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            max-height: 150px;
-            overflow-y: auto;
-            padding: 5px;
-        }
-
-        .player-chip {
-            display: inline-flex;
-            align-items: center;
-            background-color: #f1f1f1;
-            border-radius: 20px;
-            padding: 5px 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .player-chip:hover {
-            background-color: #e0e0e0;
-        }
-
-        .player-chip.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .full-time-badge {
-            background-color: #222;
-            color: white;
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-top: 10px;
-            display: inline-block;
-        }
-
-        .player-prediction {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .player-prediction-item {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-
-        .player-prediction-item span {
-            color: #666;
-        }
-
-        .player-prediction-item strong {
-            color: var(--primary-color);
-            margin-left: 5px;
-        }
-
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .tab-button {
-            padding: 8px 15px;
-            background-color: #f1f1f1;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
-
-        .tab-button.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        /* Estilos para o modal de Status dos Jogadores */
-        .player-status-dialog {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             width: 90%;
             max-width: 900px;
-            max-height: 80vh;
-            overflow: auto;
+            padding: 0;
+            margin: 0;
         }
-
-        .player-status-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        .player-status-table th,
-        .player-status-table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #eee;
-        }
-        .player-status-table td.points-3 {
-            background-color: var(--success-color);
-            color: white; /* Garante contraste */
-            font-weight: bold;
-        }
-        .player-status-table td.points-1 {
-            background-color: var(--warning-color);
-            color: #333; /* Texto escuro para amarelo */
-            font-weight: bold;
-        }
-        .player-status-table td.points-0 {
-            background-color: #ffffff; /* Branco */
-            color: var(--text-color);
-            font-weight: bold; /* Mantem o padrão de resultado */
-        }
-        .player-status-table td.points-minus-1 {
-            background-color: var(--danger-color);
-            color: white; /* Garante contraste */
-            font-weight: bold;
-        }
-
-        .player-status-table td .status-icon {
-            background-color: transparent !important;
-            color: inherit; /* Usa a cor padrão do ícone definida antes */
-        }
-        .player-status-table td[class*="points-"] { /* Centraliza o texto do placar na célula */
-            text-align: center;
-        }
-
-        .player-status-table th {
-            background-color: #f8f9fa;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .player-status-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .player-status-table tr:hover {
-            background-color: #f0f0f0;
-        }
-
-        /* Ícones de status */
-        .status-icon {
-            font-size: 18px;
-            display: inline-block;
-        }
-
-        .status-pending {
-            color: #7f8c8d;
-        }
-
-        .status-missing {
-            color: #e74c3c;
-        }
-
-        .status-complete {
-            font-weight: bold;
-        }
-
-        /* Estilos para células na tabela */
-        .match-cell {
-            min-width: 100px;
-            white-space: nowrap;
-        }
-
-        /* Rolar horizontalmente em telas pequenas */
-        .table-container {
-            overflow-x: auto;
-            max-width: 100%;
-        }
+        #player-status-dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); }
+        .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); }
+        .dialog-header h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .dialog-header .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-color-light); }
+        .dialog-content { padding: 24px; max-height: 65vh; overflow-y: auto; }
+        .table-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: 8px; }
+        .player-status-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .player-status-table th, .player-status-table td { padding: 12px; text-align: center; border-left: 1px solid var(--border-color); white-space: nowrap; }
+        .player-status-table th:first-child, .player-status-table td:first-child { border-left: none; }
+        .player-status-table thead { background-color: #f8f9fa; position: sticky; top: 0; z-index: 10; }
+        .player-status-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
+        .player-status-table tbody tr:hover { background-color: #f0f8ff; }
+        .status-table-player { text-align: left !important; font-weight: 500; }
+        .status-icon { font-size: 18px; }
+        .status-missing { color: var(--danger-color); }
+        .status-pending { color: var(--neutral-color); }
+        .points-3 { background-color: #d4edda; color: #155724; font-weight: bold; }
+        .points-1 { background-color: #fff3cd; color: #856404; font-weight: bold; }
+        .points-0 { background-color: #f8f9fa; color: #383d41; }
+        .points-minus-1 { background-color: #f8d7da; color: #721c24; font-weight: bold; }
+        .legend-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 15px; font-size: 13px; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-color-box { width: 14px; height: 14px; border-radius: 3px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Próxima Rodada</h1>
-            <div>
-                <a href="home.html" class="action-button">Voltar</a>
-            </div>
+            <a href="home.html" class="action-button">Voltar</a>
         </div>
-
         <div id="timer-container" class="timer">
             <i class="fas fa-clock"></i> Carregando temporizador...
         </div>
 
-        <div class="filter-container" id="players-filter-container" style="display: none;">
-            <div class="filter-header">
-                <i class="fas fa-filter"></i> Filtrar por jogador:
-            </div>
-            <div class="players-filter" id="players-filter-list">
-                <!-- Jogadores serão adicionados dinamicamente -->
-            </div>
+        <div class="main-tabs">
+            <button id="matches-tab" class="tab-button active">
+                <i class="fas fa-futbol"></i> Jogos
+            </button>
+            <button id="player-status-tab" class="tab-button">
+                <i class="fas fa-users"></i> Status dos Jogadores
+            </button>
         </div>
-
-        <!-- Adicionar botões de abas acima do timer-container -->
-        <div class="tabs-container">
-            <button id="matches-tab" class="tab-button active">Jogos</button>
-            <button id="player-status-tab" class="tab-button">Status dos Jogadores</button>
-        </div>
-
-        <!-- Dialog para Status dos Jogadores -->
-        <dialog id="player-status-dialog" class="player-status-dialog">
-            <div class="dialog-header">
-                <h2>Status dos Jogadores</h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div class="dialog-content">
-                <p>Verifique quais jogadores já fizeram seus palpites para esta rodada:</p>
-                <div class="table-container">
-                    <table class="player-status-table">
-                        <thead>
-                            <tr id="player-status-header">
-                                <th>Jogador</th>
-                                <!-- Jogos serão adicionados dinamicamente -->
-                            </tr>
-                        </thead>
-                        <tbody id="player-status-body">
-                            <!-- Linhas serão adicionadas dinamicamente -->
-                        </tbody>
-                    </table>
-                </div>
-                <div style="margin-top: 15px; font-size: 13px;">
-                    <p><span style="display: inline-block; width: 12px; height: 12px; background-color: var(--success-color); margin-right: 5px; border-radius: 2px;"></span> Palpite correto (3 pts)</p>
-                    <p><span style="display: inline-block; width: 12px; height: 12px; background-color: var(--warning-color); margin-right: 5px; border-radius: 2px;"></span> Acertou vencedor/empate (1 pt)</p>
-                    <p><span style="display: inline-block; width: 12px; height: 12px; background-color: #ffffff; border: 1px solid #ccc; margin-right: 5px; border-radius: 2px;"></span> Errou tudo (0 pts)</p>
-                    <p><span style="display: inline-block; width: 12px; height: 12px; background-color: var(--danger-color); margin-right: 5px; border-radius: 2px;"></span> Placar invertido (-1 pt)</p>
-                    <hr style="margin: 8px 0; border: none; border-top: 1px solid #eee;">
-                    <p><i class="fas fa-futbol status-icon status-pending"></i> Palpite feito (Jogo pendente)</p>
-                    <p><i class="fas fa-question-circle status-icon status-missing"></i> Palpite não realizado</p>
-                    <!-- Removida a linha antiga que mostrava o placar como exemplo -->
-                </div>
-            </div>
-        </dialog>
 
         <div id="loader" class="loader-container">
             <div class="loader"></div>
         </div>
-
         <div id="matches-container" class="matches-container" style="display: none;">
-            <!-- Matches will be dynamically populated -->
+            <!-- Cards de jogos carregados pelo JS -->
         </div>
-
-        <div class="action-container" style="margin-top: 20px; text-align: center;">
+        <div class="action-container" style="margin-top: 30px; text-align: center;">
             <button id="save-predictions" class="action-button">
                 <i class="fas fa-save"></i> Salvar Palpites
             </button>
         </div>
     </div>
 
-    <!-- Preload Dialog -->
-    <dialog id="predictions-dialog">
+    <!-- DIÁLOGO DE STATUS DOS JOGADORES -->
+    <dialog id="player-status-dialog">
         <div class="dialog-header">
-            <h2>Palpites para este jogo</h2>
-            <button class="close-btn">&times;</button>
+            <h2><i class="fas fa-clipboard-check"></i>Status dos Palpites</h2>
+            <button class="close-btn">×</button>
         </div>
         <div class="dialog-content">
-            <div class="filter-container">
-                <div class="filter-header">
-                    <i class="fas fa-filter"></i> Filtrar por jogador:
-                </div>
-                <div class="players-filter" id="dialog-players-filter">
-                    <!-- Jogadores serão adicionados dinamicamente -->
-                </div>
+            <div class="table-container">
+                <table class="player-status-table">
+                    <thead id="player-status-header">
+                        <!-- Cabeçalho da tabela carregado pelo JS -->
+                    </thead>
+                    <tbody id="player-status-body">
+                        <!-- Corpo da tabela carregado pelo JS -->
+                    </tbody>
+                </table>
             </div>
-            <ul class="predictions-list"></ul>
+            <div class="legend-container">
+                <span class="legend-item"><span class="legend-color-box points-3"></span> 3 pts</span>
+                <span class="legend-item"><span class="legend-color-box points-1"></span> 1 pt</span>
+                <span class="legend-item"><span class="legend-color-box points-0"></span> 0 pts</span>
+                <span class="legend-item"><span class="legend-color-box points-minus-1"></span> -1 pt</span>
+                <span class="legend-item"><i class="fas fa-futbol status-icon status-pending"></i> Palpite Feito</span>
+                <span class="legend-item"><i class="fas fa-question-circle status-icon status-missing"></i> Não Palpitou</span>
+            </div>
         </div>
     </dialog>
 
@@ -614,7 +217,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
@@ -626,890 +228,264 @@
             measurementId: "G-4JXFEZ8DW6"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // Referencias globais para facilitar acesso
-        const matchesContainer = document.getElementById('matches-container');
-        const timerContainer = document.getElementById('timer-container');
-        const savePredictionsButton = document.getElementById('save-predictions');
-        const loader = document.getElementById('loader');
-        const playersFilterContainer = document.getElementById('players-filter-container');
-        const playersFilterList = document.getElementById('players-filter-list');
-        const predictionsDialog = document.getElementById('predictions-dialog');
-        const dialogPlayersFilter = document.getElementById('dialog-players-filter');
-        const matchesTab = document.getElementById('matches-tab');
-        const playerStatusTab = document.getElementById('player-status-tab');
-        const playerStatusDialog = document.getElementById('player-status-dialog');
+        const ui = {
+            matchesContainer: document.getElementById('matches-container'),
+            timerContainer: document.getElementById('timer-container'),
+            savePredictionsButton: document.getElementById('save-predictions'),
+            loader: document.getElementById('loader'),
+            matchesTab: document.getElementById('matches-tab'),
+            playerStatusTab: document.getElementById('player-status-tab'),
+            playerStatusDialog: document.getElementById('player-status-dialog'),
+            playerStatusHeader: document.getElementById('player-status-header'),
+            playerStatusBody: document.getElementById('player-status-body'),
+            actionContainer: document.querySelector('.action-container'),
+        };
 
-        // Estado global da aplicação
         let currentRoundKey = null;
-        let players = {};
-        let filteredPlayers = [];
+        let allPlayers = {};
+        let allTeams = {};
         let allMatches = {};
         let isTimeExpired = false;
+        let countdownInterval;
 
-        // Authentication State Observer
         auth.onAuthStateChanged((user) => {
             if (user) {
-                fetchAllPlayers();
-                fetchCurrentRound(user.uid);
+                initializeApp(user.uid);
             } else {
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         });
 
-        // Função para buscar todos os jogadores
-        async function fetchAllPlayers() {
+        async function initializeApp(userId) {
             try {
-                const usersSnapshot = await database.ref('users').once('value');
-                players = usersSnapshot.val() || {};
+                await Promise.all([fetchAllPlayers(), fetchAllTeams()]);
+                await fetchCurrentRound(userId);
+                setupEventListeners();
             } catch (error) {
-                console.error('Erro ao buscar jogadores:', error);
+                console.error("Erro na inicialização:", error);
+                ui.loader.style.display = 'none';
+                ui.matchesContainer.innerHTML = '<p>Erro ao carregar dados. Tente novamente.</p>';
             }
         }
 
-        // Função para iniciar o temporizador
+        async function fetchAllPlayers() {
+            const snapshot = await database.ref('users').once('value');
+            allPlayers = snapshot.val() || {};
+        }
+
+        async function fetchAllTeams() {
+            const snapshot = await database.ref('teams').once('value');
+            allTeams = snapshot.val() || {};
+        }
+
+        async function fetchCurrentRound(userId) {
+            const roundsRef = database.ref('rounds');
+            const snapshot = await roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value');
+            
+            if (!snapshot.exists()) {
+                ui.loader.style.display = 'none';
+                ui.matchesContainer.innerHTML = '<p style="text-align:center;">Não há rodadas disponíveis no momento.</p>';
+                ui.timerContainer.innerHTML = '<i class="fas fa-info-circle"></i> Nenhuma rodada ativa';
+                ui.actionContainer.style.display = 'none';
+                return;
+            }
+            
+            snapshot.forEach(childSnapshot => {
+                currentRoundKey = childSnapshot.key;
+                const roundData = childSnapshot.val();
+                allMatches = roundData.matches || [];
+                startCountdown(roundData.finishTimestamp);
+            });
+
+            await loadMatchesData(currentRoundKey, userId);
+        }
+
         function startCountdown(finishTimestamp) {
-            const updateCountdown = () => {
-                const now = new Date();
-                const end = new Date(finishTimestamp);
-                end.setHours(end.getHours()); // Ajuste para AMZ
-                const diff = end - now;
+            clearInterval(countdownInterval);
+            const update = () => {
+                const diff = new Date(finishTimestamp) - new Date();
                 
                 if (diff <= 0) {
-                    timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo esgotado!';
+                    clearInterval(countdownInterval);
+                    ui.timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo esgotado!';
                     isTimeExpired = true;
-                    
-                    // Trocar botão de salvar por mensagem quando o tempo acabar
-                    savePredictionsButton.style.display = 'none';
-                    
-                    // Mostrar filtro de jogadores quando o tempo acabar
-                    playersFilterContainer.style.display = 'block';
-                    
-                    // Adicionar botões de Ver Palpites para todos os jogos
-                    updateMatchCardsForExpiredTime();
+                    ui.savePredictionsButton.style.display = 'none';
+                    document.querySelectorAll('.prediction-inputs input').forEach(input => input.disabled = true);
                     return;
                 }
                 
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
                 
-                timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                ui.timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante: ${d}d ${h}h ${m}m`;
             };
-            
-            updateCountdown();
-            const interval = setInterval(updateCountdown, 1000);
-            return interval;
+            update();
+            countdownInterval = setInterval(update, 1000 * 30);
         }
 
-        // Função para calcular pontos baseado na predição
-        function calculateMatchPoints(finalResult, prediction) {
-            if (!finalResult || !prediction || 
-                finalResult.homeScore === null || finalResult.awayScore === null || 
-                prediction.homeScore === null || prediction.awayScore === null) {
-                return 0;
-            }
-            
-            // Placar exato
-            if (finalResult.homeScore === prediction.homeScore && finalResult.awayScore === prediction.awayScore) {
-                return 3;
-            }
-            
-            // Vencedor correto
-            const finalWinner = finalResult.homeScore > finalResult.awayScore ? 'home' : 
-                                finalResult.homeScore < finalResult.awayScore ? 'away' : 'draw';
-            
-            const predictionWinner = prediction.homeScore > prediction.awayScore ? 'home' : 
-                                    prediction.homeScore < prediction.awayScore ? 'away' : 'draw';
-            
-            if (finalWinner === predictionWinner) {
-                return 1;
-            }
-            
-            // Placar invertido
-            if (finalResult.homeScore === prediction.awayScore && finalResult.awayScore === prediction.homeScore) {
-                return -1;
-            }
-            
-            return 0;
-        }
-
-        // Função para buscar a rodada atual
-        async function fetchCurrentRound(userId) {
-            try {
-                const roundsRef = database.ref('rounds');
-                const roundsSnapshot = await roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value');
-                
-                if (!roundsSnapshot.exists()) {
-                    hideLoader();
-                    matchesContainer.innerHTML = '<p class="text-center">Não há rodadas disponíveis no momento.</p>';
-                    timerContainer.innerHTML = '<i class="fas fa-info-circle"></i> Nenhuma rodada ativa';
-                    return;
-                }
-                
-                let roundData, roundKey, finishTimestamp;
-                roundsSnapshot.forEach((roundSnapshot) => {
-                    roundData = roundSnapshot.val();
-                    roundKey = roundSnapshot.key;
-                    finishTimestamp = roundData.finishTimestamp;
-                    currentRoundKey = roundKey;
-                });
-                
-                // Iniciar temporizador
-                startCountdown(finishTimestamp);
-                
-                // Verificar se o tempo já expirou
-                const now = new Date();
-                const end = new Date(finishTimestamp);
-                end.setHours(end.getHours()); // Ajuste para AMZ
-                isTimeExpired = now > end;
-                
-                // Se expirou, mostrar filtro de jogadores
-                if (isTimeExpired) {
-                    playersFilterContainer.style.display = 'block';
-                    savePredictionsButton.style.display = 'none';
-                    createPlayerFilters();
-                }
-                
-                await loadMatchesData(roundKey, userId);
-            } catch (error) {
-                console.error('Erro ao buscar rodada atual:', error);
-                hideLoader();
-                matchesContainer.innerHTML = '<p class="text-center">Erro ao carregar dados. Tente novamente.</p>';
-            }
-        }
-
-        // Função para carregar os dados das partidas
         async function loadMatchesData(roundKey, userId) {
-            try {
-                const teamsRef = database.ref('teams');
-                const matchesRef = database.ref(`rounds/${roundKey}/matches`);
-                
-                // Buscar partidas desta rodada
-                const matchesSnapshot = await matchesRef.once('value');
-                const matches = matchesSnapshot.val() || [];
-                allMatches = matches;
-                
-                // Se não houver partidas
-                if (matches.length === 0) {
-                    hideLoader();
-                    matchesContainer.innerHTML = '<p class="text-center">Não há partidas nesta rodada.</p>';
-                    return;
-                }
-                
-                // Processar cada partida
-                let matchPromises = [];
-                for (let i = 0; i < matches.length; i++) {
-                    const match = matches[i];
-                    
-                    // Buscar dados dos times
-                    const homeTeamPromise = teamsRef.child(match.homeTeam).once('value');
-                    const awayTeamPromise = teamsRef.child(match.awayTeam).once('value');
-                    
-                    matchPromises.push(Promise.all([homeTeamPromise, awayTeamPromise])
-                        .then(([homeTeamSnapshot, awayTeamSnapshot]) => {
-                            return {
-                                matchId: i,
-                                match,
-                                homeTeam: homeTeamSnapshot.val(),
-                                awayTeam: awayTeamSnapshot.val(),
-                                userPrediction: match.predictions?.[userId] || { homeScore: '', awayScore: '' }
-                            };
-                        }));
-                }
-                
-                const matchesData = await Promise.all(matchPromises);
-                renderMatchCards(matchesData);
-                
-                // Adicionar evento ao botão de salvar palpites
-                setupSavePredictionsButton(roundKey);
-                
-                // Se o tempo expirou, atualizar cards para mostrar botões de ver palpites
-                if (isTimeExpired) {
-                    updateMatchCardsForExpiredTime();
-                    createPlayerFilters();
-                }
-                
-                hideLoader();
-            } catch (error) {
-                console.error('Erro ao carregar dados das partidas:', error);
-                hideLoader();
-                matchesContainer.innerHTML = '<p class="text-center">Erro ao carregar partidas. Tente novamente.</p>';
-            }
+            ui.loader.style.display = 'flex';
+            ui.matchesContainer.style.display = 'none';
+
+            const matchPromises = allMatches.map((match, index) => {
+                const homeTeam = allTeams[match.homeTeam] || {};
+                const awayTeam = allTeams[match.awayTeam] || {};
+                const userPrediction = match.predictions?.[userId] || { homeScore: '', awayScore: '' };
+                return { matchId: index, match, homeTeam, awayTeam, userPrediction };
+            });
+            
+            renderMatchCards(matchPromises);
+            setupSavePredictionsButton(roundKey, userId);
+            
+            ui.loader.style.display = 'none';
+            ui.matchesContainer.style.display = 'grid';
         }
 
-        // Função para renderizar os cards das partidas
         function renderMatchCards(matchesData) {
-            let matchesHtml = '';
-            
-            matchesData.forEach(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
-                const matchDate = match.timestamp ? new Date(match.timestamp).toLocaleDateString('pt-BR') : 'Data não definida';
-                const matchTime = match.timestamp ? new Date(match.timestamp).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) : 'Horário não definido';
-                const hasResult = match.finalResult && match.finalResult.homeScore !== undefined && match.finalResult.awayScore !== undefined;
-                
-                // Verificar se o tempo para palpitar nesta partida já expirou
-                const now = new Date();
-                const matchTimestamp = match.timestamp ? new Date(match.timestamp) : null;
-                const isMatchTimeExpired = matchTimestamp && now > matchTimestamp;
-                
-                matchesHtml += `
+            ui.matchesContainer.innerHTML = matchesData.map(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
+                const matchDate = new Date(match.timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                const matchTime = new Date(match.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const hasResult = match.finalResult && match.finalResult.homeScore !== undefined;
+
+                return `
                     <div class="match-card" data-match-id="${matchId}">
-                        <div class="match-header">
-                            ${matchDate} - ${matchTime}
-                            ${matchTimestamp ? `
-                                <div class="match-timer ${isMatchTimeExpired ? 'expired' : ''}">
-                                    <i class="fas fa-clock"></i> 
-                                    ${isMatchTimeExpired ? 'Tempo esgotado' : 'Até ${matchTime}'}
-                                </div>
-                            ` : ''}
-                        </div>
+                        <div class="match-header">${matchDate} - ${matchTime}</div>
                         <div class="match-content">
                             <div class="match-teams">
-                                <div class="team">
-                                    <img src="${homeTeam.image}" alt="${homeTeam.name}">
-                                    <p class="team-name">${homeTeam.name}</p>
-                                </div>
-                                <span class="versus">VS</span>
-                                <div class="team">
-                                    <img src="${awayTeam.image}" alt="${awayTeam.name}">
-                                    <p class="team-name">${awayTeam.name}</p>
-                                </div>
+                                <div class="team"><img src="${homeTeam.image}" alt="${homeTeam.name}"><p class="team-name">${homeTeam.name}</p></div>
+                                <span class="versus">vs</span>
+                                <div class="team"><img src="${awayTeam.image}" alt="${awayTeam.name}"><p class="team-name">${awayTeam.name}</p></div>
                             </div>
-                            
                             ${hasResult ? `
                                 <div class="match-score">
                                     <div class="score-display">
-                                        <span>${match.finalResult.homeScore}</span>
-                                        <span class="score-divider">:</span>
-                                        <span>${match.finalResult.awayScore}</span>
+                                        <span>${match.finalResult.homeScore}</span><span class="score-divider">:</span><span>${match.finalResult.awayScore}</span>
                                     </div>
                                 </div>
-                                <div class="text-center">
-                                    <span class="full-time-badge">RESULTADO FINAL</span>
-                                </div>
+                                <div style="text-align:center;"><span class="full-time-badge">RESULTADO FINAL</span></div>
                             ` : `
                                 <div class="prediction-inputs">
-                                    <input type="number" min="0" placeholder="0" 
-                                        data-team="home" 
-                                        value="${userPrediction.homeScore}" 
-                                        ${isTimeExpired || isMatchTimeExpired ? 'disabled' : ''}>
-                                    <span>x</span>
-                                    <input type="number" min="0" placeholder="0" 
-                                        data-team="away" 
-                                        value="${userPrediction.awayScore}" 
-                                        ${isTimeExpired || isMatchTimeExpired ? 'disabled' : ''}>
+                                    <input type="number" min="0" placeholder="-" data-team="home" value="${userPrediction.homeScore}" ${isTimeExpired ? 'disabled' : ''}>
+                                    <span>×</span>
+                                    <input type="number" min="0" placeholder="-" data-team="away" value="${userPrediction.awayScore}" ${isTimeExpired ? 'disabled' : ''}>
                                 </div>
                             `}
                         </div>
-                        <div class="match-footer" id="match-footer-${matchId}">
-                            ${isTimeExpired || isMatchTimeExpired ? `
-                                <button class="action-button view-predictions-btn" data-match-id="${matchId}">
-                                    <i class="fas fa-eye"></i> Ver Palpites
-                                </button>
-                            ` : ''}
-                        </div>
                     </div>
                 `;
-            });
-            
-            matchesContainer.innerHTML = matchesHtml;
-            matchesContainer.style.display = 'grid';
-            
-            // Adicionar event listeners aos botões de ver palpites
-            document.querySelectorAll('.view-predictions-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const matchId = this.getAttribute('data-match-id');
-                    showPredictionsForMatch(matchId);
-                });
-            });
+            }).join('');
         }
 
-        // Configurar o botão de salvar palpites
-        function setupSavePredictionsButton(roundKey) {
-            const newButton = savePredictionsButton.cloneNode(true);
-            savePredictionsButton.parentNode.replaceChild(newButton, savePredictionsButton);
-            const currentSaveButton = newButton; // Usar a referência do botão clonado/novo
-
-            currentSaveButton.addEventListener('click', async () => {
-                // --- OTIMIZAÇÃO 1: Desabilitar botão e feedback ---
-                currentSaveButton.disabled = true;
-                currentSaveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-                currentSaveButton.style.backgroundColor = '#f0ad4e'; // Cor de "processando"
+        function setupSavePredictionsButton(roundKey, userId) {
+            ui.savePredictionsButton.addEventListener('click', async () => {
+                ui.savePredictionsButton.disabled = true;
+                ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
 
                 try {
-                    const matchCards = document.querySelectorAll('.match-card');
-                    const predictions = {};
-                    const playerId = auth.currentUser.uid;
-                    let hasValidPredictions = false;
-                    const now = new Date(); // Obter data atual uma vez
-
-                    matchCards.forEach(card => {
-                        const matchId = card.getAttribute('data-match-id');
+                    const updates = {};
+                    document.querySelectorAll('.match-card').forEach(card => {
+                        const matchId = card.dataset.matchId;
                         const homeInput = card.querySelector('input[data-team="home"]');
                         const awayInput = card.querySelector('input[data-team="away"]');
-
-                        // Pular se os inputs não existirem (jogo já finalizado/sem input)
-                        if (!homeInput || !awayInput) {
-                            console.log(`Inputs não encontrados para matchId ${matchId}, pulando.`);
-                            return;
-                        }
-
-                        // Verificar se o tempo GERAL da rodada expirou (isTimeExpired)
-                        // OU se o tempo específico da PARTIDA expirou
-                        const match = allMatches[matchId]; // Assume que allMatches está populado corretamente
-                        const matchTimestamp = match?.timestamp ? new Date(match.timestamp) : null;
-                        const isMatchTimeExpired = matchTimestamp && now > matchTimestamp;
-
-                        // Não salvar se o tempo da rodada ou da partida expirou
-                        // E garantir que o input não esteja desabilitado (como segurança extra)
-                        if (isTimeExpired || isMatchTimeExpired || homeInput.disabled || awayInput.disabled) {
-                            console.log(`Tempo expirado ou input desabilitado para matchId ${matchId}, pulando.`);
-                            return;
-                        }
-
-                        // Validar se os palpites são números válidos e não vazios
-                        const homeScore = homeInput.value.trim();
-                        const awayScore = awayInput.value.trim();
-
-                        if (homeScore !== '' && awayScore !== '' && !isNaN(parseInt(homeScore)) && !isNaN(parseInt(awayScore))) {
-                            predictions[matchId] = {
-                                homeScore: parseInt(homeScore),
-                                awayScore: parseInt(awayScore),
-                                playerId: playerId // Redundante se já está sob a chave do playerID, mas pode ser útil
-                                // timestamp: firebase.database.ServerValue.TIMESTAMP // Opcional: salvar quando foi feito
-                            };
-                            hasValidPredictions = true;
-                            console.log(`Preparando palpite para matchId ${matchId}: ${homeScore}x${awayScore}`);
-                        } else {
-                            console.log(`Palpite inválido ou incompleto para matchId ${matchId}, pulando.`);
-                        }
+                        if (homeInput.disabled || homeInput.value === '' || awayInput.value === '') return;
+                        
+                        updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${userId}`] = {
+                            homeScore: parseInt(homeInput.value),
+                            awayScore: parseInt(awayInput.value),
+                        };
                     });
 
-                    if (!hasValidPredictions) {
-                        alert('Nenhum palpite válido para salvar. Preencha os placares corretamente.');
-                        // --- OTIMIZAÇÃO 1: Reabilitar botão em caso de não ter nada para salvar ---
-                        currentSaveButton.disabled = false;
-                        currentSaveButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
-                        currentSaveButton.style.backgroundColor = 'var(--primary-color)';
-                        return;
-                    }
-
-                    // Construir o objeto de updates para o Firebase
-                    const updates = {};
-                    Object.keys(predictions).forEach(matchId => {
-                        // Caminho exato onde o palpite do usuário para essa partida será salvo
-                        updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${playerId}`] = predictions[matchId];
-                    });
-
-                    console.log("Enviando updates para o Firebase:", updates);
-
-                    // --- OTIMIZAÇÃO 2: Chamar função com retentativa ---
-                    const success = await writeToFirebaseWithRetry(updates);
-
-                    if (success) {
-                        // --- OTIMIZAÇÃO 1: Feedback visual de sucesso ---
-                        currentSaveButton.innerHTML = '<i class="fas fa-check"></i> Palpites Salvos!';
-                        currentSaveButton.style.backgroundColor = 'var(--success-color)';
-
-                        // Restaurar botão após alguns segundos (mantendo desabilitado até lá)
-                        setTimeout(() => {
-                            currentSaveButton.disabled = false;
-                            currentSaveButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
-                            currentSaveButton.style.backgroundColor = 'var(--primary-color)';
-                        }, 3000);
+                    if (Object.keys(updates).length > 0) {
+                        await database.ref().update(updates);
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvos!';
+                        ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
                     } else {
-                        // Isso não deveria acontecer com a lógica de retry, mas por segurança
-                        throw new Error("Falha ao salvar após retentativas.");
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
                     }
-
                 } catch (error) {
-                    console.error('Erro CRÍTICO ao salvar palpites:', error);
-                    // --- OTIMIZAÇÃO 1 & 3: Feedback visual de erro persistente ---
-                    currentSaveButton.disabled = false; // Reabilitar para permitir nova tentativa
-                    currentSaveButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Falha ao Salvar';
-                    currentSaveButton.style.backgroundColor = 'var(--danger-color)';
-                    // Poderia remover a cor de erro após um tempo maior, ou deixar até o próximo clique/sucesso
-                    alert(`Erro ao salvar palpites: ${error.message}. Verifique sua conexão e tente novamente.`);
+                    console.error('Erro ao salvar:', error);
+                    ui.savePredictionsButton.innerHTML = '<i class="fas fa-times"></i> Erro!';
+                    ui.savePredictionsButton.style.backgroundColor = 'var(--danger-color)';
+                } finally {
+                    setTimeout(() => {
+                        ui.savePredictionsButton.disabled = false;
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                        ui.savePredictionsButton.style.backgroundColor = 'var(--primary-color)';
+                    }, 3000);
                 }
             });
         }
 
-        // Atualizar cards quando o tempo expirar
-        function updateMatchCardsForExpiredTime() {
-            const matchCards = document.querySelectorAll('.match-card');
-            
-            matchCards.forEach(card => {
-                const matchId = card.getAttribute('data-match-id');
-                const inputs = card.querySelectorAll('input');
-                
-                // Desabilitar inputs
-                inputs.forEach(input => {
-                    input.disabled = true;
-                });
-                
-                // Adicionar botão de ver palpites se não existir
-                const footer = card.querySelector(`#match-footer-${matchId}`);
-                if (footer && !footer.querySelector('.view-predictions-btn')) {
-                    const viewBtn = document.createElement('button');
-                    viewBtn.classList.add('action-button', 'view-predictions-btn');
-                    viewBtn.setAttribute('data-match-id', matchId);
-                    viewBtn.innerHTML = '<i class="fas fa-eye"></i> Ver Palpites';
-                    
-                    viewBtn.addEventListener('click', function() {
-                        showPredictionsForMatch(matchId);
-                    });
-                    
-                    footer.appendChild(viewBtn);
-                }
-            });
+        function calculateMatchPoints(final, pred) {
+            if (final?.homeScore === null || pred?.homeScore === null) return null;
+            if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
+            const finalW = Math.sign(final.homeScore - final.awayScore);
+            const predW = Math.sign(pred.homeScore - pred.awayScore);
+            if (finalW === predW) return 1;
+            if (final.homeScore === pred.awayScore && final.awayScore === pred.homeScore) return -1;
+            return 0;
         }
 
-        // Criar filtros de jogadores
-        function createPlayerFilters() {
-            // Lista principal de jogadores
-            createPlayerFilterChips(playersFilterList, false);
-            
-            // Lista de jogadores no dialog
-            createPlayerFilterChips(dialogPlayersFilter, true);
-        }
-
-        // Criar chips de filtro de jogadores
-        function createPlayerFilterChips(container, isDialog) {
-            // Limpar container
-            container.innerHTML = '';
-            
-            // Adicionar opção "Todos"
-            const allChip = document.createElement('div');
-            allChip.classList.add('player-chip', 'active');
-            allChip.innerHTML = 'Todos';
-            allChip.setAttribute('data-player-id', 'all');
-            
-            allChip.addEventListener('click', function() {
-                // Desativar todos os outros chips
-                container.querySelectorAll('.player-chip').forEach(chip => {
-                    chip.classList.remove('active');
-                });
-                
-                // Ativar este chip
-                this.classList.add('active');
-                
-                // Filtrar palpites ou atualizar visualização
-                if (isDialog) {
-                    updateDialogPredictions('all');
-                } else {
-                    filteredPlayers = [];
-                    updateMatchesVisibility();
-                }
-            });
-            
-            container.appendChild(allChip);
-            
-            // Adicionar chips para cada jogador
-            for (const playerId in players) {
-                const player = players[playerId];
-                const playerChip = document.createElement('div');
-                playerChip.classList.add('player-chip');
-                playerChip.innerHTML = player.name;
-                playerChip.setAttribute('data-player-id', playerId);
-                playerChip.setAttribute('title', player.name);
-                
-                playerChip.addEventListener('click', function() {
-                    const playerId = this.getAttribute('data-player-id');
-                    
-                    if (isDialog) {
-                        // No diálogo, seleção única
-                        container.querySelectorAll('.player-chip').forEach(chip => {
-                            chip.classList.remove('active');
-                        });
-                        this.classList.add('active');
-                        updateDialogPredictions(playerId);
-                    } else {
-                        // Na lista principal, seleção múltipla
-                        this.classList.toggle('active');
-                        
-                        // Atualizar lista de jogadores filtrados
-                        const activePlayerIds = Array.from(container.querySelectorAll('.player-chip.active:not([data-player-id="all"])'))
-                            .map(chip => chip.getAttribute('data-player-id'));
-                        
-                        // Desativar "Todos" se algum jogador específico estiver selecionado
-                        const allChip = container.querySelector('.player-chip[data-player-id="all"]');
-                        if (activePlayerIds.length > 0) {
-                            allChip.classList.remove('active');
-                        } else {
-                            allChip.classList.add('active');
-                        }
-                        
-                        filteredPlayers = activePlayerIds;
-                        updateMatchesVisibility();
-                    }
-                });
-                
-                container.appendChild(playerChip);
-            }
-        }
-
-        // Atualizar visibilidade dos cards de partidas baseado nos filtros
-        function updateMatchesVisibility() {
-            const matchCards = document.querySelectorAll('.match-card');
-            
-            if (filteredPlayers.length === 0) {
-                // Mostrar todos os cards se nenhum filtro estiver ativo
-                matchCards.forEach(card => {
-                    card.style.display = 'block';
-                    // Remover qualquer exibição de palpite de jogador específico
-                    const playerPrediction = card.querySelector('.player-prediction');
-                    if (playerPrediction) {
-                        playerPrediction.remove();
-                    }
-                });
-                return;
-            }
-            
-            // Para cada partida, verificar se algum dos jogadores filtrados fez palpite
-            for (let i = 0; i < allMatches.length; i++) {
-                const match = allMatches[i];
-                const predictions = match.predictions || {};
-                const card = document.querySelector(`.match-card[data-match-id="${i}"]`);
-                
-                if (!card) continue;
-                
-                // Verificar se algum dos jogadores filtrados tem palpite para esta partida
-                const filteredPredictions = filteredPlayers
-                    .map(playerId => ({ playerId, prediction: predictions[playerId] }))
-                    .filter(item => item.prediction);
-                
-                if (filteredPredictions.length > 0) {
-                    card.style.display = 'block';
-                    
-                    // Adicionar ou atualizar a exibição do palpite do jogador
-                    let playerPrediction = card.querySelector('.player-prediction');
-                    if (!playerPrediction) {
-                        playerPrediction = document.createElement('div');
-                        playerPrediction.classList.add('player-prediction');
-                        card.querySelector('.match-content').appendChild(playerPrediction);
-                    }
-                    
-                    // Mostrar todos os palpites dos jogadores filtrados
-                    playerPrediction.innerHTML = filteredPredictions.map(item => {
-                        const playerName = players[item.playerId]?.name || 'Jogador desconhecido';
-                        return `
-                            <div class="player-prediction-item">
-                                <span>${playerName}:</span>
-                                <strong>${item.prediction.homeScore} x ${item.prediction.awayScore}</strong>
-                            </div>
-                        `;
-                    }).join('');
-                    
-                } else {
-                    card.style.display = 'none';
-                    // Remover a exibição de palpite se existir
-                    const playerPrediction = card.querySelector('.player-prediction');
-                    if (playerPrediction) {
-                        playerPrediction.remove();
-                    }
-                }
-            }
-        }
-
-        // Mostrar diálogo com os palpites para uma partida
-        async function showPredictionsForMatch(matchId) {
-            const match = allMatches[matchId];
-            if (!match) return;
-            
-            const predictions = match.predictions || {};
-            const predictionsList = predictionsDialog.querySelector('.predictions-list');
-            predictionsList.innerHTML = '';
-            
-            // Guardar o matchId atual no diálogo para uso no filtro
-            predictionsDialog.setAttribute('data-match-id', matchId);
-            
-            // Título do diálogo
-            const dialogTitle = predictionsDialog.querySelector('.dialog-header h2');
-            
-            // Buscar informações dos times
-            const homeTeamSnapshot = await database.ref(`teams/${match.homeTeam}`).once('value');
-            const awayTeamSnapshot = await database.ref(`teams/${match.awayTeam}`).once('value');
-            const homeTeam = homeTeamSnapshot.val();
-            const awayTeam = awayTeamSnapshot.val();
-            
-            dialogTitle.textContent = `Palpites: ${homeTeam.name} vs ${awayTeam.name}`;
-            
-            // Inicializar dados para filtro no diálogo
-            updateDialogPredictions('all');
-            
-            // Adicionar evento de fechar o diálogo
-            const closeBtn = predictionsDialog.querySelector('.close-btn');
-            closeBtn.onclick = () => predictionsDialog.close();
-            
-            // Mostrar o diálogo
-            predictionsDialog.showModal();
-        }
-
-        // Atualizar lista de palpites no diálogo com base no filtro
-        function updateDialogPredictions(filterId) {
-            const matchId = predictionsDialog.getAttribute('data-match-id');
-            const match = allMatches[matchId];
-            if (!match) return;
-            
-            const predictions = match.predictions || {};
-            const predictionsList = predictionsDialog.querySelector('.predictions-list');
-            predictionsList.innerHTML = '';
-            
-            const finalResult = match.finalResult;
-            
-            // Filtrar palpites
-            let filteredPredictions = Object.entries(predictions);
-            if (filterId !== 'all') {
-                filteredPredictions = filteredPredictions.filter(([playerId]) => playerId === filterId);
-            }
-            
-            // Ordenar por pontos (se houver resultado)
-            if (finalResult && finalResult.homeScore !== undefined && finalResult.awayScore !== undefined) {
-                filteredPredictions.sort((a, b) => {
-                    const pointsA = calculateMatchPoints(finalResult, a[1]);
-                    const pointsB = calculateMatchPoints(finalResult, b[1]);
-                    return pointsB - pointsA;
-                });
-            }
-            
-            // Se não houver palpites após filtro
-            if (filteredPredictions.length === 0) {
-                predictionsList.innerHTML = '<p class="text-center">Nenhum palpite encontrado.</p>';
-                return;
-            }
-            
-            // Renderizar cada palpite
-            filteredPredictions.forEach(([playerId, prediction]) => {
-                const player = players[playerId] || { name: 'Usuário Desconhecido' };
-                const points = finalResult ? calculateMatchPoints(finalResult, prediction) : null;
-                
-                let pointsClass = '';
-                if (points !== null) {
-                    pointsClass = points === 3 ? 'points-3' : 
-                                points === 1 ? 'points-1' : 
-                                points === -1 ? 'points-minus-1' : 'points-0';
-                }
-                
-                const listItem = document.createElement('li');
-                listItem.classList.add('prediction-item');
-                
-                listItem.innerHTML = `
-                    <div class="prediction-user">${player.name}</div>
-                    <div class="prediction-score">
-                        ${prediction.homeScore} x ${prediction.awayScore}
-                    </div>
-                    ${points !== null ? `
-                        <div class="prediction-points ${pointsClass}">
-                            ${points}
-                        </div>
-                    ` : ''}
-                `;
-                
-                predictionsList.appendChild(listItem);
-            });
-        }
-
-        // Esconder o loader e mostrar o conteúdo
-        function hideLoader() {
-            loader.style.display = 'none';
-            matchesContainer.style.display = 'grid';
-        }
-
-        // Adicionar event listeners para as abas
-        matchesTab.addEventListener('click', function() {
-            this.classList.add('active');
-            playerStatusTab.classList.remove('active');
-            document.getElementById('matches-container').style.display = 'grid';
-        });
-
-        playerStatusTab.addEventListener('click', function() {
-            this.classList.add('active');
-            matchesTab.classList.remove('active');
-            document.getElementById('matches-container').style.display = 'none';
-            showPlayerStatusDialog();
-        });
-
-        // Configurar botão de fechar do dialog de status
-        document.querySelector('#player-status-dialog .close-btn').addEventListener('click', function() {
-            playerStatusDialog.close();
-            matchesTab.classList.add('active');
-            playerStatusTab.classList.remove('active');
-            document.getElementById('matches-container').style.display = 'grid';
-        });
-
-        // Função para mostrar o diálogo de status dos jogadores
-        function showPlayerStatusDialog() {
-            // Preencher o diálogo com dados atualizados
-            populatePlayerStatusTable();
-            
-            // Mostrar o diálogo
-            playerStatusDialog.showModal();
-        }
-
-        // Função para preencher a tabela de status dos jogadores
         function populatePlayerStatusTable() {
-        if (!currentRoundKey || !allMatches || Object.keys(allMatches).length === 0) { // Use Object.keys para verificar se o objeto não está vazio
-            console.warn("Dados insuficientes para popular a tabela de status.");
-             // Limpar tabela se não houver dados
-            const tableHeader = document.getElementById('player-status-header');
-            const tableBody = document.getElementById('player-status-body');
-            while (tableHeader.children.length > 1) {
-                tableHeader.removeChild(tableHeader.lastChild);
-            }
-            tableBody.innerHTML = '<tr><td colspan="100%">Não há dados de partidas para exibir.</td></tr>'; // Mensagem informativa
-            return;
-        }
-
-        const tableHeader = document.getElementById('player-status-header');
-        const tableBody = document.getElementById('player-status-body');
-
-        // Limpar conteúdo atual
-        while (tableHeader.children.length > 1) {
-            tableHeader.removeChild(tableHeader.lastChild);
-        }
-        tableBody.innerHTML = '';
-
-        // Ordenar as partidas (opcional, mas bom para consistência)
-        const sortedMatchIds = Object.keys(allMatches).sort((a, b) => parseInt(a) - parseInt(b));
-
-        const matchPromises = [];
-        sortedMatchIds.forEach(matchId => {
-            const match = allMatches[matchId];
-            if (!match || !match.homeTeam || !match.awayTeam) {
-                console.warn(`Dados incompletos para matchId ${matchId}`);
-                return; // Pula esta partida se dados essenciais faltarem
-            }
-            const homeTeamPromise = database.ref(`teams/${match.homeTeam}`).once('value');
-            const awayTeamPromise = database.ref(`teams/${match.awayTeam}`).once('value');
-
-            matchPromises.push(Promise.all([homeTeamPromise, awayTeamPromise])
-                .then(([homeTeamSnapshot, awayTeamSnapshot]) => {
-                    const homeTeam = homeTeamSnapshot.val();
-                    const awayTeam = awayTeamSnapshot.val();
-                    if (!homeTeam || !awayTeam) {
-                         console.warn(`Não foi possível buscar dados dos times para matchId ${matchId}`);
-                         return null; // Retorna null se times não forem encontrados
-                    }
-                    return {
-                        matchId: matchId, // Usar o ID real do objeto/array
-                        match,
-                        homeTeam,
-                        awayTeam
-                    };
-                }).catch(error => {
-                     console.error(`Erro ao buscar times para matchId ${matchId}:`, error);
-                     return null; // Retorna null em caso de erro
-                }));
-        });
-
-        Promise.all(matchPromises).then(matchesDataNullable => {
-             // Filtrar resultados nulos que podem ter ocorrido por erros ou dados faltantes
-             const matchesData = matchesDataNullable.filter(data => data !== null);
-
-             // Adicionar cabeçalho para cada partida válida
-             matchesData.forEach(({ homeTeam, awayTeam }) => {
-                const th = document.createElement('th');
-                th.classList.add('match-cell');
-                th.innerHTML = `${homeTeam.abbr || homeTeam.name.substring(0, 3)} x ${awayTeam.abbr || awayTeam.name.substring(0, 3)}`;
-                tableHeader.appendChild(th);
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Jogador</th>';
+            allMatches.forEach(match => {
+                const homeTeam = allTeams[match.homeTeam];
+                const awayTeam = allTeams[match.awayTeam];
+                headerRow.innerHTML += `<th>${homeTeam.abbr} vs ${awayTeam.abbr}</th>`;
             });
-
-            // Se não houver jogadores, exibir mensagem
-             if (Object.keys(players).length === 0) {
-                 tableBody.innerHTML = `<tr><td colspan="${matchesData.length + 1}">Nenhum jogador encontrado.</td></tr>`;
-                 return;
-             }
-
-
-            // Criar uma linha para cada jogador
-            for (const playerId in players) {
-                const player = players[playerId];
-                if (!player) continue; // Pula se o jogador for inválido
-
-                const tr = document.createElement('tr');
-
-                // Adicionar célula com nome do jogador
-                const tdPlayer = document.createElement('td');
-                 // Prioriza abbr, senão usa name
-                 tdPlayer.textContent = player.abbr || player.name || 'Jogador Desconhecido';
-                 tdPlayer.style.textAlign = 'left'; // Alinha nome à esquerda
-                 tdPlayer.style.fontWeight = '500';
-                tr.appendChild(tdPlayer);
-
-                // Adicionar células para cada partida
-                matchesData.forEach(({ matchId, match }) => {
-                    const td = document.createElement('td');
+            ui.playerStatusHeader.innerHTML = '';
+            ui.playerStatusHeader.appendChild(headerRow);
+            
+            ui.playerStatusBody.innerHTML = Object.entries(allPlayers).map(([playerId, player]) => {
+                let rowHtml = `<tr class="player-row"><td class="status-table-player">${player.name}</td>`;
+                allMatches.forEach(match => {
                     const prediction = match.predictions?.[playerId];
-                    const finalResult = match.finalResult;
-                    // Verifica se a partida REALMENTE terminou (tem resultado final com scores definidos)
-                    const hasFinished = finalResult &&
-                                        typeof finalResult.homeScore === 'number' &&
-                                        typeof finalResult.awayScore === 'number';
-
-                    if (prediction) {
-                        // Jogador fez palpite
-                        if (hasFinished) {
-                            // Partida encerrada: Calcular pontos e colorir célula
-                            const points = calculateMatchPoints(finalResult, prediction);
-                            td.textContent = `${prediction.homeScore}x${prediction.awayScore}`; // Mostrar o palpite
-
-                            // Adicionar classe CSS com base nos pontos
-                            if (points === 3) {
-                                td.classList.add('points-3');
-                            } else if (points === 1) {
-                                td.classList.add('points-1');
-                            } else if (points === 0) {
-                                td.classList.add('points-0');
-                            } else if (points === -1) {
-                                td.classList.add('points-minus-1');
-                            }
-                            td.title = `Pontos: ${points}`; // Tooltip com os pontos
-
+                    if (prediction !== undefined) {
+                        if (match.finalResult) {
+                            const points = calculateMatchPoints(match.finalResult, prediction);
+                            rowHtml += `<td class="points-${points}">${prediction.homeScore} x ${prediction.awayScore}</td>`;
                         } else {
-                            // Palpite feito, jogo pendente: Mostrar ícone pendente
-                            td.innerHTML = `<i class="fas fa-futbol status-icon status-pending" title="Palpite: ${prediction.homeScore}x${prediction.awayScore} (Jogo pendente)"></i>`;
+                            rowHtml += `<td><i class="fas fa-futbol status-icon status-pending" title="Palpite: ${prediction.homeScore}x${prediction.awayScore}"></i></td>`;
                         }
                     } else {
-                        // Jogador não fez palpite: Mostrar ícone de 'não realizado'
-                        td.innerHTML = `<i class="fas fa-question-circle status-icon status-missing" title="Palpite não realizado"></i>`;
+                        rowHtml += `<td><i class="fas fa-question-circle status-icon status-missing" title="Não palpitou"></i></td>`;
                     }
-
-                    tr.appendChild(td);
                 });
-
-                tableBody.appendChild(tr);
-            }
-        }).catch(error => {
-             console.error("Erro ao processar dados das partidas para a tabela de status:", error);
-             tableBody.innerHTML = `<tr><td colspan="100%">Erro ao carregar status.</td></tr>`;
-        });
-    }
-
-        async function writeToFirebaseWithRetry(updates, maxRetries = 3, delay = 1000) {
-    let attempts = 0;
-    while (attempts < maxRetries) {
-        try {
-            await database.ref().update(updates);
-            console.log("Dados salvos com sucesso no Firebase.");
-            return true; // Sucesso
-        } catch (error) {
-            attempts++;
-            console.error(`Falha ao salvar (tentativa ${attempts}/${maxRetries}):`, error);
-            if (attempts >= maxRetries) {
-                console.error("Número máximo de retentativas atingido.");
-                throw error; // Re-lança o erro após esgotar as tentativas
-            }
-            // Espera antes de tentar novamente (backoff exponencial simples)
-            await new Promise(resolve => setTimeout(resolve, delay * attempts));
+                rowHtml += '</tr>';
+                return rowHtml;
+            }).join('');
         }
-    }
-    return false; // Nunca deve chegar aqui, mas por segurança
-}
+
+        function setupEventListeners() {
+            const dialogCloseBtn = ui.playerStatusDialog.querySelector('.close-btn');
+            
+            ui.matchesTab.addEventListener('click', () => {
+                ui.matchesTab.classList.add('active');
+                ui.playerStatusTab.classList.remove('active');
+                ui.matchesContainer.style.display = 'grid';
+                ui.actionContainer.style.display = 'block';
+            });
+            
+            ui.playerStatusTab.addEventListener('click', () => {
+                ui.matchesTab.classList.remove('active');
+                ui.playerStatusTab.classList.add('active');
+                ui.matchesContainer.style.display = 'none';
+                ui.actionContainer.style.display = 'none';
+                populatePlayerStatusTable();
+                ui.playerStatusDialog.showModal();
+            });
+            
+            dialogCloseBtn.addEventListener('click', () => ui.playerStatusDialog.close());
+            ui.playerStatusDialog.addEventListener('click', (e) => {
+                if (e.target.id === 'player-status-dialog') ui.playerStatusDialog.close();
+            });
+        }
     </script>
 </body>
 </html>

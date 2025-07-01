@@ -21,7 +21,8 @@ import Toast from 'react-native-toast-message';
 export const NewPetScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({
     name: '',
-    age: '',
+    ageValue: '', // Alterado de 'age' para 'ageValue'
+    ageUnit: 'meses', // Nova propriedade para a unidade da idade
     gender: 'M',
     size: 'M',
     health: '',
@@ -35,7 +36,6 @@ export const NewPetScreen = ({ navigation }) => {
   const [imageUri, setImageUri] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  // Request permission to access the device's image library
   const requestPermission = async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -48,7 +48,6 @@ export const NewPetScreen = ({ navigation }) => {
     return true;
   };
 
-  // Pick an image from the device's gallery
   const pickImage = async () => {
     const hasPermission = await requestPermission();
     
@@ -71,26 +70,18 @@ export const NewPetScreen = ({ navigation }) => {
     }
   };
 
-  // Upload the image to Firebase Storage
   const uploadImage = async (uri) => {
     if (!uri) return null;
     
     setUploading(true);
     
     try {
-      // Convert image to blob
       const response = await fetch(uri);
       const blob = await response.blob();
-      
-      // Create unique filename
       const filename = `pet_${Date.now()}.jpg`;
       const storage = getStorage();
       const imageRef = storageRef(storage, `images/${filename}`);
-      
-      // Upload image
       await uploadBytes(imageRef, blob);
-      
-      // Get download URL
       const downloadURL = await getDownloadURL(imageRef);
       setUploading(false);
       return downloadURL;
@@ -104,32 +95,40 @@ export const NewPetScreen = ({ navigation }) => {
   };
 
   const handleRegister = async () => {
-    if (!formData.name || !formData.age || !formData.health || !formData.behavior) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios');
+    // Validar se ageValue foi preenchido
+    if (!formData.name || !formData.ageValue || !formData.health || !formData.behavior) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios, incluindo a idade.');
       return;
     }
+
+    // Validar se ageValue é um número
+    if (isNaN(parseInt(formData.ageValue))) {
+        Alert.alert('Erro', 'A idade deve ser um número.');
+        return;
+    }
+
 
     try {
       setUploading(true);
       
-      // Upload image if selected
       let imageUrl = '';
       if (imageUri) {
         imageUrl = await uploadImage(imageUri);
         if (!imageUrl) {
           setUploading(false);
-          return; // Stop if image upload failed
+          return; 
         }
       }
       
-      // Criar referência para a lista de pets
       const petsRef = ref(FIREBASE_DB, 'pets');
-      
-      // Gerar nova chave única e salvar os dados
       const newPetRef = push(petsRef);
+
+      // Combinar ageValue e ageUnit em uma string para 'age'
+      const ageString = `${formData.ageValue} ${formData.ageUnit}`;
+
       await set(newPetRef, {
         name: formData.name,
-        age: parseInt(formData.age),
+        age: ageString, // Salvar a string combinada
         gender: formData.gender,
         size: formData.size,
         health: formData.health,
@@ -142,7 +141,6 @@ export const NewPetScreen = ({ navigation }) => {
 
       setUploading(false);
       
-      // Show success toast and go back
       Toast.show({
         type: 'success',
         text1: 'Sucesso',
@@ -167,7 +165,6 @@ export const NewPetScreen = ({ navigation }) => {
       
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.inputContainer}>
-          {/* Image Upload Section */}
           <View style={styles.imageSection}>
             <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
               {imageUri ? (
@@ -187,13 +184,27 @@ export const NewPetScreen = ({ navigation }) => {
             onChangeText={(text) => setFormData({ ...formData, name: text })}
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Idade"
-            value={formData.age}
-            onChangeText={(text) => setFormData({ ...formData, age: text })}
-            keyboardType="numeric"
-          />
+          {/* Campo de Idade Ajustado */}
+          <View style={styles.ageInputRow}>
+            <TextInput
+              style={[styles.input, styles.ageNumericInput]}
+              placeholder="Idade"
+              value={formData.ageValue}
+              // Permitir apenas números
+              onChangeText={(text) => setFormData({ ...formData, ageValue: text.replace(/[^0-9]/g, '') })}
+              keyboardType="numeric"
+            />
+            <View style={styles.ageUnitPickerContainer}>
+              <Picker
+                selectedValue={formData.ageUnit}
+                onValueChange={(value) => setFormData({ ...formData, ageUnit: value })}
+                style={styles.ageUnitPicker}
+              >
+                <Picker.Item label="Meses" value="meses" />
+                <Picker.Item label="Anos" value="anos" />
+              </Picker>
+            </View>
+          </View>
 
           <View style={styles.pickerContainer}>
             <Text style={styles.pickerLabel}>Gênero:</Text>
@@ -321,6 +332,31 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     width: '100%',
   },
+  // Estilos para o campo de idade
+  ageInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16, // Mesma margem dos outros inputs
+  },
+  ageNumericInput: {
+    flex: 1, // Ocupa o espaço disponível
+    marginRight: 8, // Espaçamento entre o número e a unidade
+    marginBottom: 0, // Remove margem inferior pois ageInputRow já tem
+  },
+  ageUnitPickerContainer: {
+    flex: 1, // Ocupa o espaço disponível
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    borderColor: '#FFE6D8',
+    borderWidth: 2,
+    height: 58, // Aproximadamente a altura do TextInput
+    justifyContent: 'center',
+  },
+  ageUnitPicker: {
+    // Picker pode precisar de ajustes de estilo específicos por plataforma
+    // Em alguns casos, o container já é suficiente
+    // width: '100%', // Para Android, para iOS pode ser diferente
+  },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
@@ -354,6 +390,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   disabledButton: {
-    backgroundColor: '#C0A080',
+    backgroundColor: '#C0A080', // Cor para botão desabilitado
   },
 });

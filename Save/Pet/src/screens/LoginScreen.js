@@ -29,42 +29,67 @@ export const LoginScreen = ({ navigation }) => {
   const checkPersistentLogin = async () => {
     try {
       setIsLoading(true);
-      const storedUserData = await AsyncStorage.getItem('userData');
-      if (storedUserData) {
-        const userData = JSON.parse(storedUserData);
-        // Attempt to sign in with stored credentials
+      const storedUserDataJSON = await AsyncStorage.getItem('userData');
+      if (storedUserDataJSON) {
+        const parsedStoredUserData = JSON.parse(storedUserDataJSON);
+
+        // Verificar se temos email e senha para tentar o login
+        if (!parsedStoredUserData.email || !parsedStoredUserData.password) {
+          console.warn("Dados de login persistente incompletos no AsyncStorage.");
+          await AsyncStorage.removeItem('userData'); // Limpar dados inválidos
+          setIsLoading(false);
+          return;
+        }
+
+        // Tentar re-autenticar com as credenciais armazenadas
         const userCredential = await signInWithEmailAndPassword(
-          FIREBASE_AUTH, 
-          userData.email, 
-          userData.password
+          FIREBASE_AUTH,
+          parsedStoredUserData.email,
+          parsedStoredUserData.password // Novamente, CUIDADO ao armazenar/usar senhas assim
         );
-        
+
         const user = userCredential.user;
+
+        // Buscar os detalhes mais recentes do usuário, incluindo isAdmin
         const userRef = ref(FIREBASE_DB, `users/${user.uid}`);
         const snapshot = await get(userRef);
-        
-        if (snapshot.exists()) {
-          const userDetails = snapshot.val();
-          const isAdmin = userDetails.isAdmin;
 
-          const updatedUserData = {...userData, isAdmin};
-          await AsyncStorage.setItem('userData', JSON.stringify(updatedUserData));
-          
-          navigation.reset({
-            index: 0,
-            routes: [{ name: userData.isAdmin ? 'Admin' : 'Home' }]
-          });
+        let isCurrentUserAdmin = false; // Status de admin para esta checagem
+        if (snapshot.exists()) {
+          const userDetailsFromDB = snapshot.val();
+          isCurrentUserAdmin = userDetailsFromDB.isAdmin || false;
         } else {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home' }]
-          });
+          console.warn(`Usuário ${user.uid} (login persistente) não encontrado no Realtime Database.`);
         }
+
+        // Atualizar o AsyncStorage com a informação isAdmin mais recente
+        // e manter as outras informações necessárias (uid, email, e a senha se você insistir nessa abordagem)
+        const dataToStoreAgain = {
+          email: parsedStoredUserData.email,
+          password: parsedStoredUserData.password, // NÃO RECOMENDADO
+          uid: user.uid,
+          isAdmin: isCurrentUserAdmin
+        };
+        await AsyncStorage.setItem('userData', JSON.stringify(dataToStoreAgain));
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: isCurrentUserAdmin ? 'Admin' : 'Home' }]
+        });
+
       }
     } catch (error) {
-      // If stored login fails, clear stored data
-      await AsyncStorage.removeItem('userData');
-      console.error('Stored login failed:', error);
+      // Se o login persistente falhar (ex: senha alterada, conta deletada, credenciais inválidas),
+      // limpar os dados armazenados.
+      if (error.code === 'auth/user-not-found' ||
+          error.code === 'auth/wrong-password' ||
+          error.code === 'auth/invalid-credential' || // Novo código de erro
+          error.code === 'auth/user-disabled') {
+        await AsyncStorage.removeItem('userData');
+      }
+      console.error('Login persistente falhou:', error.message);
+      // Não é ideal mostrar um Alert aqui, pois é uma checagem em background.
+      // O usuário simplesmente permanecerá na tela de login se falhar.
     } finally {
       setIsLoading(false);
     }
@@ -78,37 +103,67 @@ export const LoginScreen = ({ navigation }) => {
 
     setIsLoading(true);
     try {
+      // 1. Autenticar o usuário
       const userCredential = await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
       const user = userCredential.user;
 
-      // Save login credentials securely
-      await AsyncStorage.setItem('userData', JSON.stringify({
-        email,
-        password,
-        uid: user.uid,
-        isAdmin: userData.isAdmin
-      }));
-
-      // Verificar se é admin no Realtime Database
+      // 2. Buscar dados do usuário no Realtime Database para obter isAdmin
       const userRef = ref(FIREBASE_DB, `users/${user.uid}`);
       const snapshot = await get(userRef);
-      
+
+      let isCurrentUserAdmin = false; // Valor padrão, caso o usuário não exista no DB ou não tenha a propriedade
       if (snapshot.exists()) {
-        const userData = snapshot.val();
-        navigation.reset({
-          index: 0,
-          routes: [{ name: userData.isAdmin ? 'Admin' : 'Home' }]
-        });
+        const userDataFromDB = snapshot.val(); // Dados do Realtime DB
+        isCurrentUserAdmin = userDataFromDB.isAdmin || false; // Pega o valor de isAdmin, ou false se não existir
       } else {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }]
-        });
+        // O usuário está autenticado no Firebase Auth, mas não tem um nó correspondente
+        // em /users/{uid} no Realtime Database.
+        // Você precisa decidir como lidar com isso. Por exemplo, tratar como não-admin.
+        console.warn(`Usuário ${user.uid} autenticado, mas não encontrado em /users/${user.uid} no Realtime Database.`);
       }
 
+      // 3. Salvar dados no AsyncStorage, incluindo o isAdmin correto
+      // ATENÇÃO MUITO IMPORTANTE: Armazenar a senha do usuário em plain text
+      // (como 'password: password') no AsyncStorage é uma PÉSSIMA PRÁTICA DE SEGURANÇA.
+      // O Firebase Authentication já gerencia a sessão do usuário.
+      // Considere usar onAuthStateChanged para verificar o estado de login
+      // e não armazenar a senha. Se for manter essa abordagem para login persistente,
+      // esteja ciente dos riscos.
+      await AsyncStorage.setItem('userData', JSON.stringify({
+        email,          // Email usado no login
+        password,       // Senha usada no login (NÃO RECOMENDADO)
+        uid: user.uid,
+        isAdmin: isCurrentUserAdmin // Status de admin obtido do DB
+      }));
+
+      // 4. Navegar para a tela correta com base no status de admin
+      navigation.reset({
+        index: 0,
+        routes: [{ name: isCurrentUserAdmin ? 'Admin' : 'Home' }]
+      });
+
     } catch (error) {
-      console.error(error);
-      Alert.alert('Erro', 'Email ou senha inválidos');
+      console.error("Erro detalhado no login:", error); // Log completo do erro para depuração
+      let errorMessage = 'Email ou senha inválidos.'; // Mensagem padrão
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+          case 'auth/invalid-email':
+          case 'auth/invalid-credential': // Novo código de erro para credenciais inválidas no Firebase v9+
+            errorMessage = 'Email ou senha inválidos.';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Muitas tentativas de login. Por favor, tente novamente mais tarde.';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+            break;
+          default:
+            errorMessage = 'Ocorreu um erro ao tentar fazer login. Tente novamente.';
+        }
+      }
+      Alert.alert('Erro de Login', errorMessage);
     } finally {
       setIsLoading(false);
     }

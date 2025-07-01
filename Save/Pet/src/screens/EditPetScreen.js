@@ -30,7 +30,8 @@ export const EditPetScreen = ({ route, navigation }) => {
   const [originalData, setOriginalData] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    age: '',
+    ageValue: '', // Alterado de 'age' para 'ageValue'
+    ageUnit: 'meses', // Nova propriedade para a unidade da idade
     gender: 'M',
     size: 'M',
     health: '',
@@ -47,7 +48,6 @@ export const EditPetScreen = ({ route, navigation }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [imageChanged, setImageChanged] = useState(false);
 
-  // Carregar dados do pet
   useEffect(() => {
     const loadPetData = async () => {
       try {
@@ -57,9 +57,29 @@ export const EditPetScreen = ({ route, navigation }) => {
         if (snapshot.exists()) {
           const petData = snapshot.val();
           setOriginalData(petData);
+
+          let loadedAgeValue = '';
+          let loadedAgeUnit = 'meses'; // Default unit
+
+          // Separar a string 'age' do Firebase em 'ageValue' e 'ageUnit'
+          if (petData.age && typeof petData.age === 'string') {
+            const ageParts = petData.age.split(' ');
+            if (ageParts.length === 2 && !isNaN(parseInt(ageParts[0]))) {
+              loadedAgeValue = ageParts[0];
+              loadedAgeUnit = ageParts[1].toLowerCase() === 'anos' ? 'anos' : 'meses';
+            } else if (!isNaN(parseInt(petData.age))) { // Caso antigo, só número
+              loadedAgeValue = petData.age.toString();
+              loadedAgeUnit = 'meses'; // Assume meses se for só número
+            }
+          } else if (petData.age && !isNaN(parseInt(petData.age))) { // Caso antigo, só número
+            loadedAgeValue = petData.age.toString();
+            loadedAgeUnit = 'meses'; // Assume meses se for só número
+          }
+          
           setFormData({
             name: petData.name || '',
-            age: petData.age ? petData.age.toString() : '',
+            ageValue: loadedAgeValue,
+            ageUnit: loadedAgeUnit,
             gender: petData.gender || 'M',
             size: petData.size || 'M',
             health: petData.health || '',
@@ -70,7 +90,6 @@ export const EditPetScreen = ({ route, navigation }) => {
             calendar: petData.calendar || ''
           });
           
-          // Guardar a URL da imagem original para possível exclusão posterior
           if (petData.image) {
             setOriginalImageUrl(petData.image);
             setImageUri(petData.image);
@@ -96,7 +115,6 @@ export const EditPetScreen = ({ route, navigation }) => {
     loadPetData();
   }, [petId]);
 
-  // Request permission to access the device's image library
   const requestPermission = async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -109,12 +127,9 @@ export const EditPetScreen = ({ route, navigation }) => {
     return true;
   };
 
-  // Pick an image from the device's gallery
   const pickImage = async () => {
     const hasPermission = await requestPermission();
-    
     if (!hasPermission) return;
-
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -122,7 +137,6 @@ export const EditPetScreen = ({ route, navigation }) => {
         aspect: [4, 3],
         quality: 0.8,
       });
-
       if (!result.canceled && result.assets && result.assets.length > 0) {
         setImageUri(result.assets[0].uri);
         setImageChanged(true);
@@ -133,7 +147,6 @@ export const EditPetScreen = ({ route, navigation }) => {
     }
   };
 
-  // Extract file name from URL
   const getFileNameFromUrl = (url) => {
     if (!url) return null;
     const segments = url.split('/');
@@ -141,78 +154,72 @@ export const EditPetScreen = ({ route, navigation }) => {
     return fileNameWithParams.split('?')[0];
   };
 
-  // Delete old image from storage
   const deleteOldImage = async (imageUrl) => {
     if (!imageUrl) return;
-    
     try {
       const fileName = getFileNameFromUrl(imageUrl);
       if (!fileName) return;
-      
       const storage = getStorage();
       const oldImageRef = storageRef(storage, `images/${fileName}`);
       await deleteObject(oldImageRef);
-      console.log('Imagem antiga excluída com sucesso');
     } catch (error) {
       console.error('Erro ao excluir imagem antiga:', error);
-      // Continue with the flow even if image deletion fails
     }
   };
 
-  // Upload the image to Firebase Storage
   const uploadImage = async (uri) => {
-    if (!uri || !imageChanged) return originalImageUrl;
-    
+    if (!uri || !imageChanged) return originalImageUrl; // Se não mudou, retorna a original
+    setUploading(true); // Mover para cá para indicar upload apenas se necessário
     try {
-      // Convert image to blob
       const response = await fetch(uri);
       const blob = await response.blob();
-      
-      // Create unique filename
       const filename = `pet_${petId}_${Date.now()}.jpg`;
       const storage = getStorage();
       const imageRef = storageRef(storage, `images/${filename}`);
-      
-      // Upload image
       await uploadBytes(imageRef, blob);
-      
-      // Get download URL
       const downloadURL = await getDownloadURL(imageRef);
+      // setUploading(false); // Será feito no handleUpdate
       return downloadURL;
-      
     } catch (error) {
       console.error('Error uploading image:', error);
+      // setUploading(false); // Será feito no handleUpdate
       Alert.alert('Erro', 'Não foi possível fazer o upload da imagem');
       return null;
     }
   };
 
   const handleUpdate = async () => {
-    if (!formData.name || !formData.age || !formData.health || !formData.behavior) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios');
+    // Validar se ageValue foi preenchido
+    if (!formData.name || !formData.ageValue || !formData.health || !formData.behavior) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios, incluindo a idade.');
       return;
     }
+    // Validar se ageValue é um número
+     if (isNaN(parseInt(formData.ageValue))) {
+        Alert.alert('Erro', 'A idade deve ser um número.');
+        return;
+    }
+
+    setUploading(true); // Inicia o estado de uploading aqui
 
     try {
-      setUploading(true);
-      
-      // Upload new image if selected
-      let imageUrl = formData.image;
-      if (imageChanged) {
+      let imageUrl = formData.image; // Usa a imagem atual como padrão
+      if (imageChanged && imageUri) { // Se a imagem mudou E existe uma nova URI
         imageUrl = await uploadImage(imageUri);
-        if (!imageUrl) {
+        if (!imageUrl) { // Se o upload falhar
           setUploading(false);
-          return; // Stop if image upload failed
+          return; 
         }
       }
       
-      // Reference to the specific pet
       const petRef = ref(FIREBASE_DB, `pets/${petId}`);
       
-      // Update pet data
+      // Combinar ageValue e ageUnit em uma string para 'age'
+      const ageString = `${formData.ageValue} ${formData.ageUnit}`;
+
       await update(petRef, {
         name: formData.name,
-        age: parseInt(formData.age),
+        age: ageString, // Salvar a string combinada
         gender: formData.gender,
         size: formData.size,
         health: formData.health,
@@ -223,14 +230,12 @@ export const EditPetScreen = ({ route, navigation }) => {
         calendar: formData.calendar
       });
 
-      // Delete old image if it was replaced
-      if (imageChanged && originalImageUrl) {
+      if (imageChanged && originalImageUrl && originalImageUrl !== imageUrl) {
         await deleteOldImage(originalImageUrl);
       }
 
       setUploading(false);
       
-      // Show success toast and go back
       Toast.show({
         type: 'success',
         text1: 'Sucesso',
@@ -247,37 +252,25 @@ export const EditPetScreen = ({ route, navigation }) => {
     }
   };
 
-  const confirmDelete = () => {
-    setShowDeleteConfirm(true);
-  };
-
-  const cancelDelete = () => {
-    setShowDeleteConfirm(false);
-  };
+  const confirmDelete = () => setShowDeleteConfirm(true);
+  const cancelDelete = () => setShowDeleteConfirm(false);
 
   const handleDelete = async () => {
     setShowDeleteConfirm(false);
     setUploading(true);
-    
     try {
-      // Delete image from storage if exists
       if (originalImageUrl) {
         await deleteOldImage(originalImageUrl);
       }
-      
-      // Delete pet from database
       const petRef = ref(FIREBASE_DB, `pets/${petId}`);
       await remove(petRef);
-      
       setUploading(false);
-      
       Toast.show({
         type: 'success',
         text1: 'Sucesso',
         text2: 'Pet excluído com sucesso!',
         visibilityTime: 2000,
       });
-      
       navigation.goBack();
     } catch (error) {
       console.error('Erro ao excluir pet:', error);
@@ -286,29 +279,21 @@ export const EditPetScreen = ({ route, navigation }) => {
     }
   };
 
-  // Mostrar indicador de carregamento enquanto os dados não estão prontos
   if (!originalData) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.toolbar}>
-          <Text style={styles.toolbarTitle}>Editar Pet</Text>
-        </View>
-        <View style={styles.loadingContainer}>
-          <Text>Carregando dados...</Text>
-        </View>
+        <View style={styles.toolbar}><Text style={styles.toolbarTitle}>Editar Pet</Text></View>
+        <View style={styles.loadingContainer}><Text>Carregando dados...</Text></View>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.toolbar}>
-        <Text style={styles.toolbarTitle}>Editar Pet</Text>
-      </View>
+      <View style={styles.toolbar}><Text style={styles.toolbarTitle}>Editar Pet</Text></View>
       
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.inputContainer}>
-          {/* Image Upload Section */}
           <View style={styles.imageSection}>
             <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
               {imageUri ? (
@@ -328,13 +313,28 @@ export const EditPetScreen = ({ route, navigation }) => {
             onChangeText={(text) => setFormData({ ...formData, name: text })}
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Idade"
-            value={formData.age}
-            onChangeText={(text) => setFormData({ ...formData, age: text })}
-            keyboardType="numeric"
-          />
+          {/* Campo de Idade Ajustado */}
+          <View style={styles.ageInputRow}>
+            <TextInput
+              style={[styles.input, styles.ageNumericInput]}
+              placeholder="Idade"
+              value={formData.ageValue}
+              // Permitir apenas números
+              onChangeText={(text) => setFormData({ ...formData, ageValue: text.replace(/[^0-9]/g, '') })}
+              keyboardType="numeric"
+            />
+            <View style={styles.ageUnitPickerContainer}>
+              <Picker
+                selectedValue={formData.ageUnit}
+                onValueChange={(value) => setFormData({ ...formData, ageUnit: value })}
+                style={styles.ageUnitPicker}
+              >
+                <Picker.Item label="Meses" value="meses" />
+                <Picker.Item label="Anos" value="anos" />
+              </Picker>
+            </View>
+          </View>
+
 
           <View style={styles.pickerContainer}>
             <Text style={styles.pickerLabel}>Gênero:</Text>
@@ -386,7 +386,7 @@ export const EditPetScreen = ({ route, navigation }) => {
           disabled={uploading}
         >
           <Text style={styles.buttonText}>
-            {uploading ? 'Salvando...' : 'Editar Pet'}
+            {uploading ? 'Salvando...' : 'Salvar Alterações'}
           </Text>
         </TouchableOpacity>
 
@@ -395,37 +395,20 @@ export const EditPetScreen = ({ route, navigation }) => {
           onPress={confirmDelete}
           disabled={uploading}
         >
-          <Text style={styles.buttonText}>
-            Excluir Pet
-          </Text>
+          <Text style={styles.buttonText}>Excluir Pet</Text>
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Modal de confirmação de exclusão */}
-      <Modal
-        visible={showDeleteConfirm}
-        transparent={true}
-        animationType="fade"
-      >
+      <Modal visible={showDeleteConfirm} transparent={true} animationType="fade">
         <View style={styles.modalBackground}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Confirmar Exclusão</Text>
-            <Text style={styles.modalText}>
-              Tem certeza que deseja excluir este pet? Esta ação não pode ser desfeita.
-            </Text>
-            
+            <Text style={styles.modalText}>Tem certeza que deseja excluir este pet? Esta ação não pode ser desfeita.</Text>
             <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={cancelDelete}
-              >
+              <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={cancelDelete}>
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={[styles.modalButton, styles.confirmButton]}
-                onPress={handleDelete}
-              >
+              <TouchableOpacity style={[styles.modalButton, styles.confirmButton]} onPress={handleDelete}>
                 <Text style={styles.confirmButtonText}>Excluir</Text>
               </TouchableOpacity>
             </View>
@@ -438,6 +421,8 @@ export const EditPetScreen = ({ route, navigation }) => {
   );
 };
 
+// Reutilize os estilos de NewPetScreen, adicionando os específicos de EditPetScreen se necessário
+// E os novos estilos para o campo de idade
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -510,6 +495,30 @@ const styles = StyleSheet.create({
       borderWidth: 2,
       width: '100%',
     },
+    // Estilos para o campo de idade (reutilizados de NewPetScreen)
+    ageInputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    ageNumericInput: {
+      flex: 1,
+      marginRight: 8,
+      marginBottom: 0, 
+    },
+    ageUnitPickerContainer: {
+      flex: 1,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 24,
+      borderColor: '#FFE6D8',
+      borderWidth: 2,
+      height: 58, // Ajustar conforme necessário para alinhar com TextInput
+      justifyContent: 'center', // Para alinhar o Picker verticalmente
+    },
+    ageUnitPicker: {
+      // Estilos do Picker podem ser complicados e variar entre iOS/Android
+      // Teste e ajuste conforme necessário
+    },
     textArea: {
       height: 100,
       textAlignVertical: 'top',
@@ -534,16 +543,16 @@ const styles = StyleSheet.create({
       padding: 16,
       width: '100%',
       alignItems: 'center',
-      marginTop: 24,
+      marginTop: 24, // Ajustado para espaçamento antes do botão de excluir
       marginBottom: 16,
     },
     deleteButton: {
-      backgroundColor: '#E74C3C',
+      backgroundColor: '#E74C3C', // Vermelho para exclusão
       borderRadius: 24,
       padding: 16,
       width: '100%',
       alignItems: 'center',
-      marginBottom: 24,
+      marginBottom: 24, // Margem inferior geral
     },
     buttonText: {
       color: '#FFFFFF',
@@ -551,10 +560,8 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     disabledButton: {
-      opacity: 0.6,
+      opacity: 0.6, // Usar opacity para feedback visual de desabilitado
     },
-    
-    // Modal styles
     modalBackground: {
       flex: 1,
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
