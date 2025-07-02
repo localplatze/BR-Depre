@@ -171,6 +171,8 @@
             allTeams = snapshot.val() || {};
         }
 
+        let roundFinishTimestamp = null; // Adicione esta variável global
+
         async function fetchCurrentRound(userId) {
             const roundsRef = database.ref('rounds');
             const snapshot = await roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value');
@@ -187,6 +189,7 @@
                 currentRoundKey = childSnapshot.key;
                 const roundData = childSnapshot.val();
                 allMatches = roundData.matches || [];
+                roundFinishTimestamp = roundData.finishTimestamp; // Armazena o timestamp
                 startCountdown(roundData.finishTimestamp, userId);
                 loadMatchesData(currentRoundKey, userId);
             });
@@ -234,10 +237,32 @@
             ui.matchesContainer.style.display = 'grid';
         }
 
+        function shouldShowPredictionsButton(match) {
+            const now = new Date();
+            
+            // Se o jogo tem timestamp específico, usa ele
+            if (match.timestamp) {
+                const matchTime = new Date(match.timestamp);
+                return now >= matchTime;
+            }
+            
+            // Se não tem timestamp específico, usa o timestamp geral da rodada
+            if (roundFinishTimestamp) {
+                const roundTime = new Date(roundFinishTimestamp);
+                return now >= roundTime;
+            }
+            
+            // Fallback: usa a variável isTimeExpired
+            return isTimeExpired;
+        }
+
         function renderMatchCards(matchesData) {
             ui.matchesContainer.innerHTML = matchesData.map(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
                 const matchDate = new Date(match.timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
                 const matchTime = new Date(match.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                
+                // Verifica se deve mostrar o botão "Ver Palpites"
+                const shouldShowPredictions = shouldShowPredictionsButton(match);
                 
                 return `
                     <div class="match-card" data-match-id="${matchId}">
@@ -254,13 +279,16 @@
                                 <input type="number" min="0" placeholder="-" data-team="away" value="${userPrediction.awayScore || ''}" ${isTimeExpired ? 'disabled' : ''}>
                             </div>
                         </div>
+                        ${shouldShowPredictions ? `
                         <div class="match-footer">
                             <button class="action-button view-predictions-btn" data-match-id="${matchId}"><i class="fas fa-eye"></i> Ver Palpites</button>
                         </div>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
 
+            // Só adiciona event listeners se existirem botões
             document.querySelectorAll('.view-predictions-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const matchId = e.currentTarget.dataset.matchId;
