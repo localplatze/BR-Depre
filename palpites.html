@@ -188,6 +188,7 @@
                 const roundData = childSnapshot.val();
                 allMatches = roundData.matches || [];
                 startCountdown(roundData.finishTimestamp, userId);
+                loadMatchesData(currentRoundKey, userId);
             });
         }
 
@@ -202,7 +203,6 @@
                     ui.timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo esgotado!';
                     isTimeExpired = true;
                     if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
-                    loadMatchesData(currentRoundKey, userId);
                 } else {
                     const d = Math.floor(diff / 86400000);
                     const h = Math.floor((diff % 86400000) / 3600000);
