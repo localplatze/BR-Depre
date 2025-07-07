@@ -49,6 +49,26 @@
         .tab-button:hover { color: var(--primary-color); }
         .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
+        .match-result {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #f8f9fa;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .score-divider {
+            color: var(--text-color-light);
+        }
         .matches-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
         .match-card { background-color: var(--card-bg-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .match-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
@@ -258,8 +278,10 @@
 
         function startCountdown() {
             if (countdownInterval) clearInterval(countdownInterval);
+
             const update = () => {
                 const diff = new Date(roundFinishTimestamp) - new Date();
+                
                 if (diff <= 0) {
                     clearInterval(countdownInterval);
                     ui.timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo da rodada esgotado!';
@@ -285,18 +307,23 @@
         async function loadMatchesData(roundKey, userId) {
             ui.loader.style.display = 'flex';
             ui.matchesContainer.style.display = 'none';
+
             const matchesData = allMatches.map((match, index) => ({
                 matchId: index, match, 
                 homeTeam: allTeams[match.homeTeam] || {}, 
                 awayTeam: allTeams[match.awayTeam] || {}, 
                 userPrediction: match.predictions?.[userId] || {}
             }));
+            
             renderMatchCards(matchesData);
-            if (!isBettingDisabled({ timestamp: roundFinishTimestamp })) {
+            
+            const isRoundOver = new Date() >= new Date(roundFinishTimestamp);
+            if (!isRoundOver) {
                 setupSavePredictionsButton(roundKey, userId);
             } else {
                 if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
             }
+            
             ui.loader.style.display = 'none';
             ui.matchesContainer.style.display = 'grid';
         }
@@ -305,7 +332,11 @@
             ui.matchesContainer.innerHTML = matchesData.map(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
                 const matchDate = new Date(match.timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
                 const matchTime = new Date(match.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const hasResult = match.finalResult && match.finalResult.homeScore !== undefined;
                 const isDisabled = isBettingDisabled(match);
+
+                const homeScoreValue = userPrediction.homeScore === 0 ? '0' : userPrediction.homeScore || '';
+                const awayScoreValue = userPrediction.awayScore === 0 ? '0' : userPrediction.awayScore || '';
 
                 return `
                     <div class="match-card" data-match-id="${matchId}">
@@ -316,11 +347,21 @@
                                 <span class="versus">vs</span>
                                 <div class="team"><img src="${awayTeam.image}" alt="${awayTeam.name}"><p class="team-name">${awayTeam.name}</p></div>
                             </div>
-                            <div class="prediction-inputs">
-                                <input type="number" min="0" placeholder="-" data-team="home" value="${userPrediction.homeScore || ''}" ${isDisabled ? 'disabled' : ''}>
-                                <span>×</span>
-                                <input type="number" min="0" placeholder="-" data-team="away" value="${userPrediction.awayScore || ''}" ${isDisabled ? 'disabled' : ''}>
-                            </div>
+                            ${hasResult ? `
+                                <div class="match-result">
+                                    <div class="score-display">
+                                        <span>${match.finalResult.homeScore ?? 0}</span>
+                                        <span class="score-divider">:</span>
+                                        <span>${match.finalResult.awayScore ?? 0}</span>
+                                    </div>
+                                </div>
+                            ` : `
+                                <div class="prediction-inputs">
+                                    <input type="number" min="0" placeholder="-" data-team="home" value="${homeScoreValue}" ${isDisabled ? 'disabled' : ''}>
+                                    <span>×</span>
+                                    <input type="number" min="0" placeholder="-" data-team="away" value="${awayScoreValue}" ${isDisabled ? 'disabled' : ''}>
+                                </div>
+                            `}
                         </div>
                         <div class="match-footer">
                             ${isDisabled ? `<button class="action-button view-predictions-btn" data-match-id="${matchId}"><i class="fas fa-eye"></i> Ver Palpites</button>` : ''}
