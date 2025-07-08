@@ -337,6 +337,9 @@
 
                 const homeScoreValue = userPrediction.homeScore === 0 ? '0' : userPrediction.homeScore || '';
                 const awayScoreValue = userPrediction.awayScore === 0 ? '0' : userPrediction.awayScore || '';
+                
+                const homeFinalScore = hasResult ? (match.finalResult.homeScore ?? 0) : '';
+                const awayFinalScore = hasResult ? (match.finalResult.awayScore ?? 0) : '';
 
                 return `
                     <div class="match-card" data-match-id="${matchId}">
@@ -350,9 +353,9 @@
                             ${hasResult ? `
                                 <div class="match-result">
                                     <div class="score-display">
-                                        <span>${match.finalResult.homeScore ?? 0}</span>
+                                        <span>${homeFinalScore}</span>
                                         <span class="score-divider">:</span>
-                                        <span>${match.finalResult.awayScore ?? 0}</span>
+                                        <span>${awayFinalScore}</span>
                                     </div>
                                 </div>
                             ` : `
@@ -384,7 +387,45 @@
                 ui.savePredictionsButton.parentNode.replaceChild(button, ui.savePredictionsButton);
             }
             ui.savePredictionsButton = button;
-            ui.savePredictionsButton.addEventListener('click', async () => { /* ...código de salvar mantido... */ });
+            
+            ui.savePredictionsButton.addEventListener('click', async () => {
+                ui.savePredictionsButton.disabled = true;
+                ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                try {
+                    const updates = {};
+                    document.querySelectorAll('.match-card').forEach(card => {
+                    const matchId = card.dataset.matchId;
+                    const homeInput = card.querySelector('input[data-team="home"]');
+                    const awayInput = card.querySelector('input[data-team="away"]');
+                    
+                    // Verificar se os inputs existem antes de acessar suas propriedades
+                    if (!homeInput || !awayInput) return;
+                    if (homeInput.disabled || homeInput.value.trim() === '' || awayInput.value.trim() === '') return;
+                    
+                    updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${userId}`] = {
+                        homeScore: parseInt(homeInput.value),
+                        awayScore: parseInt(awayInput.value),
+                    };
+                });
+                    if (Object.keys(updates).length > 0) {
+                        await database.ref().update(updates);
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvos!';
+                        ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
+                    } else {
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                    }
+                } catch (error) {
+                    console.error('Erro ao salvar:', error);
+                    ui.savePredictionsButton.innerHTML = '<i class="fas fa-times"></i> Erro!';
+                    ui.savePredictionsButton.style.backgroundColor = 'var(--danger-color)';
+                } finally {
+                    setTimeout(() => {
+                        ui.savePredictionsButton.disabled = false;
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                        ui.savePredictionsButton.style.backgroundColor = 'var(--primary-color)';
+                    }, 3000);
+                }
+            });
         }
 
         function calculateMatchPoints(final, pred) {
