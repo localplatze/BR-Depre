@@ -184,6 +184,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
+        // Config do Firebase (mantém igual)
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
@@ -222,6 +223,9 @@
         let roundFinishTimestamp = null;
         let countdownInterval;
 
+        // --- MUDANÇA 1: Criar um "rascunho" para palpites não salvos ---
+        let unsavedPredictions = {};
+
         auth.onAuthStateChanged((user) => {
             if (user) {
                 initializeApp(user.uid);
@@ -234,7 +238,7 @@
             try {
                 await Promise.all([fetchAllPlayers(), fetchAllTeams()]);
                 await fetchCurrentRound(userId);
-                setupEventListeners();
+                setupEventListeners(userId); // Passar userId para os event listeners
             } catch (error) {
                 console.error("Erro na inicialização:", error);
                 ui.loader.style.display = 'none';
@@ -265,37 +269,49 @@
                 return;
             }
             
-            snapshot.forEach(childSnapshot => {
-                currentRoundKey = childSnapshot.key;
-                const roundData = childSnapshot.val();
-                allMatches = roundData.matches || [];
-                roundFinishTimestamp = roundData.finishTimestamp;
-                startCountdown();
-            });
+            // --- MUDANÇA 2: Usar um listener em tempo real (opcional, mas bom) ---
+            // Em vez de 'once', usamos 'on' para que a tela reaja a mudanças (como resultados de jogos).
+            // Nossa nova lógica de "rascunho" vai proteger os dados do usuário.
+            roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).on('value', (snapshot) => {
+                if (!snapshot.exists()) return;
+                
+                snapshot.forEach(childSnapshot => {
+                    currentRoundKey = childSnapshot.key;
+                    const roundData = childSnapshot.val();
+                    allMatches = roundData.matches || [];
+                    roundFinishTimestamp = roundData.finishTimestamp;
+                });
 
-            await loadMatchesData(currentRoundKey, userId);
+                // A primeira chamada do countdown e do loadMatchesData
+                if (!countdownInterval) {
+                    startCountdown();
+                }
+                
+                loadMatchesData(currentRoundKey, userId);
+            });
         }
 
         function startCountdown() {
             if (countdownInterval) clearInterval(countdownInterval);
 
-            const update = () => {
+            const updateTimer = () => {
                 const diff = new Date(roundFinishTimestamp) - new Date();
                 
                 if (diff <= 0) {
                     clearInterval(countdownInterval);
                     ui.timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo da rodada esgotado!';
                     if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
+                    // --- MUDANÇA 3: O timer não precisa mais recarregar todos os dados ---
+                    // A chamada loadMatchesData() foi removida daqui para evitar recargas desnecessárias.
                 } else {
                     const d = Math.floor(diff / 86400000);
                     const h = Math.floor((diff % 86400000) / 3600000);
                     const m = Math.floor((diff % 3600000) / 60000);
                     ui.timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante da rodada: ${d}d ${h}h ${m}m`;
                 }
-                loadMatchesData(currentRoundKey, auth.currentUser.uid);
             };
-            update();
-            countdownInterval = setInterval(update, 1000 * 60);
+            updateTimer();
+            countdownInterval = setInterval(updateTimer, 1000 * 60);
         }
 
         function isBettingDisabled(match) {
@@ -335,8 +351,11 @@
                 const hasResult = match.finalResult && match.finalResult.homeScore !== undefined;
                 const isDisabled = isBettingDisabled(match);
 
-                const homeScoreValue = userPrediction.homeScore === 0 ? '0' : userPrediction.homeScore || '';
-                const awayScoreValue = userPrediction.awayScore === 0 ? '0' : userPrediction.awayScore || '';
+                // --- MUDANÇA 4: Usar o "rascunho" para preencher os campos ---
+                // Prioridade: 1. Rascunho não salvo -> 2. Palpite salvo no DB -> 3. Vazio
+                const unsaved = unsavedPredictions[matchId];
+                const homeScoreValue = unsaved?.homeScore ?? (userPrediction.homeScore === 0 ? '0' : userPrediction.homeScore || '');
+                const awayScoreValue = unsaved?.awayScore ?? (userPrediction.awayScore === 0 ? '0' : userPrediction.awayScore || '');
                 
                 const homeFinalScore = hasResult ? (match.finalResult.homeScore ?? 0) : '';
                 const awayFinalScore = hasResult ? (match.finalResult.awayScore ?? 0) : '';
@@ -360,9 +379,9 @@
                                 </div>
                             ` : `
                                 <div class="prediction-inputs">
-                                    <input type="number" min="0" placeholder="-" data-team="home" value="${homeScoreValue}" ${isDisabled ? 'disabled' : ''}>
+                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="home" value="${homeScoreValue}" ${isDisabled ? 'disabled' : ''}>
                                     <span>×</span>
-                                    <input type="number" min="0" placeholder="-" data-team="away" value="${awayScoreValue}" ${isDisabled ? 'disabled' : ''}>
+                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="away" value="${awayScoreValue}" ${isDisabled ? 'disabled' : ''}>
                                 </div>
                             `}
                         </div>
@@ -393,26 +412,26 @@
                 ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
                 try {
                     const updates = {};
-                    document.querySelectorAll('.match-card').forEach(card => {
-                    const matchId = card.dataset.matchId;
-                    const homeInput = card.querySelector('input[data-team="home"]');
-                    const awayInput = card.querySelector('input[data-team="away"]');
-                    
-                    // Verificar se os inputs existem antes de acessar suas propriedades
-                    if (!homeInput || !awayInput) return;
-                    if (homeInput.disabled || homeInput.value.trim() === '' || awayInput.value.trim() === '') return;
-                    
-                    updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${userId}`] = {
-                        homeScore: parseInt(homeInput.value),
-                        awayScore: parseInt(awayInput.value),
-                    };
-                });
+                    // Agora, lemos do nosso "rascunho" para salvar
+                    for (const matchId in unsavedPredictions) {
+                        const prediction = unsavedPredictions[matchId];
+                        // Validar se o palpite está completo
+                        if (prediction.homeScore.trim() !== '' && prediction.awayScore.trim() !== '') {
+                            updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${userId}`] = {
+                                homeScore: parseInt(prediction.homeScore),
+                                awayScore: parseInt(prediction.awayScore),
+                            };
+                        }
+                    }
+
                     if (Object.keys(updates).length > 0) {
                         await database.ref().update(updates);
+                        // --- MUDANÇA 5: Limpar o rascunho após salvar com sucesso ---
+                        unsavedPredictions = {};
                         ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvos!';
                         ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
                     } else {
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-info-circle"></i> Nenhum palpite novo para salvar';
                     }
                 } catch (error) {
                     console.error('Erro ao salvar:', error);
@@ -428,6 +447,7 @@
             });
         }
 
+        // ... (função calculateMatchPoints permanece a mesma)
         function calculateMatchPoints(final, pred) {
             if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return null;
             if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
@@ -438,6 +458,7 @@
             return 0;
         }
 
+        // ... (função populatePlayerStatusTable permanece a mesma)
         function populatePlayerStatusTable() {
             const headerRow = document.createElement('tr');
             headerRow.innerHTML = '<th>Jogador</th>';
@@ -451,7 +472,7 @@
             
             ui.playerStatusBody.innerHTML = Object.entries(allPlayers).map(([playerId, player]) => {
                 let rowHtml = `<tr class="player-row"><td class="status-table-player">${player.name}</td>`;
-                allMatches.forEach(match => {
+                allMatches.forEach((match, matchId) => {
                     const prediction = match.predictions?.[playerId];
                     if (prediction !== undefined) {
                         if (match.finalResult) {
@@ -470,7 +491,7 @@
             }).join('');
         }
 
-        function setupEventListeners() {
+        function setupEventListeners(userId) {
             const statusDialogCloseBtn = ui.playerStatusDialog.querySelector('.close-btn');
             const predictionsDialogCloseBtn = ui.predictionsDialog.querySelector('.close-btn');
             
@@ -499,8 +520,35 @@
             ui.predictionsDialog.addEventListener('click', (e) => {
                 if (e.target === ui.predictionsDialog) ui.predictionsDialog.close();
             });
+
+            // --- MUDANÇA 6: Capturar digitação e salvar no rascunho ---
+            ui.matchesContainer.addEventListener('input', (e) => {
+                if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
+                    const matchId = e.target.dataset.matchId;
+                    const team = e.target.dataset.team;
+                    const value = e.target.value;
+
+                    // Inicializa o rascunho para este jogo se não existir
+                    if (!unsavedPredictions[matchId]) {
+                        const homeInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="home"]`);
+                        const awayInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="away"]`);
+                        unsavedPredictions[matchId] = {
+                            homeScore: homeInput.value,
+                            awayScore: awayInput.value
+                        };
+                    }
+
+                    // Atualiza o valor específico (home ou away)
+                    if (team === 'home') {
+                        unsavedPredictions[matchId].homeScore = value;
+                    } else if (team === 'away') {
+                        unsavedPredictions[matchId].awayScore = value;
+                    }
+                }
+            });
         }
 
+        // ... (função showPredictionsForMatch permanece a mesma)
         async function showPredictionsForMatch(matchId) {
             const matchData = allMatches[matchId];
             if (!matchData) return;

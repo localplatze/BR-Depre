@@ -2409,104 +2409,111 @@
 
         async function processRoundScores(roundId) {
             try {
-                console.log(`Iniciando processamento de pontos da Superliga para a rodada: ${roundId}`);
+                console.log(`[processRoundScores] Iniciando processamento de pontos para a rodada: ${roundId}`);
 
                 const roundRef = database.ref('rounds/' + roundId);
                 const roundSnapshot = await roundRef.once('value');
                 const roundData = roundSnapshot.val();
 
-                // Validação básica dos dados da rodada
+                // --- Validação Essencial ---
                 if (!roundData || !roundData.tournaments || !Array.isArray(roundData.tournaments)) {
-                    console.error(`Dados inválidos ou ausentes para a rodada ${roundId}. Abortando processamento.`);
+                    console.error(`[processRoundScores] Erro: Dados inválidos ou ausentes para a rodada ${roundId}. Abortando.`);
                     return;
                 }
 
-                // Verifica se esta rodada pertence à Superliga (ajuste 'superliga' se o nome for diferente)
                 if (!roundData.tournaments.includes('superliga')) {
-                    console.log(`Rodada ${roundId} não pertence à Superliga. Pulando cálculo de pontos da Superliga.`);
-                    return; // Não é uma rodada da Superliga, então não faz nada aqui
+                    console.log(`[processRoundScores] Info: Rodada ${roundId} não pertence à Superliga. Pulando cálculo de pontos da Superliga.`);
+                    return;
                 }
 
-                // Determina o estágio atual da Superliga (Abertura/Clausura)
-                // Garanta que sua função getCurrentLigaStage receba os torneios da rodada
-                const currentSuperligaStage = getCurrentLigaStage(roundData.tournaments);
+                // Garanta que sua função getCurrentSuperligaStage(tournaments) exista e funcione corretamente
+                const currentSuperligaStage = getCurrentSuperligaStage(roundData.tournaments);
                 if (!currentSuperligaStage) {
-                    console.error(`Não foi possível determinar o estágio da Superliga (Abertura/Clausura) para a rodada ${roundId}.`);
-                    return; // Impede a continuação se o estágio não for determinado
+                    console.error(`[processRoundScores] Erro: Não foi possível determinar o estágio da Superliga (Abertura/Clausura) para a rodada ${roundId}.`);
+                    return;
                 }
-                console.log(`Estágio da Superliga determinado: ${currentSuperligaStage}`);
+                console.log(`[processRoundScores] Estágio da Superliga determinado: ${currentSuperligaStage}`);
 
                 const usersRef = database.ref('users');
                 const usersSnapshot = await usersRef.once('value');
 
                 if (!usersSnapshot.exists()) {
-                    console.log("Nenhum usuário encontrado no banco de dados.");
-                    return; // Sai se não houver usuários
+                    console.warn("[processRoundScores] Nenhum usuário encontrado no banco de dados.");
+                    return;
                 }
 
-                const allUsersData = usersSnapshot.val() || {}; // Busca todos os dados dos usuários de uma vez
+                const allUsersData = usersSnapshot.val() || {};
                 const updates = {}; // Objeto para acumular todas as atualizações do Firebase
 
-                // Itera sobre cada usuário no banco de dados
-                usersSnapshot.forEach(userSnapshot => {
-                    const userId = userSnapshot.key;
-                    const currentUserData = allUsersData[userId] || {}; // Dados atuais do usuário iterado
-                    let userLastRoundPoints = 0; // Zera a pontuação desta rodada para este usuário
+                // Itera sobre cada ID de usuário encontrado no banco
+                for (const userId in allUsersData) {
+                    const currentUserData = allUsersData[userId];
+                    let userPointsThisRound = 0; // Zera a pontuação DESTA rodada para este usuário
 
-                    // Verifica se a rodada tem partidas e se 'matches' é um array antes de iterar
+                    console.log(`[processRoundScores] Processando usuário: ${currentUserData.name} (${userId})`);
+
+                    // Verifica se a rodada tem partidas e se 'matches' é um array
                     if (roundData.matches && Array.isArray(roundData.matches)) {
+                        
                         roundData.matches.forEach((match, matchIndex) => {
-                            // Verifica se a partida tem resultado final válido
+                            
+                            // Validação 1: A partida tem um resultado final válido?
                             if (match.finalResult && match.finalResult.homeScore !== null && match.finalResult.awayScore !== null) {
-                                // Verifica se existem previsões para a partida
-                                if (match.predictions && typeof match.predictions === 'object') {
-                                    // Encontra a previsão do usuário atual para esta partida
-                                    const userPrediction = Object.values(match.predictions).find(pred => pred && pred.playerId === userId);
+                                
+                                // Validação 2: Existem palpites ("predictions") para esta partida?
+                                if (match.predictions && typeof match.predictions === 'object' && Object.keys(match.predictions).length > 0) {
+                                    
+                                    // Validação 3: O usuário ATUAL fez um palpite para esta partida?
+                                    // O palpite do usuário pode estar diretamente sob a chave do seu ID
+                                    const userPrediction = match.predictions[userId];
 
-                                    // Se o usuário fez uma previsão válida para esta partida, calcula os pontos
                                     if (userPrediction && userPrediction.homeScore !== null && userPrediction.awayScore !== null) {
                                         const pointsForMatch = calculateMatchPoints(match.finalResult, userPrediction);
-                                        userLastRoundPoints += pointsForMatch;
-                                        // Log para depuração (opcional)
-                                        // console.log(` -> User ${userId}, Match ${matchIndex}, Pred: ${userPrediction.homeScore}x${userPrediction.awayScore}, Res: ${match.finalResult.homeScore}x${match.finalResult.awayScore}, Pts: ${pointsForMatch}`);
+                                        userPointsThisRound += pointsForMatch;
+                                        
+                                        console.log(`  -> Match ${matchIndex}: Palpite encontrado (${userPrediction.homeScore}x${userPrediction.awayScore}). Resultado: ${match.finalResult.homeScore}x${match.finalResult.awayScore}. Pontos: ${pointsForMatch}. Total na rodada: ${userPointsThisRound}`);
                                     }
-                                    // Se não houve palpite do usuário para esta partida, userLastRoundPoints não aumenta (continua 0 ou o valor acumulado)
+                                    // Se não houver palpite do usuário para esta partida, nada acontece (pontos continuam 0 para esta partida).
+
+                                } else {
+                                    // console.log(`  -> Match ${matchIndex}: Sem palpites (predictions) nesta partida.`);
                                 }
-                                // Se não há 'predictions' na partida, nada a fazer para esta partida
+
                             } else {
-                                // Se a partida não tem resultado final, não calcula pontos para ninguém nela
-                                console.warn(`   - Rodada ${roundId}, Partida ${matchIndex}: Resultado final ausente ou incompleto. Pontos não calculados para esta partida.`);
+                                // console.warn(`  -> Match ${matchIndex}: Resultado final ausente ou incompleto. Pontos não calculados.`);
                             }
                         }); // Fim do loop de partidas
                     } else {
-                        console.warn(`Rodada ${roundId} não contém 'matches' ou 'matches' não é um array.`);
-                    } // Fim da verificação de roundData.matches
+                        console.warn(`[processRoundScores] Rodada ${roundId} não contém 'matches' ou o formato é inválido.`);
+                    }
 
                     // --- PONTO CRÍTICO DA CORREÇÃO ---
                     // Prepara a atualização para lastRoundPointsLiga... SEMPRE,
-                    // usando o valor calculado (userLastRoundPoints), que será 0 se não houve pontos/palpites.
-                    console.log(`   - Usuário ${userId}: Pontos calculados para esta rodada (${currentSuperligaStage}) = ${userLastRoundPoints}`);
-                    updates[`${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userLastRoundPoints;
+                    // usando o valor calculado (userPointsThisRound), que será 0 se não houve pontos/palpites.
+                    console.log(`  => Pontos FINAIS para ${currentUserData.name} nesta rodada: ${userPointsThisRound}`);
+                    
+                    updates[`/users/${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userPointsThisRound;
 
                     // Prepara a atualização para o total de pontos da Superliga para o estágio atual
                     const currentTotalPoints = currentUserData[`pointsSuperliga${currentSuperligaStage}`] || 0;
-                    updates[`${userId}/pointsSuperliga${currentSuperligaStage}`] = currentTotalPoints + userLastRoundPoints;
-                    // console.log(`   - Usuário ${userId}: Pontos totais (${currentSuperligaStage}) atualizados para ${currentTotalPoints + userLastRoundPoints}`);
+                    updates[`/users/${userId}/pointsSuperliga${currentSuperligaStage}`] = currentTotalPoints + userPointsThisRound;
+                    
+                    console.log(`  => Pontos TOTAIS (${currentSuperligaStage}) de ${currentUserData.name} atualizados para ${currentTotalPoints + userPointsThisRound}`);
+                }
 
-                }); // Fim do loop de usuários
-
+                // Aplica todas as atualizações no banco de dados de uma só vez
                 if (Object.keys(updates).length > 0) {
-                    console.log("Atualizando pontuações dos usuários no Firebase...");
-                    console.log("Objeto de atualizações:", updates);
-                    await usersRef.update(updates);
-                    console.log(`Pontuações da Superliga ${currentSuperligaStage} para a rodada ${roundId} atualizadas com sucesso no Firebase.`);
+                    console.log("[processRoundScores] Atualizando pontuações de todos os usuários no Firebase...");
+                    console.log("Objeto de atualizações:", updates); // Log para ver o que será enviado
+                    await database.ref().update(updates); // Atualiza a partir da raiz do DB
+                    console.log(`[processRoundScores] PONTUAÇÕES DA SUPERLIGA ${currentSuperligaStage} ATUALIZADAS COM SUCESSO.`);
                 } else {
-                    console.log("Nenhuma atualização de pontuação de usuário foi gerada para esta rodada.");
+                    console.warn("[processRoundScores] Nenhuma atualização de pontuação foi gerada.");
                 }
 
             } catch (error) {
-                console.error(`Erro GERAL ao processar pontuações da Superliga para a rodada ${roundId}:`, error);
-                alert(`Ocorreu um erro grave ao processar os pontos da rodada ${roundId}. Verifique o console para detalhes.`);
+                console.error(`[processRoundScores] ERRO GERAL ao processar pontuações para a rodada ${roundId}:`, error);
+                alert(`Ocorreu um erro grave ao processar os pontos da rodada. Verifique o console do navegador para detalhes.`);
             }
         }
     </script>
