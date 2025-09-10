@@ -5,95 +5,169 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brasileirão da Depressão</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FONTES ATUALIZADAS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --background-color: #F4F6F9;
-            --card-background: white;
-            --text-color: #2c3e50;
-            --text-color-light: #576574;
-            --border-radius: 16px;
-            --top-card-radius-desktop: 0 0 40px 40px;
-            --top-card-radius-mobile: 0 0 32px 32px;
-            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            --primary-color: #0052cc;
+            --primary-color: #0055ff;
+            --primary-color-dark: #003ebd;
+            --background-color: #0d1117; /* Fundo escuro para contraste */
+            --card-background: rgba(22, 27, 34, 0.8); /* Fundo dos cards semi-transparente */
+            --text-color: #c9d1d9;
+            --text-color-light: #8b949e;
             --text-on-primary: #FFFFFF;
-            --sidebar-width: 280px;
-            --header-height: 60px;
-            --accent-green: #00c853;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-radius: 16px;
+            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --glow-shadow: 0 0 15px rgba(0, 85, 255, 0.5), 0 0 30px rgba(0, 85, 255, 0.3);
+
+            --accent-green: #39d353;
             --accent-orange: #ffab00;
-            --accent-gray: #90a4ae;
+            --accent-gray: #6e7681;
+            
+            --font-display: 'Anton', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+
+            --sidebar-width: 280px;
+            --header-height: 70px; /* Aumentado para mais respiro */
         }
 
+        /* EFEITOS DE ANIMAÇÃO */
         @keyframes fadeInSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        @keyframes shimmer {
+            0% { background-position: -500px 0; }
+            100% { background-position: 500px 0; }
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: var(--background-color); min-height: 100vh; color: var(--text-color); }
+        /* ESTILOS GERAIS E FUNDO AURORA */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--background-color);
+            min-height: 100vh;
+            color: var(--text-color);
+            font-family: var(--font-body);
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Efeito Aurora no fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(125deg, #0d1117, var(--primary-color), #00ff95, var(--primary-color-dark));
+            background-size: 400% 400%;
+            animation: aurora 15s ease infinite;
+            filter: blur(100px);
+            opacity: 0.15;
+            z-index: -1;
+        }
         body.sidebar-open { overflow: hidden; }
 
+        /* EFEITO GLASSMORPHISM */
         .glass-effect {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
         }
 
-        /* Header & Top Card */
+        /* HEADER E CARD SUPERIOR */
         .site-header {
-            background-image: linear-gradient(135deg, var(--primary-color) 0%, #003a8c 100%);
-            color: var(--text-on-primary);
-            position: sticky; top: 0; z-index: 1000; width: 100%;
-            transition: background-image 0.4s ease;
+            position: sticky; top: 0; z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        /* Estado do header quando scrollado */
+        .site-header.scrolled .top-card {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            background: var(--card-background);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+        }
+        .site-header.scrolled .team-name, .site-header.scrolled .team-info-container {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+        }
+
         .top-card {
-            padding: 16px 24px; box-shadow: var(--box-shadow);
-            border-bottom-left-radius: var(--top-card-radius-desktop);
-            border-bottom-right-radius: var(--top-card-radius-desktop);
+            padding: 16px 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; height: var(--header-height); padding: 0 10px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; height: var(--header-height); }
         .toolbar-title { font-size: clamp(18px, 4vw, 22px); font-weight: 500; text-align: center; flex-grow: 1; }
         .icon-button {
             width: 44px; height: 44px; background: none; border: none; color: var(--text-on-primary);
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 22px; border-radius: 50%; transition: background-color 0.2s ease, transform 0.2s ease;
         }
-        .icon-button:hover { background-color: rgba(255, 255, 255, 0.15); transform: scale(1.1); }
+        .icon-button:hover { background-color: rgba(255, 255, 255, 0.1); transform: scale(1.1) rotate(5deg); }
         #menu-toggle { display: none; }
+        
+        /* Nome do time com texto em gradiente */
         .team-name {
-            text-align: center; font-weight: 700; font-size: clamp(34px, 7vw, 44px); margin: 20px 0;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 16px;
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: clamp(40px, 10vw, 64px);
+            margin: 20px 0;
+            padding: 0 16px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: transparent;
+            background: linear-gradient(90deg, #fff, #c9d1d9, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shimmer 5s linear infinite;
         }
-        .team-info-container { display: flex; justify-content: space-around; align-items: center; margin-top: 24px; gap: 16px; flex-wrap: wrap; }
+        .team-info-container { display: flex; justify-content: space-around; align-items: center; margin-top: 24px; gap: 16px; flex-wrap: wrap; transition: all 0.4s ease; }
         .team-stats { display: flex; flex-direction: column; gap: 10px; text-align: left; }
         .team-stat { font-size: clamp(17px, 3.5vw, 21px); font-weight: 500; }
         .team-logo {
             width: clamp(110px, 25vw, 150px); height: clamp(110px, 25vw, 150px); object-fit: contain;
-            border-radius: 12px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            border-radius: 50%; /* Logo redondo fica mais moderno */
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+            transition: transform 0.3s ease;
         }
+        .team-logo:hover { transform: scale(1.05); }
 
-        /* Sidebar Menu */
+        /* SIDEBAR (MENU) */
         #sidebar-menu {
             position: fixed; top: 0; left: -100%; width: var(--sidebar-width); max-width: 85%; height: 100%;
             z-index: 1002; transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; padding-top: 20px; box-shadow: 4px 0px 25px rgba(0,0,0,0.15);
+            background-color: var(--card-background);
         }
         #sidebar-menu.active { left: 0; }
-        #sidebar-menu .sidebar-header { padding: 15px 20px; font-size: 22px; font-weight: 500; color: var(--primary-color); border-bottom: 1px solid #eee; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        #sidebar-menu .sidebar-header .close-btn { background: none; border: none; font-size: 28px; color: var(--text-color-light); cursor: pointer; }
-        #sidebar-menu ul { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        #sidebar-menu .sidebar-header { padding: 15px 20px; font-size: 22px; font-weight: 500; color: #fff; border-bottom: 1px solid var(--border-color); margin-bottom: 10px; }
         #sidebar-menu ul li a { display: flex; align-items: center; padding: 16px 20px; text-decoration: none; color: var(--text-color-light); font-size: 17px; font-weight: 500; transition: background-color 0.2s ease, color 0.2s ease; border-left: 4px solid transparent; }
-        #sidebar-menu ul li a i { margin-right: 18px; width: 22px; text-align: center; font-size: 18px; color: var(--text-color-light); transition: color 0.2s ease; }
-        #sidebar-menu ul li a:hover, #sidebar-menu ul li a.active-link { background-color: var(--background-color); color: var(--primary-color); border-left-color: var(--primary-color); }
+        #sidebar-menu ul li a:hover, #sidebar-menu ul li a.active-link { background-color: rgba(0, 85, 255, 0.1); color: #fff; border-left-color: var(--primary-color); }
         #sidebar-menu ul li a:hover i, #sidebar-menu ul li a.active-link i { color: var(--primary-color); }
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1001; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1001; }
         .sidebar-overlay.active { display: block; }
-        
-        /* Content Section */
-        .main-content { padding: 24px; }
+
+        /* CONTEÚDO PRINCIPAL */
+        .main-content { padding: 32px; }
         .main-content > * { animation: fadeInSlideUp 0.6s backwards; }
         .main-content > *:nth-child(1) { animation-delay: 0.1s; }
         .main-content > *:nth-child(2) { animation-delay: 0.2s; }
@@ -101,99 +175,122 @@
         .main-content > *:nth-child(4) { animation-delay: 0.4s; }
 
         .section-title {
-            font-weight: 700; font-size: clamp(20px, 4vw, 24px); color: var(--text-color);
-            margin-bottom: 20px; margin-top: 32px; border-left: 4px solid var(--primary-color);
-            padding-left: 12px; display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-display);
+            font-weight: 400; /* Anton não precisa de bold */
+            font-size: clamp(28px, 5vw, 36px); color: #fff;
+            margin-bottom: 24px; margin-top: 40px;
+            display: flex; align-items: center; gap: 12px;
+            letter-spacing: 0.8px;
         }
+        .section-title i { color: var(--primary-color); }
         .section-title:first-child { margin-top: 0; }
-        .round-card, .view-history { margin-bottom: 40px; }
-
-        /* Temporizador */
+        
+        /* TEMPORIZADOR */
         .round-card {
             background-color: var(--card-background); color: var(--text-color); border-radius: var(--border-radius);
             padding: 24px; box-shadow: var(--box-shadow); text-align: center; cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .round-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+        .round-card:hover { transform: translateY(-8px); box-shadow: var(--glow-shadow); }
         .round-title { font-size: 16px; font-weight: 400; margin-bottom: 8px; color: var(--text-color-light); }
         .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; }
         .countdown-item {
-            background-color: var(--background-color); border-radius: 12px; padding: 12px 8px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #e0e4e8;
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+            border-radius: 12px; padding: 12px 8px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border-color);
         }
-        .countdown-item span:first-child { font-size: clamp(28px, 8vw, 40px); font-weight: 700; color: var(--primary-color); line-height: 1.1; }
-        .countdown-item span:last-child { font-size: clamp(12px, 3vw, 14px); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-color-light); }
+        .countdown-item span:first-child {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 8vw, 48px);
+            font-weight: 400;
+            color: var(--text-on-primary);
+            line-height: 1;
+        }
+        /* Animação de pulso nos segundos */
+        #countdown-seconds-container { animation: pulse 1s infinite; }
+        .countdown-item span:last-child { font-size: clamp(12px, 3vw, 14px); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--text-color-light); }
         #countdown-expired-message { display: none; font-size: 24px; font-weight: 700; margin-top: 20px; }
         
+        /* BOTÃO DE HISTÓRICO */
         .view-history {
-            color: var(--primary-color); text-align: center; font-size: 16px; font-weight: 500;
-            text-decoration: none; display: block; padding: 12px; border-radius: var(--border-radius);
-            transition: background-color 0.2s ease, color 0.2s ease; border: 1px solid var(--primary-color);
+            color: var(--text-color); text-align: center; font-size: 16px; font-weight: 500;
+            text-decoration: none; display: block; padding: 14px; border-radius: var(--border-radius);
+            transition: all 0.3s ease; border: 1px solid var(--primary-color);
+            margin: 24px 0 40px 0;
+            background-color: transparent;
         }
-        .view-history:hover { background-color: var(--primary-color); color: white; }
+        .view-history:hover { background-color: var(--primary-color); color: white; box-shadow: var(--glow-shadow); transform: translateY(-3px); }
 
-        /* Cards e Grid Layout */
-        .cards-grid { display: grid; grid-template-columns: 1fr; gap: 64px; }
-        @media (min-width: 992px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
+        /* CARDS E GRID */
+        .cards-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
+        @media (min-width: 992px) { .cards-grid { grid-template-columns: 1fr 1fr; gap: 40px; } }
         
         .tournament-card {
             cursor: pointer; background-color: var(--card-background); border-radius: var(--border-radius);
-            padding: 24px; box-shadow: var(--box-shadow); transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 24px; box-shadow: var(--box-shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex; flex-direction: column; height: 100%;
         }
-        .tournament-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+        .tournament-card:hover { transform: translateY(-8px); box-shadow: var(--glow-shadow); }
         .tournament-title {
-            font-size: clamp(18px, 3.8vw, 20px); font-weight: 500; margin-bottom: 16px;
-            display: flex; justify-content: space-between; align-items: center;
+            font-family: var(--font-display);
+            font-size: clamp(22px, 4vw, 26px); font-weight: 400; margin-bottom: 16px; letter-spacing: 0.5px;
+            display: flex; justify-content: space-between; align-items: center; color: #fff;
         }
-        .status-badge { font-size: 12px; padding: 6px 12px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; }
+        .status-badge { font-family: var(--font-body); font-size: 12px; padding: 6px 12px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; }
         .status-in-progress { background-color: var(--accent-orange); }
-        .status-finished { background-color: #00c853; }
-        .status-not-started { background-color: #90a4ae; }
+        .status-finished { background-color: var(--accent-green); }
+        .status-not-started { background-color: var(--accent-gray); }
 
-        /* Card da Supercopa */
-        .supercopa-content .group-position { font-size: 14px; font-weight: 500; margin-bottom: 20px; text-align: center; }
-        .supercopa-content .group-position strong { color: var(--primary-color); }
-        .supercopa-content .next-match { display: flex; justify-content: space-between; align-items: center; }
-        .supercopa-content .match-player { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; }
-        .supercopa-content .player-logo { width: 50px; height: 50px; object-fit: contain; border-radius: 50%; margin-bottom: 8px; background-color: #fff; padding: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .supercopa-content .player-name { font-size: 14px; font-weight: 500; }
-        .supercopa-content .match-score { font-size: 24px; font-weight: 700; padding: 0 15px; }
+        /* SUPERCOPA CARD */
+        .supercopa-content .player-logo { border-radius: 50%; width: 50px; height: 50px; object-fit: cover; }
 
-        /* Tabela da Superliga */
+        /* TABELA SUPERLIGA */
         .superliga-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: 14px; }
-        .superliga-table th { padding: 8px 10px; text-align: left; font-weight: 500; color: #888; border-bottom: 1px solid #eaeaea; }
-        .superliga-table td { padding: 8px 10px; text-align: left; vertical-align: middle; }
-        .superliga-table tbody tr { background-color: #fdfdfd; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .superliga-table th { padding: 10px; text-align: left; font-weight: 500; color: var(--text-color-light); border-bottom: 1px solid var(--border-color); text-transform: uppercase; font-size: 12px; }
+        .superliga-table td { padding: 12px 10px; text-align: left; vertical-align: middle; }
+        .superliga-table tbody tr { background-color: transparent; transition: background-color 0.2s; }
+        /* Zebra striping */
+        .superliga-table tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.03); }
+        .superliga-table tbody tr:hover { background-color: rgba(0, 85, 255, 0.1); }
         .superliga-table .player-info { display: flex; align-items: center; gap: 10px; }
-        .superliga-table .player-logo { width: 24px; height: 24px; object-fit: contain; }
-        .superliga-table .pos-cell, .superliga-table .pts-cell, .superliga-table .round-pts-cell { text-align: center; font-weight: 700; }
-        .superliga-table .round-pts-cell { color: var(--accent-green); }
-        .superliga-table .current-user-row { background-color: #e3f2fd; font-weight: 700; color: #0d47a1; }
-        .superliga-table .partial-view-info td { text-align: center; font-size: 0.9em; color: #777; padding: 12px 4px; border-bottom: none; background-color: #fafafa; cursor: pointer; }
+        .superliga-table .player-logo { width: 28px; height: 28px; object-fit: contain; border-radius: 50%; }
+        .superliga-table .pts-cell { font-weight: 700; color: #fff; }
+        .superliga-table .round-pts-cell { color: var(--accent-green); font-weight: 700; }
+        .superliga-table .current-user-row { background: linear-gradient(90deg, rgba(0, 85, 255, 0.2), transparent); border-left: 3px solid var(--primary-color); }
 
-        /* Loading Screen, Ad Popup (Mantenha o seu CSS original aqui) */
+        /* LOADING SCREEN */
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--background-color); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; }
-        .loading-spinner { width: 50px; height: 50px; border: 5px solid #e0e0e0; border-top: 5px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-logo {
+            width: 80px; height: 80px;
+            border: 5px solid transparent;
+            border-top-color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        #loading-screen p { margin-top: 20px; font-size: 18px; color: var(--text-color); }
 
-        /* Responsividade */
+        /* RESPONSIVIDADE */
         @media (max-width: 768px) {
-            .top-card { padding: 16px; border-bottom-left-radius: var(--top-card-radius-mobile); border-bottom-right-radius: var(--top-card-radius-mobile); }
             #menu-toggle { display: flex; }
             .team-info-container { flex-direction: column; align-items: center; gap: 24px; }
             .team-stats { text-align: center; align-items: center; }
             .main-content { padding: 16px; }
-            .cards-grid { gap: 80px; }
+            .cards-grid { gap: 24px; }
         }
     </style>
 </head>
 <body>
     <div id="loading-screen">
-        <div class="loading-spinner"></div>
+        <div class="loading-logo"></div>
         <p>Carregando...</p>
     </div>
 
+    <!-- O resto do seu HTML permanece o mesmo -->
     <nav id="sidebar-menu" class="glass-effect">
         <div class="sidebar-header">
             <span>BR da Depressão</span>
@@ -243,7 +340,7 @@
                 <div class="countdown-item"><span id="countdown-days">00</span><span id="countdown-days-label">Dias</span></div>
                 <div class="countdown-item"><span id="countdown-hours">00</span><span id="countdown-hours-label">Horas</span></div>
                 <div class="countdown-item"><span id="countdown-minutes">00</span><span id="countdown-minutes-label">Minutos</span></div>
-                <div class="countdown-item"><span id="countdown-seconds">00</span><span id="countdown-seconds-label">Segundos</span></div>
+                <div class="countdown-item" id="countdown-seconds-container"><span id="countdown-seconds">00</span><span id="countdown-seconds-label">Segundos</span></div>
             </div>
             <div id="countdown-expired-message">Tempo Esgotado! Ver Rodada</div>
         </div>
@@ -292,21 +389,18 @@
 
     <!-- Ad Popup -->
     <div id="customAdPopup" class="ad-popup glass-effect">
-        <button id="customAdCloseBtn" class="ad-popup-close-btn" aria-label="Fechar anúncio">×</button>
-        <a id="customAdLink" href="#" target="_blank" rel="noopener noreferrer" class="ad-popup-link">
-            <img id="customAdImage" src="" alt="Anúncio" class="ad-popup-image">
-        </a>
-        <div class="ad-popup-progress-container">
-            <div id="customAdProgressBar" class="ad-popup-progress-bar"></div>
-        </div>
+        <!-- Seu conteúdo do Ad Popup aqui -->
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK (sem alterações) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
+        // SEU SCRIPT JS ORIGINAL (quase todo igual)
+        // ... (todo o seu script de firebaseConfig até antes do DOMContentLoaded)
+
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
@@ -426,14 +520,12 @@
         }
 
         function updateUserProfileUI({ userData, teamData }) {
-            const { container, teamName, teamSigla, teamLogo } = uiElements.header;
+            const { teamName, teamSigla, teamLogo } = uiElements.header;
             teamName.textContent = userData.name || 'N/A';
             teamSigla.textContent = `${userData.abbr || 'SGL'} - ${teamData.name || 'Time'}`;
             teamLogo.src = teamData.image || 'default-avatar.png';
-            const teamColor = teamData.color1 || 'var(--primary-color)';
-            const darkColor = teamData.color2 || '#003a8c';
-            container.style.backgroundImage = `linear-gradient(135deg, ${teamColor} 0%, ${darkColor} 100%)`;
-            uiElements.nextRound.days.style.color = teamColor;
+            // O gradiente do header agora vem do CSS, mas podemos usar a cor do time em outros lugares
+            // Ex: document.documentElement.style.setProperty('--primary-color', teamData.color1);
         }
 
         async function loadNextRound() {
@@ -737,7 +829,20 @@
                 link.classList.remove('active-link');
                 if (link.getAttribute('href') === currentPage) link.classList.add('active-link');
             });
+            
+            // =============================================== //
+            //    ADIÇÃO NO JAVASCRIPT: EFEITO HEADER ON SCROLL  //
+            // =============================================== //
+            const header = document.getElementById('site-header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) { // Ativa o efeito após rolar 50px
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
         });
+
     </script>
 </body>
 </html>

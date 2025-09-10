@@ -3,269 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supercopa - Detalhes</title>
+    <title>Supercopa - BR da Depressão</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4a65f5;
-            --background-color: #f5f7fa;
-            --card-bg-color: #ffffff;
-            --text-color: #34495e;
-            --text-color-light: #7f8c8d;
-            --border-color: #eef2f7;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-            --shadow-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --primary-color: #007bff;
+            --primary-glow: rgba(0, 123, 255, 0.5);
+            --background-color: #101418;
+            --card-bg-color: #1a2027;
+            --card-bg-light: #242c36;
+            --text-color: #e4e6eb;
+            --text-color-light: #b0b3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             --border-radius: 12px;
-            --color-win: #28a745;
-            --color-draw: #6c757d;
-            --color-loss: #dc3545;
+            --gold: #ffc107; --silver: #c0c0c0; --bronze: #cd7f32; --mud: #795548;
         }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            -webkit-font-smoothing: antialiased;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .section-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding-bottom: 8px;
-            border-bottom: 3px solid var(--primary-color);
-            display: inline-block;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 25px;
-            background-color: var(--card-bg-color);
-            border-radius: var(--border-radius);
-            padding: 8px;
-            box-shadow: var(--shadow);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .tabs::-webkit-scrollbar { display: none; }
-        .tab, .group-tab, .round-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-align: center;
-            white-space: nowrap;
-            flex-shrink: 0;
-            border: none;
-        }
-        .tab { flex: 1; margin: 0 4px; }
-        .tab:hover, .group-tab:hover, .round-tab:hover { background-color: rgba(74, 101, 245, 0.1); }
-        .tab.active, .group-tab.active, .round-tab.active { background-color: var(--primary-color); color: white; }
-        .round-tab { background-color: #eef2f7; color: var(--text-color-light); }
-        .round-tab.active { background-color: var(--primary-color); color: white; }
-        .rounds-tabs { gap: 10px; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .header-title { font-size: 32px; font-weight: 700; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; color: #fff; }
+        .tabs { display: flex; margin-bottom: 30px; background-color: var(--card-bg-color); border-radius: var(--border-radius); padding: 8px; border: 1px solid var(--border-color); }
+        .tab { padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; text-align: center; flex: 1; border: none; background: none; color: var(--text-color-light); }
+        .tab.active { background-color: var(--primary-color); color: white; }
 
-        .stage-content-wrapper { display: grid; grid-template-columns: 1fr; gap: 25px; }
-        .stage-card {
-            background-color: var(--card-bg-color);
-            padding: 24px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-        }
+        /* --- CONTEÚDO DA FASE DE GRUPOS --- */
+        .group-tabs-container { display: flex; justify-content: center; margin-bottom: 20px; }
+        .group-tab { padding: 8px 16px; font-weight: 500; }
+        .groups-content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        .section-header { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         
-        .standings-table { width: 100%; border-collapse: collapse; table-layout: auto; }
-        .standings-table th, .standings-table td { text-align: center; padding: 12px 8px; border-bottom: 1px solid var(--border-color); }
-        .standings-table th { font-weight: 500; color: var(--text-color-light); font-size: 12px; text-transform: uppercase; }
-        .standings-table th:first-child, .standings-table td:first-child { text-align: left; }
-        .standings-table .player-info { display: flex; align-items: center; gap: 12px; }
-        .standings-table .team-logo { width: 28px; height: 28px; object-fit: contain; }
-        .standings-table .player-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .standings-table .points-column { font-weight: 700; font-size: 16px; }
-
-        .form-history { display: flex; gap: 5px; justify-content: center; align-items: center; }
-        .form-icon {
-            width: 20px; height: 20px; border-radius: 50%; color: white;
-            font-size: 11px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;
+        .standings-list { display: flex; flex-direction: column; gap: 10px; }
+        .player-standing-card {
+            display: grid; grid-template-columns: 30px 40px 1fr auto; align-items: center; gap: 15px;
+            background: var(--card-bg-color); padding: 12px; border-radius: 8px;
+            border-left: 5px solid transparent; transition: background-color 0.2s; animation: slideUp 0.5s ease-out backwards;
         }
-        .form-win { background-color: var(--color-win); }
-        .form-draw { background-color: var(--color-draw); }
-        .form-loss { background-color: var(--color-loss); }
+        .player-standing-card:hover { background-color: var(--card-bg-light); }
+        .player-standing-card .pos { font-weight: 700; color: var(--text-color-light); }
+        .player-standing-card .logo { width: 32px; height: 32px; object-fit: contain; }
+        .player-standing-card .name { font-weight: 600; }
+        .player-standing-card .points { font-weight: 700; font-size: 1.1em; }
+        .status-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; color: #111; display: flex; align-items: center; gap: 5px; }
 
-        .matches-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .match-card {
-            border-radius: var(--border-radius); background-color: var(--card-bg-color);
-            border: 1px solid var(--border-color); padding: 16px; cursor: pointer;
-            transition: all 0.2s ease-in-out; box-shadow: var(--shadow-elevation);
-        }
-        .match-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-        .match-players { display: flex; align-items: center; justify-content: space-between; }
-        .match-player { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; position: relative; }
-        .match-player .team-logo { width: 45px; height: 45px; object-fit: contain; margin-bottom: 8px; }
-        .match-player .player-name { font-size: 14px; font-weight: 500; }
-        .match-result { font-size: 22px; font-weight: 700; color: var(--primary-color); margin: 0 15px; }
+        /* DESTAQUES DE CLASSIFICAÇÃO */
+        .status-classified { border-left-color: var(--gold); }
+        .status-classified .status-badge { background-color: var(--gold); }
+        .status-serie-b { border-left-color: var(--silver); }
+        .status-serie-b .status-badge { background-color: var(--silver); }
+        .status-serie-c { border-left-color: var(--mud); }
+        .status-serie-c .status-badge { background-color: var(--mud); color: #fff; }
+
+        /* --- CONTEÚDO DO MATA-MATA --- */
+        .knockout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .knockout-series-container { display: flex; flex-direction: column; gap: 15px; }
+        .series-title { font-size: 1.5em; font-weight: 700; color: #fff; text-align: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid; }
+        .series-a .series-title { border-color: var(--gold); }
+        .series-b .series-title { border-color: var(--silver); }
+        .series-c .series-title { border-color: var(--mud); }
         
-        .rounds-navigation-container { display: flex; align-items: center; margin-bottom: 15px; }
-        .rounds-scroll-container {
-            flex-grow: 1; overflow-x: auto; scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; scrollbar-width: none; min-width: 0;
-        }
-        .rounds-scroll-container::-webkit-scrollbar { display: none; }
-        .rounds-tabs { display: inline-flex; gap: 10px; padding: 5px; }
-        .nav-button {
-            width: 36px; height: 36px; border-radius: 50%; background-color: var(--card-bg-color);
-            border: 1px solid var(--border-color); display: flex; align-items: center;
-            justify-content: center; cursor: pointer; margin: 0 5px; flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-        .nav-button:hover:not(.disabled) { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .nav-button.disabled { opacity: 0.4; cursor: not-allowed; }
-        
-        #match-details-dialog {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            border: none; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 90%; max-width: 600px; padding: 0; margin: 0;
-        }
-        #match-details-dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); }
-        .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); }
-        .dialog-header h3 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .dialog-header .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-color-light); }
-        .dialog-body { padding: 24px; max-height: 60vh; overflow-y: auto; }
-        .prediction-comparison-list { list-style: none; }
-        .prediction-item { background: var(--background-color); padding: 16px; border-radius: 10px; margin-bottom: 12px; }
-        .prediction-item .match-info { font-weight: 600; margin-bottom: 10px; text-align: center; }
-        .prediction-item .players-predictions { display: flex; justify-content: space-around; text-align: center; }
-        .prediction-item .player-prediction span { display: block; }
-        .prediction-item .player-prediction .name { font-size: 14px; color: var(--text-color-light); }
-        .prediction-item .player-prediction .score { font-size: 18px; font-weight: 600; }
-        .prediction-item .comparison-result { text-align: center; margin-top: 12px; font-size: 14px; font-style: italic; color: var(--primary-color); font-weight: 500; }
-        .dialog-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); text-align: center; font-weight: 600; }
-        .empty-state { text-align: center; padding: 40px; color: var(--text-color-light); }
+        .match-card { display: flex; align-items: center; background-color: var(--card-bg-color); border-radius: var(--border-radius); padding: 16px; border: 1px solid var(--border-color); animation: fadeIn 0.5s ease-out backwards; }
+        .match-player { display: flex; align-items: center; gap: 10px; flex: 1; }
+        .match-player.away { justify-content: flex-end; text-align: right; }
+        .match-player .logo { width: 40px; height: 40px; }
+        .match-player .name { font-weight: 600; }
+        .match-result { font-size: 1.5em; font-weight: 800; color: var(--primary-color); padding: 0 20px; }
 
-        @media (max-width: 991px) {
-            body { padding: 10px; }
-            .container { padding: 10px; }
-            .stage-card { padding: 15px; }
-            .header-title { font-size: 24px; }
-            .section-title { font-size: 20px; }
-            .stage-content-wrapper { grid-template-columns: 1fr; }
-            .matches-container { grid-template-columns: 1fr; }
-            .rounds-tabs { display: flex; flex-wrap: wrap; justify-content: center; }
-            .round-tab { margin-bottom: 5px; }
-        }
-
-        @media (min-width: 992px) {
-            .stage-content-wrapper { 
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-            }
-            .matches-container { 
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
-        }
-
-        /* Adicione isso para a paginação */
-        .rounds-pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 15px;
-            gap: 10px;
-        }
-
-        .rounds-pagination-button {
-            padding: 5px 10px;
-            border-radius: 5px;
-            background-color: var(--border-color);
-            cursor: pointer;
-            border: none;
-            font-weight: 500;
-        }
-
-        .rounds-pagination-button.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
+        .empty-state { text-align: center; padding: 40px; color: var(--text-color-light); font-style: italic; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="header-title"><i class="fas fa-shield-alt"></i>Supercopa</h1>
-        <div class="tabs">
-            <div class="tab active" data-stage="grupos">Fase de Grupos</div>
-            <div class="tab" data-stage="quartas">Quartas</div>
-            <div class="tab" data-stage="semis">Semifinais</div>
+        <h1 class="header-title"><i class="fas fa-shield-alt"></i> Supercopa</h1>
+        <div class="tabs main-tabs">
+            <div class="tab active" data-stage="groups">Fase de Grupos</div>
+            <div class="tab" data-stage="quarterFinals">Quartas</div>
+            <div class="tab" data-stage="semiFinals">Semifinais</div>
             <div class="tab" data-stage="final">Final</div>
         </div>
 
-        <div id="grupos-stage-content">
-            <div class="tabs group-tabs">
-                <div class="group-tab active" data-group="group1">Grupo A</div>
-                <div class="group-tab" data-group="group2">Grupo B</div>
-                <div class="group-tab" data-group="group3">Grupo C</div>
-                <div class="group-tab" data-group="group4">Grupo D</div>
+        <!-- Conteúdo da Fase de Grupos -->
+        <div id="groups-stage-content">
+            <div class="tabs group-tabs-container">
+                <div class="tab group-tab active" data-group="group1">Grupo A</div>
+                <div class="tab group-tab" data-group="group2">Grupo B</div>
+                <div class="tab group-tab" data-group="group3">Grupo C</div>
+                <div class="tab group-tab" data-group="group4">Grupo D</div>
             </div>
-            <div class="stage-content-wrapper">
-                <div class="stage-card" id="standings-card">
-                    <h2 class="section-title">Classificação</h2>
-                    <table class="standings-table" id="group-standings-table">
-                        <thead>
-                            <tr>
-                                <th>Jogador</th>
-                                <th>Pts</th>
-                                <th>J</th>
-                                <th>V</th>
-                                <th>SG</th>
-                                <th>Últimos 5</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+            <div class="groups-content-grid">
+                <div id="standings-container">
+                    <h2 class="section-header"><i class="fas fa-list-ol"></i> Classificação</h2>
+                    <div id="standings-list" class="standings-list"></div>
                 </div>
-                <div class="stage-card" id="matches-card">
-                    <h2 class="section-title">Jogos</h2>
-                    <div class="rounds-scroll-container"></div>
-                    <div id="matches-container" class="matches-container"></div>
+                 <div id="matches-container">
+                    <h2 class="section-header"><i class="fas fa-futbol"></i> Jogos da Rodada Ativa</h2>
+                    <div id="matches-list" class="standings-list"></div>
                 </div>
             </div>
         </div>
 
-        <div class="stage-card" id="knockout-content" style="display:none;">
-             <h2 class="section-title" id="knockout-title"></h2>
-             <div id="knockout-matches-container" class="matches-container"></div>
+        <!-- Conteúdo do Mata-Mata -->
+        <div id="knockout-stage-content" style="display:none;">
+             <h2 class="section-header" id="knockout-title-main"></h2>
+             <div class="knockout-grid">
+                <div class="knockout-series-container series-a">
+                    <h3 class="series-title">Série A</h3>
+                    <div id="knockout-matches-a"></div>
+                </div>
+                <div class="knockout-series-container series-b">
+                    <h3 class="series-title">Série B</h3>
+                    <div id="knockout-matches-b"></div>
+                </div>
+                <div class="knockout-series-container series-c">
+                    <h3 class="series-title">Série C</h3>
+                    <div id="knockout-matches-c"></div>
+                </div>
+             </div>
         </div>
     </div>
-
-    <dialog id="match-details-dialog">
-        <div class="dialog-header">
-            <h3 id="dialog-title"><i class="fas fa-chart-pie"></i>Análise de Palpites</h3>
-            <button class="close-btn" id="dialog-close-btn">×</button>
-        </div>
-        <div class="dialog-body">
-            <ul class="prediction-comparison-list" id="prediction-comparison-list"></ul>
-        </div>
-        <div class="dialog-footer">
-            <span id="dialog-points-dispute"></span>
-        </div>
-    </dialog>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-    <script>
+        <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
@@ -280,477 +147,263 @@
         const database = firebase.database();
         const auth = firebase.auth();
 
+        // --- VARIÁVEIS DE CACHE GLOBAIS ---
         let teamsDataCache = null;
         let usersDataCache = null;
-        let groupPlayersCache = null;
+        let supercopaDataCache = null;
         let activeSuperligaRoundData = null;
-        let supercopaRoundsCache = null;
 
+        // --- MAPEAMENTO DA UI ---
         const ui = {
-            stageTabs: document.querySelectorAll('.tab'),
-            groupTabs: document.querySelectorAll('.group-tab'),
-            groupsStageContent: document.getElementById('grupos-stage-content'),
-            knockoutContent: document.getElementById('knockout-content'),
-            knockoutTitle: document.getElementById('knockout-title'),
-            knockoutMatchesContainer: document.getElementById('knockout-matches-container'),
-            standingsTableBody: document.querySelector('#group-standings-table tbody'),
-            roundsScrollContainer: document.querySelector('.rounds-scroll-container'),
-            prevRoundButton: document.querySelector('.prev-round'),
-            nextRoundButton: document.querySelector('.next-round'),
-            matchesContainer: document.getElementById('matches-container'),
-            dialog: document.getElementById('match-details-dialog'),
-            dialogTitle: document.getElementById('dialog-title'),
-            dialogCloseBtn: document.querySelector('#match-details-dialog .close-btn'),
-            dialogPredictionList: document.getElementById('prediction-comparison-list'),
-            dialogPointsDispute: document.getElementById('dialog-points-dispute'),
+            mainTabs: document.querySelectorAll('.main-tabs .tab'),
+            groupTabs: document.querySelectorAll('.group-tabs-container .tab'),
+            groupsContent: document.getElementById('groups-stage-content'),
+            knockoutContent: document.getElementById('knockout-stage-content'),
+            standingsList: document.getElementById('standings-list'),
+            matchesList: document.getElementById('matches-list'),
+            knockoutTitleMain: document.getElementById('knockout-title-main'),
+            knockoutMatches: {
+                a: document.getElementById('knockout-matches-a'),
+                b: document.getElementById('knockout-matches-b'),
+                c: document.getElementById('knockout-matches-c'),
+            }
         };
 
+        // --- INICIALIZAÇÃO ---
         auth.onAuthStateChanged(user => {
-            if (!user) {
-                window.location.href = 'index.html';
-            } else {
+            if (user) {
                 initializeApp();
+            } else {
+                window.location.href = 'index.html';
             }
         });
 
         async function initializeApp() {
             try {
+                // ETAPA 1: Garante que TODOS os dados essenciais sejam carregados ANTES de qualquer outra coisa.
                 await Promise.all([
-                    loadTeamsDataOnce(),
-                    loadUsersDataOnce(),
-                    loadGroupPlayersOnce(),
-                    loadSupercopaRoundsOnce(),
+                    loadDataOnce('teams').then(data => teamsDataCache = data),
+                    loadDataOnce('users').then(data => {
+                        // Adiciona o ID a cada objeto de usuário para facilitar o acesso
+                        Object.keys(data).forEach(key => data[key].id = key);
+                        usersDataCache = data;
+                    }),
+                    loadDataOnce('tournaments/supercopa').then(data => supercopaDataCache = data),
                 ]);
-                await findActiveSuperligaRoundAndListen();
-                loadStage('grupos');
+                
+                // ETAPA 2: Inicia o listener para a rodada da Superliga (para os placares ao vivo)
+                findActiveSuperligaRoundAndListen();
+                
+                // ETAPA 3: Configura os botões e abas
                 setupEventListeners();
-                window.addEventListener('resize', handleResize);
+                
+                // ETAPA 4: Lógica para determinar o estágio ativo da Supercopa
+                const { groups, quarterFinals, semiFinals, final } = supercopaDataCache || {};
+                let activeStage = 'groups';
+                if (final?.status === 1) activeStage = 'final';
+                else if (semiFinals?.status === 1) activeStage = 'semiFinals';
+                else if (quarterFinals?.status === 1) activeStage = 'quarterFinals';
+                
+                // ETAPA 5: Clica programaticamente na aba correta para iniciar a renderização
+                const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage}"]`);
+                if (activeTab) {
+                    activeTab.click();
+                } else {
+                    // Fallback para o primeiro tab se nada for encontrado
+                    document.querySelector('.main-tabs .tab').click();
+                }
+
             } catch (error) {
-                console.error("Erro na inicialização:", error);
+                console.error("Erro fatal na inicialização:", error);
+                document.body.innerHTML = '<div class="empty-state">Ocorreu um erro ao carregar os dados. Por favor, tente novamente.</div>';
             }
         }
 
-        async function loadTeamsDataOnce() {
-            if (teamsDataCache) return;
-            const snapshot = await database.ref('teams').once('value');
-            teamsDataCache = snapshot.val() || {};
+        // --- FUNÇÕES DE DADOS ---
+        async function loadDataOnce(path) {
+            const snapshot = await database.ref(path).once('value');
+            return snapshot.val() || {};
         }
 
-        async function loadUsersDataOnce() {
-            if (usersDataCache) return;
-            const snapshot = await database.ref('users').once('value');
-            usersDataCache = snapshot.val() || {};
-            for (const userId in usersDataCache) {
-                usersDataCache[userId].id = userId;
-            }
-        }
-
-        async function loadGroupPlayersOnce() {
-            if (groupPlayersCache) return;
-            const snapshot = await database.ref('tournaments/supercopa/groups').once('value');
-            const groups = snapshot.val();
-            if (groups) {
-                groupPlayersCache = {
-                    group1: groups.group1 || [],
-                    group2: groups.group2 || [],
-                    group3: groups.group3 || [],
-                    group4: groups.group4 || []
-                };
-            }
-        }
-
-        async function loadSupercopaRoundsOnce() {
-            if (supercopaRoundsCache) return;
-            const snapshot = await database.ref('tournaments/supercopa/groups/rounds').once('value');
-            supercopaRoundsCache = snapshot.val() || {};
-        }
-
-        async function findActiveSuperligaRoundAndListen() {
-            const roundsRef = database.ref('rounds').orderByChild('status').equalTo(1);
-            roundsRef.on('value', (snapshot) => {
-                activeSuperligaRoundData = snapshot.exists() ? Object.values(snapshot.val())[0] : false;
-                const activeStage = document.querySelector('.tab.active')?.dataset.stage;
-                if (activeStage) {
-                    loadStage(activeStage);
+        function findActiveSuperligaRoundAndListen() {
+            database.ref('rounds').orderByChild('status').equalTo(1).on('value', (snapshot) => {
+                activeSuperligaRoundData = snapshot.exists() ? Object.values(snapshot.val())[0] : null;
+                
+                // Re-renderiza o conteúdo visível para atualizar os placares ao vivo
+                const activeMainTab = document.querySelector('.main-tabs .tab.active');
+                if (activeMainTab) {
+                    loadStage(activeMainTab.dataset.stage);
                 }
             });
         }
-
+        
+        // --- LÓGICA DE RENDERIZAÇÃO PRINCIPAL ---
         function loadStage(stage) {
-            ui.groupsStageContent.style.display = stage === 'grupos' ? 'block' : 'none';
-            ui.knockoutContent.style.display = stage !== 'grupos' ? 'block' : 'none';
-            if (stage === 'grupos') {
-                const activeGroup = document.querySelector('.group-tab.active').dataset.group;
-                loadGroupData(activeGroup);
+            ui.groupsContent.style.display = stage === 'groups' ? 'block' : 'none';
+            ui.knockoutContent.style.display = stage !== 'groups' ? 'block' : 'none';
+
+            if (stage === 'groups') {
+                const activeGroupTab = document.querySelector('.group-tabs-container .tab.active');
+                if (activeGroupTab) {
+                    loadGroupData(activeGroupTab.dataset.group);
+                }
             } else {
                 loadKnockoutData(stage);
             }
         }
 
-        async function loadGroupData(groupKey) {
-            await loadGroupStandings(groupKey);
-            await loadGroupRounds(groupKey);
+        function loadGroupData(groupKey) {
+            renderGroupStandings(groupKey);
+            renderGroupMatches();
         }
 
-        async function loadKnockoutData(stageKey) {
-            const stageNameMap = { quartas: 'Quartas de Final', semis: 'Semifinais', final: 'Final' };
-            const dbPathMap = { quartas: 'quarterFinals', semis: 'semiFinals', final: 'final' };
+        function loadKnockoutData(stageKey) {
+            const stageNameMap = { quarterFinals: 'Quartas de Final', semiFinals: 'Semifinais', final: 'Final' };
+            ui.knockoutTitleMain.textContent = stageNameMap[stageKey] || 'Mata-Mata';
             
-            ui.knockoutTitle.textContent = stageNameMap[stageKey];
-            ui.knockoutMatchesContainer.innerHTML = '<div class="empty-state">Carregando...</div>';
-            const snapshot = await database.ref(`tournaments/supercopa/${dbPathMap[stageKey]}/matches`).once('value');
-            const matches = snapshot.val();
-            if (!matches) {
-                ui.knockoutMatchesContainer.innerHTML = '<div class="empty-state">Confrontos ainda não definidos.</div>';
-                return;
-            }
-            renderMatches(Object.values(matches), ui.knockoutMatchesContainer, false);
+            const stageData = supercopaDataCache[stageKey];
+            
+            renderKnockoutSeries(stageData?.matches, ui.knockoutMatches.a);
+            renderKnockoutSeries(stageData?.b, ui.knockoutMatches.b);
+            renderKnockoutSeries(stageData?.c, ui.knockoutMatches.c);
         }
 
-        async function loadGroupStandings(groupKey) {
-            const standingsSnapshot = await database.ref('tournaments/supercopa/groups/standings').once('value');
-            const standings = standingsSnapshot.val() || {};
-            const groupPlayerIds = groupPlayersCache[groupKey];
-            const isMobile = window.innerWidth <= 768;
-
-            const groupStandings = Object.values(standings)
-                .filter(p => groupPlayerIds.includes(p.playerId))
+        // --- FUNÇÕES DE RENDERIZAÇÃO DE COMPONENTES ---
+        function renderGroupStandings(groupKey) {
+            const { standings = {}, status, ...groups } = supercopaDataCache.groups || {};
+            const groupPlayerIds = groups[groupKey] || [];
+            
+            const groupStandings = groupPlayerIds
+                .map(id => standings[id])
+                .filter(Boolean)
                 .sort((a, b) => {
                     const a_gd = (a.goalsFor || 0) - (a.goalsAg || 0);
                     const b_gd = (b.goalsFor || 0) - (b.goalsAg || 0);
                     return (b.points || 0) - (a.points || 0) || (b.wins || 0) - (a.wins || 0) || b_gd - a_gd || (b.goalsFor || 0) - (a.goalsFor || 0);
                 });
 
-            ui.standingsTableBody.innerHTML = groupStandings.map(s => {
-                const player = usersDataCache[s.playerId] || {};
+            ui.standingsList.innerHTML = groupStandings.map((playerData, index) => {
+                const player = usersDataCache[playerData.playerId];
+                // Se o jogador não for encontrado no cache, pula a renderização deste card
+                if (!player) return ''; 
+                
                 const team = teamsDataCache[player.teamId] || {};
-                const displayName = isMobile ? (player.abbr || player.name) : player.name;
-                const playerForm = getPlayerForm(s.playerId, supercopaRoundsCache);
+                const position = index + 1;
+                
+                let statusClass = '', statusHtml = '';
+                if (status === 2) {
+                    if (position <= 2) {
+                        statusClass = 'status-classified';
+                        statusHtml = `<div class="status-badge"><i class="fas fa-crown"></i> Série A</div>`;
+                    } else if (position <= 4) {
+                        statusClass = 'status-serie-b';
+                        statusHtml = `<div class="status-badge"><i class="fas fa-arrow-up"></i> Série B</div>`;
+                    } else {
+                        statusClass = 'status-serie-c';
+                        statusHtml = `<div class="status-badge"><i class="fas fa-poo"></i> O Limbo</div>`;
+                    }
+                }
 
                 return `
-                    <tr>
-                        <td><div class="player-info"><img src="${team.image || ''}" alt="" class="team-logo"><span class="player-name">${displayName || 'Desconhecido'}</span></div></td>
-                        <td class="points-column">${s.points || 0}</td>
-                        <td>${s.games || 0}</td>
-                        <td>${s.wins || 0}</td>
-                        <td>${(s.goalsFor || 0) - (s.goalsAg || 0)}</td>
-                        <td><div class="form-history">${playerForm}</div></td>
-                    </tr>
-                `;
-            }).join('') || `<tr><td colspan="6" class="empty-state">Nenhum jogador neste grupo.</td></tr>`;
-        }
-
-        function getPlayerForm(playerId, allRounds) {
-            const results = [];
-            if (!allRounds) return '';
-            
-            const sortedRounds = Object.values(allRounds).sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
-
-            for (const round of sortedRounds) {
-                if (round.matches) {
-                    for (const match of Object.values(round.matches)) {
-                        if ((match.player1Id === playerId || match.player2Id === playerId) && match.result) {
-                            const scores = match.result.split('x').map(s => parseInt(s.trim()));
-                            if (scores.length === 2 && !isNaN(scores[0]) && !isNaN(scores[1])) {
-                                const isPlayer1 = match.player1Id === playerId;
-                                const myScore = isPlayer1 ? scores[0] : scores[1];
-                                const opponentScore = isPlayer1 ? scores[1] : scores[0];
-                                if (myScore > opponentScore) results.push('W');
-                                else if (myScore < opponentScore) results.push('L');
-                                else results.push('D');
-                            }
-                        }
-                    }
-                }
-            }
-            
-            return results.slice(-5).map(res => {
-                if (res === 'W') return '<div class="form-icon form-win"><i class="fas fa-check"></i></div>';
-                if (res === 'D') return '<div class="form-icon form-draw">-</div>';
-                if (res === 'L') return '<div class="form-icon form-loss"><i class="fas fa-times"></i></div>';
-                return '';
-            }).join('');
-        }
-
-
-        async function loadGroupRounds(groupKey) {
-            ui.roundsScrollContainer.innerHTML = '';
-            const rounds = supercopaRoundsCache || {};
-            
-            if (Object.keys(rounds).length === 0) {
-                ui.matchesContainer.innerHTML = '<div class="empty-state">Nenhuma rodada encontrada.</div>';
-                updateScrollButtons();
-                return;
-            }
-
-            const roundsArray = Object.entries(rounds).map(([id, data], index) => ({ id, ...data, index }));
-            let currentRoundIndex = roundsArray.findIndex(r => r.status === 1);
-            if (currentRoundIndex === -1 && roundsArray.length > 0) currentRoundIndex = roundsArray.length - 1;
-
-            // Criar paginação se houver muitas rodadas
-            if (roundsArray.length > 4) {
-                const roundsPerPage = 4;
-                const pageCount = Math.ceil(roundsArray.length / roundsPerPage);
-                const currentPage = Math.floor(currentRoundIndex / roundsPerPage);
-                
-                const paginationDiv = document.createElement('div');
-                paginationDiv.className = 'rounds-pagination';
-                
-                for (let i = 0; i < pageCount; i++) {
-                    const button = document.createElement('button');
-                    button.className = `rounds-pagination-button ${i === currentPage ? 'active' : ''}`;
-                    button.textContent = i + 1;
-                    button.addEventListener('click', () => {
-                        document.querySelectorAll('.rounds-pagination-button').forEach(btn => 
-                            btn.classList.remove('active'));
-                        button.classList.add('active');
-                        showRoundsPage(i, roundsArray, roundsPerPage);
-                    });
-                    paginationDiv.appendChild(button);
-                }
-                
-                ui.roundsScrollContainer.appendChild(paginationDiv);
-                showRoundsPage(currentPage, roundsArray, roundsPerPage);
-            } else {
-                // Mostrar todas as rodadas se forem poucas
-                const roundsTabsDiv = document.createElement('div');
-                roundsTabsDiv.className = 'tabs rounds-tabs';
-                roundsTabsDiv.innerHTML = roundsArray.map(round =>
-                    `<div class="round-tab ${round.index === currentRoundIndex ? 'active' : ''}" data-round-id="${round.id}">Rodada ${round.index + 1}</div>`
-                ).join('');
-                ui.roundsScrollContainer.appendChild(roundsTabsDiv);
-            }
-
-            const activeRoundId = roundsArray[currentRoundIndex]?.id;
-            if (activeRoundId) {
-                loadRoundMatches(activeRoundId);
-            }
-        }
-
-        function showRoundsPage(page, roundsArray, roundsPerPage) {
-            const start = page * roundsPerPage;
-            const end = start + roundsPerPage;
-            const pageRounds = roundsArray.slice(start, end);
-            
-            const roundsTabsDiv = document.createElement('div');
-            roundsTabsDiv.className = 'tabs rounds-tabs';
-            roundsTabsDiv.innerHTML = pageRounds.map(round =>
-                `<div class="round-tab" data-round-id="${round.id}">Rodada ${round.index + 1}</div>`
-            ).join('');
-            
-            // Encontrar a rodada ativa na página atual
-            const activeRound = roundsArray.find(r => r.status === 1) || roundsArray[roundsArray.length - 1];
-            if (activeRound && pageRounds.some(r => r.id === activeRound.id)) {
-                const activeTab = roundsTabsDiv.querySelector(`.round-tab[data-round-id="${activeRound.id}"]`);
-                if (activeTab) activeTab.classList.add('active');
-            } else if (pageRounds.length > 0) {
-                // Se não houver rodada ativa na página, selecionar a primeira
-                roundsTabsDiv.firstChild.classList.add('active');
-            }
-            
-            // Substituir os tabs existentes
-            const existingTabs = ui.roundsScrollContainer.querySelector('.rounds-tabs');
-            if (existingTabs) existingTabs.remove();
-            ui.roundsScrollContainer.insertBefore(roundsTabsDiv, ui.roundsScrollContainer.firstChild);
-            
-            // Adicionar event listeners
-            roundsTabsDiv.addEventListener('click', e => {
-                const tab = e.target.closest('.round-tab');
-                if (tab && !tab.classList.contains('active')) {
-                    document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    loadRoundMatches(tab.dataset.roundId);
-                }
-            });
-        }
-
-        function updateScrollButtons() {
-            const container = ui.roundsScrollContainer;
-            if (!container || !container.hasChildNodes()) {
-                ui.prevRoundButton.classList.add('disabled');
-                ui.nextRoundButton.classList.add('disabled');
-                return;
-            }
-            const { scrollLeft, scrollWidth, clientWidth } = container;
-            ui.prevRoundButton.disabled = scrollLeft < 10;
-            ui.nextRoundButton.disabled = scrollLeft > scrollWidth - clientWidth - 10;
-            ui.prevRoundButton.classList.toggle('disabled', ui.prevRoundButton.disabled);
-            ui.nextRoundButton.classList.toggle('disabled', ui.nextRoundButton.disabled);
-        }
-
-        async function loadRoundMatches(roundId) {
-            const matches = supercopaRoundsCache[roundId]?.matches || {};
-            renderMatches(Object.values(matches), ui.matchesContainer, true);
-        }
-
-        function renderMatches(matches, container, isGroupStage) {
-            if (!matches.length) {
-                container.innerHTML = '<div class="empty-state">Nenhum jogo nesta rodada.</div>';
-                return;
-            }
-            container.innerHTML = '';
-            const { liveRoundPoints, playersWhoPredicted } = calculateLiveRoundPoints(activeSuperligaRoundData);
-            const isMobile = window.innerWidth <= 991;
-
-            matches.forEach(match => {
-                const p1Id = isGroupStage ? match.player1Id : match.homeTeam;
-                const p2Id = isGroupStage ? match.player2Id : match.awayTeam;
-                const player1 = usersDataCache[p1Id] || {};
-                const player2 = usersDataCache[p2Id] || {};
-                const team1 = teamsDataCache[player1.teamId] || {};
-                const team2 = teamsDataCache[player2.teamId] || {};
-                
-                const p1Name = isMobile ? (player1.abbr || player1.name) : player1.name;
-                const p2Name = isMobile ? (player2.abbr || player2.name) : player2.name;
-                
-                let result = "vs";
-                if (match.result) {
-                    result = match.result;
-                } else if (activeSuperligaRoundData) {
-                    const p1HasPrediction = playersWhoPredicted.has(p1Id);
-                    const p2HasPrediction = playersWhoPredicted.has(p2Id);
-                    const score1 = p1HasPrediction ? (liveRoundPoints[p1Id] || 0) : (player1.lastRoundPointsLigaAbertura || 0);
-                    const score2 = p2HasPrediction ? (liveRoundPoints[p2Id] || 0) : (player2.lastRoundPointsLigaAbertura || 0);
-                    result = `${score1} x ${score2}`;
-                }
-
-                const card = document.createElement('div');
-                card.className = 'match-card';
-                card.innerHTML = `
-                    <div class="match-players">
-                        <div class="match-player"><img src="${team1.image || ''}" alt="" class="team-logo"><span class="player-name">${p1Name || 'A Definir'}</span></div>
-                        <div class="match-result">${result}</div>
-                        <div class="match-player"><img src="${team2.image || ''}" alt="" class="team-logo"><span class="player-name">${p2Name || 'A Definir'}</span></div>
+                    <div class="player-standing-card ${statusClass}" style="animation-delay: ${index * 50}ms">
+                        <span class="pos">${position}</span>
+                        <img src="${team.image || ''}" alt="${player.name || ''}" class="logo">
+                        <div class="name-container" style="flex-grow: 1;">
+                            <div class="name">${player.name || 'Desconhecido'}</div>
+                            ${statusHtml}
+                        </div>
+                        <div class="points">${playerData.points || 0}</div>
                     </div>
                 `;
-                card.addEventListener('click', () => showMatchDetails(p1Id, p2Id));
-                container.appendChild(card);
-            });
+            }).join('') || `<div class="empty-state">Classificação indisponível.</div>`;
         }
 
-        function calculateLiveRoundPoints(roundData) {
-            const liveRoundPoints = {};
-            const playersWhoPredicted = new Set();
-            if (!roundData || !roundData.matches) return { liveRoundPoints, playersWhoPredicted };
-            
-            Object.values(roundData.matches).forEach(match => {
-                if (match.predictions) {
-                    Object.keys(match.predictions).forEach(playerId => playersWhoPredicted.add(playerId));
-                }
-            });
+        function renderGroupMatches() {
+            const activeCopaRound = Object.values(supercopaDataCache.groups.rounds || {}).find(r => r.status === 1);
+            if (!activeCopaRound || !activeCopaRound.matches) {
+                ui.matchesList.innerHTML = `<div class="empty-state">Nenhum jogo da Supercopa ativo.</div>`;
+                return;
+            }
+            ui.matchesList.innerHTML = Object.values(activeCopaRound.matches).map(match => renderMatchCard(match, true)).join('');
+        }
 
-            playersWhoPredicted.forEach(playerId => {
-                liveRoundPoints[playerId] = 0;
-                Object.values(roundData.matches).forEach(match => {
-                    if (match.finalResult && match.predictions?.[playerId]) {
-                        liveRoundPoints[playerId] += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
-                    }
-                });
-            });
-            return { liveRoundPoints, playersWhoPredicted };
+        function renderKnockoutSeries(matches, container) {
+            if (!matches) {
+                container.innerHTML = `<div class="empty-state">Confrontos não definidos.</div>`;
+                return;
+            }
+            container.innerHTML = Object.values(matches).map(match => renderMatchCard(match, false)).join('');
+        }
+        
+        function renderMatchCard(match, isGroupStage) {
+            const p1Id = isGroupStage ? match.player1Id : match.homeTeam;
+            const p2Id = isGroupStage ? match.player2Id : match.awayTeam;
+
+            const player1 = p1Id ? usersDataCache[p1Id] : null;
+            const player2 = p2Id ? usersDataCache[p2Id] : null;
+            
+            const team1 = player1 ? teamsDataCache[player1.teamId] : null;
+            const team2 = player2 ? teamsDataCache[player2.teamId] : null;
+            
+            let result = "vs";
+            if (match.result && match.result.trim() !== "") {
+                result = match.result;
+            } else if (activeSuperligaRoundData && p1Id && p2Id) {
+                const p1Score = calculateLiveRoundPoints(p1Id);
+                const p2Score = calculateLiveRoundPoints(p2Id);
+                result = `${p1Score} x ${p2Score}`;
+            }
+
+            return `
+                <div class="match-card">
+                    <div class="match-player">
+                        <img src="${team1?.image || ''}" alt="" class="logo">
+                        <span class="name">${player1?.name || 'A Definir'}</span>
+                    </div>
+                    <div class="match-result">${result}</div>
+                    <div class="match-player away">
+                        <span class="name">${player2?.name || 'A Definir'}</span>
+                        <img src="${team2?.image || ''}" alt="" class="logo">
+                    </div>
+                </div>
+            `;
+        }
+        
+        // --- FUNÇÕES AUXILIARES ---
+        function calculateLiveRoundPoints(playerId) {
+            if (!activeSuperligaRoundData || !playerId) return usersDataCache[playerId]?.lastRoundPointsLigaAbertura || 0;
+            let points = 0;
+            for (const match of Object.values(activeSuperligaRoundData.matches)) {
+                if (match.finalResult && match.predictions?.[playerId]) {
+                    points += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
+                }
+            }
+            return points;
         }
 
         function calculateMatchPoints(final, pred) {
-            if (final.homeScore === null || pred.homeScore === null) return 0;
-            if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
-            const finalWinner = Math.sign(final.homeScore - final.awayScore);
-            const predWinner = Math.sign(pred.homeScore - pred.awayScore);
-            if (finalWinner === predWinner) return 1;
-            if (final.homeScore === pred.awayScore && final.awayScore === pred.homeScore) return -1;
+            if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return 0;
+            if (final.homeScore == pred.homeScore && final.awayScore == pred.awayScore) return 3;
+            const finalW = Math.sign(final.homeScore - final.awayScore);
+            const predW = Math.sign(pred.homeScore - pred.awayScore);
+            if (finalW === predW) return 1;
+            if (final.homeScore == pred.awayScore && final.awayScore == pred.homeScore) return -1;
             return 0;
         }
 
+        // --- CONFIGURAÇÃO DE EVENTOS ---
         function setupEventListeners() {
-            ui.stageTabs.forEach(tab => tab.addEventListener('click', e => {
-                ui.stageTabs.forEach(t => t.classList.remove('active'));
-                e.target.classList.add('active');
-                loadStage(e.target.dataset.stage);
+            ui.mainTabs.forEach(tab => tab.addEventListener('click', () => {
+                ui.mainTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                loadStage(tab.dataset.stage);
             }));
 
-            document.querySelector('.group-tabs').addEventListener('click', e => {
-                if (e.target.classList.contains('group-tab')) {
-                    document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
-                    e.target.classList.add('active');
-                    loadGroupData(e.target.dataset.group);
-                }
-            });
-
-            ui.roundsScrollContainer.addEventListener('click', e => {
-                const tab = e.target.closest('.round-tab');
-                if (tab && !tab.classList.contains('active')) {
-                    document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    loadRoundMatches(tab.dataset.roundId);
-                }
-            });
-
-            ui.dialogCloseBtn.addEventListener('click', () => ui.dialog.close());
-            ui.dialog.addEventListener('click', e => { if (e.target === ui.dialog) ui.dialog.close(); });
-        }
-
-        function handleResize() {
-            updateScrollButtons();
-            const activeGroup = document.querySelector('.group-tab.active')?.dataset.group;
-            if (activeGroup && ui.groupsStageContent.style.display !== 'none') {
-                loadGroupStandings(activeGroup);
-                const activeRoundTab = ui.roundsScrollContainer.querySelector('.round-tab.active');
-                if(activeRoundTab) loadRoundMatches(activeRoundTab.dataset.roundId);
-            }
-        }
-
-        async function showMatchDetails(p1Id, p2Id) {
-            if (!activeSuperligaRoundData || !activeSuperligaRoundData.matches) {
-                alert("Não há rodada da Superliga em andamento para analisar palpites.");
-                return;
-            }
-            const player1 = usersDataCache[p1Id];
-            const player2 = usersDataCache[p2Id];
-            ui.dialogTitle.innerHTML = `<i class="fas fa-chart-pie"></i> Análise: ${player1.name} vs ${player2.name}`;
-            let totalPointsInDispute = 0;
-            const predictionsHTML = Object.values(activeSuperligaRoundData.matches).map(match => {
-                const p1Prediction = match.predictions?.[p1Id];
-                const p2Prediction = match.predictions?.[p2Id];
-                const homeTeam = teamsDataCache[match.homeTeam]?.name || 'Time A';
-                const awayTeam = teamsDataCache[match.awayTeam]?.name || 'Time B';
-                const p1Score = p1Prediction ? `${p1Prediction.homeScore} x ${p1Prediction.awayScore}` : 'Não apostou';
-                const p2Score = p2Prediction ? `${p2Prediction.homeScore} x ${p2Prediction.awayScore}` : 'Não apostou';
-                
-                let comparisonResult = 'Análise indisponível';
-                if (p1Prediction && p2Prediction) {
-                    let points = 0;
-                    if (p1Prediction.homeScore === p2Prediction.homeScore && p1Prediction.awayScore === p2Prediction.awayScore) {
-                        comparisonResult = 'Palpites idênticos'; points = 3;
-                    } else {
-                        const winner1 = Math.sign(p1Prediction.homeScore - p1Prediction.awayScore);
-                        const winner2 = Math.sign(p2Prediction.homeScore - p2Prediction.awayScore);
-                        if (winner1 === winner2) {
-                            comparisonResult = 'Apostaram no mesmo vencedor'; points = 1;
-                        } else {
-                            comparisonResult = 'Palpites totalmente diferentes'; points = 0;
-                        }
-                    }
-                    totalPointsInDispute += points;
-                } else if (!p1Prediction && !p2Prediction) {
-                    comparisonResult = 'Nenhum dos dois apostou';
-                } else {
-                    comparisonResult = p1Prediction ? `${player2.name} não apostou` : `${player1.name} não apostou`;
-                }
-
-                return `
-                    <li class="prediction-item">
-                        <div class="match-info">${homeTeam} vs ${awayTeam}</div>
-                        <div class="players-predictions">
-                            <div class="player-prediction"><span class="name">${player1.name}</span><span class="score">${p1Score}</span></div>
-                            <div class="player-prediction"><span class="name">${player2.name}</span><span class="score">${p2Score}</span></div>
-                        </div>
-                        <div class="comparison-result">${comparisonResult}</div>
-                    </li>
-                `;
-            }).filter(html => html).join('');
-            
-            ui.dialogPredictionList.innerHTML = predictionsHTML || '<div class="empty-state">Nenhum palpite em comum para analisar.</div>';
-            ui.dialogPointsDispute.textContent = `Total de Pontos em Disputa: ${totalPointsInDispute}`;
-            ui.dialog.showModal();
+            ui.groupTabs.forEach(tab => tab.addEventListener('click', () => {
+                ui.groupTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                loadGroupData(tab.dataset.group);
+            }));
         }
     </script>
 </body>

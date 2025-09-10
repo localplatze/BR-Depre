@@ -9,39 +9,62 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4a65f5;
-            --background-color: #f5f7fa;
-            --card-bg-color: #ffffff;
-            --text-color: #34495e;
-            --text-color-light: #7f8c8d;
-            --border-color: #eef2f7;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            --primary-color: #007bff;
+            --primary-glow: rgba(0, 123, 255, 0.5);
+            --background-color: #101418;
+            --card-bg-color: #1a2027;
+            --card-bg-light: #242c36;
+            --text-color: #e4e6eb;
+            --text-color-light: #b0b3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             --border-radius: 12px;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --neutral-color: #95a5a6;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h1 { font-size: 28px; font-weight: 700; }
-        .action-button {
-            background-color: var(--primary-color); color: white; border: none; padding: 10px 20px;
-            border-radius: 8px; cursor: pointer; transition: all 0.3s; font-weight: 500; font-size: 15px;
-            display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
-        }
-        .action-button:hover { background-color: #3b50cb; transform: translateY(-2px); }
-        .action-button:disabled { background-color: var(--neutral-color); cursor: not-allowed; transform: none; }
-        
-        .timer {
-            text-align: center; font-size: 1.1em; color: var(--text-color-light);
-            margin-bottom: 25px; padding: 12px; background-color: var(--card-bg-color);
-            border-radius: var(--border-radius); box-shadow: var(--shadow);
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --neutral-color: #6c757d;
         }
 
-        .main-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); }
+        /* ESTILOS GERAIS E FUNDO */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+        /* HEADER E BOTÕES */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; animation: fadeInDown 0.5s ease-out; }
+        .header h1 { font-size: 32px; font-weight: 700; }
+        .action-button {
+            background-image: linear-gradient(to right, var(--primary-color), #0056b3);
+            color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; font-size: 15px;
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+        .action-button:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3); }
+        .action-button:disabled {
+            background: var(--neutral-color);
+            cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6;
+        }
+        #save-predictions.has-changes {
+            background-image: linear-gradient(to right, var(--warning-color), #d39e00);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+        }
+
+        /* TIMER E TABS */
+        .timer {
+            text-align: center; font-size: 1.1em; color: var(--text-color-light);
+            margin-bottom: 25px; padding: 16px; background-color: var(--card-bg-color);
+            border-radius: var(--border-radius); border: 1px solid var(--border-color);
+            animation: fadeIn 0.6s ease-out;
+        }
+        .main-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); animation: fadeIn 0.7s ease-out; }
         .tab-button {
             padding: 12px 20px; background-color: transparent; border: none; border-bottom: 3px solid transparent;
             cursor: pointer; font-weight: 600; font-size: 16px; color: var(--text-color-light); transition: all 0.3s;
@@ -49,87 +72,172 @@
         .tab-button:hover { color: var(--primary-color); }
         .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
-        .match-result {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 15px 0;
-            font-size: 24px;
-            font-weight: 600;
+        /* CONTAINER DE JOGOS E CARDS */
+        .matches-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
+        .match-card {
+            background-color: var(--card-bg-color); border-radius: var(--border-radius); overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.5s ease-out backwards;
         }
-        .score-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #f8f9fa;
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-        .score-divider {
-            color: var(--text-color-light);
-        }
-        .matches-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .match-card { background-color: var(--card-bg-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .match-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .match-header { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 0.9em; color: var(--text-color-light); background-color: #fcfdff; }
+        .match-card:hover { transform: translateY(-5px); box-shadow: 0 0 20px var(--primary-glow); border-color: var(--primary-color); }
+        .match-card.is-locked { opacity: 0.6; border-color: var(--neutral-color); }
+        .match-card.is-locked:hover { transform: none; box-shadow: none; }
+        .match-header { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 0.9em; color: var(--text-color-light); background-color: var(--card-bg-light); position: relative; }
+        .lock-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
         .match-content { padding: 20px; }
         .match-teams { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .team { display: flex; flex-direction: column; align-items: center; width: 40%; text-align: center; }
-        .team img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
-        .team-name { font-weight: 500; }
+        .team img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+        .team-name { font-weight: 600; font-size: 1.1em; }
         .versus { font-size: 18px; color: var(--text-color-light); }
-        .prediction-inputs { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .prediction-inputs input { width: 60px; height: 45px; font-size: 18px; text-align: center; border: 2px solid var(--border-color); border-radius: 8px; background-color: var(--background-color); color: var(--text-color); transition: all 0.3s ease; }
-        .prediction-inputs input:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(74,101,245,0.2); outline: none; }
-        .prediction-inputs input:disabled { background-color: #e9ecef; color: var(--text-color-light); cursor: not-allowed; }
-        .prediction-inputs span { font-size: 24px; font-weight: bold; }
-        .match-footer { padding: 15px; text-align: center; border-top: 1px solid var(--border-color); min-height: 60px; }
-        .loader-container { display: flex; justify-content: center; align-items: center; min-height: 300px; }
-        .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; padding: 0; margin: 0; }
-        dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); }
-        .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); }
-        .dialog-header h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .dialog-header .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-color-light); }
-        .dialog-content { padding: 24px; max-height: 65vh; overflow-y: auto; }
         
-        #player-status-dialog { max-width: 900px; }
-        .table-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: 8px; }
-        .player-status-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .player-status-table th, .player-status-table td { padding: 12px; text-align: center; border-left: 1px solid var(--border-color); white-space: nowrap; }
-        .player-status-table th:first-child, .player-status-table td:first-child { border-left: none; }
-        .player-status-table thead { background-color: #f8f9fa; position: sticky; top: 0; z-index: 10; }
-        .player-status-table tbody tr:hover { background-color: #f0f8ff; }
-        .status-table-player { text-align: left !important; font-weight: 500; }
-        .status-icon { font-size: 18px; }
-        .status-missing { color: var(--danger-color); }
-        .status-pending { color: var(--neutral-color); }
-        .points-3 { background-color: #d4edda; color: #155724; font-weight: bold; }
-        .points-1 { background-color: #fff3cd; color: #856404; font-weight: bold; }
-        .points-0 { background-color: #f8f9fa; color: #383d41; }
-        .points--1 { background-color: #f8d7da; color: #721c24; font-weight: bold; }
-        .legend-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 15px; font-size: 13px; justify-content: center; }
-        .legend-item { display: flex; align-items: center; gap: 8px; }
-        .legend-color-box { width: 14px; height: 14px; border-radius: 3px; }
+        /* NOVO INPUT DE PLACAR COM BOTÕES +/- */
+        .prediction-inputs { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .score-input-wrapper { display: flex; align-items: center; gap: 8px; background-color: var(--background-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; }
+        .score-stepper-btn { background: var(--card-bg-light); color: var(--text-color); border: none; width: 30px; height: 30px; border-radius: 6px; font-size: 1.2em; cursor: pointer; transition: background-color 0.2s; }
+        .score-stepper-btn:hover { background-color: var(--primary-color); }
+        .score-stepper-btn:disabled { background-color: var(--neutral-color); opacity: 0.5; cursor: not-allowed; }
+        .prediction-inputs input { width: 50px; height: 40px; font-size: 22px; text-align: center; border: none; background-color: transparent; color: var(--text-color); -moz-appearance: textfield; }
+        .prediction-inputs input::-webkit-outer-spin-button, .prediction-inputs input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .prediction-inputs input:focus { outline: none; }
+        .prediction-inputs input:disabled { color: var(--text-color-light); }
+        
+        .match-result { display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 700; }
+        .match-footer { padding: 15px; text-align: center; border-top: 1px solid var(--border-color); min-height: 60px; }
+        
+        /* LOADER */
+        .loader-container { display: flex; justify-content: center; align-items: center; min-height: 300px; }
+        .loader { border: 5px solid var(--card-bg-light); border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        #predictions-dialog { max-width: 500px; }
-        .predictions-list { list-style: none; padding: 0; }
-        .prediction-item { display: flex; align-items: center; padding: 12px 8px; border-bottom: 1px solid var(--border-color); }
-        .prediction-item:last-child { border-bottom: none; }
-        .prediction-player { flex-grow: 1; font-weight: 500; }
-        .prediction-score { font-weight: 600; font-size: 16px; margin-right: 15px; }
-        .prediction-points { width: 32px; height: 32px; border-radius: 50%; color: white; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-        .points-none { background-color: #f0f2f5; color: #333; }
+        /* DIALOGS (MODAIS) */
+        dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid var(--border-color); border-radius: var(--border-radius); box-shadow: var(--shadow); width: 90%; padding: 0; margin: 0; background-color: var(--card-bg-color); color: var(--text-color); }
+        dialog::backdrop { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); background-color: var(--card-bg-light); }
+        .dialog-content { padding: 24px; max-height: 70vh; overflow-y: auto; }
+        
+        /* TABELA NO DIALOG */
+        #player-status-dialog { max-width: 900px; }
+        .player-status-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .player-status-table th { background-color: var(--card-bg-light); position: sticky; top: -25px; /* Compensa padding do dialog */ z-index: 10; padding: 16px 12px; }
+        .player-status-table td { padding: 12px; }
+        .player-status-table tbody tr { transition: background-color 0.2s; }
+        .player-status-table tbody tr:nth-child(even) { background-color: rgba(0,0,0,0.1); }
+        .player-status-table tbody tr:hover { background-color: var(--card-bg-light); }
+        .points-3 { background-color: rgba(40, 167, 69, 0.3); }
+        .points-1 { background-color: rgba(255, 193, 7, 0.3); }
+        .points--1 { background-color: rgba(220, 53, 69, 0.3); }
+
+        .predictions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .prediction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: var(--card-bg-light);
+            border-left: 4px solid transparent; /* Borda que será colorida */
+            transition: background-color 0.2s;
+        }
+
+        .prediction-player {
+            flex-grow: 1;
+            font-weight: 500;
+        }
+
+        .prediction-score {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-right: 16px;
+        }
+
+        .prediction-points {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1em;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Cores baseadas na pontuação para a lista de palpites */
+        .prediction-item.points-3 { border-left-color: var(--success-color); background-color: rgba(40, 167, 69, 0.1); }
+        .prediction-item.points-1 { border-left-color: var(--warning-color); background-color: rgba(255, 193, 7, 0.1); }
+        .prediction-item.points-0 { border-left-color: var(--text-color-light); }
+        .prediction-item.points--1 { border-left-color: var(--danger-color); background-color: rgba(220, 53, 69, 0.1); }
+
+        .prediction-points.points-3 { background-color: var(--success-color); }
+        .prediction-points.points-1 { background-color: var(--warning-color); color: #111; }
+        .prediction-points.points-0 { background-color: var(--text-color-light); }
+        .prediction-points.points--1 { background-color: var(--danger-color); }
+        .prediction-points.points-none { background-color: var(--card-bg-light); }
+
+
+        /* --- Estilos para o Dialog de "Status dos Jogadores" --- */
+
+        .status-icon {
+            font-size: 1.2em;
+        }
+        .status-pending {
+            color: var(--text-color-light);
+        }
+        .status-missing {
+            color: var(--warning-color);
+        }
+        .table-container td { /* Centraliza o conteúdo da tabela */
+            text-align: center;
+        }
+        .table-container .status-table-player { /* Alinha nome do jogador à esquerda */
+            text-align: left !important;
+        }
+
+        /* Legenda */
+        .legend-container {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            font-size: 0.9em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        /* Cores para as caixas da legenda */
+        .legend-color-box.points-0 {
+            background-color: transparent;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Próxima Rodada</h1>
-            <a href="home.html" class="action-button">Voltar</a>
+            <a href="home.html" class="action-button"><i class="fas fa-arrow-left"></i> Voltar</a>
         </div>
         <div id="timer-container" class="timer"><i class="fas fa-clock"></i> Carregando...</div>
 
@@ -140,30 +248,32 @@
 
         <div id="loader" class="loader-container"><div class="loader"></div></div>
         <div id="matches-container" class="matches-container" style="display: none;"></div>
-        <div id="action-container" class="action-container" style="margin-top: 30px; text-align: center;">
-            <button id="save-predictions" class="action-button"><i class="fas fa-save"></i> Salvar Palpites</button>
+        <div id="action-container" class="action-container" style="margin-top: 30px; text-align: center; position: sticky; bottom: 20px; z-index: 100;">
+            <button id="save-predictions" class="action-button" disabled><i class="fas fa-save"></i> Salvar Palpites</button>
         </div>
     </div>
 
     <dialog id="player-status-dialog">
         <div class="dialog-header">
-            <h2><i class="fas fa-clipboard-check"></i>Status dos Palpites</h2>
-            <button class="close-btn">×</button>
+            <h2><i class="fas fa-clipboard-check"></i> Status dos Palpites</h2>
+            <button class="close-btn" aria-label="Fechar">×</button>
         </div>
         <div class="dialog-content">
-            <div class="table-container">
+            <div class="table-container" style="overflow-x: auto;">
                 <table class="player-status-table">
                     <thead id="player-status-header"></thead>
                     <tbody id="player-status-body"></tbody>
                 </table>
             </div>
+
+            <!-- CORREÇÃO 1: ADIÇÃO DA LEGENDA DE CORES E ÍCONES -->
             <div class="legend-container">
-                <span class="legend-item"><span class="legend-color-box" style="background-color: var(--success-color);"></span> 3 pts</span>
-                <span class="legend-item"><span class="legend-color-box" style="background-color: var(--warning-color);"></span> 1 pt</span>
-                <span class="legend-item"><span class="legend-color-box" style="background-color: #f8f9fa; border: 1px solid #ddd;"></span> 0 pts</span>
-                <span class="legend-item"><span class="legend-color-box" style="background-color: var(--danger-color);"></span> -1 pt</span>
-                <span class="legend-item"><i class="fas fa-futbol status-icon status-pending"></i> Palpite Feito</span>
-                <span class="legend-item"><i class="fas fa-question-circle status-icon status-missing"></i> Não Palpitou</span>
+                <div class="legend-item"><span class="legend-color-box points-3"></span> 3 pts (Placar Exato)</div>
+                <div class="legend-item"><span class="legend-color-box points-1"></span> 1 pt (Acertou Vencedor/Empate)</div>
+                <div class="legend-item"><span class="legend-color-box points-0"></span> 0 pts (Errou Vencedor)</div>
+                <div class="legend-item"><span class="legend-color-box points--1"></span> -1 pt (Placar Invertido)</div>
+                <div class="legend-item"><i class="fas fa-futbol status-icon status-pending"></i> Palpite Feito</div>
+                <div class="legend-item"><i class="fas fa-question-circle status-icon status-missing"></i> Não Palpitou</div>
             </div>
         </div>
     </dialog>
@@ -171,10 +281,10 @@
     <dialog id="predictions-dialog">
         <div class="dialog-header">
             <h2 id="predictions-dialog-title">Palpites do Jogo</h2>
-            <button class="close-btn">×</button>
+            <button class="close-btn" aria-label="Fechar">×</button>
         </div>
         <div class="dialog-content">
-            <ul class="predictions-list" id="predictions-list-body"></ul>
+            <ul id="predictions-list-body" style="list-style: none; padding: 0;"></ul>
         </div>
     </dialog>
 
@@ -223,26 +333,78 @@
         let roundFinishTimestamp = null;
         let countdownInterval;
 
-        // --- MUDANÇA 1: Criar um "rascunho" para palpites não salvos ---
         let unsavedPredictions = {};
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                initializeApp(user.uid);
-            } else {
-                window.location.href = 'index.html';
+        // --- LÓGICA DE RASCUNHO (DRAFT) COM localStorage ---
+        function getDraftStorageKey(roundKey, userId) {
+            return `predictionsDraft_${userId}_${roundKey}`;
+        }
+        function saveDraftToLocalStorage() {
+            if (currentRoundKey && auth.currentUser) {
+                const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
+                localStorage.setItem(key, JSON.stringify(unsavedPredictions));
             }
+        }
+        function loadDraftFromLocalStorage() {
+            if (currentRoundKey && auth.currentUser) {
+                const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
+                const draft = localStorage.getItem(key);
+                unsavedPredictions = draft ? JSON.parse(draft) : {};
+            }
+        }
+        function clearDraftFromLocalStorage() {
+            if (currentRoundKey && auth.currentUser) {
+                const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
+                localStorage.removeItem(key);
+            }
+        }
+
+        // --- LÓGICA DO BOTÃO DE SALVAR INTELIGENTE ---
+        function updateSaveButtonState() {
+            const hasChanges = Object.keys(unsavedPredictions).length > 0;
+            ui.savePredictionsButton.disabled = !hasChanges;
+            if (hasChanges) {
+                ui.savePredictionsButton.classList.add('has-changes');
+                ui.savePredictionsButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Salvar Alterações';
+            } else {
+                ui.savePredictionsButton.classList.remove('has-changes');
+                ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+            }
+        }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) initializeApp(user.uid);
+            else window.location.href = 'index.html';
         });
 
         async function initializeApp(userId) {
             try {
                 await Promise.all([fetchAllPlayers(), fetchAllTeams()]);
-                await fetchCurrentRound(userId);
-                setupEventListeners(userId); // Passar userId para os event listeners
+                const roundSnapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
+                
+                if (!roundSnapshot.exists()) {
+                    // Lógica para quando não há rodada
+                    return;
+                }
+                
+                roundSnapshot.forEach(child => {
+                    currentRoundKey = child.key;
+                    const roundData = child.val();
+                    allMatches = roundData.matches || [];
+                    roundFinishTimestamp = roundData.finishTimestamp;
+                });
+                
+                loadDraftFromLocalStorage(); // Carrega o rascunho antes de renderizar
+                startCountdown();
+                renderMatchCards(userId);
+                setupEventListeners(userId);
+                updateSaveButtonState();
+
+                ui.loader.style.display = 'none';
+                ui.matchesContainer.style.display = 'grid';
+
             } catch (error) {
                 console.error("Erro na inicialização:", error);
-                ui.loader.style.display = 'none';
-                ui.matchesContainer.innerHTML = '<p>Erro ao carregar dados. Tente novamente.</p>';
             }
         }
 
@@ -344,60 +506,53 @@
             ui.matchesContainer.style.display = 'grid';
         }
 
-        function renderMatchCards(matchesData) {
-            ui.matchesContainer.innerHTML = matchesData.map(({ matchId, match, homeTeam, awayTeam, userPrediction }) => {
-                const matchDate = new Date(match.timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-                const matchTime = new Date(match.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                const hasResult = match.finalResult && match.finalResult.homeScore !== undefined;
+        function renderMatchCards(userId) {
+            ui.matchesContainer.innerHTML = allMatches.map((match, matchId) => {
+                const homeTeam = allTeams[match.homeTeam] || {};
+                const awayTeam = allTeams[match.awayTeam] || {};
+                const userPrediction = match.predictions?.[userId] || {};
                 const isDisabled = isBettingDisabled(match);
 
-                // --- MUDANÇA 4: Usar o "rascunho" para preencher os campos ---
-                // Prioridade: 1. Rascunho não salvo -> 2. Palpite salvo no DB -> 3. Vazio
                 const unsaved = unsavedPredictions[matchId];
-                const homeScoreValue = unsaved?.homeScore ?? (userPrediction.homeScore === 0 ? '0' : userPrediction.homeScore || '');
-                const awayScoreValue = unsaved?.awayScore ?? (userPrediction.awayScore === 0 ? '0' : userPrediction.awayScore || '');
+                const homeScoreValue = unsaved?.homeScore ?? userPrediction.homeScore ?? '';
+                const awayScoreValue = unsaved?.awayScore ?? userPrediction.awayScore ?? '';
                 
-                const homeFinalScore = hasResult ? (match.finalResult.homeScore ?? 0) : '';
-                const awayFinalScore = hasResult ? (match.finalResult.awayScore ?? 0) : '';
-
                 return `
-                    <div class="match-card" data-match-id="${matchId}">
-                        <div class="match-header">${matchDate} - ${matchTime}</div>
-                        <div class="match-content">
-                            <div class="match-teams">
-                                <div class="team"><img src="${homeTeam.image}" alt="${homeTeam.name}"><p class="team-name">${homeTeam.name}</p></div>
-                                <span class="versus">vs</span>
-                                <div class="team"><img src="${awayTeam.image}" alt="${awayTeam.name}"><p class="team-name">${awayTeam.name}</p></div>
-                            </div>
-                            ${hasResult ? `
-                                <div class="match-result">
-                                    <div class="score-display">
-                                        <span>${homeFinalScore}</span>
-                                        <span class="score-divider">:</span>
-                                        <span>${awayFinalScore}</span>
-                                    </div>
-                                </div>
-                            ` : `
-                                <div class="prediction-inputs">
-                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="home" value="${homeScoreValue}" ${isDisabled ? 'disabled' : ''}>
-                                    <span>×</span>
-                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="away" value="${awayScoreValue}" ${isDisabled ? 'disabled' : ''}>
-                                </div>
-                            `}
-                        </div>
-                        <div class="match-footer">
-                            ${isDisabled ? `<button class="action-button view-predictions-btn" data-match-id="${matchId}"><i class="fas fa-eye"></i> Ver Palpites</button>` : ''}
-                        </div>
+                <div class="match-card ${isDisabled ? 'is-locked' : ''}" data-match-id="${matchId}" style="--animation-delay: ${matchId * 100}ms">
+                    <div class="match-header">
+                        <span>${new Date(match.timestamp).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})}</span>
+                        ${isDisabled ? '<i class="fas fa-lock lock-icon"></i>' : ''}
                     </div>
+                    <div class="match-content">
+                        <div class="match-teams">
+                            <div class="team"><img src="${homeTeam.image}" alt="${homeTeam.name}"><p class="team-name">${homeTeam.name}</p></div>
+                            <span class="versus">vs</span>
+                            <div class="team"><img src="${awayTeam.image}" alt="${awayTeam.name}"><p class="team-name">${awayTeam.name}</p></div>
+                        </div>
+                        ${match.finalResult ? `
+                            <div class="match-result">${match.finalResult.homeScore} : ${match.finalResult.awayScore}</div>
+                        ` : `
+                            <div class="prediction-inputs">
+                                <div class="score-input-wrapper">
+                                    <button class="score-stepper-btn score-decrement" data-match-id="${matchId}" data-team="home" ${isDisabled ? 'disabled' : ''}>-</button>
+                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="home" value="${homeScoreValue}" ${isDisabled ? 'disabled' : ''}>
+                                    <button class="score-stepper-btn score-increment" data-match-id="${matchId}" data-team="home" ${isDisabled ? 'disabled' : ''}>+</button>
+                                </div>
+                                <span>×</span>
+                                <div class="score-input-wrapper">
+                                    <button class="score-stepper-btn score-decrement" data-match-id="${matchId}" data-team="away" ${isDisabled ? 'disabled' : ''}>-</button>
+                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="away" value="${awayScoreValue}" ${isDisabled ? 'disabled' : ''}>
+                                    <button class="score-stepper-btn score-increment" data-match-id="${matchId}" data-team="away" ${isDisabled ? 'disabled' : ''}>+</button>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                    <div class="match-footer">
+                        ${isDisabled ? `<button class="action-button view-predictions-btn" data-match-id="${matchId}"><i class="fas fa-eye"></i> Ver Palpites</button>` : ''}
+                    </div>
+                </div>
                 `;
             }).join('');
-
-            document.querySelectorAll('.view-predictions-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const matchId = e.currentTarget.dataset.matchId;
-                    showPredictionsForMatch(matchId);
-                });
-            });
         }
 
         function setupSavePredictionsButton(roundKey, userId) {
@@ -492,63 +647,114 @@
         }
 
         function setupEventListeners(userId) {
-            const statusDialogCloseBtn = ui.playerStatusDialog.querySelector('.close-btn');
-            const predictionsDialogCloseBtn = ui.predictionsDialog.querySelector('.close-btn');
-            
-            ui.matchesTab.addEventListener('click', () => {
-                ui.matchesTab.classList.add('active');
-                ui.playerStatusTab.classList.remove('active');
-                ui.matchesContainer.style.display = 'grid';
-                if (ui.actionContainer) ui.actionContainer.style.display = 'block';
+            // --- EVENT LISTENER PARA INPUTS, BOTÕES +/- E "VER PALPITES" ---
+            ui.matchesContainer.addEventListener('click', e => {
+                const target = e.target;
+                const stepperBtn = target.closest('.score-stepper-btn');
+                const predictionsBtn = target.closest('.view-predictions-btn');
+
+                // Lógica para os botões de incrementar/decrementar placar
+                if (stepperBtn) {
+                    const matchId = stepperBtn.dataset.matchId;
+                    const team = stepperBtn.dataset.team;
+                    const input = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="${team}"]`);
+                    let currentValue = parseInt(input.value) || 0;
+                    
+                    if (stepperBtn.classList.contains('score-increment')) {
+                        currentValue++;
+                    } else if (stepperBtn.classList.contains('score-decrement') && currentValue > 0) {
+                        currentValue--;
+                    }
+                    input.value = currentValue;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+
+                // CORREÇÃO 2.1: LÓGICA PARA O BOTÃO "VER PALPITES"
+                if (predictionsBtn) {
+                    const matchId = predictionsBtn.dataset.matchId;
+                    showPredictionsForMatch(matchId);
+                }
+            });
+
+            // Lógica para salvar os inputs no rascunho
+            ui.matchesContainer.addEventListener('input', e => {
+                if (e.target.tagName === 'INPUT') {
+                    const matchId = e.target.dataset.matchId;
+                    const homeInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="home"]`);
+                    const awayInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="away"]`);
+                    const homeScore = homeInput.value;
+                    const awayScore = awayInput.value;
+
+                    if (homeScore.trim() !== '' || awayScore.trim() !== '') {
+                        unsavedPredictions[matchId] = { homeScore, awayScore };
+                    } else {
+                        delete unsavedPredictions[matchId];
+                    }
+                    saveDraftToLocalStorage();
+                    updateSaveButtonState();
+                }
+            });
+
+            // --- EVENT LISTENER DO BOTÃO SALVAR ---
+            ui.savePredictionsButton.addEventListener('click', async () => {
+                ui.savePredictionsButton.disabled = true;
+                ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                
+                try {
+                    const updates = {};
+                    for (const matchId in unsavedPredictions) {
+                        const pred = unsavedPredictions[matchId];
+                        if (pred.homeScore.trim() !== '' && pred.awayScore.trim() !== '') {
+                            updates[`/rounds/${currentRoundKey}/matches/${matchId}/predictions/${userId}`] = {
+                                homeScore: parseInt(pred.homeScore),
+                                awayScore: parseInt(pred.awayScore)
+                            };
+                        }
+                    }
+
+                    if (Object.keys(updates).length > 0) {
+                        await database.ref().update(updates);
+                        unsavedPredictions = {};
+                        clearDraftFromLocalStorage();
+                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvo com Sucesso!';
+                        ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
+                    } else {
+                         ui.savePredictionsButton.innerHTML = '<i class="fas fa-info-circle"></i> Nada para salvar';
+                    }
+
+                } catch (error) {
+                    ui.savePredictionsButton.innerHTML = '<i class="fas fa-times"></i> Erro ao Salvar';
+                    ui.savePredictionsButton.style.backgroundColor = 'var(--danger-color)';
+                } finally {
+                    setTimeout(() => {
+                        updateSaveButtonState();
+                        ui.savePredictionsButton.style.backgroundColor = '';
+                    }, 2500);
+                }
             });
             
+            ui.matchesTab.addEventListener('click', () => {
+                ui.playerStatusTab.classList.remove('active');
+                ui.matchesTab.classList.add('active');
+            });
+
             ui.playerStatusTab.addEventListener('click', () => {
                 ui.matchesTab.classList.remove('active');
                 ui.playerStatusTab.classList.add('active');
-                ui.matchesContainer.style.display = 'none';
-                if (ui.actionContainer) ui.actionContainer.style.display = 'none';
                 populatePlayerStatusTable();
                 ui.playerStatusDialog.showModal();
             });
-            
-            statusDialogCloseBtn.addEventListener('click', () => ui.playerStatusDialog.close());
-            ui.playerStatusDialog.addEventListener('click', (e) => {
-                if (e.target === ui.playerStatusDialog) ui.playerStatusDialog.close();
-            });
 
-            predictionsDialogCloseBtn.addEventListener('click', () => ui.predictionsDialog.close());
-            ui.predictionsDialog.addEventListener('click', (e) => {
-                if (e.target === ui.predictionsDialog) ui.predictionsDialog.close();
-            });
-
-            // --- MUDANÇA 6: Capturar digitação e salvar no rascunho ---
-            ui.matchesContainer.addEventListener('input', (e) => {
-                if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
-                    const matchId = e.target.dataset.matchId;
-                    const team = e.target.dataset.team;
-                    const value = e.target.value;
-
-                    // Inicializa o rascunho para este jogo se não existir
-                    if (!unsavedPredictions[matchId]) {
-                        const homeInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="home"]`);
-                        const awayInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="away"]`);
-                        unsavedPredictions[matchId] = {
-                            homeScore: homeInput.value,
-                            awayScore: awayInput.value
-                        };
-                    }
-
-                    // Atualiza o valor específico (home ou away)
-                    if (team === 'home') {
-                        unsavedPredictions[matchId].homeScore = value;
-                    } else if (team === 'away') {
-                        unsavedPredictions[matchId].awayScore = value;
-                    }
-                }
+            // Listeners para fechar os dialogs
+            [ui.playerStatusDialog, ui.predictionsDialog].forEach(dialog => {
+                const closeBtn = dialog.querySelector('.close-btn');
+                closeBtn.addEventListener('click', () => dialog.close());
+                dialog.addEventListener('click', (e) => {
+                    if (e.target === dialog) dialog.close();
+                });
             });
         }
 
-        // ... (função showPredictionsForMatch permanece a mesma)
         async function showPredictionsForMatch(matchId) {
             const matchData = allMatches[matchId];
             if (!matchData) return;
@@ -571,13 +777,18 @@
                 return a.name.localeCompare(b.name);
             });
 
+            // CORREÇÃO 3: Adicionar as classes de pontuação ao item da lista e ao badge
             ui.predictionsListBody.innerHTML = predictionsArray.map(p => {
-                const pointsClass = p.points !== null ? `points-${String(p.points).replace('-', '_')}` : 'points-none';
+                const pointsClass = p.points !== null ? `points-${String(p.points).replace('-', '-1')}` : 'points-none';
+                
+                // O nome da classe para -1 ponto deve ser "points--1"
+                const finalPointsClass = pointsClass.replace('points--11', 'points--1');
+                
                 return `
-                    <li class="prediction-item">
+                    <li class="prediction-item ${finalPointsClass}">
                         <span class="prediction-player">${p.name}</span>
                         <span class="prediction-score">${p.homeScore} × ${p.awayScore}</span>
-                        <div class="prediction-points ${pointsClass}">
+                        <div class="prediction-points ${finalPointsClass}">
                             ${p.points !== null ? p.points : '-'}
                         </div>
                     </li>
@@ -586,6 +797,7 @@
             
             ui.predictionsDialog.showModal();
         }
+
     </script>
 </body>
 </html>

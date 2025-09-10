@@ -1834,7 +1834,7 @@
 
         function getCurrentSuperligaStage(tournaments) {
             if (tournaments.includes('Clausura')) return 'Clausura';
-            return 'Abertura'; // Padrão <--- ESSA VAR ESTÁ DEFINIDA MANUALMENTE !!!!!! TODO
+            return 'Clausura'; // Padrão <--- ESSA VAR ESTÁ DEFINIDA MANUALMENTE !!!!!! TODO
         }
 
         // Executar processamento de pontuação quando status muda para 2
@@ -2240,7 +2240,7 @@
         // Função para determinar o estágio atual da Superliga
         function getCurrentSuperligaStage(tournaments) {
             if (tournaments.includes('Clausura')) return 'Clausura';
-            return 'Abertura'; // Padrão
+            return 'Clausura'; // Padrão
         }
 
         // Função para carregar a classificação de cada grupo
@@ -2404,7 +2404,7 @@
 
         function getCurrentLigaStage() {
             // Implemente conforme sua lógica para determinar Abertura/Clausura
-            return 'Abertura'; // Exemplo
+            return 'Clausura'; // Exemplo
         }
 
         async function processRoundScores(roundId) {
