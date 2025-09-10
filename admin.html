@@ -789,7 +789,55 @@
             box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
         }
 
+        .team-selection-group {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
 
+        .team-selection-group label {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .team-selection-group input[list] {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            background-color: #fff;
+        }
+
+        .score-stepper-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .score-stepper-group input {
+            text-align: center;
+            -moz-appearance: textfield; /* Remove setas no Firefox */
+        }
+        .score-stepper-group input::-webkit-outer-spin-button,
+        .score-stepper-group input::-webkit-inner-spin-button {
+        -webkit-appearance: none; /* Remove setas no Chrome, Safari, etc. */
+        margin: 0;
+        }
+
+        .score-stepper-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            transition: background-color 0.2s;
+        }
+        .score-stepper-btn:hover {
+            background-color: #e9e9e9;
+        }
 
     </style>
 </head>
@@ -1460,10 +1508,13 @@
                 const matchesContainer = document.getElementById('edit-matches-container');
                 matchesContainer.innerHTML = '';
 
-                // Adicionar matches existentes
+                // Prepara a lista de times para busca ANTES de adicionar as partidas
+                populateDatalist();
+
                 if (roundData.matches) {
                     roundData.matches.forEach((match, index) => {
-                        addMatchToEditModal(match, index);
+                        // Chama a nova função de renderização
+                        addMatchToEditModal(match);
                     });
                 }
 
@@ -1471,62 +1522,83 @@
             });
         }
 
-        function addMatchToEditModal(match = {}, index = null) {
+        function addMatchToEditModal(match = {}) {
             const matchesContainer = document.getElementById('edit-matches-container');
             const matchDiv = document.createElement('div');
-            matchDiv.classList.add('match-edit-row');
-            
-            // Filtro de times
-            const teamFilter = document.createElement('input');
-            teamFilter.type = 'text';
-            teamFilter.placeholder = 'Filtrar times...';
-            teamFilter.classList.add('form-control');
-            teamFilter.addEventListener('input', filterTeams);
+            matchDiv.className = 'match-edit-row';
+            // O 'data-team-id' guardará o ID do time selecionado
+            matchDiv.innerHTML = `
+                <div class="team-selection-group">
+                    <label>Time da Casa</label>
+                    <input list="teams-datalist" class="home-team" placeholder="Comece a digitar o nome..." data-team-id="${match.homeTeam || ''}">
+                </div>
+                <div class="score-stepper-group">
+                    <button type="button" class="score-stepper-btn" data-action="decrement">-</button>
+                    <input type="number" placeholder="Casa" class="home-score" value="${match.finalResult?.homeScore ?? ''}">
+                    <button type="button" class="score-stepper-btn" data-action="increment">+</button>
+                </div>
+                <div class="team-selection-group">
+                    <label>Time Visitante</label>
+                    <input list="teams-datalist" class="away-team" placeholder="Comece a digitar o nome..." data-team-id="${match.awayTeam || ''}">
+                </div>
+                <div class="score-stepper-group">
+                    <button type="button" class="score-stepper-btn" data-action="decrement">-</button>
+                    <input type="number" placeholder="Fora" class="away-score" value="${match.finalResult?.awayScore ?? ''}">
+                    <button type="button" class="score-stepper-btn" data-action="increment">+</button>
+                </div>
+                <div class="datetime-group">
+                    <label>Data/Hora</label>
+                    <input type="datetime-local" class="match-timestamp" value="${match.timestamp || ''}">
+                </div>
+                <button type="button" class="remove-match-btn"><i class="fas fa-times"></i></button>
+            `;
+            matchesContainer.appendChild(matchDiv);
 
-            // Home Team Select
-            const homeTeamSelect = createTeamSelect('home', match.homeTeam);
-            
-            // Away Team Select
-            const awayTeamSelect = createTeamSelect('away', match.awayTeam);
+            // Lógica para preencher o input com o nome do time já existente
+            if (match.homeTeam) {
+                database.ref(`teams/${match.homeTeam}/name`).once('value', s => {
+                    matchDiv.querySelector('.home-team').value = `${s.val()} (${match.homeTeam})`;
+                });
+            }
+            if (match.awayTeam) {
+                database.ref(`teams/${match.awayTeam}/name`).once('value', s => {
+                    matchDiv.querySelector('.away-team').value = `${s.val()} (${match.awayTeam})`;
+                });
+            }
 
-            // Scores
-            const homeScoreInput = document.createElement('input');
-            homeScoreInput.type = 'number';
-            homeScoreInput.placeholder = 'Casa';
-            homeScoreInput.value = match.finalResult?.homeScore || '';
-            homeScoreInput.classList.add('form-control');
-
-            const awayScoreInput = document.createElement('input');
-            awayScoreInput.type = 'number';
-            awayScoreInput.placeholder = 'Fora';
-            awayScoreInput.value = match.finalResult?.awayScore || '';
-            awayScoreInput.classList.add('form-control');
-
-            // Timestamp
-            const timestampInput = document.createElement('input');
-            timestampInput.type = 'datetime-local';
-            timestampInput.value = match.timestamp || '';
-            timestampInput.classList.add('form-control');
-
-            // Botão remover
-            const removeButton = document.createElement('button');
-            removeButton.innerHTML = '<i class="fas fa-times"></i>';
-            removeButton.classList.add('remove-match-btn');
-            removeButton.addEventListener('click', () => {
-                matchesContainer.removeChild(matchDiv);
+            // Lógica para os botões +/- do placar
+            matchDiv.querySelectorAll('.score-stepper-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = btn.parentElement.querySelector('input[type="number"]');
+                    let currentValue = parseInt(input.value) || 0;
+                    if (btn.dataset.action === 'increment') {
+                        currentValue++;
+                    } else if (currentValue > 0) {
+                        currentValue--;
+                    }
+                    input.value = currentValue;
+                });
             });
 
-            matchDiv.append(
-                teamFilter,
-                homeTeamSelect, 
-                homeScoreInput, 
-                awayTeamSelect, 
-                awayScoreInput,
-                timestampInput,
-                removeButton
-            );
-
-            matchesContainer.appendChild(matchDiv);
+            // Lógica para validar a seleção do time e guardar o ID
+            matchDiv.querySelectorAll('input[list]').forEach(input => {
+                input.addEventListener('change', () => {
+                    const value = input.value;
+                    const match = value.match(/\(([^)]+)\)$/); // Pega o ID dentro dos parênteses
+                    if (match) {
+                        input.dataset.teamId = match[1]; // Guarda o ID no atributo data
+                    } else {
+                        input.dataset.teamId = ''; // Limpa se a seleção for inválida
+                        input.value = '';
+                        alert('Seleção de time inválida. Por favor, escolha um time da lista.');
+                    }
+                });
+            });
+            
+            // Lógica do botão de remover
+            matchDiv.querySelector('.remove-match-btn').addEventListener('click', () => {
+                matchesContainer.removeChild(matchDiv);
+            });
         }
 
         function createTeamSelect(prefix, selectedTeam = null) {
@@ -1591,35 +1663,29 @@
                     // Atualiza os matches com os novos dados
                     const matchRows = document.querySelectorAll('#edit-matches-container .match-edit-row');
                     matchRows.forEach((row, index) => {
-                        const homeTeam = row.querySelector('.home-team').value;
-                        const awayTeam = row.querySelector('.away-team').value;
-                        const homeScore = row.querySelector('input[placeholder="Casa"]').value;
-                        const awayScore = row.querySelector('input[placeholder="Fora"]').value;
-                        const timestamp = row.querySelector('input[type="datetime-local"]').value;
+                        // CORREÇÃO: Lê o ID do time do atributo 'data-team-id'
+                        const homeTeamId = row.querySelector('.home-team').dataset.teamId;
+                        const awayTeamId = row.querySelector('.away-team').dataset.teamId;
+                        const homeScore = row.querySelector('.home-score').value;
+                        const awayScore = row.querySelector('.away-score').value;
+                        const timestamp = row.querySelector('.match-timestamp').value;
 
-                        if (homeTeam && awayTeam) {
-                            // Se o índice existir em matches, atualiza; senão, adiciona novo
+                        if (homeTeamId && awayTeamId) {
+                            const matchData = {
+                                ...(updatedRoundData.matches[index] || {}), // Preserva dados existentes como 'predictions'
+                                homeTeam: homeTeamId,
+                                awayTeam: awayTeamId,
+                                timestamp: timestamp,
+                                finalResult: {
+                                    homeScore: homeScore !== '' ? parseInt(homeScore) : null,
+                                    awayScore: awayScore !== '' ? parseInt(awayScore) : null,
+                                }
+                            };
+
                             if (updatedRoundData.matches[index]) {
-                                updatedRoundData.matches[index] = {
-                                    ...updatedRoundData.matches[index], // Preserva outros dados existentes do match
-                                    homeTeam,
-                                    awayTeam,
-                                    timestamp, // Adiciona o timestamp da partida
-                                    finalResult: {
-                                        homeScore: homeScore ? parseInt(homeScore) : null,
-                                        awayScore: awayScore ? parseInt(awayScore) : null
-                                    }
-                                };
+                                updatedRoundData.matches[index] = matchData;
                             } else {
-                                updatedRoundData.matches.push({
-                                    homeTeam,
-                                    awayTeam,
-                                    timestamp, // Adiciona o timestamp da partida
-                                    finalResult: {
-                                        homeScore: homeScore ? parseInt(homeScore) : null,
-                                        awayScore: awayScore ? parseInt(awayScore) : null
-                                    }
-                                });
+                                updatedRoundData.matches.push(matchData);
                             }
                         }
                     });
@@ -2515,6 +2581,22 @@
                 console.error(`[processRoundScores] ERRO GERAL ao processar pontuações para a rodada ${roundId}:`, error);
                 alert(`Ocorreu um erro grave ao processar os pontos da rodada. Verifique o console do navegador para detalhes.`);
             }
+        }
+
+        function populateDatalist() {
+            const teamsRef = database.ref('teams');
+            teamsRef.once('value', (snapshot) => {
+                const datalist = document.createElement('datalist');
+                datalist.id = 'teams-datalist';
+                snapshot.forEach((childSnapshot) => {
+                    const teamData = childSnapshot.val();
+                    const option = document.createElement('option');
+                    // Formato: "Nome do Time (ID_DO_TIME)"
+                    option.value = `${teamData.name} (${childSnapshot.key})`;
+                    datalist.appendChild(option);
+                });
+                document.body.appendChild(datalist); // Adiciona a lista ao corpo do documento
+            });
         }
     </script>
 </body>
