@@ -9,154 +9,575 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #007bff;
-            --primary-glow: rgba(0, 123, 255, 0.5);
-            --background-color: #101418;
-            --card-bg-color: #1a2027;
-            --card-bg-light: #242c36;
-            --text-color: #e4e6eb;
-            --text-color-light: #b0b3b8;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            /* Tema Dark Moderno */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
             --border-radius: 12px;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --neutral-color: #6c757d;
         }
 
-        /* ESTILOS GERAIS E FUNDO */
+        /* RESET E ESTILOS GERAIS */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
-
-        /* HEADER E BOTÕES */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; animation: fadeInDown 0.5s ease-out; }
-        .header h1 { font-size: 32px; font-weight: 700; }
-        .action-button {
-            background-image: linear-gradient(to right, var(--primary-color), #0056b3);
-            color: white; border: none; padding: 12px 24px;
-            border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; font-size: 15px;
-            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-        }
-        .action-button:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3); }
-        .action-button:disabled {
-            background: var(--neutral-color);
-            cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6;
-        }
-        #save-predictions.has-changes {
-            background-image: linear-gradient(to right, var(--warning-color), #d39e00);
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
         }
 
-        /* TIMER E TABS */
-        .timer {
-            text-align: center; font-size: 1.1em; color: var(--text-color-light);
-            margin-bottom: 25px; padding: 16px; background-color: var(--card-bg-color);
-            border-radius: var(--border-radius); border: 1px solid var(--border-color);
-            animation: fadeIn 0.6s ease-out;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
         }
-        .main-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); animation: fadeIn 0.7s ease-out; }
-        .tab-button {
-            padding: 12px 20px; background-color: transparent; border: none; border-bottom: 3px solid transparent;
-            cursor: pointer; font-weight: 600; font-size: 16px; color: var(--text-color-light); transition: all 0.3s;
-        }
-        .tab-button:hover { color: var(--primary-color); }
-        .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
-        /* CONTAINER DE JOGOS E CARDS */
-        .matches-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
-        .match-card {
-            background-color: var(--card-bg-color); border-radius: var(--border-radius); overflow: hidden;
+        /* HEADER SIMPLIFICADO */
+        .app-header {
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--accent-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* TIMER ESTILIZADO */
+        .timer-container {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
             border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: fadeInUp 0.5s ease-out backwards;
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            animation: slideUp 0.5s ease-out;
         }
-        .match-card:hover { transform: translateY(-5px); box-shadow: 0 0 20px var(--primary-glow); border-color: var(--primary-color); }
-        .match-card.is-locked { opacity: 0.6; border-color: var(--neutral-color); }
-        .match-card.is-locked:hover { transform: none; box-shadow: none; }
-        .match-header { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 0.9em; color: var(--text-color-light); background-color: var(--card-bg-light); position: relative; }
-        .lock-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
-        .match-content { padding: 20px; }
-        .match-teams { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .team { display: flex; flex-direction: column; align-items: center; width: 40%; text-align: center; }
-        .team img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
-        .team-name { font-weight: 600; font-size: 1.1em; }
-        .versus { font-size: 18px; color: var(--text-color-light); }
-        
-        /* NOVO INPUT DE PLACAR COM BOTÕES +/- */
-        .prediction-inputs { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .score-input-wrapper { display: flex; align-items: center; gap: 8px; background-color: var(--background-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; }
-        .score-stepper-btn { background: var(--card-bg-light); color: var(--text-color); border: none; width: 30px; height: 30px; border-radius: 6px; font-size: 1.2em; cursor: pointer; transition: background-color 0.2s; }
-        .score-stepper-btn:hover { background-color: var(--primary-color); }
-        .score-stepper-btn:disabled { background-color: var(--neutral-color); opacity: 0.5; cursor: not-allowed; }
-        .prediction-inputs input { width: 50px; height: 40px; font-size: 22px; text-align: center; border: none; background-color: transparent; color: var(--text-color); -moz-appearance: textfield; }
-        .prediction-inputs input::-webkit-outer-spin-button, .prediction-inputs input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .prediction-inputs input:focus { outline: none; }
-        .prediction-inputs input:disabled { color: var(--text-color-light); }
-        
-        .match-result { display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 700; }
-        .match-footer { padding: 15px; text-align: center; border-top: 1px solid var(--border-color); min-height: 60px; }
-        
+
+        .timer-icon {
+            color: var(--accent-warning);
+            font-size: 1.2rem;
+        }
+
+        /* TABS MODERNAS */
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 0.25rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            text-align: center;
+            flex: 1;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab.active {
+            background-color: var(--accent-primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* CONTAINER DE JOGOS - GRID MODERNO */
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* CARDS DE JOGO MODERNOS */
+        .match-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            animation: slideUp 0.5s ease-out backwards;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-primary);
+        }
+
+        .match-card.locked {
+            opacity: 0.7;
+            border-color: var(--text-tertiary);
+        }
+
+        .match-card.locked:hover {
+            transform: none;
+            box-shadow: var(--shadow-md);
+        }
+
+        .match-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(90deg, var(--bg-secondary), rgba(30, 41, 59, 0.8));
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .match-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lock-icon {
+            color: var(--text-tertiary);
+        }
+
+        /* CONTEÚDO DO JOGO */
+        .match-content {
+            padding: 1.5rem;
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+            text-align: center;
+        }
+
+        .team-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 0.75rem;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .versus {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 0 1rem;
+        }
+
+        /* RESULTADO FINAL */
+        .match-result {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--accent-primary);
+            margin: 1rem 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* INPUTS DE PALPITE MODERNOS */
+        .prediction-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .score-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.5rem;
+            transition: all var(--transition-fast);
+        }
+
+        .score-input-wrapper:focus-within {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .score-stepper-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 8px;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-stepper-btn:hover:not(:disabled) {
+            background: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        .score-stepper-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .prediction-inputs input {
+            width: 4rem;
+            height: 3.5rem;
+            font-size: 2rem;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-weight: 600;
+            -moz-appearance: textfield;
+        }
+
+        .prediction-inputs input::-webkit-outer-spin-button,
+        .prediction-inputs input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .prediction-inputs input:focus {
+            outline: none;
+        }
+
+        .prediction-inputs input:disabled {
+            color: var(--text-tertiary);
+        }
+
+        .score-divider {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* FOOTER DO CARD */
+        .match-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.1));
+        }
+
+        .view-predictions-btn {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-predictions-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        /* BOTÃO DE SALVAR */
+        .save-container {
+            position: sticky;
+            bottom: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            min-width: 200px;
+        }
+
+        .save-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+        }
+
+        .save-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .save-button.has-changes {
+            background: linear-gradient(135deg, var(--accent-warning), #d97706);
+            animation: pulse 2s infinite;
+        }
+
         /* LOADER */
-        .loader-container { display: flex; justify-content: center; align-items: center; min-height: 300px; }
-        .loader { border: 5px solid var(--card-bg-light); border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
 
-        /* DIALOGS (MODAIS) */
-        dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid var(--border-color); border-radius: var(--border-radius); box-shadow: var(--shadow); width: 90%; padding: 0; margin: 0; background-color: var(--card-bg-color); color: var(--text-color); }
-        dialog::backdrop { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
-        .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); background-color: var(--card-bg-light); }
-        .dialog-content { padding: 24px; max-height: 70vh; overflow-y: auto; }
-        
-        /* TABELA NO DIALOG */
-        #player-status-dialog { max-width: 900px; }
-        .player-status-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .player-status-table th { background-color: var(--card-bg-light); position: sticky; top: -25px; /* Compensa padding do dialog */ z-index: 10; padding: 16px 12px; }
-        .player-status-table td { padding: 12px; }
-        .player-status-table tbody tr { transition: background-color 0.2s; }
-        .player-status-table tbody tr:nth-child(even) { background-color: rgba(0,0,0,0.1); }
-        .player-status-table tbody tr:hover { background-color: var(--card-bg-light); }
-        .points-3 { background-color: rgba(40, 167, 69, 0.3); }
-        .points-1 { background-color: rgba(255, 193, 7, 0.3); }
-        .points--1 { background-color: rgba(220, 53, 69, 0.3); }
+        .loader {
+            border: 4px solid var(--bg-secondary);
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
 
+        /* DIALOGS MODERNOS */
+        dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            width: 90%;
+            max-width: 900px;
+            padding: 0;
+            margin: 0;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            animation: fadeIn 0.3s ease-out, slideUp 0.3s ease-out;
+        }
+
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(90deg, var(--bg-secondary), transparent);
+        }
+
+        .dialog-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .close-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .dialog-content {
+            padding: 2rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* TABELA DE STATUS */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .status-table th {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: -2rem;
+            z-index: 10;
+        }
+
+        .status-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-table tbody tr {
+            transition: background-color var(--transition-fast);
+        }
+
+        .status-table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* CORES DE PONTUAÇÃO */
+        .points-3 { background-color: rgba(16, 185, 129, 0.15); }
+        .points-1 { background-color: rgba(245, 158, 11, 0.15); }
+        .points-0 { background-color: rgba(100, 116, 139, 0.15); }
+        .points--1 { background-color: rgba(239, 68, 68, 0.15); }
+
+        /* LISTA DE PALPITES */
         .predictions-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 0.75rem;
         }
 
         .prediction-item {
             display: flex;
             align-items: center;
-            padding: 12px;
-            border-radius: 8px;
-            background-color: var(--card-bg-light);
-            border-left: 4px solid transparent; /* Borda que será colorida */
-            transition: background-color 0.2s;
+            padding: 1rem;
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--border-color);
+            transition: all var(--transition-fast);
         }
 
         .prediction-player {
             flex-grow: 1;
             font-weight: 500;
+            color: var(--text-primary);
         }
 
         .prediction-score {
             font-weight: 600;
-            font-size: 1.1em;
-            margin-right: 16px;
+            font-size: 1.1rem;
+            margin: 0 1.5rem;
+            color: var(--text-primary);
         }
 
         .prediction-points {
@@ -164,7 +585,7 @@
             height: 36px;
             border-radius: 50%;
             color: white;
-            font-size: 1em;
+            font-size: 0.9rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
@@ -172,53 +593,34 @@
             flex-shrink: 0;
         }
 
-        /* Cores baseadas na pontuação para a lista de palpites */
-        .prediction-item.points-3 { border-left-color: var(--success-color); background-color: rgba(40, 167, 69, 0.1); }
-        .prediction-item.points-1 { border-left-color: var(--warning-color); background-color: rgba(255, 193, 7, 0.1); }
-        .prediction-item.points-0 { border-left-color: var(--text-color-light); }
-        .prediction-item.points--1 { border-left-color: var(--danger-color); background-color: rgba(220, 53, 69, 0.1); }
+        /* Cores para lista de palpites */
+        .prediction-item.points-3 { border-left-color: var(--accent-success); background: rgba(16, 185, 129, 0.1); }
+        .prediction-item.points-1 { border-left-color: var(--accent-warning); background: rgba(245, 158, 11, 0.1); }
+        .prediction-item.points-0 { border-left-color: var(--text-tertiary); }
+        .prediction-item.points--1 { border-left-color: var(--accent-danger); background: rgba(239, 68, 68, 0.1); }
 
-        .prediction-points.points-3 { background-color: var(--success-color); }
-        .prediction-points.points-1 { background-color: var(--warning-color); color: #111; }
-        .prediction-points.points-0 { background-color: var(--text-color-light); }
-        .prediction-points.points--1 { background-color: var(--danger-color); }
-        .prediction-points.points-none { background-color: var(--card-bg-light); }
+        .prediction-points.points-3 { background: var(--accent-success); }
+        .prediction-points.points-1 { background: var(--accent-warning); color: #1f2937; }
+        .prediction-points.points-0 { background: var(--text-tertiary); }
+        .prediction-points.points--1 { background: var(--accent-danger); }
 
-
-        /* --- Estilos para o Dialog de "Status dos Jogadores" --- */
-
-        .status-icon {
-            font-size: 1.2em;
-        }
-        .status-pending {
-            color: var(--text-color-light);
-        }
-        .status-missing {
-            color: var(--warning-color);
-        }
-        .table-container td { /* Centraliza o conteúdo da tabela */
-            text-align: center;
-        }
-        .table-container .status-table-player { /* Alinha nome do jogador à esquerda */
-            text-align: left !important;
-        }
-
-        /* Legenda */
+        /* LEGENDA */
         .legend-container {
-            margin-top: 24px;
-            padding-top: 16px;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--border-color);
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 1.5rem;
             justify-content: center;
-            font-size: 0.9em;
+            font-size: 0.85rem;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
+            color: var(--text-secondary);
         }
 
         .legend-color-box {
@@ -227,46 +629,108 @@
             border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        /* Cores para as caixas da legenda */
-        .legend-color-box.points-0 {
-            background-color: transparent;
+
+        .legend-color-box.points-3 { background: var(--accent-success); }
+        .legend-color-box.points-1 { background: var(--accent-warning); }
+        .legend-color-box.points-0 { background: var(--text-tertiary); }
+        .legend-color-box.points--1 { background: var(--accent-danger); }
+
+        .status-icon {
+            font-size: 1.2rem;
+        }
+
+        .status-pending { color: var(--accent-success); }
+        .status-missing { color: var(--accent-warning); }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Próxima Rodada</h1>
-            <a href="home.html" class="action-button"><i class="fas fa-arrow-left"></i> Voltar</a>
-        </div>
-        <div id="timer-container" class="timer"><i class="fas fa-clock"></i> Carregando...</div>
+        <!-- Header Simplificado -->
+        <header class="app-header">
+            <a href="home.html" class="logo">
+                <i class="fas fa-arrow-left"></i>
+                BR<span>Depressão</span>
+            </a>
+            
+            <div class="header-actions">
+                <a href="home.html" class="btn-icon">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+        </header>
 
-        <div class="main-tabs">
-            <button id="matches-tab" class="tab-button active"><i class="fas fa-futbol"></i> Jogos</button>
-            <button id="player-status-tab" class="tab-button"><i class="fas fa-users"></i> Status dos Jogadores</button>
+        <!-- Timer -->
+        <div id="timer-container" class="timer-container">
+            <i class="fas fa-clock timer-icon"></i>
+            <span id="timer-text">Carregando...</span>
         </div>
 
-        <div id="loader" class="loader-container"><div class="loader"></div></div>
-        <div id="matches-container" class="matches-container" style="display: none;"></div>
-        <div id="action-container" class="action-container" style="margin-top: 30px; text-align: center; position: sticky; bottom: 20px; z-index: 100;">
-            <button id="save-predictions" class="action-button" disabled><i class="fas fa-save"></i> Salvar Palpites</button>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button id="matches-tab" class="tab active">
+                <i class="fas fa-futbol"></i> Jogos
+            </button>
+            <button id="player-status-tab" class="tab">
+                <i class="fas fa-users"></i> Status dos Jogadores
+            </button>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="loader-container">
+            <div class="loader"></div>
+        </div>
+
+        <!-- Grid de Jogos -->
+        <div id="matches-grid" class="matches-grid" style="display: none;"></div>
+
+        <!-- Botão de Salvar -->
+        <div class="save-container">
+            <button id="save-predictions" class="save-button" disabled>
+                <i class="fas fa-save"></i> Salvar Palpites
+            </button>
         </div>
     </div>
 
+    <!-- Dialog de Status dos Jogadores -->
     <dialog id="player-status-dialog">
         <div class="dialog-header">
             <h2><i class="fas fa-clipboard-check"></i> Status dos Palpites</h2>
             <button class="close-btn" aria-label="Fechar">×</button>
         </div>
         <div class="dialog-content">
-            <div class="table-container" style="overflow-x: auto;">
-                <table class="player-status-table">
+            <div style="overflow-x: auto;">
+                <table class="status-table">
                     <thead id="player-status-header"></thead>
                     <tbody id="player-status-body"></tbody>
                 </table>
             </div>
 
-            <!-- CORREÇÃO 1: ADIÇÃO DA LEGENDA DE CORES E ÍCONES -->
             <div class="legend-container">
                 <div class="legend-item"><span class="legend-color-box points-3"></span> 3 pts (Placar Exato)</div>
                 <div class="legend-item"><span class="legend-color-box points-1"></span> 1 pt (Acertou Vencedor/Empate)</div>
@@ -278,13 +742,75 @@
         </div>
     </dialog>
 
+    <!-- Dialog de Palpites do Jogo -->
     <dialog id="predictions-dialog">
         <div class="dialog-header">
             <h2 id="predictions-dialog-title">Palpites do Jogo</h2>
             <button class="close-btn" aria-label="Fechar">×</button>
         </div>
         <div class="dialog-content">
-            <ul id="predictions-list-body" style="list-style: none; padding: 0;"></ul>
+            <div id="predictions-list-body" class="predictions-list"></div>
+        </div>
+    </dialog>
+
+    <dialog id="payment-modal" style="max-width: 400px;">
+        <div class="dialog-header">
+            <h2><i class="fas fa-dollar-sign"></i> Pagamento Pendente</h2>
+            <button class="close-btn" aria-label="Fechar" onclick="window.location.href='home.html'">×</button>
+        </div>
+        <div class="dialog-content">
+            <p style="color: var(--text-primary); margin-bottom: 1.5rem;">
+                Você precisa pagar a taxa de participação (<strong style="color: var(--accent-primary);">R$ 20,00</strong>) para fazer palpites.
+            </p>
+            
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <button id="btn-show-pix-modal" class="save-button" style="flex: 1; margin: 0; background: var(--accent-success);">
+                    <i class="fas fa-qrcode"></i> Pagar com PIX
+                </button>
+                <button class="save-button" style="flex: 1; margin: 0; background: var(--accent-secondary);" onclick="handlePayment('mercado_pago')">
+                    Mercado Pago
+                </button>
+            </div>
+            
+            <button class="view-predictions-btn" style="width: 100%;" onclick="window.location.href='home.html'">
+                Voltar para Home
+            </button>
+        </div>
+    </dialog>
+
+    <!-- Modal de Pagamento PIX -->
+    <dialog id="pix-modal" style="max-width: 400px;">
+        <div class="dialog-header">
+            <h2><i class="fas fa-qrcode"></i> PIX</h2>
+            <button class="close-btn" aria-label="Fechar" onclick="hidePixModal()">×</button>
+        </div>
+        <div class="dialog-content" style="text-align: center;">
+            <div style="margin-bottom: 1.5rem;">
+                <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Escaneie o QR Code ou use a chave Copia e Cola</p>
+                <p style="font-size: 0.875rem; color: var(--text-tertiary);">Valor: R$ 20,00</p>
+            </div>
+
+            <!-- Imagem do QR Code (Assumindo que está em './pix.png') -->
+            <img src="./pix.png" alt="QR Code PIX" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.5rem;">
+
+            <div style="margin-bottom: 1.5rem; padding: 0.75rem; background: var(--bg-secondary); border-radius: 0.75rem;">
+                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Chave PIX (E-mail):</p>
+                <div id="pix-key-display" style="font-size: 1rem; font-weight: 700; color: var(--text-primary); word-break: break-all;">
+                    platze8@gmail.com
+                </div>
+            </div>
+
+            <button class="save-button" id="copy-pix-key" style="margin-top: 0; background: var(--accent-success); width: 100%;">
+                <i class="fas fa-copy"></i> Copiar Chave PIX
+            </button>
+            
+            <button class="view-predictions-btn" style="width: 100%; margin-top: 1rem;" onclick="hidePixModal()">
+                Entendi
+            </button>
+            
+            <p style="font-size: 0.75rem; color: var(--accent-warning); margin-top: 1rem;">
+                A liberação do acesso pode demorar alguns minutos após a confirmação do pagamento.
+            </p>
         </div>
     </dialog>
 
@@ -310,9 +836,11 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
+        // Mapeamento de elementos UI atualizados
         const ui = {
-            matchesContainer: document.getElementById('matches-container'),
+            matchesGrid: document.getElementById('matches-grid'),
             timerContainer: document.getElementById('timer-container'),
+            timerText: document.getElementById('timer-text'),
             savePredictionsButton: document.getElementById('save-predictions'),
             loader: document.getElementById('loader'),
             matchesTab: document.getElementById('matches-tab'),
@@ -320,10 +848,11 @@
             playerStatusDialog: document.getElementById('player-status-dialog'),
             playerStatusHeader: document.getElementById('player-status-header'),
             playerStatusBody: document.getElementById('player-status-body'),
-            actionContainer: document.querySelector('.action-container'),
             predictionsDialog: document.getElementById('predictions-dialog'),
             predictionsDialogTitle: document.getElementById('predictions-dialog-title'),
             predictionsListBody: document.getElementById('predictions-list-body'),
+            paymentModal: document.getElementById('payment-modal'),
+            pixModal: document.getElementById('pix-modal'),
         };
 
         let currentRoundKey = null;
@@ -332,19 +861,22 @@
         let allMatches = {};
         let roundFinishTimestamp = null;
         let countdownInterval;
-
         let unsavedPredictions = {};
+        let userData = null;
+        const PIX_KEY = "platze8@gmail.com"; 
 
-        // --- LÓGICA DE RASCUNHO (DRAFT) COM localStorage ---
+        // Lógica de rascunho (mantida igual)
         function getDraftStorageKey(roundKey, userId) {
             return `predictionsDraft_${userId}_${roundKey}`;
         }
+        
         function saveDraftToLocalStorage() {
             if (currentRoundKey && auth.currentUser) {
                 const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
                 localStorage.setItem(key, JSON.stringify(unsavedPredictions));
             }
         }
+        
         function loadDraftFromLocalStorage() {
             if (currentRoundKey && auth.currentUser) {
                 const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
@@ -352,6 +884,7 @@
                 unsavedPredictions = draft ? JSON.parse(draft) : {};
             }
         }
+        
         function clearDraftFromLocalStorage() {
             if (currentRoundKey && auth.currentUser) {
                 const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
@@ -359,7 +892,63 @@
             }
         }
 
-        // --- LÓGICA DO BOTÃO DE SALVAR INTELIGENTE ---
+        function showPaymentModal() {
+            ui.paymentModal.showModal();
+        }
+
+        function hidePaymentModal() {
+            ui.paymentModal.close();
+        }
+
+        function showPixModal() {
+            hidePaymentModal(); // Fecha o modal de escolha
+            ui.pixModal.showModal();
+        }
+
+        function hidePixModal() {
+            ui.pixModal.close();
+        }
+
+        function copyPixKey() {
+            navigator.clipboard.writeText(PIX_KEY).then(() => {
+                const copyButton = document.getElementById('copy-pix-key');
+                const originalText = copyButton.innerHTML;
+                
+                copyButton.innerHTML = '<i class="fas fa-check"></i> Chave Copiada!';
+                
+                setTimeout(() => {
+                    copyButton.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Falha ao copiar:', err);
+                alert(`Falha ao copiar. Tente manualmente: ${PIX_KEY}`);
+            });
+        }
+
+        // Simulação da função de pagamento
+        async function handlePayment(method) {
+            if (method === 'mercado_pago') {
+                // Simular pagamento via Mercado Pago
+                hidePaymentModal();
+                alert(`Redirecionando para pagamento via Mercado Pago... (Simulando sucesso em 3s)`);
+
+                setTimeout(async () => {
+                    try {
+                        // Simular pagamento bem-sucedido
+                        await database.ref('users/' + auth.currentUser.uid).update({
+                            hasPaid: true,
+                            lastPayment: new Date().toISOString()
+                        });
+                        alert('Pagamento confirmado! Recarregue a página para acessar os palpites.');
+                        window.location.reload(); // Recarrega após pagamento simulado
+                    } catch (error) {
+                        alert('Erro ao confirmar pagamento simulado.');
+                    }
+                }, 3000);
+            }
+        }
+
+        // Atualizar estado do botão salvar
         function updateSaveButtonState() {
             const hasChanges = Object.keys(unsavedPredictions).length > 0;
             ui.savePredictionsButton.disabled = !hasChanges;
@@ -372,18 +961,38 @@
             }
         }
 
+        // Inicialização
         auth.onAuthStateChanged((user) => {
             if (user) initializeApp(user.uid);
             else window.location.href = 'index.html';
         });
 
+        async function fetchUserData(userId) {
+            const snapshot = await database.ref('users/' + userId).once('value');
+            userData = snapshot.val();
+        }
+
         async function initializeApp(userId) {
+            ui.loader.style.display = 'flex';
+            
             try {
+                await fetchUserData(userId); // Carrega dados do usuário
+
+                if (!userData || !userData.hasPaid) {
+                    // Se não pagou, impede o carregamento da rodada e mostra o modal
+                    showPaymentModal();
+                    ui.loader.style.display = 'none';
+                    ui.savePredictionsButton.style.display = 'none';
+                    ui.timerContainer.style.display = 'none';
+                    return; 
+                }
+
+                // Se pagou, procede com o carregamento normal da rodada
                 await Promise.all([fetchAllPlayers(), fetchAllTeams()]);
                 const roundSnapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
                 
                 if (!roundSnapshot.exists()) {
-                    // Lógica para quando não há rodada
+                    ui.loader.innerHTML = '<p style="font-size: 1.1rem; color: var(--text-secondary);">Nenhuma rodada ativa no momento.</p>';
                     return;
                 }
                 
@@ -394,17 +1003,18 @@
                     roundFinishTimestamp = roundData.finishTimestamp;
                 });
                 
-                loadDraftFromLocalStorage(); // Carrega o rascunho antes de renderizar
+                loadDraftFromLocalStorage();
                 startCountdown();
                 renderMatchCards(userId);
                 setupEventListeners(userId);
                 updateSaveButtonState();
 
                 ui.loader.style.display = 'none';
-                ui.matchesContainer.style.display = 'grid';
+                ui.matchesGrid.style.display = 'grid';
 
             } catch (error) {
                 console.error("Erro na inicialização:", error);
+                ui.loader.innerHTML = '<p style="font-size: 1.1rem; color: var(--accent-danger);">Erro ao carregar dados. Tente recarregar.</p>';
             }
         }
 
@@ -418,41 +1028,6 @@
             allTeams = snapshot.val() || {};
         }
 
-        async function fetchCurrentRound(userId) {
-            const roundsRef = database.ref('rounds');
-            const snapshot = await roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value');
-            
-            if (!snapshot.exists()) {
-                ui.loader.style.display = 'none';
-                ui.matchesContainer.innerHTML = '<p style="text-align:center;">Não há rodadas disponíveis no momento.</p>';
-                ui.timerContainer.innerHTML = '<i class="fas fa-info-circle"></i> Nenhuma rodada ativa';
-                ui.actionContainer.style.display = 'none';
-                document.querySelector('.main-tabs').style.display = 'none';
-                return;
-            }
-            
-            // --- MUDANÇA 2: Usar um listener em tempo real (opcional, mas bom) ---
-            // Em vez de 'once', usamos 'on' para que a tela reaja a mudanças (como resultados de jogos).
-            // Nossa nova lógica de "rascunho" vai proteger os dados do usuário.
-            roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).on('value', (snapshot) => {
-                if (!snapshot.exists()) return;
-                
-                snapshot.forEach(childSnapshot => {
-                    currentRoundKey = childSnapshot.key;
-                    const roundData = childSnapshot.val();
-                    allMatches = roundData.matches || [];
-                    roundFinishTimestamp = roundData.finishTimestamp;
-                });
-
-                // A primeira chamada do countdown e do loadMatchesData
-                if (!countdownInterval) {
-                    startCountdown();
-                }
-                
-                loadMatchesData(currentRoundKey, userId);
-            });
-        }
-
         function startCountdown() {
             if (countdownInterval) clearInterval(countdownInterval);
 
@@ -461,15 +1036,14 @@
                 
                 if (diff <= 0) {
                     clearInterval(countdownInterval);
-                    ui.timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo da rodada esgotado!';
-                    if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
-                    // --- MUDANÇA 3: O timer não precisa mais recarregar todos os dados ---
-                    // A chamada loadMatchesData() foi removida daqui para evitar recargas desnecessárias.
+                    ui.timerText.innerHTML = 'Tempo da rodada esgotado!';
+                    ui.timerContainer.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    ui.savePredictionsButton.style.display = 'none';
                 } else {
                     const d = Math.floor(diff / 86400000);
                     const h = Math.floor((diff % 86400000) / 3600000);
                     const m = Math.floor((diff % 3600000) / 60000);
-                    ui.timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante da rodada: ${d}d ${h}h ${m}m`;
+                    ui.timerText.innerHTML = `Tempo restante: ${d}d ${h}h ${m}m`;
                 }
             };
             updateTimer();
@@ -482,32 +1056,8 @@
             return now >= deadline;
         }
 
-        async function loadMatchesData(roundKey, userId) {
-            ui.loader.style.display = 'flex';
-            ui.matchesContainer.style.display = 'none';
-
-            const matchesData = allMatches.map((match, index) => ({
-                matchId: index, match, 
-                homeTeam: allTeams[match.homeTeam] || {}, 
-                awayTeam: allTeams[match.awayTeam] || {}, 
-                userPrediction: match.predictions?.[userId] || {}
-            }));
-            
-            renderMatchCards(matchesData);
-            
-            const isRoundOver = new Date() >= new Date(roundFinishTimestamp);
-            if (!isRoundOver) {
-                setupSavePredictionsButton(roundKey, userId);
-            } else {
-                if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
-            }
-            
-            ui.loader.style.display = 'none';
-            ui.matchesContainer.style.display = 'grid';
-        }
-
         function renderMatchCards(userId) {
-            ui.matchesContainer.innerHTML = allMatches.map((match, matchId) => {
+            ui.matchesGrid.innerHTML = allMatches.map((match, matchId) => {
                 const homeTeam = allTeams[match.homeTeam] || {};
                 const awayTeam = allTeams[match.awayTeam] || {};
                 const userPrediction = match.predictions?.[userId] || {};
@@ -518,16 +1068,25 @@
                 const awayScoreValue = unsaved?.awayScore ?? userPrediction.awayScore ?? '';
                 
                 return `
-                <div class="match-card ${isDisabled ? 'is-locked' : ''}" data-match-id="${matchId}" style="--animation-delay: ${matchId * 100}ms">
+                <div class="match-card ${isDisabled ? 'locked' : ''}" data-match-id="${matchId}" style="animation-delay: ${matchId * 100}ms">
                     <div class="match-header">
                         <span>${new Date(match.timestamp).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})}</span>
-                        ${isDisabled ? '<i class="fas fa-lock lock-icon"></i>' : ''}
+                        <div class="match-status">
+                            ${isDisabled ? '<i class="fas fa-lock lock-icon"></i>' : '<i class="fas fa-unlock lock-icon"></i>'}
+                            <span>${isDisabled ? 'Encerrado' : 'Aberto'}</span>
+                        </div>
                     </div>
                     <div class="match-content">
                         <div class="match-teams">
-                            <div class="team"><img src="${homeTeam.image}" alt="${homeTeam.name}"><p class="team-name">${homeTeam.name}</p></div>
+                            <div class="team">
+                                <img src="${homeTeam.image}" alt="${homeTeam.name}" class="team-logo">
+                                <p class="team-name">${homeTeam.name}</p>
+                            </div>
                             <span class="versus">vs</span>
-                            <div class="team"><img src="${awayTeam.image}" alt="${awayTeam.name}"><p class="team-name">${awayTeam.name}</p></div>
+                            <div class="team">
+                                <img src="${awayTeam.image}" alt="${awayTeam.name}" class="team-logo">
+                                <p class="team-name">${awayTeam.name}</p>
+                            </div>
                         </div>
                         ${match.finalResult ? `
                             <div class="match-result">${match.finalResult.homeScore} : ${match.finalResult.awayScore}</div>
@@ -538,7 +1097,7 @@
                                     <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="home" value="${homeScoreValue}" ${isDisabled ? 'disabled' : ''}>
                                     <button class="score-stepper-btn score-increment" data-match-id="${matchId}" data-team="home" ${isDisabled ? 'disabled' : ''}>+</button>
                                 </div>
-                                <span>×</span>
+                                <span class="score-divider">×</span>
                                 <div class="score-input-wrapper">
                                     <button class="score-stepper-btn score-decrement" data-match-id="${matchId}" data-team="away" ${isDisabled ? 'disabled' : ''}>-</button>
                                     <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="away" value="${awayScoreValue}" ${isDisabled ? 'disabled' : ''}>
@@ -548,61 +1107,20 @@
                         `}
                     </div>
                     <div class="match-footer">
-                        ${isDisabled ? `<button class="action-button view-predictions-btn" data-match-id="${matchId}"><i class="fas fa-eye"></i> Ver Palpites</button>` : ''}
+                        ${isDisabled ? `
+                            <button class="view-predictions-btn" data-match-id="${matchId}">
+                                <i class="fas fa-eye"></i> Ver Palpites
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
                 `;
             }).join('');
         }
 
-        function setupSavePredictionsButton(roundKey, userId) {
-            const button = ui.savePredictionsButton.cloneNode(true);
-            if(ui.savePredictionsButton.parentNode) {
-                ui.savePredictionsButton.parentNode.replaceChild(button, ui.savePredictionsButton);
-            }
-            ui.savePredictionsButton = button;
-            
-            ui.savePredictionsButton.addEventListener('click', async () => {
-                ui.savePredictionsButton.disabled = true;
-                ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-                try {
-                    const updates = {};
-                    // Agora, lemos do nosso "rascunho" para salvar
-                    for (const matchId in unsavedPredictions) {
-                        const prediction = unsavedPredictions[matchId];
-                        // Validar se o palpite está completo
-                        if (prediction.homeScore.trim() !== '' && prediction.awayScore.trim() !== '') {
-                            updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${userId}`] = {
-                                homeScore: parseInt(prediction.homeScore),
-                                awayScore: parseInt(prediction.awayScore),
-                            };
-                        }
-                    }
-
-                    if (Object.keys(updates).length > 0) {
-                        await database.ref().update(updates);
-                        // --- MUDANÇA 5: Limpar o rascunho após salvar com sucesso ---
-                        unsavedPredictions = {};
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvos!';
-                        ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
-                    } else {
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-info-circle"></i> Nenhum palpite novo para salvar';
-                    }
-                } catch (error) {
-                    console.error('Erro ao salvar:', error);
-                    ui.savePredictionsButton.innerHTML = '<i class="fas fa-times"></i> Erro!';
-                    ui.savePredictionsButton.style.backgroundColor = 'var(--danger-color)';
-                } finally {
-                    setTimeout(() => {
-                        ui.savePredictionsButton.disabled = false;
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
-                        ui.savePredictionsButton.style.backgroundColor = 'var(--primary-color)';
-                    }, 3000);
-                }
-            });
-        }
-
-        // ... (função calculateMatchPoints permanece a mesma)
+        // Restante da lógica JavaScript permanece igual...
+        // (As funções calculateMatchPoints, populatePlayerStatusTable, setupEventListeners, etc.)
+        
         function calculateMatchPoints(final, pred) {
             if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return null;
             if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
@@ -613,7 +1131,6 @@
             return 0;
         }
 
-        // ... (função populatePlayerStatusTable permanece a mesma)
         function populatePlayerStatusTable() {
             const headerRow = document.createElement('tr');
             headerRow.innerHTML = '<th>Jogador</th>';
@@ -647,17 +1164,16 @@
         }
 
         function setupEventListeners(userId) {
-            // --- EVENT LISTENER PARA INPUTS, BOTÕES +/- E "VER PALPITES" ---
-            ui.matchesContainer.addEventListener('click', e => {
+            // Event listeners para inputs e botões
+            ui.matchesGrid.addEventListener('click', e => {
                 const target = e.target;
                 const stepperBtn = target.closest('.score-stepper-btn');
                 const predictionsBtn = target.closest('.view-predictions-btn');
 
-                // Lógica para os botões de incrementar/decrementar placar
                 if (stepperBtn) {
                     const matchId = stepperBtn.dataset.matchId;
                     const team = stepperBtn.dataset.team;
-                    const input = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="${team}"]`);
+                    const input = ui.matchesGrid.querySelector(`input[data-match-id="${matchId}"][data-team="${team}"]`);
                     let currentValue = parseInt(input.value) || 0;
                     
                     if (stepperBtn.classList.contains('score-increment')) {
@@ -669,19 +1185,18 @@
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
 
-                // CORREÇÃO 2.1: LÓGICA PARA O BOTÃO "VER PALPITES"
                 if (predictionsBtn) {
                     const matchId = predictionsBtn.dataset.matchId;
                     showPredictionsForMatch(matchId);
                 }
             });
 
-            // Lógica para salvar os inputs no rascunho
-            ui.matchesContainer.addEventListener('input', e => {
+            // Salvar inputs no rascunho
+            ui.matchesGrid.addEventListener('input', e => {
                 if (e.target.tagName === 'INPUT') {
                     const matchId = e.target.dataset.matchId;
-                    const homeInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="home"]`);
-                    const awayInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="away"]`);
+                    const homeInput = ui.matchesGrid.querySelector(`input[data-match-id="${matchId}"][data-team="home"]`);
+                    const awayInput = ui.matchesGrid.querySelector(`input[data-match-id="${matchId}"][data-team="away"]`);
                     const homeScore = homeInput.value;
                     const awayScore = awayInput.value;
 
@@ -695,7 +1210,7 @@
                 }
             });
 
-            // --- EVENT LISTENER DO BOTÃO SALVAR ---
+            // Botão salvar
             ui.savePredictionsButton.addEventListener('click', async () => {
                 ui.savePredictionsButton.disabled = true;
                 ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
@@ -717,22 +1232,23 @@
                         unsavedPredictions = {};
                         clearDraftFromLocalStorage();
                         ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvo com Sucesso!';
-                        ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
+                        ui.savePredictionsButton.style.background = 'linear-gradient(135deg, var(--accent-success), #059669)';
                     } else {
                          ui.savePredictionsButton.innerHTML = '<i class="fas fa-info-circle"></i> Nada para salvar';
                     }
 
                 } catch (error) {
                     ui.savePredictionsButton.innerHTML = '<i class="fas fa-times"></i> Erro ao Salvar';
-                    ui.savePredictionsButton.style.backgroundColor = 'var(--danger-color)';
+                    ui.savePredictionsButton.style.background = 'linear-gradient(135deg, var(--accent-danger), #dc2626)';
                 } finally {
                     setTimeout(() => {
                         updateSaveButtonState();
-                        ui.savePredictionsButton.style.backgroundColor = '';
+                        ui.savePredictionsButton.style.background = '';
                     }, 2500);
                 }
             });
             
+            // Tabs
             ui.matchesTab.addEventListener('click', () => {
                 ui.playerStatusTab.classList.remove('active');
                 ui.matchesTab.classList.add('active');
@@ -745,7 +1261,7 @@
                 ui.playerStatusDialog.showModal();
             });
 
-            // Listeners para fechar os dialogs
+            // Fechar dialogs
             [ui.playerStatusDialog, ui.predictionsDialog].forEach(dialog => {
                 const closeBtn = dialog.querySelector('.close-btn');
                 closeBtn.addEventListener('click', () => dialog.close());
@@ -753,6 +1269,16 @@
                     if (e.target === dialog) dialog.close();
                 });
             });
+
+            const btnShowPix = document.getElementById('btn-show-pix-modal');
+            if (btnShowPix) {
+                btnShowPix.addEventListener('click', showPixModal);
+            }
+
+            const copyButton = document.getElementById('copy-pix-key');
+            if (copyButton) {
+                copyButton.addEventListener('click', copyPixKey);
+            }
         }
 
         async function showPredictionsForMatch(matchId) {
@@ -777,27 +1303,23 @@
                 return a.name.localeCompare(b.name);
             });
 
-            // CORREÇÃO 3: Adicionar as classes de pontuação ao item da lista e ao badge
             ui.predictionsListBody.innerHTML = predictionsArray.map(p => {
                 const pointsClass = p.points !== null ? `points-${String(p.points).replace('-', '-1')}` : 'points-none';
-                
-                // O nome da classe para -1 ponto deve ser "points--1"
                 const finalPointsClass = pointsClass.replace('points--11', 'points--1');
                 
                 return `
-                    <li class="prediction-item ${finalPointsClass}">
+                    <div class="prediction-item ${finalPointsClass}">
                         <span class="prediction-player">${p.name}</span>
                         <span class="prediction-score">${p.homeScore} × ${p.awayScore}</span>
                         <div class="prediction-points ${finalPointsClass}">
                             ${p.points !== null ? p.points : '-'}
                         </div>
-                    </li>
+                    </div>
                 `;
-            }).join('') || '<li>Nenhum palpite para este jogo.</li>';
+            }).join('') || '<div class="prediction-item">Nenhum palpite para este jogo.</div>';
             
             ui.predictionsDialog.showModal();
         }
-
     </script>
 </body>
 </html>

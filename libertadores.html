@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libertadores - Brasileirão da Depressão</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /*
+        ============================================================
+        ESTILOS GERAIS (Adaptados do Template)
+        ============================================================
+        */
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: #334155;
+            
+            /* Cores para zonas de classificação (Adaptado para Libertadores) */
+            --zone-libertadores: #00874c; /* Verde - Libertadores */
+            --zone-pre: #3b82f6;          /* Azul - Pré-Libertadores */
+            --zone-knockout: #8b5cf6;     /* Roxo - Mata-Mata */
+            
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
+            margin-bottom: 32px;
+        }
+
+        /* Container principal */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .app-header {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--accent-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        /* Botões */
+        .btn-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Título da página */
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: var(--zone-libertadores); /* Cor específica para Libertadores */
+        }
+
+        /* Subtítulo */
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Tabs principais */
+        .tabs-container {
+            margin-bottom: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            padding: 0.25rem;
+            gap: 0.25rem;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            font-size: 0.875rem;
+        }
+
+        .tab:hover {
+            background: var(--bg-secondary);
+        }
+
+        .tab.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Cards de confronto */
+        .match-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .match-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-fast);
+            min-height: 70px;
+        }
+
+        .match-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .match-player {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .match-player.away {
+            justify-content: flex-end;
+        }
+
+        .match-player-info {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .match-player.away .match-player-info {
+            text-align: right;
+        }
+
+        .match-player-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .match-player-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .match-player-team {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .match-result {
+            padding: 0 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent-primary);
+            min-width: 70px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .match-status {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        /* Layout do mata-mata */
+        .knockout-stage {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stage-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-align: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .knockout-series {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        /* Cores de séries adaptadas para fases */
+        .series-pre .series-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+            border-bottom: 2px solid var(--zone-pre);
+        }
+        .series-pre .series-title { 
+            color: var(--zone-pre); 
+        }
+
+        .series-knockout .series-header {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05));
+            border-bottom: 2px solid var(--zone-knockout);
+        }
+        .series-knockout .series-title { 
+            color: var(--zone-knockout); 
+        }
+
+        .series-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .series-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .series-content {
+            padding: 1.5rem;
+        }
+
+        /* Final especial */
+        .final-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .final-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--zone-libertadores), #10b981);
+            text-align: center;
+            color: white;
+        }
+
+        .final-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .final-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .final-content {
+            padding: 2rem;
+        }
+
+        .final-match {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            border: 2px solid var(--zone-libertadores);
+        }
+
+        .final-player {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .final-player.away {
+            justify-content: flex-end;
+        }
+
+        .final-player-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--zone-libertadores);
+        }
+
+        .final-player-info {
+            flex: 1;
+        }
+
+        .final-player-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .final-player-team {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .final-player-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 0.25rem;
+        }
+
+        .final-result {
+            padding: 0 1.5rem;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: var(--zone-libertadores);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .winner-banner {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--accent-success);
+            color: white;
+            border-radius: 0.75rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Estados vazios */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-tertiary);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .tab {
+                flex: none;
+                min-width: 120px;
+            }
+            
+            .final-match {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .final-player.away {
+                flex-direction: row-reverse;
+            }
+            
+            .final-player-info {
+                text-align: center;
+            }
+            
+            .final-result {
+                order: -1;
+                width: 100%;
+                padding: 0.5rem;
+                background: var(--bg-primary);
+                border-radius: 0.5rem;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="home.html" class="logo">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>BR<span>Depressão</span></span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="btn-icon" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Conteúdo Principal -->
+        <main>
+            <h1 class="page-title">
+                <i class="fas fa-globe-americas"></i>
+                Libertadores
+            </h1>
+            
+            <p class="page-subtitle">
+                O torneio continental de maior prestígio. Confrontos diretos em formato de mata-mata.
+            </p>
+
+            <!-- Tabs principais -->
+            <div class="tabs-container">
+                <div class="tabs" id="main-tabs">
+                    <button class="tab" data-stage="pre1">Pré-Fase 1</button>
+                    <button class="tab" data-stage="pre2">Pré-Fase 2</button>
+                    <button class="tab" data-stage="quarterFinals">Quartas de Final</button>
+                    <button class="tab" data-stage="semiFinals">Semifinais</button>
+                    <button class="tab" data-stage="final">Final</button>
+                </div>
+            </div>
+
+            <!-- Conteúdo do Mata-Mata -->
+            <div id="knockout-stage" class="knockout-stage">
+                
+                <h2 class="stage-title" id="knockout-main-title">Pré-Libertadores Fase 1</h2>
+
+                <!-- Chaves de Mata-Mata -->
+                <div class="knockout-brackets" id="knockout-brackets-container">
+                    <!-- Conteúdo dinâmico de Mata-Mata -->
+                    <div style="text-align: center; padding: 4rem;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i>
+                        <p style="margin-top: 1rem;">Carregando chaves...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration (Mantida)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Estado da aplicação
+        let currentUser = null;
+        let teamsData = {};
+        let usersData = {};
+        let libertadoresData = {};
+        // REMOVIDO: activeRoundData não é mais necessário para placares aqui.
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAuth();
+        });
+
+        // --- TEMA (Mantido) ---
+        function initTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // --- AUTENTICAÇÃO E CARREGAMENTO ---
+        function initAuth() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadInitialData();
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
+        async function loadInitialData() {
+            try {
+                // Carrega todos os dados estáticos essenciais
+                await Promise.all([
+                    loadDataOnce('teams').then(data => teamsData = data),
+                    loadDataOnce('users').then(data => {
+                        Object.keys(data).forEach(key => data[key].id = key);
+                        usersData = data;
+                    }),
+                    loadDataOnce('tournaments/libertadores').then(data => libertadoresData = data),
+                ]);
+                
+                // Configurar navegação
+                setupStageNavigation();
+                
+                // Determinar estágio ativo
+                determineActiveStage();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                showError('Erro ao carregar dados. Tente recarregar a página.');
+            }
+        }
+        
+        async function loadDataOnce(path) {
+            const snapshot = await database.ref(path).once('value');
+            return snapshot.val() || {};
+        }
+        
+        // Função dummy (removida do fluxo principal, mas mantida para evitar quebras se chamada)
+        function findActiveSuperligaRoundAndListen() {}
+        
+        // --- NAVEGAÇÃO E LÓGICA DE ESTÁGIO ---
+        
+        function determineActiveStage() {
+            const stages = ['pre1', 'pre2', 'quarterFinals', 'semiFinals', 'final'];
+            let activeStage = stages[0]; // Default: Pré-Fase 1
+            
+            // Procura a primeira fase ativa (status = 1)
+            for (const stage of stages) {
+                if (libertadoresData[stage]?.status === 1) {
+                    activeStage = stage;
+                    break;
+                }
+            }
+            
+            // Se não encontrou ativa, mas a última está concluída, vai para a final
+            if (activeStage === stages[0] && libertadoresData.final?.status === 2) {
+                 activeStage = 'final';
+            } else if (activeStage === stages[0] && libertadoresData.final?.status !== 2) {
+                 // Se o torneio nunca foi ativado (status 0 em tudo), forçamos o default 'pre1'
+                 activeStage = 'pre1';
+            }
+            
+            // Ativar a aba correspondente
+            const tab = document.querySelector(`[data-stage="${activeStage}"]`);
+            if (tab) {
+                document.querySelectorAll('#main-tabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                loadStage(activeStage);
+            } else {
+                // Fallback de segurança
+                document.querySelector('[data-stage="pre1"]').classList.add('active');
+                loadStage('pre1');
+            }
+        }
+        
+        function setupStageNavigation() {
+            document.querySelectorAll('#main-tabs .tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const stage = tab.dataset.stage;
+                    
+                    // Atualizar tabs ativos
+                    document.querySelectorAll('#main-tabs .tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    loadStage(stage);
+                });
+            });
+        }
+        
+        function loadStage(stage) {
+            loadKnockoutStage(stage);
+        }
+        
+        // --- FUNÇÃO CENTRAL DE RENDERIZAÇÃO DE PARTIDAS (CORRIGIDA) ---
+        function renderMatchCard(match) {
+            const p1Id = match.homeTeam;
+            const p2Id = match.awayTeam;
+
+            // Tratamento para Placeholder
+            if (!p1Id || !p2Id) {
+                const homePlaceholder = match.homePlaceholder || 'A Definir (Time A)';
+                const awayPlaceholder = match.awayPlaceholder || 'A Definir (Time B)';
+                
+                return `
+                    <div>
+                        <div class="match-card">
+                            <div class="match-player">
+                                <i class="fas fa-question-circle" style="color: var(--text-tertiary); font-size: 36px; flex-shrink: 0;"></i>
+                                <div class="match-player-info">
+                                    <div class="match-player-name">${homePlaceholder}</div>
+                                    <div class="match-player-team">---</div>
+                                </div>
+                            </div>
+                            
+                            <div class="match-result">vs</div>
+                            
+                            <div class="match-player away">
+                                <div class="match-player-info">
+                                    <div class="match-player-name">${awayPlaceholder}</div>
+                                    <div class="match-player-team">---</div>
+                                </div>
+                                <i class="fas fa-question-circle" style="color: var(--text-tertiary); font-size: 36px; flex-shrink: 0;"></i>
+                            </div>
+                        </div>
+                        <div class="match-status">Chaveamento Pendente</div>
+                    </div>
+                `;
+            }
+
+            const player1 = usersData[p1Id];
+            const player2 = usersData[p2Id];
+            
+            const team1 = player1 ? (teamsData[player1.teamId] || teamsData[player1.team]) : null;
+            const team2 = player2 ? (teamsData[player2.teamId] || teamsData[player2.team]) : null;
+            
+            let result = "vs";
+            let status = 'Aguardando';
+
+            if (match.result && match.result.trim() !== "") {
+                result = match.result;
+                status = 'Finalizado';
+            } 
+            // CORREÇÃO APLICADA: REMOÇÃO DA LÓGICA DE CALCULAR PLACAR AO VIVO DA SUPERLIGA
+            // else if (activeRoundData && p1Id && p2Id) { ... } 
+            
+            const p1Abbr = player1?.abbr || 'TBD';
+            const p2Abbr = player2?.abbr || 'TBD';
+            const p1Name = player1?.name || 'A definir';
+            const p2Name = player2?.name || 'A definir';
+            
+            const team1Name = team1?.abbr || (team1?.name ? team1.name.substring(0, 12) : '---');
+            const team2Name = team2?.abbr || (team2?.name ? team2.name.substring(0, 12) : '---');
+
+            const defaultAvatar = (abbr) => `https://ui-avatars.com/api/?name=${encodeURIComponent(abbr)}&background=3b82f6&color=fff`;
+
+            return `
+                <div>
+                    <div class="match-card ${match.result ? 'completed' : ''}">
+                        <div class="match-player">
+                            <img src="${team1?.image || defaultAvatar(p1Abbr)}" 
+                                 alt="${p1Name}" 
+                                 class="match-player-avatar">
+                            <div class="match-player-info">
+                                <div class="match-player-name" title="${p1Name}">${p1Abbr}</div>
+                                <div class="match-player-team" title="${team1?.name || ''}">${team1Name}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="match-result">${result}</div>
+                        
+                        <div class="match-player away">
+                            <div class="match-player-info">
+                                <div class="match-player-name" title="${p2Name}">${p2Abbr}</div>
+                                <div class="match-player-team" title="${team2?.name || ''}">${team2Name}</div>
+                            </div>
+                            <img src="${team2?.image || defaultAvatar(p2Abbr)}" 
+                                 alt="${p2Name}" 
+                                 class="match-player-avatar">
+                        </div>
+                    </div>
+                    <div class="match-status">${status}</div>
+                </div>
+            `;
+        }
+
+        // --- MATA-MATA LIBERTADORES (Mantido) ---
+        
+        const phaseTitles = {
+            'pre1': 'Pré-Libertadores Fase 1 (2 Jogos)',
+            'pre2': 'Pré-Libertadores Fase 2 (2 Jogos)',
+            'quarterFinals': 'Quartas de Final (4 Jogos)',
+            'semiFinals': 'Semifinais (2 Jogos)',
+            'final': 'Final (1 Jogo)'
+        };
+
+        function loadKnockoutStage(stage) {
+            const container = document.getElementById('knockout-brackets-container');
+            const title = document.getElementById('knockout-main-title');
+            
+            title.textContent = phaseTitles[stage] || 'Fase do Torneio';
+            container.innerHTML = '';
+            
+            const stageData = libertadoresData[stage] || {};
+            
+            if (stage === 'final') {
+                renderKnockoutFinal(stageData, container);
+            } else {
+                renderKnockoutPhase(stage, stageData, container);
+            }
+        }
+        
+        function renderKnockoutPhase(stage, data, container) {
+            const matches = data.matches || {};
+
+            if (Object.keys(matches).length === 0) {
+                container.innerHTML = renderEmptyState(`Chaveamento da ${phaseTitles[stage]} não definido.`, 'fas fa-ticket-alt', '4rem');
+                return;
+            }
+
+            const seriesClass = stage.startsWith('pre') ? 'series-pre' : 'series-knockout';
+            const icon = stage.startsWith('pre') ? 'fas fa-calendar-alt' : 'fas fa-trophy';
+
+            container.innerHTML = `
+                <div class="knockout-series ${seriesClass}">
+                    <div class="series-header">
+                        <h3 class="series-title">
+                            <i class="${icon}"></i>
+                            ${phaseTitles[stage]}
+                        </h3>
+                    </div>
+                    <div class="series-content">
+                        <div class="match-cards">
+                            ${renderKnockoutSeriesMatches(matches)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderKnockoutSeriesMatches(matches) {
+            const matchesArray = Object.values(matches);
+            
+            // Ordena por ID se disponível
+            if (matchesArray[0]?.id !== undefined) {
+                matchesArray.sort((a, b) => (a.id || 0) - (b.id || 0));
+            }
+            
+            return matchesArray.map(match => renderMatchCard(match)).join('');
+        }
+        
+        function renderKnockoutFinal(data, container) {
+            // Verifica se a final já tem times definidos
+            if (!data.homeTeam || !data.awayTeam) {
+                container.innerHTML = `
+                    <div class="final-card">
+                        <div class="final-header">
+                            <h3 class="final-title">Grande Final da Libertadores</h3>
+                            <p class="final-subtitle">Decisão do título continental</p>
+                        </div>
+                        <div class="final-content">
+                            ${renderEmptyState('Final não definida. Aguardando Semifinais.', 'fas fa-trophy')}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const homePlayer = usersData[data.homeTeam];
+            const awayPlayer = usersData[data.awayTeam];
+            const homeTeam = homePlayer ? (teamsData[homePlayer.teamId] || teamsData[homePlayer.team]) : null;
+            const awayTeam = awayPlayer ? (teamsData[awayPlayer.teamId] || teamsData[awayPlayer.team]) : null;
+
+            const winnerDeclared = data.result && data.result.trim() !== "";
+            const result = data.result || 'VS';
+            
+            const homeAbbr = homePlayer?.abbr || 'TBD';
+            const awayAbbr = awayPlayer?.abbr || 'TBD';
+            const homeTeamName = homeTeam?.abbr || (homeTeam?.name ? homeTeam.name.substring(0, 15) : '---');
+            const awayTeamName = awayTeam?.abbr || (awayTeam?.name ? awayTeam.name.substring(0, 15) : '---');
+
+            const defaultAvatar = (abbr) => `https://ui-avatars.com/api/?name=${encodeURIComponent(abbr)}&background=00874c&color=fff`; // Cor Libertadores
+
+            container.innerHTML = `
+                <div class="final-card">
+                    <div class="final-header">
+                        <h3 class="final-title">Grande Final da Libertadores</h3>
+                        <p class="final-subtitle">Decisão do campeão</p>
+                    </div>
+                    
+                    <div class="final-content">
+                        <div class="final-match">
+                            <div class="final-player">
+                                <img src="${homeTeam?.image || defaultAvatar(homeAbbr)}" 
+                                     alt="${homePlayer?.name}" 
+                                     class="final-player-avatar">
+                                <div class="final-player-info">
+                                    <div class="final-player-name">${homeAbbr}</div>
+                                    <div class="final-player-team">${homeTeamName}</div>
+                                    <div class="final-player-label">${homePlayer?.name || 'A definir'}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="final-result" style="color: var(--zone-libertadores);">${result}</div>
+                            
+                            <div class="final-player away">
+                                <div class="final-player-info">
+                                    <div class="final-player-name">${awayAbbr}</div>
+                                    <div class="final-player-team">${awayTeamName}</div>
+                                    <div class="final-player-label">${awayPlayer?.name || 'A definir'}</div>
+                                </div>
+                                <img src="${awayTeam?.image || defaultAvatar(awayAbbr)}" 
+                                     alt="${awayPlayer?.name}" 
+                                     class="final-player-avatar">
+                            </div>
+                        </div>
+                        
+                        ${winnerDeclared ? `
+                            <div class="winner-banner" style="background: var(--zone-libertadores);">
+                                <i class="fas fa-trophy" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                                <h4 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">Campeão Definido!</h4>
+                                <p>Resultado final: ${data.result}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- FUNÇÕES AUXILIARES DE PLACAR (Removidas/Ajustadas) ---
+        // Funções calculateLiveScore e calculateMatchPoints não são usadas aqui.
+
+        function renderEmptyState(message, iconClass, padding = '2rem') {
+            return `
+                <div class="empty-state" style="padding: ${padding};">
+                    <i class="${iconClass}"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        function showError(message) {
+            console.error(message);
+            alert(message);
+        }
+    </script>
+</body>
+</html>

@@ -3,404 +3,1135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brasileirão da Depressão</title>
+    <title>Brasileirão da Depressão - Home</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <!-- FONTES ATUALIZADAS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0055ff;
-            --primary-color-dark: #003ebd;
-            --background-color: #0d1117; /* Fundo escuro para contraste */
-            --card-background: rgba(22, 27, 34, 0.8); /* Fundo dos cards semi-transparente */
-            --text-color: #c9d1d9;
-            --text-color-light: #8b949e;
-            --text-on-primary: #FFFFFF;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-radius: 16px;
-            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --glow-shadow: 0 0 15px rgba(0, 85, 255, 0.5), 0 0 30px rgba(0, 85, 255, 0.3);
-
-            --accent-green: #39d353;
-            --accent-orange: #ffab00;
-            --accent-gray: #6e7681;
+            /* Tema Dark (padrão) */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
             
-            --font-display: 'Anton', sans-serif;
-            --font-body: 'Roboto', sans-serif;
-
-            --sidebar-width: 280px;
-            --header-height: 70px; /* Aumentado para mais respiro */
+            /* Transições */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* EFEITOS DE ANIMAÇÃO */
-        @keyframes fadeInSlideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes aurora {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
-        @keyframes shimmer {
-            0% { background-position: -500px 0; }
-            100% { background-position: 500px 0; }
+        /* Tema Light */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
-        /* ESTILOS GERAIS E FUNDO AURORA */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            background-color: var(--background-color);
-            min-height: 100vh;
-            color: var(--text-color);
-            font-family: var(--font-body);
-            position: relative;
-            overflow-x: hidden;
-        }
-        /* Efeito Aurora no fundo */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(125deg, #0d1117, var(--primary-color), #00ff95, var(--primary-color-dark));
-            background-size: 400% 400%;
-            animation: aurora 15s ease infinite;
-            filter: blur(100px);
-            opacity: 0.15;
-            z-index: -1;
-        }
-        body.sidebar-open { overflow: hidden; }
-
-        /* EFEITO GLASSMORPHISM */
-        .glass-effect {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-        }
-
-        /* HEADER E CARD SUPERIOR */
-        .site-header {
-            position: sticky; top: 0; z-index: 1000;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        /* Estado do header quando scrollado */
-        .site-header.scrolled .top-card {
-            padding-top: 5px;
-            padding-bottom: 5px;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            background: var(--card-background);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--box-shadow);
-        }
-        .site-header.scrolled .team-name, .site-header.scrolled .team-info-container {
-            max-height: 0;
-            opacity: 0;
+        * {
             margin: 0;
             padding: 0;
-            pointer-events: none;
+            box-sizing: border-box;
         }
 
-        .top-card {
-            padding: 16px 24px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        html {
+            font-size: 16px;
         }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; height: var(--header-height); }
-        .toolbar-title { font-size: clamp(18px, 4vw, 22px); font-weight: 500; text-align: center; flex-grow: 1; }
-        .icon-button {
-            width: 44px; height: 44px; background: none; border: none; color: var(--text-on-primary);
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 22px; border-radius: 50%; transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .icon-button:hover { background-color: rgba(255, 255, 255, 0.1); transform: scale(1.1) rotate(5deg); }
-        #menu-toggle { display: none; }
-        
-        /* Nome do time com texto em gradiente */
-        .team-name {
-            text-align: center;
-            font-family: var(--font-display);
-            font-size: clamp(40px, 10vw, 64px);
-            margin: 20px 0;
-            padding: 0 16px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: transparent;
-            background: linear-gradient(90deg, #fff, #c9d1d9, #fff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: shimmer 5s linear infinite;
-        }
-        .team-info-container { display: flex; justify-content: space-around; align-items: center; margin-top: 24px; gap: 16px; flex-wrap: wrap; transition: all 0.4s ease; }
-        .team-stats { display: flex; flex-direction: column; gap: 10px; text-align: left; }
-        .team-stat { font-size: clamp(17px, 3.5vw, 21px); font-weight: 500; }
-        .team-logo {
-            width: clamp(110px, 25vw, 150px); height: clamp(110px, 25vw, 150px); object-fit: contain;
-            border-radius: 50%; /* Logo redondo fica mais moderno */
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
-            transition: transform 0.3s ease;
-        }
-        .team-logo:hover { transform: scale(1.05); }
 
-        /* SIDEBAR (MENU) */
-        #sidebar-menu {
-            position: fixed; top: 0; left: -100%; width: var(--sidebar-width); max-width: 85%; height: 100%;
-            z-index: 1002; transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; padding-top: 20px; box-shadow: 4px 0px 25px rgba(0,0,0,0.15);
-            background-color: var(--card-background);
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
         }
-        #sidebar-menu.active { left: 0; }
-        #sidebar-menu .sidebar-header { padding: 15px 20px; font-size: 22px; font-weight: 500; color: #fff; border-bottom: 1px solid var(--border-color); margin-bottom: 10px; }
-        #sidebar-menu ul li a { display: flex; align-items: center; padding: 16px 20px; text-decoration: none; color: var(--text-color-light); font-size: 17px; font-weight: 500; transition: background-color 0.2s ease, color 0.2s ease; border-left: 4px solid transparent; }
-        #sidebar-menu ul li a:hover, #sidebar-menu ul li a.active-link { background-color: rgba(0, 85, 255, 0.1); color: #fff; border-left-color: var(--primary-color); }
-        #sidebar-menu ul li a:hover i, #sidebar-menu ul li a.active-link i { color: var(--primary-color); }
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1001; }
-        .sidebar-overlay.active { display: block; }
 
-        /* CONTEÚDO PRINCIPAL */
-        .main-content { padding: 32px; }
-        .main-content > * { animation: fadeInSlideUp 0.6s backwards; }
-        .main-content > *:nth-child(1) { animation-delay: 0.1s; }
-        .main-content > *:nth-child(2) { animation-delay: 0.2s; }
-        .main-content > *:nth-child(3) { animation-delay: 0.3s; }
-        .main-content > *:nth-child(4) { animation-delay: 0.4s; }
+        /* Container principal */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
 
-        .section-title {
-            font-family: var(--font-display);
-            font-weight: 400; /* Anton não precisa de bold */
-            font-size: clamp(28px, 5vw, 36px); color: #fff;
-            margin-bottom: 24px; margin-top: 40px;
-            display: flex; align-items: center; gap: 12px;
-            letter-spacing: 0.8px;
+        /* Header simplificado */
+        .app-header {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
         }
-        .section-title i { color: var(--primary-color); }
-        .section-title:first-child { margin-top: 0; }
-        
-        /* TEMPORIZADOR */
-        .round-card {
-            background-color: var(--card-background); color: var(--text-color); border-radius: var(--border-radius);
-            padding: 24px; box-shadow: var(--box-shadow); text-align: center; cursor: pointer;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .round-card:hover { transform: translateY(-8px); box-shadow: var(--glow-shadow); }
-        .round-title { font-size: 16px; font-weight: 400; margin-bottom: 8px; color: var(--text-color-light); }
-        .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; }
-        .countdown-item {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
-            border-radius: 12px; padding: 12px 8px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border-color);
-        }
-        .countdown-item span:first-child {
-            font-family: var(--font-display);
-            font-size: clamp(32px, 8vw, 48px);
-            font-weight: 400;
-            color: var(--text-on-primary);
-            line-height: 1;
-        }
-        /* Animação de pulso nos segundos */
-        #countdown-seconds-container { animation: pulse 1s infinite; }
-        .countdown-item span:last-child { font-size: clamp(12px, 3vw, 14px); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--text-color-light); }
-        #countdown-expired-message { display: none; font-size: 24px; font-weight: 700; margin-top: 20px; }
-        
-        /* BOTÃO DE HISTÓRICO */
-        .view-history {
-            color: var(--text-color); text-align: center; font-size: 16px; font-weight: 500;
-            text-decoration: none; display: block; padding: 14px; border-radius: var(--border-radius);
-            transition: all 0.3s ease; border: 1px solid var(--primary-color);
-            margin: 24px 0 40px 0;
-            background-color: transparent;
-        }
-        .view-history:hover { background-color: var(--primary-color); color: white; box-shadow: var(--glow-shadow); transform: translateY(-3px); }
 
-        /* CARDS E GRID */
-        .cards-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
-        @media (min-width: 992px) { .cards-grid { grid-template-columns: 1fr 1fr; gap: 40px; } }
-        
-        .tournament-card {
-            cursor: pointer; background-color: var(--card-background); border-radius: var(--border-radius);
-            padding: 24px; box-shadow: var(--box-shadow);
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex; flex-direction: column; height: 100%;
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .tournament-card:hover { transform: translateY(-8px); box-shadow: var(--glow-shadow); }
-        .tournament-title {
-            font-family: var(--font-display);
-            font-size: clamp(22px, 4vw, 26px); font-weight: 400; margin-bottom: 16px; letter-spacing: 0.5px;
-            display: flex; justify-content: space-between; align-items: center; color: #fff;
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-decoration: none;
         }
-        .status-badge { font-family: var(--font-body); font-size: 12px; padding: 6px 12px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; }
-        .status-in-progress { background-color: var(--accent-orange); }
-        .status-finished { background-color: var(--accent-green); }
-        .status-not-started { background-color: var(--accent-gray); }
 
-        /* SUPERCOPA CARD */
-        .supercopa-content .player-logo { border-radius: 50%; width: 50px; height: 50px; object-fit: cover; }
+        .logo span {
+            color: var(--accent-secondary);
+        }
 
-        /* TABELA SUPERLIGA */
-        .superliga-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: 14px; }
-        .superliga-table th { padding: 10px; text-align: left; font-weight: 500; color: var(--text-color-light); border-bottom: 1px solid var(--border-color); text-transform: uppercase; font-size: 12px; }
-        .superliga-table td { padding: 12px 10px; text-align: left; vertical-align: middle; }
-        .superliga-table tbody tr { background-color: transparent; transition: background-color 0.2s; }
-        /* Zebra striping */
-        .superliga-table tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.03); }
-        .superliga-table tbody tr:hover { background-color: rgba(0, 85, 255, 0.1); }
-        .superliga-table .player-info { display: flex; align-items: center; gap: 10px; }
-        .superliga-table .player-logo { width: 28px; height: 28px; object-fit: contain; border-radius: 50%; }
-        .superliga-table .pts-cell { font-weight: 700; color: #fff; }
-        .superliga-table .round-pts-cell { color: var(--accent-green); font-weight: 700; }
-        .superliga-table .current-user-row { background: linear-gradient(90deg, rgba(0, 85, 255, 0.2), transparent); border-left: 3px solid var(--primary-color); }
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
 
-        /* LOADING SCREEN */
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--background-color); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; }
-        .loading-logo {
-            width: 80px; height: 80px;
-            border: 5px solid transparent;
-            border-top-color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
+        /* Botões de ação */
+        .btn-icon {
+            width: 2.5rem;
+            height: 2.5rem;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        #loading-screen p { margin-top: 20px; font-size: 18px; color: var(--text-color); }
 
-        /* RESPONSIVIDADE */
-        @media (max-width: 768px) {
-            #menu-toggle { display: flex; }
-            .team-info-container { flex-direction: column; align-items: center; gap: 24px; }
-            .team-stats { text-align: center; align-items: center; }
-            .main-content { padding: 16px; }
-            .cards-grid { gap: 24px; }
+        .btn-icon:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-icon.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Card de usuário (clicável) */
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .user-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        empty-tournament {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-tournament i {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.5;
+        }
+
+        .empty-tournament p {
+            font-size: 0.9rem;
+        }        /* Grid principal */
+        .main-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Card de aposta */
+        .bet-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bet-card.locked {
+            opacity: 0.7;
+            filter: grayscale(0.3);
+        }
+
+        .bet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .bet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .bet-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .bet-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .bet-status.closed {
+            background: var(--accent-danger);
+        }
+
+        .bet-timer {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-align: center;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .bet-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .bet-participants {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bet-button {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: 1rem;
+        }
+
+        .bet-button:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .bet-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .payment-alert {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #fbbf24;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .payment-alert.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #92400e;
+        }
+
+        /* Tabelas de torneios */
+        .tables-section {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .tournament-table {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .table-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+        }
+
+        .table-body {
+            padding: 1rem 0;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th {
+            text-align: left;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+        }
+
+        .standings-table td {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .standings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .standings-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .position {
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .player-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .player-name {
+            font-weight: 500;
+        }
+
+        .player-team {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .points {
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .trend {
+            display: inline-block;
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            margin-right: 0.25rem;
+        }
+
+        .trend.up {
+            background: var(--accent-success);
+        }
+
+        .trend.down {
+            background: var(--accent-danger);
+        }
+
+        .trend.equal {
+            background: var(--text-tertiary);
+        }
+
+        /* Modal de pagamento */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsividade */
+        @media (min-width: 640px) {
+            .main-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tables-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+            
+            .tables-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Utilitários */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(
+                90deg,
+                var(--bg-secondary) 25%,
+                var(--bg-input) 50%,
+                var(--bg-secondary) 75%
+            );
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        .extras-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-base);
+        }
+
+        .extras-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .extras-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .extras-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .extras-button {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .extras-button:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateX(4px);
+            border-color: var(--accent-primary);
+        }
+
+        .extras-button i {
+            font-size: 1.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border-radius: 0.5rem;
+            transition: all var(--transition-fast);
+        }
+
+        .extras-button:hover i {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .extras-button-content {
+            flex: 1;
+        }
+
+        .extras-button-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .extras-button-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .extras-button:hover .extras-button-desc {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .history-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .history-button:hover {
+            background: var(--accent-secondary);
+            color: white;
+            border-color: var(--accent-secondary);
+            transform: translateY(-2px);
+        }        /* Seção vazia dos torneios */
+        .empty-tournament {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-tournament i {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.5;
+        }
+
+        .empty-tournament p {
+            font-size: 0.9rem;
+        }        /* Grid principal */
+        .main-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tournament-link {
+            text-decoration: none;
+            color: inherit; /* Mantém a cor do texto do tema */
+            display: block; /* Garante que o link ocupe todo o espaço */
+            height: 100%;
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .tournament-link:hover .tournament-table {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-primary);
+        }
+        
+        /* Ajustar o card de torneio para flexibilidade */
+        .tournament-table {
+            height: 100%; /* Para funcionar bem com a tag <a> */
+            /* Adicionar transições para o hover do link */
+            transition: all var(--transition-base); 
+        }
+
+        /* Estilos para o conteúdo personalizado da Supercopa */
+        .supercopa-personalized {
+            padding: 1rem;
+        }
+
+        .supercopa-personalized .stage-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+        }
+
+        .supercopa-personalized .stage-badge {
+            padding: 0.25rem 0.5rem;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .supercopa-personalized .group-badge {
+            padding: 0.25rem 0.5rem;
+            background: var(--accent-secondary);
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .supercopa-personalized .position-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .supercopa-personalized .position-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .supercopa-personalized .position-stats {
+            flex: 1;
+        }
+
+        .supercopa-personalized .points {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .supercopa-personalized .record {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .supercopa-personalized .match-card {
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .supercopa-personalized .match-title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .supercopa-personalized .match-players {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .supercopa-personalized .player {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .supercopa-personalized .player-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .supercopa-personalized .player-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .supercopa-personalized .player-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .supercopa-personalized .player-team {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .supercopa-personalized .match-result {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent-primary);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .supercopa-personalized .match-status {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
         }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <div class="loading-logo"></div>
-        <p>Carregando...</p>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="home.html" class="logo">
+                    BR<span>Depressão</span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="btn-icon" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <a href="profile.html" class="user-card" id="user-card">
+                        <img src="" alt="Avatar" class="user-avatar" id="user-avatar">
+                        <div class="user-info">
+                            <div class="user-name" id="user-name">Carregando...</div>
+                            <div class="user-details" id="user-details">Posição: --</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Grid Principal -->
+        <main class="main-grid">
+            <!-- Card de Aposta -->
+            <section class="bet-card" id="bet-card">
+                <div class="bet-header">
+                    <h2 class="bet-title">Rodada #1</h2>
+                    <span class="bet-status" id="bet-status">ABERTA</span>
+                </div>
+                
+                <div class="bet-timer" id="bet-timer">
+                    --:--:--
+                </div>
+                
+                <p class="text-secondary">Faltam para o fechamento dos palpites</p>
+                
+                <div class="bet-info">
+                    <div class="bet-participants">
+                        <i class="fas fa-users"></i>
+                        <span id="bet-participants-count">0</span> pessoas já palpitaram
+                    </div>
+                    <div class="bet-matches">
+                        <i class="fas fa-futbol"></i>
+                        <span id="bet-matches-count">10</span> jogos
+                    </div>
+                </div>
+                
+                <button class="bet-button" id="bet-button" onclick="window.location.href='palpites.html'">
+                    <i class="fas fa-pencil-alt"></i>
+                    Fazer Palpite
+                </button>
+
+                <a href="historico.html" class="history-button">
+                    <i class="fas fa-history"></i>
+                    Ver Histórico de Palpites
+                </a>
+                
+                <!-- Alerta de Pagamento -->
+                <div class="payment-alert" id="payment-alert">
+                    <div class="alert-content">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Pagamento pendente</strong>
+                            <p style="margin-top: 0.25rem; font-size: 0.875rem;">
+                                É necessário pagar a taxa de participação para fazer palpites.
+                            </p>
+                            <button class="bet-button" style="margin-top: 0.5rem; padding: 0.5rem;" onclick="showPaymentModal()">
+                                Realizar Pagamento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Tabelas -->
+            <section class="tables-section">
+                <!-- Superliga -->
+                <a href="superliga.html" class="tournament-link">
+                    <div class="tournament-table">
+                        <div class="table-header">
+                            <h3 class="table-title">
+                                <i class="fas fa-trophy"></i>
+                                Superliga
+                            </h3>
+                            <span class="table-badge">Abertura</span>
+                        </div>
+                        <div class="table-body">
+                            <table class="standings-table" id="superliga-table">
+                                <thead>
+                                    <tr>
+                                        <th width="50">#</th>
+                                        <th>Jogador</th>
+                                        <th width="80">PTS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="superliga-body">
+                                    <!-- Carregado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Supercopa -->
+                <a href="supercopa.html" class="tournament-link">
+                    <div class="tournament-table">
+                        <div class="table-header">
+                            <h3 class="table-title">
+                                <i class="fas fa-shield-alt"></i>
+                                Supercopa
+                            </h3>
+                            <span class="table-badge" id="supercopa-phase">Grupos</span>
+                        </div>
+                        <div class="table-body">
+                            <table class="standings-table" id="supercopa-table">
+                                <thead>
+                                    <tr>
+                                        <th width="50">#</th>
+                                        <th>Jogador</th>
+                                        <th width="80">PTS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="supercopa-body">
+                                    <!-- Carregado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Libertadores (TORNADO CLICÁVEL) -->
+                <a href="libertadores.html" class="tournament-link">
+                    <div class="tournament-table">
+                        <div class="table-header">
+                            <h3 class="table-title">
+                                <i class="fas fa-globe-americas"></i>
+                                Libertadores
+                            </h3>
+                            <span class="table-badge" id="libertadores-phase">Fase 1</span>
+                        </div>
+                        <div class="table-body" id="libertadores-body-preview">
+                            <div style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+                                <i class="fas fa-trophy" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+                                <p>Veja os confrontos...</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Recopa -->
+                <div class="tournament-table">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-star"></i>
+                            Recopa
+                        </h3>
+                        <span class="table-badge">Final</span>
+                    </div>
+                    <div class="table-body">
+                        <div style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+                            <i class="fas fa-calendar" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                            <p>Em breve...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confrontos -->
+                <div class="tournament-table">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-crosshairs"></i>
+                            Confrontos
+                        </h3>
+                        <span class="table-badge">Diretos</span>
+                    </div>
+                    <div class="table-body">
+                        <div style="padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <img src="" alt="Time A" class="player-avatar" id="rival-avatar">
+                                <div style="flex: 1;">
+                                    <div class="player-name" id="rival-name">Seu Rival</div>
+                                    <div class="player-team">Vitórias: 0 | Derrotas: 0</div>
+                                </div>
+                            </div>
+                            <button class="bet-button" style="padding: 0.5rem; font-size: 0.875rem;" onclick="window.location.href='rival.html'">
+                                Ver Confrontos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOVO CARD: Extras -->
+                <div class="extras-card">
+                    <h3 class="extras-title">
+                        <i class="fas fa-star"></i>
+                        Extras do Clube
+                    </h3>
+                    <div class="extras-grid">
+                        <a href="predicoes-ano.html" class="extras-button">
+                            <i class="fas fa-calendar-check" style="color: var(--accent-success);"></i>
+                            <div class="extras-button-content">
+                                <div class="extras-button-title">Predições do Ano</div>
+                                <div class="extras-button-desc">Acerte os campeões do ano e ganhe conquistas!</div>
+                            </div>
+                        </a>
+                        <a href="galeria-titulos.html" class="extras-button">
+                            <i class="fas fa-medal" style="color: var(--accent-warning);"></i>
+                            <div class="extras-button-content">
+                                <div class="extras-button-title">Galeria de Títulos</div>
+                                <div class="extras-button-desc">Veja quem levantou a taça em cada temporada.</div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Se necessário, adicione um botão para gerenciar extras -->
+                </div>
+            </section>
+        </main>
     </div>
 
-    <!-- O resto do seu HTML permanece o mesmo -->
-    <nav id="sidebar-menu" class="glass-effect">
-        <div class="sidebar-header">
-            <span>BR da Depressão</span>
-            <button class="close-btn" id="sidebar-close-btn" aria-label="Fechar menu">×</button>
-        </div>
-        <ul>
-            <li><a href="home.html" class="active-link"><i class="fas fa-home"></i> Início</a></li>
-            <li><a href="palpites.html"><i class="fas fa-pencil-alt"></i> Fazer Palpite</a></li>
-            <li><a href="historico.html"><i class="fas fa-history"></i> Histórico</a></li>
-            <li><a href="superliga.html"><i class="fas fa-trophy"></i> Superliga</a></li>
-            <li><a href="supercopa.html"><i class="fas fa-shield-alt"></i> Supercopa</a></li>
-            <li id="sidebar-admin-item" style="display:none;"><a href="admin.html"><i class="fas fa-crown"></i> Admin</a></li>
-        </ul>
-        <div style="padding: 20px; border-top: 1px solid #eee;">
-            <button class="icon-button" id="sidebar-logout-button" style="width: 100%; background-color: #f8f9fa; color: var(--text-color-light); border: 1px solid #ddd; border-radius: var(--border-radius);">
-                <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Sair
-            </button>
-        </div>
-    </nav>
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-    <header class="site-header" id="site-header">
-        <div class="top-card" id="top-card">
-            <div class="toolbar">
-                <button class="icon-button" id="menu-toggle" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
-                <div class="toolbar-title">BR da Depressão</div>
-                <button class="icon-button" id="admin-button" aria-label="Painel do Administrador"><i class="fas fa-crown"></i></button>
-                <button class="icon-button" id="logout-button" aria-label="Sair"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-            <div class="team-name" id="team-name">NOME</div>
-            <div class="team-info-container">
-                <div class="team-stats">
-                    <div class="team-stat" id="team-sigla">ELN - Time</div>
-                    <div class="team-stat" id="team-pos-liga">--º Liga</div>
-                    <div class="team-stat" id="team-pos-copa">--º Grupo --</div>
-                </div>
-                <img src="default-avatar.png" alt="Team Logo" class="team-logo" id="team-logo">
-            </div>
-        </div>
-    </header>
-
-    <main class="main-content">
-        <div class="section-title"><i class="fas fa-calendar-alt"></i> Próxima Rodada</div>
-        <div class="round-card" id="next-round-card">
-            <div class="round-title" id="next-round-deadline">Palpites até --/-- --:--</div>
-            <div id="next-round-countdown-container" class="countdown-grid">
-                <div class="countdown-item"><span id="countdown-days">00</span><span id="countdown-days-label">Dias</span></div>
-                <div class="countdown-item"><span id="countdown-hours">00</span><span id="countdown-hours-label">Horas</span></div>
-                <div class="countdown-item"><span id="countdown-minutes">00</span><span id="countdown-minutes-label">Minutos</span></div>
-                <div class="countdown-item" id="countdown-seconds-container"><span id="countdown-seconds">00</span><span id="countdown-seconds-label">Segundos</span></div>
-            </div>
-            <div id="countdown-expired-message">Tempo Esgotado! Ver Rodada</div>
-        </div>
-        <a href="historico.html" class="view-history">Ver Histórico de Rodadas</a>
-        
-        <div class="cards-grid">
-            <div>
-                <div class="section-title"><i class="fas fa-shield-alt"></i> Supercopa</div>
-                <div class="tournament-card" id="supercopa-card">
-                    <div class="tournament-title">
-                        Supercopa
-                        <span id="supercopa-status-badge" class="status-badge status-not-started">Não Iniciada</span>
-                    </div>
-                    <div id="supercopa-content" class="supercopa-content">
-                        <p>Aguardando informações...</p>
-                    </div>
-                </div>
+    <!-- Modal de Pagamento -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Pagamento</h2>
+            <div style="margin-bottom: 1.5rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                    Taxa de participação: <strong style="color: var(--accent-primary);">R$ 20,00</strong>
+                </p>
+                <p style="font-size: 0.875rem; color: var(--text-tertiary);">
+                    O pagamento dá acesso a todas as competições do mês.
+                </p>
             </div>
             
-            <div>
-                <div class="section-title"><i class="fas fa-trophy"></i> Superliga</div>
-                <div class="tournament-card" id="superliga-card">
-                    <div class="tournament-title">
-                        Superliga
-                        <span id="superliga-status-badge" class="status-badge status-in-progress">Em Progresso</span>
-                    </div>
-                    <table class="superliga-table">
-                        <thead>
-                            <tr>
-                                <th>Pos</th>
-                                <th>Jogador</th>
-                                <th class="pts-cell">PTS</th>
-                                <th class="round-pts-cell">R</th>
-                            </tr>
-                        </thead>
-                        <tbody id="superliga-table-body">
-                           <!-- Linhas da tabela serão preenchidas pelo JS -->
-                        </tbody>
-                    </table>
-                </div>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <button class="bet-button" style="flex: 1;" onclick="handlePayment('pix')">
+                    <i class="fas fa-qrcode"></i>
+                    PIX
+                </button>
+                <button class="bet-button" style="flex: 1; background: var(--accent-secondary);" onclick="handlePayment('mercado_pago')">
+                    Mercado Pago
+                </button>
             </div>
+            
+            <button class="bet-button" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);" onclick="hidePaymentModal()">
+                Cancelar
+            </button>
         </div>
-        
-        <div class="respiro" style="height: 100px;"></div>
-    </main>
-
-    <!-- Ad Popup -->
-    <div id="customAdPopup" class="ad-popup glass-effect">
-        <!-- Seu conteúdo do Ad Popup aqui -->
     </div>
 
-    <!-- Firebase SDK (sem alterações) -->
+    <div class="modal-overlay" id="pix-modal">
+        <div class="modal-content" style="text-align: center;">
+            <h2 class="modal-title">Pagamento via PIX</h2>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Escaneie o QR Code ou use a chave PIX Copia e Cola</p>
+                <p style="font-size: 0.875rem; color: var(--text-tertiary);">Valor: R$ 20,00</p>
+            </div>
+
+            <!-- Imagem do QR Code -->
+            <img src="./pix.png" alt="QR Code PIX" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.5rem;">
+
+            <div style="margin-bottom: 1.5rem; padding: 0.75rem; background: var(--bg-secondary); border-radius: 0.75rem;">
+                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Chave PIX (E-mail):</p>
+                <div id="pix-key-display" style="font-size: 1rem; font-weight: 700; color: var(--text-primary); word-break: break-all;">
+                    platze8@gmail.com
+                </div>
+            </div>
+
+            <button class="bet-button" id="copy-pix-key" style="margin-top: 0; background: var(--accent-success);">
+                <i class="fas fa-copy"></i> Copiar Chave PIX
+            </button>
+            
+            <button class="bet-button" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); margin-top: 1rem;" onclick="hidePixModal()">
+                Fechar
+            </button>
+            
+            <p style="font-size: 0.75rem; color: var(--accent-warning); margin-top: 1rem;">
+                A liberação do acesso pode demorar alguns minutos após a confirmação do pagamento.
+            </p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // SEU SCRIPT JS ORIGINAL (quase todo igual)
-        // ... (todo o seu script de firebaseConfig até antes do DOMContentLoaded)
-
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
@@ -412,437 +1143,958 @@
             measurementId: "G-4JXFEZ8DW6"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
 
-        const uiElements = {
-            loadingScreen: document.getElementById('loading-screen'),
-            sidebar: {
-                menu: document.getElementById('sidebar-menu'),
-                toggle: document.getElementById('menu-toggle'),
-                closeBtn: document.getElementById('sidebar-close-btn'),
-                overlay: document.getElementById('sidebar-overlay'),
-                adminItem: document.getElementById('sidebar-admin-item'),
-                logoutBtn: document.getElementById('sidebar-logout-button')
-            },
-            header: {
-                container: document.getElementById('site-header'),
-                logoutBtn: document.getElementById('logout-button'),
-                adminBtn: document.getElementById('admin-button'),
-                teamName: document.getElementById('team-name'),
-                teamSigla: document.getElementById('team-sigla'),
-                teamPosLiga: document.getElementById('team-pos-liga'),
-                teamPosCopa: document.getElementById('team-pos-copa'),
-                teamLogo: document.getElementById('team-logo')
-            },
-            nextRound: {
-                card: document.getElementById('next-round-card'),
-                deadline: document.getElementById('next-round-deadline'),
-                countdownContainer: document.getElementById('next-round-countdown-container'),
-                expiredMessage: document.getElementById('countdown-expired-message'),
-                days: document.getElementById('countdown-days'),
-                hours: document.getElementById('countdown-hours'),
-                minutes: document.getElementById('countdown-minutes'),
-                seconds: document.getElementById('countdown-seconds'),
-                daysLabel: document.getElementById('countdown-days-label'),
-                hoursLabel: document.getElementById('countdown-hours-label'),
-            },
-            supercopa: {
-                card: document.getElementById('supercopa-card'),
-                content: document.getElementById('supercopa-content'),
-                statusBadge: document.getElementById('supercopa-status-badge')
-            },
-            superliga: {
-                card: document.getElementById('superliga-card'),
-                tableBody: document.getElementById('superliga-table-body'),
-                statusBadge: document.getElementById('superliga-status-badge')
-            },
-        };
+        // Estado da aplicação
+        let currentUser = null;
+        let userData = null;
+        let teamsData = {};
+        let usersData = {};
+        let activeRound = null;
+        let countdownInterval = null;
+        let completedRoundsCache = null; 
+        let currentUserTotalSuperligaPoints = 0;
+        let superligaStandingsCache = [];
+        const PIX_KEY = "platze8@gmail.com";
 
-        let teamsDataCache = null;
-        let usersDataCache = null;
-        let countdownInterval;
-
-        auth.onAuthStateChanged((firebaseUser) => {
-            if (firebaseUser) {
-                fetchAllData(firebaseUser.uid);
-            } else {
-                window.location.replace('index.html');
-            }
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAuth();
+            initEventListeners();
         });
 
-        async function fetchAllData(userId) {
-            if (uiElements.loadingScreen) uiElements.loadingScreen.style.display = 'flex';
-            try {
-                await Promise.all([loadTeamsDataOnce(), loadUsersDataOnce()]);
-                
-                const activeRoundData = await findActiveRound();
-                const liveRoundPoints = calculateLiveRoundPoints(activeRoundData);
-                
-                const superligaPromise = loadSuperligaStandings(activeRoundData, liveRoundPoints);
-                const supercopaPromise = loadSupercopaInfo(activeRoundData, liveRoundPoints);
-
-                await Promise.all([
-                    loadUserProfile(userId),
-                    superligaPromise,
-                    supercopaPromise,
-                    loadNextRound(),
-                    checkAdminStatus(userId)
-                ]);
-            } catch (error) {
-                console.error('Erro fatal no carregamento inicial:', error);
-            } finally {
-                if (uiElements.loadingScreen) uiElements.loadingScreen.style.display = 'none';
-            }
-        }
-
-        async function loadTeamsDataOnce() {
-            if (teamsDataCache) return;
-            const snapshot = await database.ref('teams').once('value');
-            teamsDataCache = snapshot.val() || {};
-        }
-
-        async function loadUsersDataOnce() {
-            if (usersDataCache) return;
-            const snapshot = await database.ref('users').once('value');
-            usersDataCache = snapshot.val() || {};
-            for (const userId in usersDataCache) {
-                usersDataCache[userId].id = userId;
-            }
-        }
-
-        async function loadUserProfile(userId) {
-            const userData = usersDataCache[userId];
-            if (!userData) throw new Error('Usuário não encontrado');
-            const teamData = teamsDataCache[userData.teamId] || { name: 'N/A', image: '', color1: '#cccccc' };
-            updateUserProfileUI({ userData, teamData });
-        }
-
-        function updateUserProfileUI({ userData, teamData }) {
-            const { teamName, teamSigla, teamLogo } = uiElements.header;
-            teamName.textContent = userData.name || 'N/A';
-            teamSigla.textContent = `${userData.abbr || 'SGL'} - ${teamData.name || 'Time'}`;
-            teamLogo.src = teamData.image || 'default-avatar.png';
-            // O gradiente do header agora vem do CSS, mas podemos usar a cor do time em outros lugares
-            // Ex: document.documentElement.style.setProperty('--primary-color', teamData.color1);
-        }
-
-        async function loadNextRound() {
-            const activeRound = await findActiveRound();
-            updateNextRoundUI(activeRound);
-        }
-
-        function updateNextRoundUI(roundData) {
-            const { card, deadline, countdownContainer, expiredMessage } = uiElements.nextRound;
-            if (!card) return;
-            if (roundData?.finishTimestamp) {
-                const finishDate = new Date(roundData.finishTimestamp);
-                const options = { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' };
-                deadline.textContent = `Palpites até ${finishDate.toLocaleDateString('pt-BR', options).replace(',', '')}`;
-                card.onclick = () => window.location.href = 'palpites.html';
-                startCountdown(finishDate.getTime());
-            } else {
-                deadline.textContent = 'Nenhuma rodada aberta';
-                countdownContainer.style.display = 'none';
-                expiredMessage.style.display = 'block';
-                card.onclick = () => alert('Não há rodadas disponíveis.');
-            }
-        }
-
-        function startCountdown(finishTimestamp) {
-            clearInterval(countdownInterval);
-            const update = () => {
-                const distance = finishTimestamp - Date.now();
-                const { countdownContainer, expiredMessage, days, hours, minutes, seconds, daysLabel, hoursLabel } = uiElements.nextRound;
-                if (distance < 0) {
-                    clearInterval(countdownInterval);
-                    countdownContainer.style.display = 'none';
-                    expiredMessage.style.display = 'block';
-                    return;
-                }
-                countdownContainer.style.display = 'grid';
-                expiredMessage.style.display = 'none';
-                const d = Math.floor(distance / 86400000);
-                const h = Math.floor((distance % 86400000) / 3600000);
-                const m = Math.floor((distance % 3600000) / 60000);
-                const s = Math.floor((distance % 60000) / 1000);
-                days.textContent = String(d).padStart(2, '0');
-                hours.textContent = String(h).padStart(2, '0');
-                minutes.textContent = String(m).padStart(2, '0');
-                seconds.textContent = String(s).padStart(2, '0');
-                daysLabel.textContent = d === 1 ? 'Dia' : 'Dias';
-                hoursLabel.textContent = h === 1 ? 'Hora' : 'Horas';
-            };
-            update();
-            countdownInterval = setInterval(update, 1000);
-        }
-
-        async function loadSupercopaInfo(activeRoundData, liveRoundPoints) {
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
-
-            const snapshot = await database.ref('tournaments/supercopa').once('value');
-            const data = snapshot.val();
-            if (!data || !data.groups) {
-                updateSupercopaUI({ status: 0 });
-                return;
-            }
-
-            let info = { data, status: data.groups.status };
-            const userGroupKey = Object.keys(data.groups).find(key => 
-                Array.isArray(data.groups[key]) && data.groups[key].includes(currentUser.uid)
-            );
-
-            if (userGroupKey) {
-                info.userGroupKey = userGroupKey;
-                info.groupDisplayName = { 'group1': 'Grupo A', 'group2': 'Grupo B', 'group3': 'Grupo C', 'group4': 'Grupo D' }[userGroupKey] || userGroupKey;
-
-                const groupStandings = Object.values(data.groups.standings || {})
-                    .filter(p => data.groups[userGroupKey].includes(p.playerId))
-                    .sort((a, b) => {
-                        const a_gd = (a.goalsFor || 0) - (a.goalsAg || 0);
-                        const b_gd = (b.goalsFor || 0) - (b.goalsAg || 0);
-                        return (b.points || 0) - (a.points || 0) ||
-                            (b.wins || 0) - (a.wins || 0) ||
-                            b_gd - a_gd ||
-                            (b.goalsFor || 0) - (a.goalsFor || 0);
-                    });
-                const userStanding = groupStandings.find(p => p.playerId === currentUser.uid);
-                info.userPosition = groupStandings.findIndex(p => p.playerId === currentUser.uid) + 1;
-                info.userPoints = userStanding?.points || 0;
-                
-                if (uiElements.header.teamPosCopa) {
-                    uiElements.header.teamPosCopa.textContent = info.userPosition ? `${info.userPosition}º ${info.groupDisplayName}` : `No ${info.groupDisplayName}`;
-                }
-                
-                const activeCopaRound = Object.values(data.groups.rounds || {}).find(r => r.status === 1);
-                if (activeCopaRound?.matches) {
-                    const userMatch = Object.values(activeCopaRound.matches).find(m => m.player1Id === currentUser.uid || m.player2Id === currentUser.uid);
-                    if (userMatch) {
-                        const opponentId = userMatch.player1Id === currentUser.uid ? userMatch.player2Id : userMatch.player1Id;
-                        info.nextOpponent = usersDataCache[opponentId];
-                        info.nextOpponent.teamData = teamsDataCache[info.nextOpponent.teamId];
-
-                        const myScore = activeRoundData ? (liveRoundPoints[currentUser.uid] || 0) : (usersDataCache[currentUser.uid]?.lastRoundPointsLigaAbertura || 0);
-                        const opponentScore = activeRoundData ? (liveRoundPoints[opponentId] || 0) : (usersDataCache[opponentId]?.lastRoundPointsLigaAbertura || 0);
-                        info.matchResult = `${myScore} x ${opponentScore}`;
-                    }
-                }
-            }
+        // Tema
+        function initTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = themeToggle.querySelector('i');
             
-            updateSupercopaUI(info);
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
         }
 
-        function updateSupercopaUI(info) {
-            const { content, statusBadge } = uiElements.supercopa;
-            const currentUser = auth.currentUser;
-            if (!content || !info) return;
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
 
-            let statusClass = 'status-not-started', statusText = 'Não Iniciada', htmlContent = '<p>Aguardando informações...</p>';
-
-            if (info.status === 1) {
-                statusClass = 'status-in-progress'; statusText = 'Em Progresso';
-                if (info.userGroupKey) {
-                    const positionText = info.userPosition ? `<strong>${info.userPosition}º</strong> no ${info.groupDisplayName} (${info.userPoints} pts)` : `No ${info.groupDisplayName}`;
-                    let matchHTML = '<div>Sem jogo agendado para esta rodada.</div>';
-                    
-                    if (info.nextOpponent) {
-                        const myUserData = usersDataCache[currentUser.uid];
-                        const myTeamData = teamsDataCache[myUserData.teamId];
-                        matchHTML = `
-                            <div class="next-match">
-                                <div class="match-player">
-                                    <img src="${myTeamData.image}" alt="${myTeamData.name}" class="player-logo">
-                                    <span class="player-name">${myUserData.name}</span>
-                                </div>
-                                <div class="match-score">${info.matchResult || 'vs'}</div>
-                                <div class="match-player">
-                                    <img src="${info.nextOpponent.teamData.image}" alt="${info.nextOpponent.teamData.name}" class="player-logo">
-                                    <span class="player-name">${info.nextOpponent.name}</span>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    htmlContent = `<div class="group-position">${positionText}</div>${matchHTML}`;
+        // Autenticação
+        function initAuth() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadInitialData();
                 } else {
-                    htmlContent = '<p>Você não está participando desta edição.</p>';
+                    window.location.href = 'index.html';
                 }
-            } else if (info.status === 2) {
-                statusClass = 'status-finished'; statusText = 'Finalizada';
-                htmlContent = `<p>Edição finalizada. Clique para ver os resultados.</p>`;
-            }
-
-            statusBadge.className = `status-badge ${statusClass}`;
-            statusBadge.textContent = statusText;
-            content.innerHTML = htmlContent;
+            });
         }
 
-        async function loadSuperligaStandings(activeRoundData, liveRoundPoints) {
-            const activeStageKey = 'abertura';
-            const pointsField = `pointsSuperliga${activeStageKey.charAt(0).toUpperCase() + activeStageKey.slice(1)}`;
-            const roundPointsField = `lastRoundPointsLiga${activeStageKey.charAt(0).toUpperCase() + activeStageKey.slice(1)}`;
+        // Carregar dados iniciais
+        async function loadInitialData() {
+            try {
+                // Carregar dados em paralelo
+                await Promise.all([
+                    loadUserData(),
+                    loadTeamsData(),
+                    loadUsersData(),
+                    loadActiveRound(),
+                ]);
 
-            const usersArray = Object.values(usersDataCache);
+                await loadTournamentsData();
+                
+                updateUI();
+                startCountdown();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                showError('Erro ao carregar dados. Tente recarregar a página.');
+            }
+        }
+
+        async function loadUserData() {
+            const snapshot = await database.ref('users/' + currentUser.uid).once('value');
+            userData = snapshot.val();
+        }
+
+        async function loadTeamsData() {
+            const snapshot = await database.ref('teams').once('value');
+            teamsData = snapshot.val() || {};
+        }
+
+        async function loadUsersData() {
+            const snapshot = await database.ref('users').once('value');
+            usersData = snapshot.val() || {};
+        }
+
+        async function loadActiveRound() {
+            const snapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
+            const rounds = snapshot.val();
             
-            const standings = usersArray
-                .filter(user => user[pointsField] !== undefined)
-                .map(user => {
-                    let userRoundPoints = 0;
-                    if (activeRoundData) {
-                        userRoundPoints = liveRoundPoints[user.id] || 0;
-                    } else {
-                        userRoundPoints = user[roundPointsField] || 0;
+            if (rounds) {
+                activeRound = Object.values(rounds)[0];
+                updateBetCard();
+            }
+        }
+
+        function calculateMatchPoints(final, pred) {
+            if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return 0;
+            if (final.homeScore == pred.homeScore && final.awayScore == pred.awayScore) return 3;
+            const finalW = Math.sign(final.homeScore - final.awayScore);
+            const predW = Math.sign(pred.homeScore - pred.awayScore);
+            if (finalW === predW) return 1;
+            if (final.homeScore == pred.awayScore && final.awayScore == pred.homeScore) return -1;
+            return 0;
+        }
+
+        function calculateLiveRoundPoints(roundData) {
+            if (!roundData || !roundData.matches) return {};
+            const userRoundPoints = {};
+            const playersWithPredictions = new Set();
+            
+            // 1. Identificar todos os usuários que palpitaram
+            Object.values(roundData.matches).forEach(match => {
+                if(match.predictions) {
+                    Object.keys(match.predictions).forEach(playerId => playersWithPredictions.add(playerId));
+                }
+            });
+
+            // 2. Calcular os pontos parciais
+            playersWithPredictions.forEach(playerId => {
+                userRoundPoints[playerId] = 0;
+                Object.values(roundData.matches).forEach(match => {
+                    if (match.finalResult && match.predictions?.[playerId]) {
+                        userRoundPoints[playerId] += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
                     }
-                    return {
-                        ...user,
-                        totalPoints: (user[pointsField] || 0) + userRoundPoints,
-                        roundPoints: userRoundPoints
+                });
+            });
+            return userRoundPoints;
+        }
+
+        async function loadTournamentsData() {
+            // Carregar dados dos torneios
+            await Promise.all([
+                loadSuperligaData(),
+                loadSupercopaData(),
+                loadLibertadoresData() // NOVO
+            ]);
+        }
+
+        async function loadSuperligaData() {
+            const superligaSnapshot = await database.ref('tournaments/superliga').once('value');
+            const superligaData = superligaSnapshot.val() || { stages: { abertura: {}, clausura: {} } };
+
+            const currentStageKey = superligaData.stages.clausura.status === 1 ? 'clausura' : 'abertura';
+            const pointsField = `pointsSuperliga${currentStageKey.charAt(0).toUpperCase() + currentStageKey.slice(1)}`;
+            
+            let liveRoundPoints = {};
+            const activeRoundData = activeRound; // <--- USANDO O ROUND GLOBAL
+            const isRoundActive = activeRoundData && activeRoundData.status === 1;
+            
+            if (isRoundActive) {
+                liveRoundPoints = calculateLiveRoundPoints(activeRoundData);
+                console.log("Pontos ao vivo calculados:", liveRoundPoints);
+            }
+            
+            const usersArray = Object.values(usersData);
+            
+            const fullStandings = usersArray
+                .filter(user => user[pointsField] !== undefined)
+                .map((user) => {
+                    const baseAggregatedPoints = user[pointsField] || 0;
+                    const displayRoundPoints = isRoundActive ? (liveRoundPoints[user.id] || 0) : 0;
+                    const totalPoints = baseAggregatedPoints + displayRoundPoints;
+
+                    return { 
+                        ...user, 
+                        totalPoints: totalPoints, 
+                        roundPoints: displayRoundPoints,
+                        position: 0,
                     };
                 })
-                .sort((a, b) => b.totalPoints - a.totalPoints || (b.roundPoints || 0) - (a.roundPoints || 0));
+                .sort((a, b) => b.totalPoints - a.totalPoints || b.roundPoints - a.roundPoints)
+                .map((user, index) => ({ ...user, position: index + 1 }));
 
-            const userPosition = standings.findIndex(u => u.id === auth.currentUser.uid) + 1;
-            if (uiElements.header.teamPosLiga && userPosition > 0) {
-                uiElements.header.teamPosLiga.textContent = `${userPosition}º Liga`;
-            }
+            superligaStandingsCache = fullStandings;
+
+            const currentUserStanding = fullStandings.find(s => s.id === currentUser.uid);
+            const userPosition = currentUserStanding ? currentUserStanding.position : -1;
+
+            let startIndex = userPosition > 0 ? userPosition - 3 : 0;
+            startIndex = Math.max(0, startIndex);
             
-            updateSuperligaUI({ standings, currentUserUid: auth.currentUser.uid });
-        }
+            let endIndex = startIndex + 5;
+            endIndex = Math.min(fullStandings.length, endIndex);
 
-        function updateSuperligaUI({ standings, currentUserUid }) {
-            const tableBody = uiElements.superliga.tableBody;
-            if (!tableBody) return;
-            
-            const currentUserIndex = standings.findIndex(user => user.id === currentUserUid);
-            let rowsToShow = [];
+            let previewStandings = fullStandings.slice(startIndex, endIndex);
 
-            if (standings.length <= 5) {
-                rowsToShow = standings;
-            } else if (currentUserIndex < 2) {
-                rowsToShow = standings.slice(0, 5);
-            } else if (currentUserIndex > standings.length - 4) {
-                rowsToShow = standings.slice(-5);
-            } else {
-                rowsToShow = standings.slice(currentUserIndex - 2, currentUserIndex + 3);
+            if (userPosition === -1 || previewStandings.length === 0) {
+                previewStandings = fullStandings.slice(0, 5);
             }
 
-            tableBody.innerHTML = rowsToShow.map(user => {
-                const team = teamsDataCache[user.teamId] || {};
-                const position = standings.findIndex(u => u.id === user.id) + 1;
-                return `
-                    <tr class="${user.id === currentUserUid ? 'current-user-row' : ''}">
-                        <td class="pos-cell">${position}</td>
-                        <td>
-                            <div class="player-info">
-                                <img src="${team.image || ''}" alt="${team.name || ''}" class="player-logo">
-                                <span>${user.name}</span>
-                            </div>
-                        </td>
-                        <td class="pts-cell">${user.totalPoints}</td>
-                        <td class="round-pts-cell">+${user.roundPoints}</td>
-                    </tr>
-                `;
-            }).join('');
-            
-            if (standings.length > rowsToShow.length) {
-                tableBody.insertAdjacentHTML('beforeend', `<tr class="partial-view-info"><td colspan="4">Clique para ver a tabela completa</td></tr>`);
-            }
+            const stageName = currentStageKey === 'abertura' ? 'Abertura' : 'Clausura';
+            document.querySelector('#superliga-table').closest('.tournament-table').querySelector('.table-badge').textContent = stageName;
+
+            console.log("Preview standings:", previewStandings);
+            // console.log("Primeiro jogador do preview:", previewStandings[0]); // Mantido para debug visual
+
+            updateStandingsTable('superliga', previewStandings, true, liveRoundPoints);
         }
 
         async function findActiveRound() {
             const snapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
-            if (!snapshot.exists()) return null;
-            return Object.values(snapshot.val())[0];
+            return snapshot.exists() ? Object.values(snapshot.val())[0] : null;
         }
 
-        function calculateLiveRoundPoints(activeRoundData) {
-            if (!activeRoundData) return {};
+        async function loadSupercopaData() {
+            const snapshot = await database.ref('tournaments/supercopa').once('value');
+            const supercopaData = snapshot.val();
             
-            const userRoundPoints = {};
-            if (activeRoundData.matches) {
-                Object.values(activeRoundData.matches).forEach(match => {
-                    if (match.finalResult && match.predictions) {
-                        Object.entries(match.predictions).forEach(([playerId, prediction]) => {
-                            if (!userRoundPoints[playerId]) userRoundPoints[playerId] = 0;
-                            userRoundPoints[playerId] += calculateMatchPoints(match.finalResult, prediction);
-                        });
+            if (supercopaData?.groups?.standings) {
+                const standings = Object.values(supercopaData.groups.standings)
+                    .sort((a, b) => (b.points || 0) - (a.points || 0))
+                    .slice(0, 5);
+                
+                updateStandingsTable('supercopa', standings);
+                
+                // Atualizar fase no badge
+                const phaseElement = document.getElementById('supercopa-phase');
+                const currentStage = getSupercopaCurrentStage(supercopaData);
+                
+                const stageNames = {
+                    'groups': 'Grupos',
+                    'quarterFinals': 'Quartas',
+                    'semiFinals': 'Semis',
+                    'final': 'Final'
+                };
+                
+                phaseElement.textContent = stageNames[currentStage] || 'Grupos';
+                
+                // Adicionar conteúdo personalizado no card da Supercopa
+                const supercopaBody = document.getElementById('supercopa-body');
+                const supercopaTable = supercopaBody.closest('table');
+                const tableBody = supercopaTable.closest('.table-body');
+                
+                // Garantir que o conteúdo personalizado só é adicionado uma vez
+                if (tableBody.querySelector('.supercopa-personalized-content')) return;
+
+                // Remover a tabela padrão
+                supercopaTable.style.display = 'none';
+                
+                // Adicionar conteúdo personalizado
+                const personalizedContent = document.createElement('div');
+                personalizedContent.className = 'supercopa-personalized-content';
+                personalizedContent.innerHTML = renderSupercopaHomeContent(supercopaData);
+                tableBody.appendChild(personalizedContent);
+                
+                // Adicionar link para ver mais
+                const viewMoreLink = document.createElement('a');
+                viewMoreLink.href = 'supercopa.html';
+                viewMoreLink.style.cssText = `
+                    display: block;
+                    text-align: center;
+                    padding: 0.75rem;
+                    margin: 0 1rem 1rem 1rem; /* Ajuste para centralizar o link dentro do body */
+                    background: var(--bg-secondary);
+                    color: var(--accent-primary);
+                    text-decoration: none;
+                    border-radius: 0.5rem;
+                    font-weight: 600;
+                    font-size: 0.875rem;
+                    transition: all var(--transition-fast);
+                `;
+                viewMoreLink.innerHTML = '<i class="fas fa-external-link-alt"></i> Ver torneio completo';
+                viewMoreLink.onmouseover = function() {
+                    this.style.background = 'var(--accent-primary)';
+                    this.style.color = 'white';
+                };
+                viewMoreLink.onmouseout = function() {
+                    this.style.background = 'var(--bg-secondary)';
+                    this.style.color = 'var(--accent-primary)';
+                };
+                
+                tableBody.appendChild(viewMoreLink);
+            } else {
+                // Se não houver dados da Supercopa
+                const supercopaBody = document.getElementById('supercopa-body');
+                const supercopaTable = supercopaBody.closest('table');
+                const tableContainer = supercopaTable.closest('.table-body');
+                
+                supercopaTable.style.display = 'none';
+                
+                if (tableContainer.querySelector('.supercopa-personalized-content')) return;
+
+                const emptyContent = document.createElement('div');
+                emptyContent.className = 'supercopa-personalized-content';
+                emptyContent.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                        <i class="fas fa-calendar" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+                        <p>Torneio ainda não iniciado</p>
+                    </div>
+                `;
+                tableContainer.appendChild(emptyContent);
+            }
+        }
+        
+        // NOVO: Função para carregar dados da Libertadores
+        async function loadLibertadoresData() {
+            const snapshot = await database.ref('tournaments/libertadores').once('value');
+            const libertadoresData = snapshot.val();
+            
+            const phaseElement = document.getElementById('libertadores-phase');
+            const bodyPreview = document.getElementById('libertadores-body-preview');
+            
+            const phases = ['pre1', 'pre2', 'quarterFinals', 'semiFinals', 'final'];
+            const phaseNames = {
+                'pre1': 'Pré-Fase 1',
+                'pre2': 'Pré-Fase 2',
+                'quarterFinals': 'Quartas',
+                'semiFinals': 'Semis',
+                'final': 'Final'
+            };
+
+            let currentPhaseKey = 'pre1';
+            let tournamentStarted = false;
+
+            if (libertadoresData) {
+                tournamentStarted = true;
+                // Busca a primeira fase com status 1 (ativa)
+                for (const phase of phases) {
+                    if (libertadoresData[phase]?.status === 1) {
+                        currentPhaseKey = phase;
+                        break;
+                    }
+                }
+                
+                // Se nenhuma ativa, verifica se a última foi finalizada
+                if (libertadoresData.final?.status === 2) {
+                    currentPhaseKey = 'finalizada';
+                }
+            }
+
+            if (tournamentStarted) {
+                phaseElement.textContent = phaseNames[currentPhaseKey] || 'Iniciando';
+                
+                // Renderiza um placeholder simples indicando a fase
+                bodyPreview.innerHTML = `
+                    <div style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+                        <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-success);"></i>
+                        <p>${phaseNames[currentPhaseKey] || 'Fase de Palpites'}</p>
+                    </div>
+                `;
+            } else {
+                 phaseElement.textContent = 'Grupos'; // Default inicial
+                 bodyPreview.innerHTML = `
+                    <div style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+                        <i class="fas fa-calendar" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+                        <p>Em breve...</p>
+                    </div>
+                 `;
+            }
+        }
+
+        // Função para determinar a fase atual da Supercopa (Mantida)
+        function getSupercopaCurrentStage(supercopaData) {
+            const stages = ['groups', 'quarterFinals', 'semiFinals', 'final'];
+            
+            for (const stage of stages) {
+                const stageData = supercopaData[stage];
+                
+                // Verifica se o status está direto na fase
+                if (stageData?.status === 1) {
+                    return stage;
+                }
+                
+                // Verifica se o status está dentro de matches
+                if (stageData?.matches?.status === 1) {
+                    return stage;
+                }
+            }
+            
+            // Se não encontrou status = 1, verifica se todos são 2 (fase concluída)
+            let allCompleted = true;
+            const stagesToCheck = ['groups', 'quarterFinals', 'semiFinals'];
+            
+            for (const stage of stagesToCheck) {
+                const stageData = supercopaData[stage];
+                const status = stageData?.status || stageData?.matches?.status;
+                
+                if (status !== 2) {
+                    allCompleted = false;
+                    break;
+                }
+            }
+            
+            if (allCompleted && supercopaData.final) {
+                return 'final';
+            }
+            
+            return 'groups'; // Default
+        }
+
+        // Função para encontrar o grupo do usuário (Mantida)
+        function findUserGroup(userId, supercopaData) {
+            if (!supercopaData?.groups) return null;
+            
+            const groups = supercopaData.groups;
+            for (let i = 1; i <= 4; i++) {
+                const groupKey = `group${i}`;
+                const players = groups[groupKey];
+                
+                if (Array.isArray(players) && players.includes(userId)) {
+                    return groupKey;
+                }
+            }
+            
+            return null;
+        }
+
+        // Função para obter a posição do usuário no grupo (Mantida)
+        function getUserPositionInGroup(userId, groupKey, supercopaData) {
+            const { groups = {} } = supercopaData;
+            const { standings = {} } = groups;
+            const groupPlayers = groups[groupKey] || [];
+            
+            const groupStandings = groupPlayers
+                .map(playerId => standings[playerId])
+                .filter(Boolean)
+                .sort((a, b) => {
+                    if ((b.points || 0) !== (a.points || 0)) return (b.points || 0) - (a.points || 0);
+                    if ((b.wins || 0) !== (a.wins || 0)) return (b.wins || 0) - (a.wins || 0);
+                    const aGD = (a.goalsFor || 0) - (a.goalsAg || 0);
+                    const bGD = (b.goalsFor || 0) - (b.goalsAg || 0);
+                    if (bGD !== aGD) return bGD - aGD;
+                    return (b.goalsFor || 0) - (a.goalsFor || 0);
+                });
+            
+            const userIndex = groupStandings.findIndex(p => p.playerId === userId);
+            
+            if (userIndex === -1) return null;
+            
+            return {
+                position: userIndex + 1,
+                points: groupStandings[userIndex]?.points || 0,
+                games: groupStandings[userIndex]?.games || 0,
+                wins: groupStandings[userIndex]?.wins || 0,
+                draws: groupStandings[userIndex]?.draws || 0,
+                losses: groupStandings[userIndex]?.losses || 0
+            };
+        }
+
+        // Função para encontrar confronto do usuário na fase de grupos (Mantida)
+        function findUserGroupMatch(userId, supercopaData) {
+            const { groups = {} } = supercopaData;
+            const rounds = groups.rounds || {};
+            
+            const activeCopaRound = Object.values(rounds).find(round => round.status === 1);
+            
+            if (!activeCopaRound || !activeCopaRound.matches) return null;
+            
+            for (const match of Object.values(activeCopaRound.matches)) {
+                if (match.player1Id === userId || match.player2Id === userId) {
+                    return match;
+                }
+            }
+            
+            return null;
+        }
+
+        // Função para encontrar confronto do usuário no mata-mata (Mantida)
+        function findUserKnockoutMatch(userId, stage, supercopaData) {
+            const stageData = supercopaData[stage];
+            if (!stageData) return null;
+            
+            // Verifica na série A
+            if (stageData.matches) {
+                for (const match of Object.values(stageData.matches)) {
+                    if (match.homeTeam === userId || match.awayTeam === userId) {
+                        return { ...match, series: 'A' };
+                    }
+                }
+            }
+            
+            // Verifica na série B
+            if (stageData.b) {
+                for (const match of Object.values(stageData.b)) {
+                    if (match.homeTeam === userId || match.awayTeam === userId) {
+                        return { ...match, series: 'B' };
+                    }
+                }
+            }
+            
+            // Verifica na série C
+            if (stageData.c) {
+                for (const match of Object.values(stageData.c)) {
+                    if (match.homeTeam === userId || match.awayTeam === userId) {
+                        return { ...match, series: 'C' };
+                    }
+                }
+            }
+            
+            return null;
+        }
+
+        // Função para renderizar o card personalizado da Supercopa (Mantida)
+        function renderSupercopaHomeContent(supercopaData) {
+            if (!currentUser || !supercopaData) {
+                return '<div class="empty-tournament"><p>Carregando Supercopa...</p></div>';
+            }
+            
+            const stage = getSupercopaCurrentStage(supercopaData);
+            const stageNames = {
+                'groups': 'Fase de Grupos',
+                'quarterFinals': 'Quartas de Final',
+                'semiFinals': 'Semifinais',
+                'final': 'Final'
+            };
+            
+            let content = '';
+            
+            if (stage === 'groups') {
+                // FASE DE GRUPOS
+                const userGroup = findUserGroup(currentUser.uid, supercopaData);
+                const userPosition = userGroup ? getUserPositionInGroup(currentUser.uid, userGroup, supercopaData) : null;
+                const userMatch = findUserGroupMatch(currentUser.uid, supercopaData);
+                
+                if (userGroup && userPosition) {
+                    content += `
+                        <div style="padding: 0.75rem; background: var(--bg-secondary); border-radius: 0.75rem; margin: 0 1rem 1rem 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">${stageNames[stage]}</span>
+                                <span style="font-weight: 600; color: var(--accent-primary);">${userGroup.toUpperCase()}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);">${userPosition.position}º</div>
+                                <div>
+                                    <div style="font-size: 0.875rem; font-weight: 600;">${userPosition.points} pontos</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${userPosition.wins}V ${userPosition.draws}E ${userPosition.losses}D</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (userMatch) {
+                    const isPlayer1 = userMatch.player1Id === currentUser.uid;
+                    const opponentId = isPlayer1 ? userMatch.player2Id : userMatch.player1Id;
+                    const opponent = usersData[opponentId];
+                    const opponentTeam = opponent ? (teamsData[opponent.teamId] || teamsData[opponent.team]) : null;
+                    
+                    content += `
+                        <div style="padding: 0.75rem; background: var(--bg-secondary); border-radius: 0.75rem; margin: 0 1rem 1rem 1rem;">
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Confronto atual:</div>
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <img src="${teamsData[userData?.team]?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.abbr || 'VOCÊ')}&background=3b82f6&color=fff`}" 
+                                        alt="Você" 
+                                        style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.875rem;">VOCÊ</div>
+                                        <div style="font-size: 0.7rem; color: var(--text-secondary);">${teamsData[userData?.team]?.abbr || '---'}</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 700; font-size: 1.25rem; color: var(--accent-primary);">${userMatch.result || 'vs'}</div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 600; font-size: 0.875rem;">${opponent?.abbr || 'TBD'}</div>
+                                        <div style="font-size: 0.7rem; color: var(--text-secondary);">${opponentTeam?.abbr || '---'}</div>
+                                    </div>
+                                    <img src="${opponentTeam?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(opponent?.abbr || '?')}&background=3b82f6&color=fff`}" 
+                                        alt="${opponent?.name}" 
+                                        style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-secondary);">
+                                ${userMatch.result ? 'Finalizado' : (activeRound ? 'Ao Vivo' : 'Aguardando')}
+                            </div>
+                        </div>
+                    `;
+                } else if (userGroup) {
+                    content += `
+                        <div style="padding: 0.75rem; text-align: center; color: var(--text-tertiary); font-size: 0.875rem; margin: 0 1rem 1rem 1rem;">
+                            <i class="fas fa-info-circle"></i> Nenhum confronto ativo no momento
+                        </div>
+                    `;
+                }
+                
+            } else {
+                // MATA-MATA
+                const userMatch = findUserKnockoutMatch(currentUser.uid, stage, supercopaData);
+                
+                content += `
+                    <div style="padding: 0.75rem; background: var(--bg-secondary); border-radius: 0.75rem; margin: 0 1rem 1rem 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">Fase atual:</span>
+                            <span style="font-weight: 600; color: var(--accent-primary);">${stageNames[stage]}</span>
+                        </div>
+                `;
+                
+                if (userMatch) {
+                    const isHome = userMatch.homeTeam === currentUser.uid;
+                    const opponentId = isHome ? userMatch.awayTeam : userMatch.homeTeam;
+                    const opponent = usersData[opponentId];
+                    const opponentTeam = opponent ? (teamsData[opponent.teamId] || teamsData[opponent.team]) : null;
+                    const seriesSuffix = userMatch.series ? ` (Série ${userMatch.series})` : '';
+                    
+                    content += `
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Seu confronto${seriesSuffix}:</div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <img src="${teamsData[userData?.team]?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.abbr || 'VOCÊ')}&background=3b82f6&color=fff`}" 
+                                    alt="Você" 
+                                    style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.875rem;">VOCÊ</div>
+                                    <div style="font-size: 0.7rem; color: var(--text-secondary);">${teamsData[userData?.team]?.abbr || '---'}</div>
+                                </div>
+                            </div>
+                            <div style="font-weight: 700; font-size: 1.25rem; color: var(--accent-primary);">${userMatch.result || 'vs'}</div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="text-align: right;">
+                                    <div style="font-weight: 600; font-size: 0.875rem;">${opponent?.abbr || 'TBD'}</div>
+                                    <div style="font-size: 0.7rem; color: var(--text-secondary);">${opponentTeam?.abbr || '---'}</div>
+                                </div>
+                                <img src="${opponentTeam?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(opponent?.abbr || '?')}&background=3b82f6&color=fff`}" 
+                                    alt="${opponent?.name}" 
+                                    style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-secondary);">
+                            ${userMatch.result ? 'Finalizado' : (activeRound ? 'Ao Vivo' : 'Aguardando')}
+                        </div>
+                    `;
+                } else {
+                    content += `
+                        <div style="text-align: center; padding: 1rem; color: var(--text-tertiary); font-size: 0.875rem;">
+                            <i class="fas fa-info-circle"></i> Você não está mais nesta fase
+                        </div>
+                    `;
+                }
+                
+                content += `</div>`;
+            }
+            
+            return content;
+        }
+
+        // Atualizar UI
+        function updateUI() {
+            updateUserCard();
+            updatePaymentStatus();
+        }
+
+        function updateUserCard() {
+            if (!userData) return;
+            
+            const userAvatar = document.getElementById('user-avatar');
+            const userName = document.getElementById('user-name');
+            const userDetails = document.getElementById('user-details');
+            
+            // Avatar do time
+            const team = teamsData[userData.teamId];
+            let avatarSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name || 'U')}&background=3b82f6&color=fff`;
+
+            if (userData.teamId) {
+                avatarSrc = userData.teamId;
+            } else if (team?.image) {
+                avatarSrc = team.image;
+            }
+            
+            userAvatar.src = avatarSrc;
+            userAvatar.onerror = () => {
+                userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name || 'U')}&background=3b82f6&color=fff`;
+            };
+            
+            userName.textContent = userData.name || 'Usuário';
+            
+            // --- LÓGICA DE PONTUAÇÃO E POSIÇÃO CORRIGIDA ---
+            const currentUserStandingLive = superligaStandingsCache.find(s => s.id === currentUser.uid);
+
+            let positionDisplay = '--';
+            let pointsDisplay = '0 pts';
+
+            if (currentUserStandingLive) {
+                positionDisplay = `${currentUserStandingLive.position}º`;
+                pointsDisplay = `${currentUserStandingLive.totalPoints} pts`;
+            } else {
+                // Fallback: Se o cache ainda não carregou (ou falhou), mostre o total do DB
+                const currentStageKey = userData?.pointsSuperligaClausura !== undefined ? 'Clausura' : 'Abertura';
+                const pointsField = `pointsSuperliga${currentStageKey}`;
+                pointsDisplay = `${userData[pointsField] || 0} pts`;
+            }
+            
+            // Atualiza o user-details no cabeçalho
+            // Ele combinava a abreviação do time e os detalhes, vamos focar nos detalhes.
+            userDetails.textContent = `Posição: ${positionDisplay} • ${pointsDisplay}`;
+            // --- FIM DA LÓGICA CORRIGIDA ---
+        }
+
+        function updatePaymentStatus() {
+            const paymentAlert = document.getElementById('payment-alert');
+            const betButton = document.getElementById('bet-button');
+            
+            const hasPaid = userData?.hasPaid || false;
+            
+            if (!hasPaid && activeRound) {
+                paymentAlert.classList.add('show');
+                betButton.disabled = true;
+                betButton.textContent = 'Pagamento Pendente';
+            } else {
+                paymentAlert.classList.remove('show');
+                betButton.disabled = false;
+                if (!activeRound) {
+                     betButton.textContent = 'Rodada Fechada';
+                     betButton.disabled = true;
+                     document.getElementById('bet-card').classList.add('locked');
+                } else if (!hasPaid) {
+                     betButton.textContent = 'Pagamento Pendente';
+                } else {
+                     betButton.textContent = 'Fazer Palpite';
+                }
+            }
+        }
+
+        function updateBetCard() {
+            if (!activeRound) return;
+            
+            const betTitle = document.querySelector('.bet-title');
+            const betTimer = document.getElementById('bet-timer');
+            const betStatus = document.getElementById('bet-status');
+            const participantsCount = document.getElementById('bet-participants-count');
+            const matchesCount = document.getElementById('bet-matches-count');
+
+            betTitle.textContent = activeRound.name || 'Próxima Rodada';
+            matchesCount.textContent = activeRound.matches ? activeRound.matches.length : '0';
+            
+            // Contar participantes
+            // A contagem é feita pelo número de usuários que palpitaram no jogo com mais palpites
+            let participantCount = 0;
+            if (activeRound.matches) {
+                activeRound.matches.forEach(match => {
+                    if (match.predictions) {
+                        // Keys de predictions são os UIDs dos jogadores
+                        participantCount = Math.max(participantCount, Object.keys(match.predictions).length);
                     }
                 });
             }
-            return userRoundPoints;
-        }
-
-        function calculateMatchPoints(finalResult, prediction) {
-            if (finalResult.homeScore === null || prediction.homeScore === null) return 0;
-            if (finalResult.homeScore === prediction.homeScore && finalResult.awayScore === prediction.awayScore) return 3;
-            const finalWinner = Math.sign(finalResult.homeScore - finalResult.awayScore);
-            const predWinner = Math.sign(prediction.homeScore - prediction.awayScore);
-            if (finalWinner === predWinner) return 1;
-            if (finalResult.homeScore === prediction.awayScore && finalResult.awayScore === prediction.homeScore) return -1;
-            return 0;
-        }
-
-        async function checkAdminStatus(userId) {
-            const isAdmin = usersDataCache[userId]?.isAdmin || false;
-            updateAdminButton(isAdmin);
-        }
-
-        function updateAdminButton(isAdmin) {
-            const display = isAdmin ? 'flex' : 'none';
-            uiElements.header.adminBtn.style.display = display;
-            uiElements.sidebar.adminItem.style.display = isAdmin ? 'block' : 'none';
-        }
-
-        function openSidebar() {
-            uiElements.sidebar.menu.classList.add('active');
-            uiElements.sidebar.overlay.classList.add('active');
-            document.body.classList.add('sidebar-open');
-        }
-
-        function closeSidebar() {
-            uiElements.sidebar.menu.classList.remove('active');
-            uiElements.sidebar.overlay.classList.remove('active');
-            document.body.classList.remove('sidebar-open');
-        }
-
-        function handleLogout() {
-            auth.signOut().then(() => {
-                localStorage.clear();
-                sessionStorage.clear();
-                window.location.replace('index.html');
-            }).catch((error) => console.error('Erro ao sair:', error));
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            uiElements.sidebar.toggle?.addEventListener('click', openSidebar);
-            uiElements.sidebar.closeBtn?.addEventListener('click', closeSidebar);
-            uiElements.sidebar.overlay?.addEventListener('click', closeSidebar);
-            uiElements.header.logoutBtn?.addEventListener('click', handleLogout);
-            uiElements.sidebar.logoutBtn?.addEventListener('click', handleLogout);
-            uiElements.header.adminBtn.onclick = () => window.location.href = 'admin.html';
-            uiElements.superliga.card.addEventListener('click', () => window.location.href = 'superliga.html');
-            uiElements.supercopa.card.addEventListener('click', () => window.location.href = 'supercopa.html');
-
-            const currentPage = window.location.pathname.split("/").pop() || "home.html";
-            uiElements.sidebar.menu.querySelectorAll('a').forEach(link => {
-                link.classList.remove('active-link');
-                if (link.getAttribute('href') === currentPage) link.classList.add('active-link');
-            });
+            participantsCount.textContent = participantCount;
             
-            // =============================================== //
-            //    ADIÇÃO NO JAVASCRIPT: EFEITO HEADER ON SCROLL  //
-            // =============================================== //
-            const header = document.getElementById('site-header');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) { // Ativa o efeito após rolar 50px
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
+            // Atualizar status e timer
+            const finishDate = new Date(activeRound.finishTimestamp);
+            const now = new Date();
+            
+            if (now > finishDate) {
+                betStatus.textContent = 'FECHADA';
+                betStatus.classList.add('closed');
+                betTimer.textContent = 'ENCERRADA';
+            } else {
+                betStatus.textContent = 'ABERTA';
+                betStatus.classList.remove('closed');
+            }
+        }
+
+        function startCountdown() {
+            if (!activeRound?.finishTimestamp) return;
+            
+            const finishDate = new Date(activeRound.finishTimestamp);
+            const betTimer = document.getElementById('bet-timer');
+            
+            function updateTimer() {
+                const now = new Date();
+                const diff = finishDate - now;
+                
+                if (diff <= 0) {
+                    clearInterval(countdownInterval);
+                    betTimer.textContent = 'ENCERRADA';
+                    document.getElementById('bet-status').textContent = 'FECHADA';
+                    document.getElementById('bet-status').classList.add('closed');
+                    return;
                 }
-            });
+                
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                betTimer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            updateTimer();
+            countdownInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateStandingsTable(tournament, standings, isLive = false, livePoints = {}) {
+            const tbody = document.getElementById(`${tournament}-body`);
+            if (!tbody) return;
+            
+            const isSuperliga = tournament === 'superliga';
+
+            // Cabeçalho para Superliga com coluna +R
+            if (isSuperliga) {
+                const thead = tbody.closest('table').querySelector('thead tr');
+                thead.innerHTML = `
+                    <th width="50">#</th>
+                    <th>Jogador</th>
+                    <th width="80" style="text-align: right;">PTS</th>
+                    <th width="80" style="text-align: right;">+R</th>
+                `;
+            }
+
+            tbody.innerHTML = standings.map((player, index) => {
+                const team = teamsData[player.teamId || player.team];
+                
+                // Posição vem do objeto player.position (já calculada no loadSuperligaData)
+                const position = isSuperliga ? player.position : index + 1;
+
+                const avatarUrl = player.avatarUrl || team?.image || 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name || '?')}&background=3b82f6&color=fff`;
+                
+                // Realça a linha do usuário logado
+                const isCurrentUserRow = isSuperliga && player.id === currentUser.uid;
+                const rowClass = isCurrentUserRow ? 'current-user-row' : '';
+
+                // CORREÇÃO CRÍTICA: Calcular os pontos corretamente
+                let totalPoints = 0;
+                let roundPoints = 0;
+                
+                if (isSuperliga) {
+                    // Para Superliga, usamos os pontos totais do objeto player
+                    totalPoints = player.totalPoints || 0;
+                    
+                    // Pontos da rodada: verifique se temos dados ao vivo OU use os já calculados
+                    if (isLive && livePoints && livePoints[player.id] !== undefined) {
+                        roundPoints = livePoints[player.id] || 0;
+                    } else {
+                        roundPoints = player.roundPoints || 0;
+                    }
+                } else {
+                    // Para outros torneios
+                    totalPoints = player.points || player.totalPoints || 0;
+                    roundPoints = 0;
+                }
+                
+                const roundPointsColor = roundPoints >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)';
+                const roundPointsSign = roundPoints > 0 ? '+' : '';
+                
+                // Apenas mostrar +R para Superliga
+                const roundPointsDisplay = isSuperliga ? 
+                    `<td style="text-align: right; font-size: 0.75rem; color: ${roundPointsColor}; font-weight: 600;">${roundPointsSign}${roundPoints}</td>` : 
+                    '';
+                
+                const teamAbbr = team?.abbr || '---';
+
+                return `
+                    <tr class="${rowClass}">
+                        <td class="position" style="font-weight: 600;">${position}</td>
+                        <td>
+                            <div class="player-cell">
+                                <img src="${avatarUrl}" alt="${player.name}" class="player-avatar" onerror="this.src='https://ui-avatars.com/api/?name=?&background=ccc&color=fff'">
+                                <div>
+                                    <div class="player-name">${player.name || 'Jogador'}</div>
+                                    <div class="player-team">${teamAbbr}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points" style="text-align: right;">${totalPoints}</td>
+                        ${roundPointsDisplay}
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Event Listeners
+        function initEventListeners() {            
+            const copyButton = document.getElementById('copy-pix-key');
+            if (copyButton) {
+                copyButton.addEventListener('click', copyPixKey);
+            }
+        }
+
+        // Modal de pagamento
+        function showPaymentModal() {
+            document.getElementById('payment-modal').classList.add('show');
+        }
+
+        function hidePaymentModal() {
+            document.getElementById('payment-modal').classList.remove('show');
+        }
+
+        async function handlePayment(method) {
+            hidePaymentModal(); // Fecha o modal de escolha
+
+            if (method === 'pix') {
+                showPixModal();
+                return; 
+            }
+            
+            // Lógica para Mercado Pago ou outro método que simula a confirmação imediata
+            try {
+                alert(`Redirecionando para pagamento via Mercado Pago...`);
+                
+                // Simular pagamento bem-sucedido
+                await database.ref('users/' + currentUser.uid).update({
+                    hasPaid: true,
+                    lastPayment: new Date().toISOString()
+                });
+                
+                updatePaymentStatus();
+                alert('Pagamento simulado com sucesso. O acesso será liberado!');
+                
+            } catch (error) {
+                console.error('Erro ao simular pagamento:', error);
+                alert('Erro ao processar pagamento. Tente novamente.');
+            }
+        }
+
+        // Utilitários
+        function showError(message) {
+            // Implementar um toast de erro
+            console.error(message);
+            alert(message);
+        }
+
+        // Limpar intervalo ao sair
+        window.addEventListener('beforeunload', () => {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
         });
 
+        function showPixModal() {
+            document.getElementById('pix-modal').classList.add('show');
+        }
+
+        function hidePixModal() {
+            document.getElementById('pix-modal').classList.remove('show');
+        }
+
+        function copyPixKey() {
+            navigator.clipboard.writeText(PIX_KEY).then(() => {
+                const copyButton = document.getElementById('copy-pix-key');
+                const originalText = copyButton.innerHTML;
+                
+                copyButton.innerHTML = '<i class="fas fa-check"></i> Chave Copiada!';
+                
+                setTimeout(() => {
+                    copyButton.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Falha ao copiar:', err);
+                alert(`Falha ao copiar. Tente manualmente: ${PIX_KEY}`);
+            });
+        }
     </script>
 </body>
 </html>

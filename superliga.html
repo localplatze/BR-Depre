@@ -10,31 +10,222 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color: #007bff;
-            --primary-glow: rgba(0, 123, 255, 0.5);
-            --background-color: #101418;
-            --card-bg-color: #1a2027;
-            --card-bg-light: #242c36;
-            --text-color: #e4e6eb;
-            --text-color-light: #b0b3b8;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --border-radius: 12px;
-            --gold: #ffc107; --silver: #c0c0c0; --bronze: #cd7f32;
+            /* Tema Dark (padrão) */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --accent-primary: #3b82f6; /* Azul: Top 4 */
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981; /* Verde: Top 12 */
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444; /* Vermelho: Z4 */
+            --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            
+            /* Transições */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Tema Light */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --accent-success: #059669;
+            --accent-danger: #dc2626;
+            --border-color: #e2e8f0;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); }
-        .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+       * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-primary); 
+            color: var(--text-primary); 
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 1rem; }
+
+        /* Header simplificado */
+        .app-header {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .logo span {
+            color: var(--accent-secondary);
+        }
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        .btn-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        .btn-icon:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
         
         /* CABEÇALHO E ABAS */
-        .header-title { font-size: 32px; font-weight: 700; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; color: #fff; }
-        .tabs { display: flex; margin-bottom: 30px; background-color: var(--card-bg-color); border-radius: var(--border-radius); padding: 8px; border: 1px solid var(--border-color); }
-        .tab { padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; text-align: center; flex: 1; border: none; background: none; color: var(--text-color-light); }
-        .tab.active { background-color: var(--primary-color); color: white; }
+        .header-title { 
+            font-size: 24px; 
+            font-weight: 700; 
+            margin-bottom: 30px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            color: var(--text-primary); 
+        }
+        .tabs { 
+            display: flex; 
+            margin-bottom: 30px; 
+            background-color: var(--bg-secondary); 
+            border-radius: 0.75rem; 
+            padding: 4px; 
+            border: 1px solid var(--border-color); 
+        }
+        .tab { 
+            padding: 8px 16px; 
+            cursor: pointer; 
+            border-radius: 6px; 
+            font-weight: 500; 
+            transition: all 0.2s ease; 
+            text-align: center; 
+            flex: 1; 
+            border: none; 
+            background: none; 
+            color: var(--text-secondary); 
+        }
+        .tab.active { 
+            background-color: var(--accent-primary); 
+            color: white; 
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* TABELA DE CLASSIFICAÇÃO */
+        .standings-container {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .standings-table thead {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .standings-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        .standings-table td {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .standings-table tr:last-child td { border-bottom: none; }
+        .standings-table tbody tr:hover { background: var(--bg-secondary); }
+
+        /* Estilo da linha do jogador */
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .player-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+        .player-name {
+            font-weight: 500;
+        }
+        .points-col {
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        .round-points-col {
+             font-size: 0.75rem;
+             font-weight: 600;
+             color: var(--accent-success);
+             white-space: nowrap;
+        }
+
+        /* Cores de Classificação (Linhas laterais) */
+        .standings-row {
+            border-left: 4px solid transparent;
+            position: relative;
+        }
+        .standings-row.top-4 { /* Libertadores/Champions */
+            border-left-color: var(--accent-primary);
+        }
+        .standings-row.mid-table { /* Sul-Americana/Vaga de Copa */
+            border-left-color: var(--accent-success);
+        }
+        .standings-row.z4 { /* Rebaixamento */
+            border-left-color: var(--accent-danger);
+            background: rgba(239, 68, 68, 0.05); /* Fundo levemente avermelhado */
+        }
+        .standings-row.current-user-row {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .standings-row.current-user-row:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
 
         /* NOVO: PÓDIO */
         .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin-bottom: 40px; min-height: 220px; }
@@ -227,7 +418,7 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background: linear-gradient(145deg, var(--card-bg-light), var(--card-bg-color));
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
             padding: 40px 20px;
             border-radius: var(--border-radius);
@@ -266,10 +457,29 @@
             font-weight: 600;
             margin-top: 20px;
         }
+        .text-secondary { color: var(--text-secondary); }
     </style>
 </head>
 <body>
     <div class="container">
+        <header class="app-header">
+            <div class="header-content">
+                <a href="home.html" class="logo">
+                    <i class="fas fa-arrow-left" style="font-size: 1.1rem; margin-right: 0.5rem; color: var(--text-secondary);"></i>
+                    BR<span>Depressão</span>
+                </a>
+                
+                <div class="header-actions">
+                    <a href="home.html" class="btn-icon">
+                        <i class="fas fa-home"></i>
+                    </a>
+                    <button class="btn-icon" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
         <h1 class="header-title"><i class="fas fa-trophy"></i> Superliga</h1>
         <div class="tabs">
             <div class="tab active" data-stage="abertura">Abertura</div>
@@ -278,40 +488,74 @@
         </div>
 
         <div id="stages">
+            <!-- Abertura Content -->
             <div class="stage-content" id="abertura-content">
-                <div id="loading-abertura" class="loading">Carregando Classificação...</div>
-                <div id="podium-container-abertura" class="podium-container"></div>
-                <h2 class="standings-header">Classificação Geral</h2>
-                <ul class="standings-list" id="abertura-list"></ul>
-                <div class="legend">
-                    <span class="legend-item"><span class="legend-color" style="background: #007bff;"></span> Classificados</span>
-                    <span class="legend-item"><span class="legend-color" style="background: #dc3545;"></span> Rebaixados</span>
+                <div id="loading-abertura" class="text-secondary" style="text-align: center; padding: 20px;">Carregando Classificação...</div>
+                
+                <!-- Nova Estrutura de Tabela -->
+                <div class="standings-container">
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th>Jogador</th>
+                                <th style="width: 80px; text-align: right;">PTS</th>
+                                <th style="width: 80px; text-align: right;">+R</th>
+                            </tr>
+                        </thead>
+                        <tbody id="abertura-list">
+                            <!-- Lista Carregada Aqui -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="legend" style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">
+                    <span style="display: inline-block; margin-right: 15px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-primary);"></span> Top 4</span>
+                    <span style="display: inline-block; margin-right: 15px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success);"></span> Meio de Tabela</span>
+                    <span style="display: inline-block;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-danger);"></span> Z4</span>
                 </div>
             </div>
+
+            <!-- Clausura Content -->
             <div class="stage-content" id="clausura-content" style="display:none;">
-                <div id="loading-clausura" class="loading">Carregando Classificação...</div>
-                 <div id="podium-container-clausura" class="podium-container"></div>
-                <h2 class="standings-header">Classificação Geral</h2>
-                <ul class="standings-list" id="clausura-list"></ul>
+                <div id="loading-clausura" class="text-secondary" style="text-align: center; padding: 20px;">Carregando Classificação...</div>
+                
+                <div class="standings-container">
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th>Jogador</th>
+                                <th style="width: 80px; text-align: right;">PTS</th>
+                                <th style="width: 80px; text-align: right;">+R</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clausura-list">
+                            <!-- Lista Carregada Aqui -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <!-- Final Content -->
             <div class="stage-content" id="final-content" style="display:none;">
-                <div id="loading-final" class="loading">Carregando Final...</div>
+                <div id="loading-final" class="text-secondary" style="text-align: center; padding: 20px;">Carregando Final...</div>
                 <div class="final-match-container">
                     <div class="final-player" id="final-player-home">
                         <img src="" alt="Logo" class="logo">
                         <div class="name">Aguardando...</div>
-                        <div class="title">Campeão da Abertura</div>
+                        <div class="title text-secondary">Campeão da Abertura</div>
                     </div>
-                    <div class="vs-container">
+                    <div class="vs-container" style="color: var(--accent-primary); text-shadow: none;">
                         <span class="vs-text">VS</span>
                     </div>
                     <div class="final-player" id="final-player-away">
                         <img src="" alt="Logo" class="logo">
                         <div class="name">Aguardando...</div>
-                        <div class="title">Campeão da Clausura</div>
+                        <div class="title text-secondary">Campeão da Clausura</div>
                     </div>
                 </div>
-                <div id="final-result" class="final-result"></div>
+                <div id="final-result" class="final-result" style="color: var(--accent-warning);"></div>
             </div>
         </div>
     </div>
@@ -419,30 +663,50 @@
                 chartCanvas: document.getElementById('player-points-chart'),
                 avg: document.getElementById('dialog-player-avg'),
                 best: document.getElementById('dialog-player-best'),
-            }
+            },
+            themeToggle: document.getElementById('theme-toggle')
         };
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            ui.themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = ui.themeToggle.querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
 
         auth.onAuthStateChanged(user => {
             if (!user) {
                 window.location.href = 'index.html';
             } else {
+                initTheme();
                 initializeApp();
             }
         });
 
         function renderPage(standings, stage) {
-            const podiumPlayers = standings.slice(0, 3);
-            const listPlayers = standings.slice(3);
-            
-            renderPodium(podiumPlayers, stage);
-            renderStandingsList(listPlayers, stage);
+            // Removemos o renderPodium
+            renderStandingsList(standings, stage); 
 
-            // CORREÇÃO 2: Adicionar listener de clique tanto nos cards da lista QUANTO nos do pódio
-            document.querySelectorAll(`#${stage}-content .player-card, #${stage}-content .podium-card`).forEach(card => {
-                card.addEventListener('click', () => {
-                    const userId = card.dataset.userid;
-                    const stage = card.dataset.stage;
-                    const position = card.dataset.position;
+            // Adicionar listener de clique
+            document.querySelectorAll(`#${stage}-content .standings-row`).forEach(row => {
+                row.addEventListener('click', (e) => {
+                    // Evita clicar no thead, embora o listener esteja no tbody
+                    if (e.target.tagName === 'TH') return;
+                    const userId = row.dataset.userid;
+                    const stage = row.dataset.stage;
+                    const position = row.dataset.position;
                     showPlayerDetails(userId, stage, position);
                 });
             });
@@ -473,36 +737,54 @@
             if (!list) return;
             const currentUser = auth.currentUser;
             
-            // CORREÇÃO 3.2: Lógica para identificar a zona de rebaixamento
-            const totalPlayers = players.length + 3; // +3 do pódio
-            const relegationStartIndex = totalPlayers - 4; // Os 4 últimos
+            // Regras de Classificação (Assumindo 20 jogadores)
+            const totalPlayers = players.length; // Usamos o tamanho real dos jogadores
+            const Z4_START = totalPlayers - 3; // Posição 17, 18, 19, 20 (4 últimos)
+            const MID_TABLE_END = 12; // Top 12
+            const TOP_4_END = 4; // Top 4
 
             list.innerHTML = players.map(user => {
                 const team = teamsDataCache[user.teamId] || {};
                 const isCurrentUser = user.id === currentUser.uid;
                 const position = user.position;
                 
-                // Verifica se a posição do jogador está na zona de rebaixamento
-                const isInRelegation = position > relegationStartIndex;
+                let rowClass = '';
+                let posColor = 'var(--text-tertiary)';
+
+                if (position <= TOP_4_END) {
+                    rowClass = 'top-4';
+                    posColor = 'var(--accent-primary)';
+                } else if (position <= MID_TABLE_END) {
+                    rowClass = 'mid-table';
+                    posColor = 'var(--accent-success)';
+                } else if (position >= Z4_START) {
+                    rowClass = 'z4';
+                    posColor = 'var(--accent-danger)';
+                }
                 
+                // Tratar caso de Hot Streak: ícone adicional
+                const hotStreakIcon = user.hasHotStreak ? 
+                    '<i class="fas fa-fire" style="color: var(--accent-warning);" title="Em sequência quente!"></i>' : '';
+                
+                // Avatar fallback
+                const avatarUrl = team.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || '?')}&background=3b82f6&color=fff`;
+
                 return `
-                    <li class="player-card 
-                        ${isCurrentUser ? 'current-user-row' : ''} 
-                        ${isInRelegation ? 'relegation-zone' : `position-${position}`}" 
+                    <tr class="standings-row ${rowClass} ${isCurrentUser ? 'current-user-row' : ''}" 
                         data-userid="${user.id}" data-stage="${stage}" data-position="${position}"
                     >
-                        <span class="pos">${position}</span>
-                        <img src="${team.image}" alt="${team.name}" class="logo">
-                        <span class="name">
-                            ${user.name}
-                            ${isCurrentUser ? '<span class="current-user-badge">VOCÊ</span>' : ''}
-                            ${user.hasHotStreak ? '<i class="fas fa-fire hot-streak-icon" title="Em sequência quente!"></i>' : ''}
-                        </span>
-                        <div class="points-info">
-                            <div class="total-points">${user.totalPoints}</div>
-                            <div class="round-points">+${user.roundPoints}</div>
-                        </div>
-                    </li>
+                        <td style="color: ${posColor}; font-weight: 600;">${position}</td>
+                        <td>
+                            <div class="player-cell">
+                                <img src="${avatarUrl}" alt="${team.name}" class="player-logo">
+                                <span class="player-name">${user.name}</span>
+                                ${isCurrentUser ? '<span class="current-user-badge" style="font-size: 10px; background: var(--accent-primary); color: white; padding: 2px 6px; border-radius: 4px;">VOCÊ</span>' : ''}
+                                ${hotStreakIcon}
+                            </div>
+                        </td>
+                        <td class="points-col" style="text-align: right;">${user.totalPoints}</td>
+                        <td class="round-points-col" style="text-align: right;">+${user.roundPoints}</td>
+                    </tr>
                 `;
             }).join('');
         }

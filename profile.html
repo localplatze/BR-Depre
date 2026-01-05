@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Brasileirão da Depressão</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-card: #1e293b; --bg-input: #334155;
+            --text-primary: #f8fafc; --text-secondary: #94a3b8; --text-tertiary: #64748b;
+            --accent-primary: #3b82f6; --accent-secondary: #8b5cf6; --accent-success: #10b981;
+            --accent-warning: #f59e0b; --accent-danger: #ef4444; --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1); --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="light"] {
+            --bg-primary: #ffffff; --bg-secondary: #f8fafc; --bg-card: #ffffff; --bg-input: #e2e8f0;
+            --text-primary: #0f172a; --text-secondary: #475569; --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb; --accent-secondary: #7c3aed; --border-color: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
+        }
+        .app-container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        .app-header { padding: 1rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); text-decoration: none; display: flex; align-items: center; }
+        .logo span { color: var(--accent-secondary); }
+        .header-actions { display: flex; gap: 0.75rem; align-items: center; }
+        
+        .btn-icon { width: 2.5rem; height: 2.5rem; border-radius: 50%; border: none; background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .btn-icon:hover { background: var(--accent-primary); color: white; transform: translateY(-2px); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 0.75rem; border: none; font-weight: 600; cursor: pointer; transition: all var(--transition-fast); display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-primary { background: var(--accent-primary); color: white; }
+        .btn-primary:hover { background: var(--accent-secondary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-secondary); }
+        .btn-danger { background: var(--accent-danger); color: white; }
+        .btn-danger:hover { background: #c23030; }
+
+        .profile-layout { display: grid; gap: 2rem; }
+        @media (min-width: 1024px) {
+            .profile-layout { grid-template-columns: 350px 1fr; }
+        }
+
+        .profile-sidebar {
+            background: var(--bg-card); border-radius: 1rem; border: 1px solid var(--border-color);
+            padding: 2rem; height: fit-content; position: sticky; top: 2rem;
+        }
+
+        .profile-header { text-align: center; margin-bottom: 2rem; }
+        .profile-avatar { 
+            width: 120px; height: 120px; border-radius: 50%; object-fit: cover; 
+            border: 4px solid var(--accent-primary); margin: 0 auto 1rem; 
+            cursor: pointer; transition: transform var(--transition-base); 
+        }
+        .profile-avatar:hover { transform: scale(1.05); }
+        .profile-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .profile-abbr { 
+            font-size: 1.1rem; font-weight: 600; color: var(--accent-primary);
+            margin-bottom: 0.5rem; 
+        }
+        .profile-team-info {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            margin-bottom: 1.5rem; flex-wrap: wrap;
+        }
+        .team-abbr-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.35rem 0.75rem; background: var(--bg-secondary); 
+            color: var(--text-secondary); border-radius: 9999px; 
+            font-size: 0.8rem; font-weight: 600;
+        }
+        .team-name-badge {
+            display: inline-block; padding: 0.35rem 0.75rem; 
+            background: var(--accent-secondary); color: white; 
+            border-radius: 9999px; font-size: 0.8rem; font-weight: 600;
+        }
+        .team-logo-mini {
+            width: 20px; height: 20px; border-radius: 50%; object-fit: cover;
+        }
+
+        /* Estatísticas */
+        .profile-stats {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        .stats-main {
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+            flex-grow: 1;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.25rem;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .stats-details {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .best-team-prediction {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-top: 0.75rem;
+            border-left: 3px solid var(--accent-primary);
+        }
+        .best-team-title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        .best-team-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .best-team-accuracy {
+            color: var(--accent-success);
+            font-weight: 700;
+        }
+
+        .profile-content { display: flex; flex-direction: column; gap: 2rem; }
+        .profile-section { background: var(--bg-card); border-radius: 1rem; border: 1px solid var(--border-color); padding: 2rem; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .section-title { font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem; }
+        .section-title i { color: var(--accent-primary); }
+
+        /* Formulário e Input Search */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-secondary); }
+        .form-input { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-primary); font-size: 1rem; transition: all var(--transition-fast); }
+        .form-input:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+
+        /* Seleção de time com filtro */
+        .team-selector-wrapper { margin-top: 1rem; }
+        .team-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-top: 1rem;
+        }
+        .team-option { padding: 1rem; background: var(--bg-secondary); border: 2px solid transparent; border-radius: 0.75rem; text-align: center; cursor: pointer; transition: all var(--transition-fast); }
+        .team-option:hover { transform: translateY(-2px); background: var(--bg-input); }
+        .team-option.selected { border-color: var(--accent-primary); background: rgba(59, 130, 246, 0.1); }
+        .team-logo-small { width: 48px; height: 48px; object-fit: contain; margin-bottom: 0.5rem; }
+        .team-name-small { font-size: 0.875rem; font-weight: 500; }
+
+        /* Títulos */
+        .titles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .title-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 0.75rem; background: var(--bg-secondary); }
+
+        /* Cores de Títulos */
+        .icon-trophy { color: var(--accent-warning); }
+        .icon-shield { color: var(--accent-success); }
+        .icon-star { color: var(--accent-primary); }
+
+        /* Conquistas */
+        .achievements-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+            gap: 1rem; 
+        }
+        .achievement-card {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .achievement-card.unlocked { 
+            border-color: var(--accent-success); 
+        }
+        .achievement-icon {
+            font-size: 2rem;
+            color: var(--text-tertiary);
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+        .achievement-icon.unlocked { 
+            color: var(--accent-success); 
+            opacity: 1;
+        }
+        .achievement-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            height: 1.1rem;
+            overflow: hidden;
+        }
+        .achievement-desc {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            height: 1.8rem;
+            overflow: hidden;
+        }
+
+        /* Competições Timeline */
+        .competitions-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            padding-left: 20px;
+        }
+        .competitions-timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 25px;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            border: 4px solid var(--bg-card);
+            transition: all var(--transition-fast);
+        }
+        .timeline-dot.completed { background: var(--accent-success); border-color: var(--bg-card); }
+        .timeline-dot.upcoming { background: var(--accent-warning); border-color: var(--bg-card); }
+        .timeline-dot.eliminated { background: var(--accent-danger); border-color: var(--bg-card); }
+
+        .timeline-content {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+        .timeline-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .timeline-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .timeline-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .text-success { color: var(--accent-success); }
+        .text-warning { color: var(--accent-warning); }
+        .text-danger { color: var(--accent-danger); }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center;
+            z-index: 1000; backdrop-filter: blur(4px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: var(--bg-card); border-radius: 1rem; padding: 2rem;
+            max-width: 450px; width: 90%; max-height: 90vh; overflow-y: auto;
+        }
+        .avatar-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 0.75rem; margin-bottom: 1.5rem; border: 1px solid var(--border-color); }
+        .avatar-actions { display: flex; justify-content: space-between; gap: 1rem; }
+        
+        @media (max-width: 768px) {
+            .profile-stats { padding: 0.75rem; }
+            .stat-value { font-size: 1.25rem; }
+            .stat-label { font-size: 0.7rem; }
+        }
+        .titles-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .title-category {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .category-title {
+            font-weight: 600;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .category-count {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-input);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+        }
+        
+        .titles-list {
+            display: grid;
+            gap: 0.5rem;
+        }
+        
+        .title-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-fast);
+        }
+        
+        .title-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--accent-primary);
+        }
+        
+        .title-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .title-icon.mundial { background: linear-gradient(135deg, #FFD700, #FFA500); color: #333; }
+        .title-icon.continental { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; }
+        .title-icon.nacional { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .title-icon.estadual { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .title-icon.outro { background: linear-gradient(135deg, #94a3b8, #64748b); color: white; }
+        
+        .title-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .title-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .title-meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .title-year {
+            background: var(--bg-secondary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .title-importance {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .title-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            line-height: 1.4;
+        }
+        
+        .no-titles-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .importante { color: #FFD700; }
+        .media { color: #C0C0C0; }
+        .baixa { color: #CD7F32; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="home.html" class="logo">
+                    <i class="fas fa-arrow-left" style="font-size: 1.1rem; margin-right: 0.5rem; color: var(--text-secondary);"></i>
+                    <span>BR<span>Depressão</span></span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="btn-icon" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="home.html" class="btn-icon">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Layout do Perfil -->
+        <div class="profile-layout">
+            <!-- Sidebar -->
+            <aside class="profile-sidebar">
+                <div class="profile-header">
+                    <img src="" alt="Avatar" class="profile-avatar" id="profile-avatar" onclick="openAvatarModal()">
+                    <h1 class="profile-name" id="profile-name">Carregando...</h1>
+                    <div class="profile-abbr" id="profile-abbr">---</div>
+                    
+                    <div class="profile-team-info" id="profile-team-info">
+                        <div class="text-secondary">Carregando time...</div>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stats-main">
+                            <div class="stat-item">
+                                <div class="stat-value" id="stat-palpites">0</div>
+                                <div class="stat-label">Palpites</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="stat-acertos">0%</div>
+                                <div class="stat-label">Precisão</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="stat-pontos">0</div>
+                                <div class="stat-label">Pontos</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-details">
+                            <div id="stats-summary">Carregando estatísticas...</div>
+                            <div id="best-team-prediction-container" style="display: none;">
+                                <!-- Será preenchido dinamicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        Galeria de Títulos
+                        <span class="category-count" id="total-titles-count">0</span>
+                    </h3>
+                    <div class="titles-container" id="titles-container">
+                        <div class="no-titles-message" id="no-titles-message">
+                            <i class="fas fa-trophy" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <p>Nenhum título conquistado ainda</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">Continue participando para conquistar títulos!</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Conteúdo Principal -->
+            <main class="profile-content">
+                <!-- Seção: Editar Informações -->
+                <section class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-user-edit"></i>
+                            Editar Perfil
+                        </h2>
+                    </div>
+                    
+                    <form id="profile-form" onsubmit="handleProfileUpdate(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-name">Nome</label>
+                            <input type="text" id="edit-name" class="form-input" placeholder="Seu nome completo" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="edit-abbr">Sigla (3 letras)</label>
+                            <input type="text" id="edit-abbr" class="form-input" maxlength="3" placeholder="ABC" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Time do Coração</label>
+                            <div class="team-selector-wrapper">
+                                <input type="text" id="team-search" class="form-input" placeholder="Buscar time (nome ou sigla)">
+                                <div class="team-selector" id="team-selector">
+                                    <div class="text-secondary" style="grid-column: span 3; text-align: center;">Carregando times...</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 1rem;">
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </section>
+                
+                <!-- Seção: Alterar Senha -->
+                <section class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-lock"></i>
+                            Segurança
+                        </h2>
+                    </div>
+                    <form id="password-form" onsubmit="handleChangePassword(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="new-password">Nova Senha</label>
+                            <input type="password" id="new-password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 1rem;">
+                            *Você precisará autenticar novamente após mudar a senha.
+                        </p>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-key"></i>
+                            Alterar Senha
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Seção: Competições do Ano -->
+                <section class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Competições 2025
+                        </h2>
+                    </div>
+                    
+                    <div class="competitions-timeline" id="competitions-timeline">
+                        <div class="text-secondary" style="text-align: center; padding: 20px;">Carregando competições...</div>
+                    </div>
+                </section>
+                
+                <!-- Seção: Conquistas -->
+                <section class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-medal"></i>
+                            Conquistas
+                        </h2>
+                        <span class="text-muted" id="achievements-count">0/0</span>
+                    </div>
+                    
+                    <div class="achievements-grid" id="achievements-grid">
+                        <div class="text-secondary" style="grid-column: span 3; text-align: center;">Carregando conquistas...</div>
+                    </div>
+                </section>
+
+                <section class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-award"></i>
+                            Meus Títulos
+                        </h2>
+                        <span class="text-muted" id="titles-summary">0 títulos</span>
+                    </div>
+                    
+                    <div id="detailed-titles-container">
+                        <!-- Títulos serão carregados aqui -->
+                        <div class="no-titles-message">
+                            <i class="fas fa-trophy" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+                            <p>Você ainda não conquistou títulos</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-tertiary);">
+                                Participe das competições e torneios para conquistar troféus!
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Botão de Logout -->
+                <section class="profile-section" style="padding: 1rem 2rem;">
+                    <button class="btn btn-danger" onclick="handleLogout()" style="width: 100%;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair da Conta
+                    </button>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal para upload de avatar -->
+    <div class="modal-overlay" id="avatar-modal">
+        <div class="modal-content">
+            <h2 class="section-title" style="margin-bottom: 1.5rem;">
+                <i class="fas fa-user-circle"></i>
+                Alterar Avatar
+            </h2>
+            
+            <div class="avatar-upload">
+                <img src="" alt="Preview" class="avatar-preview" id="avatar-preview">
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="file" id="avatar-file" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('avatar-file').click()">
+                        <i class="fas fa-upload"></i>
+                        Escolher Imagem
+                    </button>
+                </div>
+                
+                <div class="avatar-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAvatarModal()">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="save-avatar-btn" onclick="saveAvatar()">
+                        <i class="fas fa-save"></i>
+                        Salvar Avatar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const storage = firebase.storage();
+
+        // Estado da aplicação
+        let currentUser = null;
+        let userData = null;
+        let teamsData = {};
+        let originalUserData = {};
+        let allTeamsArray = [];
+        let completedRoundsCache = null;
+        let globalStatsCache = { 
+            totalPredictions: 0, 
+            correctPredictions: 0,
+            totalPoints: 0,
+            roundsPlayed: 0,
+            bestTeamPrediction: null // {teamId, teamName, teamAbbr, accuracy, totalPredictions}
+        };
+
+        // Definições de Conquistas
+        const ACHIEVEMENT_TARGETS = {
+            PRIMEIRO_PAL: 1,
+            Viciado: 50,
+            ESPECIALISTA_MIN_ACERTOS: 5,
+            CONSISTENCIA_RODADAS: 10,
+            CONSISTENCIA_PONTOS: 7
+        };
+        
+        const ACHIEVEMENTS_DEFINITION = [
+            { id: 'PRIMEIRO_PAL', title: 'Primeiro Palpite', desc: 'Faça seu primeiro palpite', icon: 'fa-bullseye', check: (user) => globalStatsCache.totalPredictions >= ACHIEVEMENT_TARGETS.PRIMEIRO_PAL },
+            { id: 'Viciado', title: 'Viciado', desc: `Faça ${ACHIEVEMENT_TARGETS.Viciado} palpites totais`, icon: 'fa-fire', check: (user) => globalStatsCache.totalPredictions >= ACHIEVEMENT_TARGETS.Viciado },
+            { id: 'ESPECIALISTA', title: 'Especialista', desc: `Acerte exatamente o placar em ${ACHIEVEMENT_TARGETS.ESPECIALISTA_MIN_ACERTOS} jogos na mesma rodada.`, icon: 'fa-brain', check: checkEspecialista },
+            { id: 'CONSISTENTE', title: 'Consistente', desc: `Pontue mais de ${ACHIEVEMENT_TARGETS.CONSISTENCIA_PONTOS} pts em ${ACHIEVEMENT_TARGETS.CONSISTENCIA_RODADAS} rodadas seguidas.`, icon: 'fa-chart-line', check: checkConsistente },
+            { id: 'PRECISO', title: 'Preciso', desc: '70% de acertos em uma rodada (mínimo 5 palpites).', icon: 'fa-crosshairs', check: checkPreciso },
+            { id: 'ARTILHEIRO', title: 'Artilheiro', desc: 'Seja o maior pontuador em qualquer rodada finalizada.', icon: 'fa-crown', check: checkArtilheiro },
+        ];
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAuth();
+            initEventListeners();
+            document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
+        });
+
+        // --- TEMA ---
+        function initTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        
+        function initEventListeners() {
+            // Placeholder
+        }
+
+        // --- AUTENTICAÇÃO E CARREGAMENTO ---
+        async function initAuth() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    
+                    const [tournaments, teams, rounds, users] = await Promise.all([
+                        loadDataOnce('tournaments'),
+                        loadTeamsData(),
+                        fetchCompletedRounds(),
+                        loadUsersData()
+                    ]);
+                    
+                    await loadUserData();
+                    
+                    // Calcular estatísticas globais incluindo precisão por time
+                    calculateGlobalStats();
+                    calculateTeamPredictionStats();
+
+                    // Atualizar UI base
+                    updateUI();
+
+                    // Conteúdo secundário
+                    await checkAndLoadAchievements();
+                    loadTitles();  // MODIFICADO: Agora chama a nova função
+                    loadCompetitionsTimeline(tournaments);
+                    
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+        
+        async function loadDataOnce(path) {
+            const snapshot = await database.ref(path).once('value');
+            return snapshot.val() || {};
+        }
+
+        async function loadUserData() {
+            const snapshot = await database.ref('users/' + currentUser.uid).once('value');
+            userData = snapshot.val();
+            originalUserData = { ...userData };
+        }
+
+        async function loadTeamsData() {
+            const snapshot = await database.ref('teams').once('value');
+            teamsData = snapshot.val() || {};
+            allTeamsArray = Object.entries(teamsData).map(([id, team]) => ({ id, ...team }));
+            renderTeamSelector(allTeamsArray);
+            return teamsData;
+        }
+
+        async function loadUsersData() {
+            const snapshot = await database.ref('users').once('value');
+            const users = snapshot.val() || {};
+            return users;
+        }
+
+        async function fetchCompletedRounds() {
+            if (completedRoundsCache) return completedRoundsCache;
+            const snapshot = await database.ref('rounds').orderByChild('status').equalTo(2).once('value');
+            completedRoundsCache = snapshot.val() || {};
+            return completedRoundsCache;
+        }
+
+        // --- CÁLCULO DE ESTATÍSTICAS ---
+        function calculateMatchPoints(final, pred) {
+            if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return 0;
+            if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
+            const finalW = Math.sign(final.homeScore - final.awayScore);
+            const predW = Math.sign(pred.homeScore - pred.awayScore);
+            if (finalW === predW) return 1;
+            if (final.homeScore === pred.awayScore && final.awayScore === pred.homeScore) return -1;
+            return 0;
+        }
+        
+        function calculateGlobalStats() {
+            let totalPredictions = 0;
+            let correctPredictions = 0;
+            let totalPoints = 0;
+            let roundsPlayed = 0;
+            
+            if (completedRoundsCache) {
+                Object.values(completedRoundsCache).forEach(round => {
+                    let roundPredictions = 0;
+                    let roundPoints = 0;
+                    
+                    Object.values(round.matches || {}).forEach(match => {
+                        const prediction = match.predictions?.[currentUser.uid];
+                        const result = match.finalResult;
+
+                        if (prediction) {
+                            totalPredictions++;
+                            roundPredictions++;
+                            
+                            if (result) {
+                                const points = calculateMatchPoints(result, prediction);
+                                totalPoints += points;
+                                roundPoints += points;
+                                
+                                // Acerto é placar exato (3 pts) ou vencedor correto (1 pt)
+                                if (points === 3 || points === 1) {
+                                    correctPredictions++;
+                                }
+                            }
+                        }
+                    });
+                    
+                    if (roundPredictions > 0) {
+                        roundsPlayed++;
+                    }
+                });
+            }
+
+            globalStatsCache.totalPredictions = totalPredictions;
+            globalStatsCache.correctPredictions = correctPredictions;
+            globalStatsCache.totalPoints = totalPoints;
+            globalStatsCache.roundsPlayed = roundsPlayed;
+        }
+
+        // Nova função: calcular precisão por time
+        function calculateTeamPredictionStats() {
+            if (!completedRoundsCache || globalStatsCache.roundsPlayed < 3) {
+                globalStatsCache.bestTeamPrediction = null;
+                return;
+            }
+            
+            const teamStats = {};
+            
+            // Inicializar estatísticas para todos os times
+            Object.values(teamsData).forEach(team => {
+                teamStats[team.abbr] = {
+                    teamId: team.id,
+                    teamName: team.name,
+                    teamAbbr: team.abbr,
+                    teamImage: team.image,
+                    totalPredictions: 0,
+                    correctPredictions: 0,
+                    accuracy: 0
+                };
+            });
+            
+            // Coletar estatísticas por time
+            Object.values(completedRoundsCache).forEach(round => {
+                Object.values(round.matches || {}).forEach(match => {
+                    const prediction = match.predictions?.[currentUser.uid];
+                    const result = match.finalResult;
+                    
+                    if (!prediction || !result) return;
+                    
+                    // Determinar qual time o usuário apostou (se houver)
+                    // Vamos considerar que o usuário aposta no time que ele acha que vai ganhar
+                    // ou no empate
+                    const predictedWinner = Math.sign(prediction.homeScore - prediction.awayScore);
+                    const actualWinner = Math.sign(result.homeScore - result.awayScore);
+                    
+                    // Para simplificar, vamos considerar apenas os palpites onde o usuário
+                    // apostou em um time específico (não empate)
+                    if (predictedWinner !== 0) {
+                        // Determinar qual time estava em casa/fora baseado na estrutura do jogo
+                        // Isso é simplificado - na prática você precisaria mapear os IDs dos times
+                        const homeTeamCode = match.homeTeam;
+                        const awayTeamCode = match.awayTeam;
+                        
+                        // Tentar encontrar o time pelo código
+                        let predictedTeam = null;
+                        if (predictedWinner === 1) {
+                            // Apostou no time da casa
+                            predictedTeam = findTeamByCode(homeTeamCode);
+                        } else if (predictedWinner === -1) {
+                            // Apostou no time visitante
+                            predictedTeam = findTeamByCode(awayTeamCode);
+                        }
+                        
+                        if (predictedTeam && predictedTeam.abbr) {
+                            const teamAbbr = predictedTeam.abbr;
+                            if (teamStats[teamAbbr]) {
+                                teamStats[teamAbbr].totalPredictions++;
+                                
+                                // Verificar se o palpite foi correto
+                                const points = calculateMatchPoints(result, prediction);
+                                if (points === 3 || points === 1) {
+                                    teamStats[teamAbbr].correctPredictions++;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Calcular precisão e encontrar o melhor time
+            let bestTeam = null;
+            let bestAccuracy = 0;
+            
+            Object.values(teamStats).forEach(team => {
+                if (team.totalPredictions >= 5) { // Mínimo de 5 palpites para considerar
+                    team.accuracy = team.totalPredictions > 0 
+                        ? Math.round((team.correctPredictions / team.totalPredictions) * 100) 
+                        : 0;
+                    
+                    if (team.accuracy > bestAccuracy) {
+                        bestAccuracy = team.accuracy;
+                        bestTeam = team;
+                    }
+                }
+            });
+            
+            globalStatsCache.bestTeamPrediction = bestTeam;
+        }
+        
+        function findTeamByCode(teamCode) {
+            // Primeiro, procura nos times pelo ID
+            if (teamsData[teamCode]) {
+                return teamsData[teamCode];
+            }
+            
+            // Se não encontrar, procura nos usuários (pode ser ID de jogador)
+            // Esta é uma simplificação - na prática você precisa do mapeamento correto
+            return null;
+        }
+
+        function calculateAccuracy(correct, total) {
+            return total > 0 ? Math.round((correct / total) * 100) : 0;
+        }
+
+        // --- ATUALIZAÇÃO DE UI ---
+        function updateUI() {
+            updateProfileHeader();
+            updateStats();
+            updateFormData();
+        }
+        
+        function updateProfileHeader() {
+            if (!userData) return;
+            
+            const team = teamsData[userData.teamId];
+            const profileAvatar = document.getElementById('profile-avatar');
+            const profileName = document.getElementById('profile-name');
+            const profileAbbr = document.getElementById('profile-abbr');
+            const profileTeamInfo = document.getElementById('profile-team-info');
+            
+            // Avatar
+            let avatarSrc = userData.teamId || team?.image || 
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.abbr || 'U')}&background=3b82f6&color=fff`;
+
+            profileAvatar.src = avatarSrc;
+            profileAvatar.onerror = () => {
+                profileAvatar.src = team?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.abbr || 'U')}&background=3b82f6&color=fff`;
+            };
+            
+            // Nome e sigla
+            profileName.textContent = userData.name || 'Usuário';
+            profileAbbr.textContent = userData.abbr || '---';
+            
+            // Informações do time
+            if (team) {
+                const teamLogoUrl = team.image || 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(team.abbr)}&background=ccc&color=fff`;
+                
+                profileTeamInfo.innerHTML = `
+                    <div class="team-abbr-badge">
+                        <img src="${teamLogoUrl}" alt="${team.name}" class="team-logo-mini" 
+                             onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.abbr)}&background=ccc&color=fff'">
+                        ${team.abbr}
+                    </div>
+                    <div class="team-name-badge">${team.name}</div>
+                `;
+            } else {
+                profileTeamInfo.innerHTML = '<div class="text-secondary">Sem time selecionado</div>';
+            }
+        }
+        
+        function updateStats() {
+            const totalPredictions = globalStatsCache.totalPredictions;
+            const correctPredictions = globalStatsCache.correctPredictions;
+            const totalPoints = globalStatsCache.totalPoints;
+            const roundsPlayed = globalStatsCache.roundsPlayed;
+            const accuracy = calculateAccuracy(correctPredictions, totalPredictions);
+            
+            // Atualizar estatísticas principais
+            document.getElementById('stat-palpites').textContent = totalPredictions;
+            document.getElementById('stat-acertos').textContent = accuracy + '%';
+            document.getElementById('stat-pontos').textContent = totalPoints;
+            
+            // Atualizar resumo
+            const statsSummary = document.getElementById('stats-summary');
+            statsSummary.innerHTML = `
+                Participou de <strong>${roundsPlayed}</strong> rodada${roundsPlayed !== 1 ? 's' : ''} completas
+                com média de <strong>${totalPredictions > 0 ? (totalPoints / totalPredictions).toFixed(1) : 0}</strong> pontos por palpite.
+            `;
+            
+            // Atualizar melhor time (se aplicável)
+            const bestTeamContainer = document.getElementById('best-team-prediction-container');
+            if (globalStatsCache.bestTeamPrediction && roundsPlayed >= 3) {
+                const bestTeam = globalStatsCache.bestTeamPrediction;
+                bestTeamContainer.style.display = 'block';
+                bestTeamContainer.innerHTML = `
+                    <div class="best-team-prediction">
+                        <div class="best-team-title">Time com maior precisão nos seus palpites:</div>
+                        <div class="best-team-info">
+                            <img src="${bestTeam.teamImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(bestTeam.teamAbbr)}&background=ccc&color=fff`}" 
+                                 alt="${bestTeam.teamName}" class="team-logo-mini"
+                                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(bestTeam.teamAbbr)}&background=ccc&color=fff'">
+                            <span>${bestTeam.teamName} (${bestTeam.teamAbbr})</span>
+                            <span class="best-team-accuracy">${bestTeam.accuracy}%</span>
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                            ${bestTeam.correctPredictions} acertos em ${bestTeam.totalPredictions} palpites
+                        </div>
+                    </div>
+                `;
+            } else {
+                bestTeamContainer.style.display = 'none';
+                bestTeamContainer.innerHTML = '';
+            }
+        }
+
+        function updateFormData() {
+            if (!userData) return;
+            
+            document.getElementById('edit-name').value = userData.name || '';
+            document.getElementById('edit-abbr').value = userData.abbr || '';
+            
+            // Marca o time selecionado
+            document.querySelectorAll('.team-option').forEach(o => o.classList.remove('selected'));
+            if (userData.team) {
+                const selectedOption = document.querySelector(`.team-option[data-team-id="${userData.team}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                }
+            }
+        }
+        
+        // --- SELETOR DE TIMES COM FILTRO ---
+        function renderTeamSelector(teamsToRender) {
+            const container = document.getElementById('team-selector');
+            if (!container) return;
+            
+            container.innerHTML = teamsToRender.map(team => {
+                const isSelected = userData?.team === team.id ? 'selected' : '';
+                const avatarUrl = team.image || 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(team.abbr)}&background=ccc&color=fff`;
+
+                return `
+                    <div class="team-option ${isSelected}" data-team-id="${team.id}" data-team-name="${team.name}" data-team-abbr="${team.abbr}">
+                        <img src="${avatarUrl}" alt="${team.name}" class="team-logo-small" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.abbr)}&background=ccc&color=fff'">
+                        <div class="team-name-small">${team.abbr}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Adicionar event listeners
+            document.querySelectorAll('.team-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.team-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    userData.team = option.dataset.teamId;
+                });
+            });
+
+            // Listener para filtro
+            document.getElementById('team-search').addEventListener('input', (e) => {
+                filterTeams(e.target.value);
+            });
+        }
+        
+        function filterTeams(searchTerm) {
+            const normalizedSearch = searchTerm.toLowerCase().trim();
+            const filteredTeams = allTeamsArray.filter(team => 
+                team.name.toLowerCase().includes(normalizedSearch) || 
+                team.abbr.toLowerCase().includes(normalizedSearch)
+            );
+            renderTeamSelector(filteredTeams);
+        }
+
+        // --- FUNÇÕES RESTANTES (mantidas do código original) ---
+        
+        function loadTitles() {
+            // Implementação mantida do código original
+            const titlesRef = database.ref('titles');
+            const titlesGrid = document.getElementById('titles-grid');
+            const noTitlesEl = document.getElementById('no-titles');
+            titlesGrid.innerHTML = '';
+            noTitlesEl.style.display = 'block';
+
+            titlesRef.once('value', (snapshot) => {
+                const allTitles = snapshot.val();
+                if (!allTitles) return;
+
+                const playerTitles = Object.values(allTitles).filter(title => title.winnerId === currentUser.uid);
+
+                if (playerTitles.length === 0) return;
+                
+                noTitlesEl.style.display = 'none';
+
+                const renderedTitles = playerTitles.map(title => {
+                    let iconClass = 'fa-trophy icon-trophy';
+                    if (title.type === 'Supercopa') {
+                        iconClass = 'fa-shield-alt icon-shield';
+                    } else if (title.type === 'Clausura' || title.type === 'Abertura') {
+                        iconClass = 'fa-star icon-star';
+                    }
+                    
+                    return `
+                        <div class="title-item">
+                            <i class="fas ${iconClass}"></i>
+                            <div>
+                                <div style="font-weight: 600;">${title.name}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">${title.year || 2025} (${title.type})</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                titlesGrid.innerHTML = renderedTitles;
+            });
+        }
+
+        // Funções de verificação de conquistas (simplificadas)
+        function checkEspecialista(user) { return false; }
+        function checkPreciso(user) { return false; }
+        function checkArtilheiro(user) { return false; }
+        function checkConsistente(user) { return false; }
+
+        async function checkAndLoadAchievements() {
+            const currentAchievements = userData?.achievements || {};
+            const dbUpdates = {};
+            let unlockedCount = 0;
+            const definitions = ACHIEVEMENTS_DEFINITION;
+            
+            for (const achievement of definitions) {
+                const isUnlocked = currentAchievements[achievement.id] || await achievement.check(userData);
+
+                if (isUnlocked && !currentAchievements[achievement.id]) {
+                    dbUpdates[`achievements/${achievement.id}`] = true;
+                }
+                
+                if (isUnlocked) {
+                    unlockedCount++;
+                    achievement.unlocked = true;
+                } else {
+                    achievement.unlocked = false;
+                }
+            }
+
+            if (Object.keys(dbUpdates).length > 0) {
+                await database.ref('users/' + currentUser.uid).update(dbUpdates);
+                userData.achievements = { ...currentAchievements, ...dbUpdates.achievements };
+            }
+            
+            renderAchievements(definitions, unlockedCount);
+        }
+
+        function renderAchievements(achievements, unlockedCount) {
+            const grid = document.getElementById('achievements-grid');
+            const count = document.getElementById('achievements-count');
+            
+            count.textContent = `${unlockedCount}/${achievements.length}`;
+            
+            grid.innerHTML = achievements.map(achievement => `
+                <div class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}">
+                    <div class="achievement-icon ${achievement.unlocked ? 'unlocked' : ''}">
+                        <i class="fas ${achievement.icon}"></i>
+                    </div>
+                    <div class="achievement-title">${achievement.title}</div>
+                    <div class="achievement-desc">${achievement.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        // Funções de timeline e competições (simplificadas)
+        function loadCompetitionsTimeline(tournamentsData) {
+            const timelineEl = document.getElementById('competitions-timeline');
+            timelineEl.innerHTML = '<div class="text-secondary" style="text-align: center; padding: 20px;">Funcionalidade em desenvolvimento...</div>';
+        }
+
+        // --- AÇÕES DE PERFIL ---
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('edit-name').value.trim();
+            const abbr = document.getElementById('edit-abbr').value.toUpperCase();
+            const team = userData?.team;
+            
+            if (!name || abbr.length !== 3 || !/^[A-Z]{3}$/.test(abbr) || !team) {
+                alert('Preencha todos os campos corretamente (Nome, Sigla de 3 letras e Time).');
+                return;
+            }
+            
+            try {
+                // Verificar sigla
+                const usersRef = database.ref('users');
+                const snapshot = await usersRef.orderByChild('abbr').equalTo(abbr).once('value');
+                
+                let isAbbrTaken = false;
+                snapshot.forEach(childSnapshot => {
+                    if (childSnapshot.key !== currentUser.uid) {
+                        isAbbrTaken = true;
+                    }
+                });
+                
+                if (isAbbrTaken) {
+                    alert('Esta sigla já está em uso. Por favor, escolha outra.');
+                    return;
+                }
+                
+                // Atualizar
+                const updates = { name, abbr, team };
+                await database.ref('users/' + currentUser.uid).update(updates);
+                
+                // Atualizar UI
+                Object.assign(userData, updates);
+                originalUserData = { ...userData };
+                updateUI();
+                
+                alert('Perfil atualizado com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao atualizar perfil:', error);
+                alert('Erro ao atualizar perfil. Tente novamente.');
+            }
+        }
+
+        function cancelEdit() {
+            userData = { ...originalUserData };
+            updateFormData();
+            alert('Alterações canceladas. Formulário restaurado.');
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value;
+            
+            if (newPassword.length < 6) {
+                alert('A nova senha deve ter no mínimo 6 caracteres.');
+                return;
+            }
+            
+            try {
+                await currentUser.updatePassword(newPassword);
+                alert('Senha alterada com sucesso! Você pode ser solicitado a fazer login novamente.');
+                document.getElementById('new-password').value = '';
+
+            } catch (error) {
+                console.error('Erro ao alterar senha:', error);
+                
+                if (error.code === 'auth/requires-recent-login') {
+                    alert('Operação bloqueada. Por motivos de segurança, você precisa fazer login novamente para alterar a senha. Faça logout e entre novamente.');
+                } else {
+                    alert('Erro ao alterar senha. Verifique se a senha é válida ou se você está logado. Código: ' + error.code);
+                }
+            }
+        }
+
+        // --- LOGOUT E AVATAR ---
+        function handleLogout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch(error => {
+                console.error("Erro ao fazer logout:", error);
+                alert('Erro ao sair. Tente novamente.');
+            });
+        }
+        
+        let selectedAvatarFile = null;
+
+        function openAvatarModal() {
+            const avatarPreview = document.getElementById('avatar-preview');
+            avatarPreview.src = document.getElementById('profile-avatar').src;
+            document.getElementById('avatar-modal').classList.add('show');
+        }
+
+        function closeAvatarModal() {
+            document.getElementById('avatar-modal').classList.remove('show');
+            selectedAvatarFile = null;
+            document.getElementById('avatar-file').value = '';
+        }
+
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+                alert('Por favor, selecione uma imagem válida (máx. 5MB).');
+                return;
+            }
+            
+            selectedAvatarFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatar-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function saveAvatar() {
+            if (!selectedAvatarFile) {
+                alert('Por favor, selecione uma imagem');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('save-avatar-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            
+            try {
+                const storageRef = storage.ref();
+                const avatarRef = storageRef.child(`avatars/${currentUser.uid}/${selectedAvatarFile.name}`);
+                await avatarRef.put(selectedAvatarFile);
+                
+                const avatarUrl = await avatarRef.getDownloadURL();
+                
+                await database.ref('users/' + currentUser.uid).update({ avatarUrl });
+                
+                userData.avatarUrl = avatarUrl;
+                updateProfileHeader();
+                
+                alert('Avatar atualizado com sucesso!');
+                closeAvatarModal();
+                
+            } catch (error) {
+                console.error('Erro ao salvar avatar:', error);
+                alert('Erro ao salvar avatar. Tente novamente.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Avatar';
+            }
+        }
+
+        async function loadTitles() {
+            const titlesRef = database.ref('titles');
+            const titlesContainer = document.getElementById('titles-container');
+            const detailedContainer = document.getElementById('detailed-titles-container');
+            const noTitlesMessage = document.getElementById('no-titles-message');
+            const totalTitlesCount = document.getElementById('total-titles-count');
+            const titlesSummary = document.getElementById('titles-summary');
+
+            titlesRef.once('value', (snapshot) => {
+                const allTitles = snapshot.val();
+                if (!allTitles) {
+                    noTitlesMessage.style.display = 'block';
+                    detailedContainer.innerHTML = `
+                        <div class="no-titles-message">
+                            <i class="fas fa-trophy" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+                            <p>Você ainda não conquistou títulos</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-tertiary);">
+                                Participe das competições e torneios para conquistar troféus!
+                            </p>
+                        </div>
+                    `;
+                    totalTitlesCount.textContent = '0';
+                    titlesSummary.textContent = '0 títulos';
+                    return;
+                }
+
+                // Filtrar títulos do jogador atual
+                const playerTitles = Object.entries(allTitles)
+                    .map(([id, title]) => ({ id, ...title }))
+                    .filter(title => title.playerId === currentUser.uid);
+
+                if (playerTitles.length === 0) {
+                    noTitlesMessage.style.display = 'block';
+                    detailedContainer.innerHTML = `
+                        <div class="no-titles-message">
+                            <i class="fas fa-trophy" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+                            <p>Você ainda não conquistou títulos</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-tertiary);">
+                                Participe das competições e torneios para conquistar troféus!
+                            </p>
+                        </div>
+                    `;
+                    totalTitlesCount.textContent = '0';
+                    titlesSummary.textContent = '0 títulos';
+                    return;
+                }
+
+                noTitlesMessage.style.display = 'none';
+                totalTitlesCount.textContent = playerTitles.length;
+                titlesSummary.textContent = `${playerTitles.length} título${playerTitles.length !== 1 ? 's' : ''}`;
+
+                // Agrupar títulos por tipo
+                const titlesByType = playerTitles.reduce((acc, title) => {
+                    const type = title.type || 'outro';
+                    if (!acc[type]) acc[type] = [];
+                    acc[type].push(title);
+                    return acc;
+                }, {});
+
+                // Ordenar tipos por importância
+                const typeOrder = {
+                    'mundial': 1,
+                    'continental': 2,
+                    'nacional': 3,
+                    'estadual': 4,
+                    'outro': 5
+                };
+
+                const sortedTypes = Object.keys(titlesByType).sort((a, b) => {
+                    return (typeOrder[a] || 99) - (typeOrder[b] || 99);
+                });
+
+                // Renderizar títulos na sidebar
+                let sidebarHTML = '';
+                for (const type of sortedTypes) {
+                    const typeTitles = titlesByType[type];
+                    const typeName = getTypeDisplayName(type);
+                    const iconClass = getTypeIconClass(type);
+                    
+                    sidebarHTML += `
+                        <div class="title-category">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <i class="fas ${iconClass}"></i>
+                                    ${typeName}
+                                </div>
+                                <span class="category-count">${typeTitles.length}</span>
+                            </div>
+                            <div class="titles-list">
+                                ${typeTitles.slice(0, 3).map(title => renderTitleItem(title)).join('')}
+                            </div>
+                            ${typeTitles.length > 3 ? 
+                                `<div style="text-align: center; margin-top: 0.5rem;">
+                                    <small style="color: var(--text-tertiary);">+ ${typeTitles.length - 3} mais</small>
+                                </div>` 
+                                : ''}
+                        </div>
+                    `;
+                }
+
+                titlesContainer.innerHTML = sidebarHTML;
+
+                // Renderizar títulos detalhados na seção principal
+                let detailedHTML = '';
+                for (const type of sortedTypes) {
+                    const typeTitles = titlesByType[type];
+                    const typeName = getTypeDisplayName(type);
+                    const iconClass = getTypeIconClass(type);
+                    
+                    detailedHTML += `
+                        <div class="title-category" style="margin-bottom: 1.5rem;">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <i class="fas ${iconClass}"></i>
+                                    ${typeName}
+                                    <span style="font-size: 0.8rem; color: var(--text-secondary);">
+                                        (${typeTitles.length} título${typeTitles.length !== 1 ? 's' : ''})
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="titles-list">
+                                ${typeTitles.map(title => renderDetailedTitleItem(title)).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                detailedContainer.innerHTML = detailedHTML;
+            });
+        }
+
+        // FUNÇÕES AUXILIARES PARA TÍTULOS
+        function getTypeDisplayName(type) {
+            const names = {
+                'mundial': 'Mundial',
+                'continental': 'Continental',
+                'nacional': 'Nacional',
+                'estadual': 'Estadual',
+                'outro': 'Outros'
+            };
+            return names[type] || type.charAt(0).toUpperCase() + type.slice(1);
+        }
+
+        function getTypeIconClass(type) {
+            const icons = {
+                'mundial': 'fa-globe-americas',
+                'continental': 'fa-globe-europe',
+                'nacional': 'fa-flag',
+                'estadual': 'fa-landmark',
+                'outro': 'fa-award'
+            };
+            return icons[type] || 'fa-award';
+        }
+
+        function getImportanceStars(importance) {
+            if (importance === 1) return '<i class="fas fa-star importante"></i>';
+            if (importance === 2) return '<i class="fas fa-star media"></i><i class="fas fa-star media"></i>';
+            if (importance === 3) return '<i class="fas fa-star baixa"></i><i class="fas fa-star baixa"></i><i class="fas fa-star baixa"></i>';
+            return '';
+        }
+
+        function getImportanceText(importance) {
+            if (importance === 1) return 'Alta';
+            if (importance === 2) return 'Média';
+            if (importance === 3) return 'Baixa';
+            return 'Não especificada';
+        }
+
+        function renderTitleItem(title) {
+            const year = title.year || 'N/A';
+            const importanceStars = getImportanceStars(title.importance);
+            const importanceClass = title.importance === 1 ? 'importante' : 
+                                  title.importance === 2 ? 'media' : 'baixa';
+            
+            return `
+                <div class="title-item">
+                    <div class="title-icon ${title.type}">
+                        <i class="fas ${getTypeIconClass(title.type)}"></i>
+                    </div>
+                    <div class="title-info">
+                        <div class="title-name">${title.name}</div>
+                        <div class="title-meta">
+                            <span class="title-year">${year}</span>
+                            ${importanceStars ? 
+                                `<span class="title-importance ${importanceClass}">${importanceStars}</span>` : 
+                                ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDetailedTitleItem(title) {
+            const year = title.year || 'N/A';
+            const importanceStars = getImportanceStars(title.importance);
+            const importanceText = getImportanceText(title.importance);
+            const importanceClass = title.importance === 1 ? 'importante' : 
+                                  title.importance === 2 ? 'media' : 'baixa';
+            
+            return `
+                <div class="title-item">
+                    <div class="title-icon ${title.type}">
+                        <i class="fas ${getTypeIconClass(title.type)}"></i>
+                    </div>
+                    <div class="title-info">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="title-name">${title.name}</div>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <span class="title-year">${year}</span>
+                                ${importanceStars ? 
+                                    `<span class="title-importance ${importanceClass}" title="Importância: ${importanceText}">
+                                        ${importanceStars}
+                                    </span>` : 
+                                    ''}
+                            </div>
+                        </div>
+                        ${title.description ? 
+                            `<div class="title-description">${title.description}</div>` : 
+                            ''}
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.75rem;">
+                            <span style="color: var(--text-secondary);">Tipo: ${getTypeDisplayName(title.type)}</span>
+                            <span style="color: var(--text-secondary);">•</span>
+                            <span style="color: var(--text-secondary);">Importância: ${importanceText}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

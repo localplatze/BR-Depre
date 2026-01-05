@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brasileirão da Depressão</title>
+    <title>Brasileirão da Depressão - Login</title>
     <link rel="icon" href="./bdd.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --gradient-start: #373B5B;
-            --gradient-end: #1D1D2E;
-            --primary-color: #4A5BCF;
-            --secondary-color: #6B7AE5;
-            --text-primary: #FFFFFF;
-            --text-secondary: #B0B8D4;
-            --input-bg: rgba(255,255,255,0.1);
-            --input-border: rgba(255,255,255,0.2);
+            --gradient-start: #1a1a2e;
+            --gradient-end: #16213e;
+            --primary-color: #4e54c8;
+            --secondary-color: #8f94fb;
+            --accent-color: #00b4d8;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8d4;
+            --input-bg: rgba(255, 255, 255, 0.08);
+            --input-border: rgba(255, 255, 255, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --success-color: #00e676;
+            --error-color: #ff6b6b;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         * {
@@ -25,448 +30,529 @@
             box-sizing: border-box;
         }
 
-        body, html {
-            height: 100%;
+        body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
             color: var(--text-primary);
+            overflow-x: hidden;
         }
 
         .container {
+            min-height: 100vh;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        /* Desktop Layout */
-        @media screen and (min-width: 1024px) {
-            .left-panel {
-                width: 60%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 2rem;
-                text-align: center;
-            }
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.6s ease-out;
+        }
 
-            .right-panel {
-                width: 40%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: rgba(255,255,255,0.05);
-                backdrop-filter: blur(10px);
-                padding: 2rem;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-
-            .logo {
-                margin-bottom: 2rem;
-                max-width: 250px;
-            }
-
-            .hero-image {
-                max-width: 80%;
-                margin: 2rem 0;
-                border-radius: 16px;
-                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            }
-
-            .hero-text {
-                max-width: 600px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Mobile Layout */
-        @media screen and (max-width: 1023px) {
-            .container {
-                flex-direction: column;
-                min-height: 100vh; /* Mudança de height para min-height */
-                overflow-y: auto; /* Permitir scroll */
-            }
-
-            .top-content {
-                min-height: 60%; /* Mudança de height para min-height */
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 1rem;
-            }
-
-            .bottom-content {
-                min-height: 40%; /* Mudança de height para min-height */
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                padding: 1rem;
-                background: rgba(255,255,255,0.05);
-                backdrop-filter: blur(10px);
-                margin-bottom: 20px; /* Adiciona margem inferior */
-            }
-
-            .logo {
-                max-width: 200px;
-                margin: 0 auto 1rem;
-                display: block;
-            }
-
-            .hero-image {
-                max-width: 90%;
-                max-height: 60%;
-                object-fit: contain;
-                margin: 1rem 0;
-                border-radius: 16px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            }
-
-            /* Alinhando a .form-container ao centro */
-            .right-panel {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-grow: 1;
-                padding: 1rem;
-                background: rgba(255,255,255,0.05);
-                backdrop-filter: blur(10px);
-            }
-
-            .form-container {
-                width: 100%;
-                max-width: 400px;
-                background: rgba(255,255,255,0.1);
-                border-radius: 16px;
-                padding: 2rem;
-                box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                margin-bottom: 20px;
-            }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         .logo {
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+            max-width: 200px;
+            height: auto;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
         }
 
-        .hero-text {
+        .form-header {
+            margin-bottom: 30px;
             text-align: center;
-            margin-bottom: 1rem;
         }
 
-        .hero-text h1 {
-            font-size: 2.5rem;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
+        .form-header h1 {
+            font-size: 28px;
             font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .hero-text p {
+        .form-header p {
             color: var(--text-secondary);
-            line-height: 1.6;
-            max-width: 500px;
-            padding: 0 1rem;
+            font-size: 15px;
         }
 
-        .form-container {
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .form-control {
             width: 100%;
-            max-width: 400px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .input-wrapper {
-            margin-bottom: 1.5rem; /* Aumentando o margin-bottom */
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 16px 16px 16px 48px;
             background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
             color: var(--text-primary);
+            font-size: 16px;
             transition: all 0.3s ease;
         }
 
-        .input-wrapper input:focus {
+        .form-control:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74,91,207,0.2);
+            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
         }
 
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.3s ease;
-        }
-
-        button:hover {
-            background: var(--secondary-color);
-        }
-
-        .form-switch {
-            margin-top: 1rem;
-            text-align: center;
-            font-size: small;
+        .form-control::placeholder {
             color: var(--text-secondary);
         }
 
-        .form-switch a {
-            color: var(--primary-color);
-            text-decoration: none;
-            margin: 0 0.5rem;
-        }
-
-        #error-message {
-            color: #FF6B6B;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        #recover-form, 
-        #register-form {
-            display: none;
-        }
-
-        #register-form h2, 
-        #recover-form h2 {
-            margin-bottom: 2rem;
-        }
-
-        .back-button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            margin-right: 0.5rem;
-        }
-
-        h2 {
-            display: inline-flex;
-            align-items: center;
-        }
-        .back-button:hover {
-            color: var(--primary-color);
-        }
-
-        /* Improved team selection styles */
-        .team-select-wrapper {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        .select-selected {
+        .team-select {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 16px;
             background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
             color: var(--text-primary);
+            font-size: 16px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b0b8d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
         }
 
-        .select-selected img {
+        .team-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
+        }
+
+        .team-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .team-option img {
             width: 24px;
             height: 24px;
-            margin-right: 10px;
+            margin-right: 12px;
+            border-radius: 50%;
+            object-fit: contain;
         }
 
-        .select-items {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            max-height: 250px;
-            overflow-y: auto;
+        .team-search {
+            width: 100%;
+            padding: 12px 16px;
             background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            z-index: 10;
-        }
-
-        .select-items div {
-            padding: 0.5rem 1rem;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .select-items div:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .select-items img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        /* Estilizando o botão do time */
-        #selected-team {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background-color: var(--input-bg);
-            border-radius: 8px;
-            cursor: pointer;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
             color: var(--text-primary);
-            font-size: 1rem;
-            border: 1px solid var(--input-border);
+            font-size: 14px;
+            margin-bottom: 10px;
         }
 
-        /* Estilizando a imagem do time */
-        .team-logo {
-            width: 20px; /* Ajuste o tamanho do ícone */
-            height: 20px;
-            margin-right: 8px;
+        .team-search:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
-        /* Estilizando o dropdown de times */
-        #team-dropdown {
+        .team-list {
             max-height: 200px;
             overflow-y: auto;
-            background-color: var(--input-bg);
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            padding: 10px 0;
-            position: absolute;
-            width: 100%;
-            z-index: 100;
+            margin-top: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            background: var(--input-bg);
             display: none;
         }
 
-        #team-dropdown div {
-            padding: 10px;
-            cursor: pointer;
+        .team-list.visible {
+            display: block;
+        }
+
+        .team-item {
             display: flex;
             align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
         }
 
-        #team-dropdown div:hover {
-            background-color: var(--primary-color);
+        .team-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .team-item.selected {
+            background: rgba(78, 84, 200, 0.2);
+        }
+
+        .team-item img {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+
+        .team-info {
+            flex: 1;
+        }
+
+        .team-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .team-location {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        /* Spinner de Carregamento */
-        .loading-spinner {
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 84, 200, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--input-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .form-footer {
+            margin-top: 25px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-success {
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .alert-error {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        .alert.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            display: none; /* Inicialmente escondido */
-            justify-content: center;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 46, 0.9);
+            display: none;
             align-items: center;
-            flex-direction: column;
+            justify-content: center;
             z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
         }
 
         .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid var(--primary-color);
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary-color);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .loading-spinner p {
-            margin-top: 1rem;
-            font-size: 1.2rem;
-            color: var(--primary-color);
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .auth-card {
+                padding: 30px 20px;
+                border-radius: 16px;
+            }
+            
+            .form-header h1 {
+                font-size: 24px;
+            }
+            
+            .logo {
+                max-width: 150px;
+            }
         }
     </style>
 </head>
 <body>
-
-    <div id="loading-spinner" class="loading-spinner">
+    <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <p>Carregando...</p>
     </div>
 
     <div class="container">
-        <div class="left-panel">
-            <img src="./logo.png" alt="Logo" class="logo">
-            <img src="./bg_login.png" alt="Hero Image" class="hero-image">
-            <div class="hero-text">
-                <p>Faça seus palpites, acompanhe os torneios e derrote o ademir atual campeão</p>
+        <div class="auth-card">
+            <div class="logo-container">
+                <img src="./logo.png" alt="Brasileirão da Depressão" class="logo">
             </div>
-        </div>
-        
-        <div class="right-panel">
-            <div class="form-container">
-                <form id="login-form">
-                    <div id="error-message"></div>
-                    <div class="input-wrapper">
-                        <input type="email" id="login-email" placeholder="E-mail" required>
+
+            <div id="loginSection">
+                <div class="form-header">
+                    <h1>Bem-vindo de volta!</h1>
+                    <p>Faça login para continuar</p>
+                </div>
+
+                <div id="alertLogin" class="alert alert-error hidden"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="loginEmail" 
+                                   placeholder="Seu e-mail" 
+                                   required>
+                        </div>
                     </div>
-                    <div class="input-wrapper">
-                        <input type="password" id="login-password" placeholder="Senha" required>
+
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="loginPassword" 
+                                   placeholder="Sua senha" 
+                                   required>
+                        </div>
                     </div>
-                    <button type="submit">Entrar</button>
-                    <div class="form-switch">
-                        <a href="#" id="show-recover">Esqueceu a senha?</a>
-                        <a href="#" id="show-register">Cadastre-se</a>
+
+                    <button type="submit" class="btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Entrar
+                    </button>
+
+                    <div class="form-footer">
+                        <a href="#" id="showRecover">Esqueceu sua senha?</a>
+                        <span> • </span>
+                        <a href="#" id="showRegister">Criar uma conta</a>
                     </div>
                 </form>
+            </div>
 
-                <!-- Register Form -->
-                <form id="register-form" style="position: relative;">
-                    <button type="button" class="back-button" id="show-login-from-register">
-                        <i class="fas fa-arrow-left"></i>
+            <div id="registerSection" class="hidden">
+                <div class="form-header">
+                    <h1>Crie sua conta</h1>
+                    <p>Junte-se à nossa comunidade</p>
+                </div>
+
+                <div id="alertRegister" class="alert alert-error hidden"></div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="registerName" 
+                                   placeholder="Seu nome completo" 
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="registerAbbr" 
+                                   placeholder="Sigla (3 letras)" 
+                                   maxlength="3" 
+                                   required
+                                   pattern="[A-Z]{3}"
+                                   title="Digite 3 letras maiúsculas">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="registerEmail" 
+                                   placeholder="Seu e-mail" 
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="registerPassword" 
+                                   placeholder="Crie uma senha" 
+                                   required
+                                   minlength="6">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" 
+                               class="team-search" 
+                               id="teamSearch" 
+                               placeholder="Buscar time por nome, sigla ou estado..."
+                               style="display: none;">
+                        
+                        <div class="team-select" id="teamSelectTrigger">
+                            <div class="team-option" id="selectedTeamDisplay">
+                                <span>Selecione seu time</span>
+                            </div>
+                        </div>
+
+                        <div class="team-list" id="teamList">
+                            <!-- Times serão carregados aqui -->
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="selectedTeamId">
+
+                    <button type="submit" class="btn">
+                        <i class="fas fa-user-plus"></i>
+                        Criar conta
                     </button>
-                    <h2>Novo Cadastro</h2>
-                    <div id="error-message-register"></div>
-                    <div class="input-wrapper">
-                        <input type="text" id="register-name" placeholder="Nome" required>
+
+                    <div class="form-footer">
+                        <a href="#" id="showLoginFromRegister">Já tem uma conta? Faça login</a>
                     </div>
-                    <div class="input-wrapper">
-                        <input type="text" id="register-abbr" placeholder="Sigla (3 letras)" maxlength="3" required>
-                    </div>
-                    <div class="input-wrapper">
-                        <input type="email" id="register-email" placeholder="E-mail" required>
-                    </div>
-                    <div class="input-wrapper">
-                        <input type="password" id="register-password" placeholder="Senha" required>
-                    </div>
-                    <div class="input-wrapper team-select-wrapper" id="team-select-wrapper">
-                        <div class="select-selected" id="selected-team">Selecione seu time</div>
-                        <div class="select-items" id="team-dropdown"></div>
-                    </div>
-                    <button type="submit">Cadastrar</button>
                 </form>
+            </div>
 
-                <!-- Password Recovery Form (updated) -->
-                <form id="recover-form" style="position: relative;">
-                    <button type="button" class="back-button" id="show-login-from-recover">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h2>Recuperar Senha</h2>
-                    <div id="error-message-recover"></div>
-                    <div class="input-wrapper">
-                        <input type="email" id="recover-email" placeholder="E-mail" required>
+            <div id="recoverSection" class="hidden">
+                <div class="form-header">
+                    <h1>Recuperar senha</h1>
+                    <p>Digite seu e-mail para receber o link de recuperação</p>
+                </div>
+
+                <div id="alertRecover" class="alert hidden"></div>
+
+                <form id="recoverForm">
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="recoverEmail" 
+                                   placeholder="Seu e-mail" 
+                                   required>
+                        </div>
                     </div>
-                    <button type="submit">Enviar Link de Recuperação</button>
+
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar link
+                    </button>
+
+                    <div class="form-footer">
+                        <a href="#" id="showLoginFromRecover">Voltar para o login</a>
+                    </div>
                 </form>
             </div>
         </div>
@@ -478,7 +564,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Configuration (já configurado anteriormente)
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
@@ -489,183 +575,393 @@
             appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
             measurementId: "G-4JXFEZ8DW6"
         };
-    
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
-    
-        // Form Elements
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const recoverForm = document.getElementById('recover-form');
-        const errorMessage = document.getElementById('error-message');
-        const errorMessageRegister = document.getElementById('error-message-register');
-        const errorMessageRecover = document.getElementById('error-message-recover');
-        const selectedTeam = document.getElementById('selected-team');
-        const teamDropdown = document.getElementById('team-dropdown');
-        const teamSelectWrapper = document.getElementById('team-select-wrapper');
-    
-        let selectedTeamId = '';
-    
-        // Custom Select Dropdown (continua igual)
-        function createCustomTeamSelect() {
-            const teamsRef = database.ref('teams');
-            teamsRef.once('value', (snapshot) => {
-                const teams = snapshot.val();
-                if (teams) {
-                    for (let teamId in teams) {
-                        const teamDiv = document.createElement('div');
-    
-                        // Criar a opção com logo e nome do time
-                        const teamOption = document.createElement('div');
-                        teamOption.innerHTML = 
-                            `<img src="${teams[teamId].image || ''}" class="team-logo" alt="${teams[teamId].name}">
-                            ${teams[teamId].name} (${teams[teamId].abbr})`
-                        ;
-    
-                        // Quando clicar na opção de time, exibe o nome do time selecionado
-                        teamDiv.appendChild(teamOption);
-                        teamDiv.addEventListener('click', () => {
-                            selectedTeam.innerHTML = teamOption.innerHTML;
-                            selectedTeamId = teamId;
-                            teamDropdown.style.display = 'none'; // Esconde o dropdown
-                        });
-    
-                        teamDropdown.appendChild(teamDiv);
-                    }
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        // Form sections
+        const loginSection = document.getElementById('loginSection');
+        const registerSection = document.getElementById('registerSection');
+        const recoverSection = document.getElementById('recoverSection');
+        
+        // Alerts
+        const alertLogin = document.getElementById('alertLogin');
+        const alertRegister = document.getElementById('alertRegister');
+        const alertRecover = document.getElementById('alertRecover');
+        
+        // Forms
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const recoverForm = document.getElementById('recoverForm');
+        
+        // Team selection elements
+        const teamSearch = document.getElementById('teamSearch');
+        const teamSelectTrigger = document.getElementById('teamSelectTrigger');
+        const teamList = document.getElementById('teamList');
+        const selectedTeamDisplay = document.getElementById('selectedTeamDisplay');
+        const selectedTeamId = document.getElementById('selectedTeamId');
+        
+        // State
+        let teamsData = {};
+        let isTeamListOpen = false;
+
+        // Loading functions
+        function showLoading() {
+            loadingOverlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+        }
+
+        // Show/hide sections
+        function showSection(section) {
+            loginSection.classList.add('hidden');
+            registerSection.classList.add('hidden');
+            recoverSection.classList.add('hidden');
+            
+            section.classList.remove('hidden');
+        }
+
+        // Show alert
+        function showAlert(alertElement, message, type = 'error') {
+            alertElement.textContent = message;
+            alertElement.className = `alert alert-${type} visible`;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    alertElement.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        // Load teams from Firebase
+        async function loadTeams() {
+            try {
+                const teamsRef = database.ref('teams');
+                const snapshot = await teamsRef.once('value');
+                teamsData = snapshot.val();
+                
+                if (!teamsData) {
+                    throw new Error('Nenhum time encontrado no banco de dados');
+                }
+                
+                renderTeamList();
+            } catch (error) {
+                console.error('Erro ao carregar times:', error);
+                showAlert(alertRegister, 'Erro ao carregar lista de times', 'error');
+            }
+        }
+
+        // Render team list
+        function renderTeamList(filter = '') {
+            teamList.innerHTML = '';
+            
+            const teamsArray = Object.entries(teamsData);
+            const filteredTeams = teamsArray.filter(([id, team]) => {
+                const searchTerm = filter.toLowerCase();
+                return (
+                    team.name.toLowerCase().includes(searchTerm) ||
+                    team.abbr.toLowerCase().includes(searchTerm) ||
+                    team.from.toLowerCase().includes(searchTerm)
+                );
+            });
+            
+            filteredTeams.forEach(([id, team]) => {
+                const teamItem = document.createElement('div');
+                teamItem.className = 'team-item';
+                teamItem.dataset.id = id;
+                
+                teamItem.innerHTML = `
+                    <img src="${team.image || ''}" alt="${team.name}" onerror="this.src='https://via.placeholder.com/32'">
+                    <div class="team-info">
+                        <div class="team-name">${team.name} (${team.abbr})</div>
+                        <div class="team-location">${team.from}</div>
+                    </div>
+                `;
+                
+                teamItem.addEventListener('click', () => {
+                    selectTeam(id, team);
+                    closeTeamList();
+                });
+                
+                teamList.appendChild(teamItem);
+            });
+        }
+
+        // Select a team
+        function selectTeam(id, team) {
+            selectedTeamId.value = id;
+            selectedTeamDisplay.innerHTML = `
+                <img src="${team.image || ''}" alt="${team.name}" onerror="this.src='https://via.placeholder.com/24'">
+                <span>${team.name} (${team.abbr})</span>
+            `;
+            
+            // Update selected state in list
+            document.querySelectorAll('.team-item').forEach(item => {
+                if (item.dataset.id === id) {
+                    item.classList.add('selected');
                 } else {
-                    console.error('Nenhum time encontrado no Firebase');
+                    item.classList.remove('selected');
                 }
             });
         }
-    
-        // Toggle team dropdown (continua igual)
-        selectedTeam.addEventListener('click', () => {
-            teamDropdown.style.display = teamDropdown.style.display === 'block' ? 'none' : 'block';
-        });
-    
-        // Fechar o dropdown ao clicar fora dele
-        document.addEventListener('click', (event) => {
-            if (!teamSelectWrapper.contains(event.target)) {
-                teamDropdown.style.display = 'none';
+
+        // Open/close team list
+        function toggleTeamList() {
+            isTeamListOpen = !isTeamListOpen;
+            
+            if (isTeamListOpen) {
+                teamList.classList.add('visible');
+                teamSearch.style.display = 'block';
+                teamSearch.focus();
+            } else {
+                closeTeamList();
             }
+        }
+
+        function closeTeamList() {
+            isTeamListOpen = false;
+            teamList.classList.remove('visible');
+            teamSearch.style.display = 'none';
+            teamSearch.value = '';
+            renderTeamList();
+        }
+
+        // Event Listeners
+        teamSelectTrigger.addEventListener('click', toggleTeamList);
+
+        teamSearch.addEventListener('input', (e) => {
+            renderTeamList(e.target.value);
         });
-    
-        // Login Handler
-        loginForm.addEventListener('submit', (e) => {
+
+        // Form navigation
+        document.getElementById('showRegister').addEventListener('click', (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-    
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    // Armazenar dados do usuário no localStorage
+            showSection(registerSection);
+            loadTeams();
+        });
+
+        document.getElementById('showRecover').addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection(recoverSection);
+        });
+
+        document.getElementById('showLoginFromRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection(loginSection);
+        });
+
+        document.getElementById('showLoginFromRecover').addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection(loginSection);
+        });
+
+        // Login form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showAlert(alertLogin, 'Por favor, preencha todos os campos');
+                return;
+            }
+            
+            try {
+                showLoading();
+                
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Get user data from database
+                const userRef = database.ref('users/' + user.uid);
+                const snapshot = await userRef.once('value');
+                const userData = snapshot.val();
+                
+                if (userData) {
+                    // Store user data in localStorage
                     localStorage.setItem('user', JSON.stringify({
                         uid: user.uid,
                         email: user.email,
-                        name: user.displayName || 'Usuário'
+                        name: userData.name,
+                        abbr: userData.abbr,
+                        team: userData.team,
+                        teamData: teamsData[userData.team] || null
                     }));
-    
-                    // Redirecionar para a home
-                    window.location.href = 'home.html';
-                })
-                .catch((error) => {
-                    errorMessage.textContent = 'Erro ao fazer login: ' + error.message;
-                });
-        });
-    
-        // Registration Handler (continua igual)
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const abbr = document.getElementById('register-abbr').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-    
-            // Validate abbreviation
-            if (abbr.length !== 3) {
-                errorMessageRegister.textContent = 'A sigla deve ter exatamente 3 letras';
-                return;
-            }
-    
-            // Validate team selection
-            if (!selectedTeamId) {
-                errorMessageRegister.textContent = 'Por favor, selecione um time';
-                return;
-            }
-    
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
                     
-                    // Save additional user info to database
-                    return database.ref('users/' + user.uid).set({
-                        name: name,
-                        abbr: abbr,
-                        email: email,
-                        team: selectedTeamId
-                    });
-                })
-                .then(() => {
+                    // Redirect to home
                     window.location.href = 'home.html';
-                })
-                .catch((error) => {
-                    errorMessageRegister.textContent = 'Erro ao cadastrar: ' + error.message;
+                } else {
+                    throw new Error('Dados do usuário não encontrados');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert(alertLogin, getFirebaseErrorMessage(error));
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // Register form submission
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value.trim();
+            const abbr = document.getElementById('registerAbbr').value.toUpperCase();
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const teamId = selectedTeamId.value;
+            
+            // Validation
+            if (!name || !abbr || !email || !password || !teamId) {
+                showAlert(alertRegister, 'Por favor, preencha todos os campos');
+                return;
+            }
+            
+            if (abbr.length !== 3 || !/^[A-Z]{3}$/.test(abbr)) {
+                showAlert(alertRegister, 'A sigla deve conter exatamente 3 letras maiúsculas');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert(alertRegister, 'A senha deve ter no mínimo 6 caracteres');
+                return;
+            }
+            
+            try {
+                showLoading();
+                
+                // Check if abbreviation is already taken
+                const usersRef = database.ref('users');
+                const snapshot = await usersRef.orderByChild('abbr').equalTo(abbr).once('value');
+                
+                if (snapshot.exists()) {
+                    throw new Error('Esta sigla já está em uso. Por favor, escolha outra.');
+                }
+                
+                // Create user in Firebase Auth
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Save additional user data to database
+                await database.ref('users/' + user.uid).set({
+                    name: name,
+                    abbr: abbr,
+                    email: email,
+                    team: teamId,
+                    createdAt: new Date().toISOString(),
+                    pointsSuperligaAbertura: 0,
+                    pointsSuperligaClausura: 0,
+                    lastRoundPointsLigaAbertura: 0,
+                    lastRoundPointsLigaClausura: 0
                 });
-        });
-    
-        // Recover Password Handler (continua igual)
-        recoverForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('recover-email').value;
-    
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    alert('Link de recuperação de senha enviado!');
-                })
-                .catch((error) => {
-                    errorMessageRecover.textContent = 'Erro ao enviar o link de recuperação: ' + error.message;
-                });
-        });
-
-        document.getElementById('show-register').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            recoverForm.style.display = 'none';
-            errorMessageRegister.textContent = '';
-        });
-
-        document.getElementById('show-recover').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'block';
-            errorMessageRecover.textContent = '';
+                
+                // Store user data in localStorage
+                localStorage.setItem('user', JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    name: name,
+                    abbr: abbr,
+                    team: teamId,
+                    teamData: teamsData[teamId] || null
+                }));
+                
+                showAlert(alertRegister, 'Conta criada com sucesso! Redirecionando...', 'success');
+                
+                // Redirect after success
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                showAlert(alertRegister, getFirebaseErrorMessage(error));
+            } finally {
+                hideLoading();
+            }
         });
 
-        document.getElementById('show-login-from-register').addEventListener('click', (e) => {
+        // Recover password form submission
+        recoverForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'none';
-            errorMessage.textContent = '';
+            
+            const email = document.getElementById('recoverEmail').value;
+            
+            if (!email) {
+                showAlert(alertRecover, 'Por favor, digite seu e-mail');
+                return;
+            }
+            
+            try {
+                showLoading();
+                
+                await auth.sendPasswordResetEmail(email);
+                
+                showAlert(alertRecover, 'Link de recuperação enviado para seu e-mail!', 'success');
+                
+                // Clear form
+                document.getElementById('recoverEmail').value = '';
+                
+                // Return to login after delay
+                setTimeout(() => {
+                    showSection(loginSection);
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Recovery error:', error);
+                showAlert(alertRecover, getFirebaseErrorMessage(error));
+            } finally {
+                hideLoading();
+            }
         });
 
-        document.getElementById('show-login-from-recover').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'none';
-            errorMessage.textContent = '';
+        // Helper function for Firebase error messages
+        function getFirebaseErrorMessage(error) {
+            switch (error.code) {
+                case 'auth/invalid-email':
+                    return 'E-mail inválido';
+                case 'auth/user-disabled':
+                    return 'Esta conta foi desativada';
+                case 'auth/user-not-found':
+                    return 'Usuário não encontrado';
+                case 'auth/wrong-password':
+                    return 'Senha incorreta';
+                case 'auth/email-already-in-use':
+                    return 'Este e-mail já está em uso';
+                case 'auth/weak-password':
+                    return 'A senha é muito fraca. Use no mínimo 6 caracteres';
+                case 'auth/network-request-failed':
+                    return 'Erro de conexão. Verifique sua internet';
+                default:
+                    return error.message || 'Ocorreu um erro. Tente novamente.';
+            }
+        }
+
+        // Close team list when clicking outside
+        document.addEventListener('click', (e) => {
+            if (isTeamListOpen && 
+                !teamSelectTrigger.contains(e.target) && 
+                !teamList.contains(e.target)) {
+                closeTeamList();
+            }
         });
-    
-        // Initialize the Team Select Dropdown
-        createCustomTeamSelect();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is already logged in
+            const user = localStorage.getItem('user');
+            if (user) {
+                // User is logged in, redirect to home
+                window.location.href = 'home.html';
+            }
+        });
     </script>
-    <script src="app.js?v=2.2.0"></script>    
 </body>
 </html>

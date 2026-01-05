@@ -3,136 +3,1053 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supercopa - BR da Depressão</title>
+    <title>Supercopa - Brasileirão da Depressão</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /*
+        ============================================================
+        ESTILOS EXISTENTES (mantidos)
+        ============================================================
+        */
         :root {
-            --primary-color: #007bff;
-            --primary-glow: rgba(0, 123, 255, 0.5);
-            --background-color: #101418;
-            --card-bg-color: #1a2027;
-            --card-bg-light: #242c36;
-            --text-color: #e4e6eb;
-            --text-color-light: #b0b3b8;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --border-radius: 12px;
-            --gold: #ffc107; --silver: #c0c0c0; --bronze: #cd7f32; --mud: #795548;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            
+            /* Cores para zonas de classificação (Adaptado para Supercopa) */
+            --zone-serie-a: #10b981; /* Ouro/Classificado */
+            --zone-serie-b: #3b82f6; /* Prata */
+            --zone-serie-c: #f59e0b; /* Bronze */
+            --zone-limb: #64748b;    /* Limbo/Lama */
+            
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
-        .header-title { font-size: 32px; font-weight: 700; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; color: #fff; }
-        .tabs { display: flex; margin-bottom: 30px; background-color: var(--card-bg-color); border-radius: var(--border-radius); padding: 8px; border: 1px solid var(--border-color); }
-        .tab { padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; text-align: center; flex: 1; border: none; background: none; color: var(--text-color-light); }
-        .tab.active { background-color: var(--primary-color); color: white; }
-
-        /* --- CONTEÚDO DA FASE DE GRUPOS --- */
-        .group-tabs-container { display: flex; justify-content: center; margin-bottom: 20px; }
-        .group-tab { padding: 8px 16px; font-weight: 500; }
-        .groups-content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-        .section-header { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        
-        .standings-list { display: flex; flex-direction: column; gap: 10px; }
-        .player-standing-card {
-            display: grid; grid-template-columns: 30px 40px 1fr auto; align-items: center; gap: 15px;
-            background: var(--card-bg-color); padding: 12px; border-radius: 8px;
-            border-left: 5px solid transparent; transition: background-color 0.2s; animation: slideUp 0.5s ease-out backwards;
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --border-color: #e2e8f0;
         }
-        .player-standing-card:hover { background-color: var(--card-bg-light); }
-        .player-standing-card .pos { font-weight: 700; color: var(--text-color-light); }
-        .player-standing-card .logo { width: 32px; height: 32px; object-fit: contain; }
-        .player-standing-card .name { font-weight: 600; }
-        .player-standing-card .points { font-weight: 700; font-size: 1.1em; }
-        .status-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; color: #111; display: flex; align-items: center; gap: 5px; }
 
-        /* DESTAQUES DE CLASSIFICAÇÃO */
-        .status-classified { border-left-color: var(--gold); }
-        .status-classified .status-badge { background-color: var(--gold); }
-        .status-serie-b { border-left-color: var(--silver); }
-        .status-serie-b .status-badge { background-color: var(--silver); }
-        .status-serie-c { border-left-color: var(--mud); }
-        .status-serie-c .status-badge { background-color: var(--mud); color: #fff; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* --- CONTEÚDO DO MATA-MATA --- */
-        .knockout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .knockout-series-container { display: flex; flex-direction: column; gap: 15px; }
-        .series-title { font-size: 1.5em; font-weight: 700; color: #fff; text-align: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid; }
-        .series-a .series-title { border-color: var(--gold); }
-        .series-b .series-title { border-color: var(--silver); }
-        .series-c .series-title { border-color: var(--mud); }
-        
-        .match-card { display: flex; align-items: center; background-color: var(--card-bg-color); border-radius: var(--border-radius); padding: 16px; border: 1px solid var(--border-color); animation: fadeIn 0.5s ease-out backwards; }
-        .match-player { display: flex; align-items: center; gap: 10px; flex: 1; }
-        .match-player.away { justify-content: flex-end; text-align: right; }
-        .match-player .logo { width: 40px; height: 40px; }
-        .match-player .name { font-weight: 600; }
-        .match-result { font-size: 1.5em; font-weight: 800; color: var(--primary-color); padding: 0 20px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
+            margin-bottom: 32px;
+        }
 
-        .empty-state { text-align: center; padding: 40px; color: var(--text-color-light); font-style: italic; }
+        /* Container principal */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .app-header {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--accent-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        /* Botões */
+        .btn-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Título da página */
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: var(--accent-primary);
+        }
+
+        /* Subtítulo */
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Tabs principais */
+        .tabs-container {
+            margin-bottom: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            padding: 0.25rem;
+            gap: 0.25rem;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            font-size: 0.875rem;
+        }
+
+        .tab:hover {
+            background: var(--bg-secondary);
+        }
+
+        .tab.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Tabs de grupos */
+        .group-tabs-container {
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .group-tabs {
+            display: flex;
+            gap: 0.5rem;
+            min-width: fit-content;
+        }
+
+        .group-tab {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 0.75rem;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .group-tab:hover {
+            background: var(--bg-secondary);
+        }
+
+        .group-tab.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Layout de duas colunas */
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .two-column-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Cards de seção */
+        .section-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .section-title i {
+            color: var(--accent-primary);
+        }
+
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        /* Tabela de classificação */
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th {
+            text-align: left;
+            padding: 0.75rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .standings-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .standings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .standings-table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .position {
+            font-weight: 600;
+            color: var(--text-primary);
+            width: 40px;
+        }
+
+        .position-badge {
+            display: inline-block;
+            width: 28px; /* Aumentado */
+            height: 28px; /* Aumentado */
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 28px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Cores de status de classificação */
+        .status-badge-container {
+             display: flex; 
+             align-items: center; 
+             gap: 8px; 
+             margin-top: 4px;
+        }
+        .status-badge { 
+            padding: 4px 8px; 
+            border-radius: 20px; 
+            font-size: 10px; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .position-1 .position-badge, .position-2 .position-badge, .zone-a {
+            background: var(--zone-serie-a);
+            color: white;
+        }
+        .position-1 .status-badge, .position-2 .status-badge {
+            background: var(--zone-serie-a);
+            color: white;
+        }
+        .position-3 .position-badge, .position-4 .position-badge, .zone-b {
+            background: var(--zone-serie-b);
+            color: white;
+        }
+        .position-3 .status-badge, .position-4 .status-badge {
+            background: var(--zone-serie-b);
+            color: white;
+        }
+        .position-5 .position-badge, .zone-c {
+            background: var(--zone-serie-c);
+            color: white;
+        }
+        .position-5 .status-badge {
+            background: var(--zone-serie-c);
+            color: white;
+        }
+        .position-6 .position-badge, .zone-limb {
+            background: var(--zone-limb);
+            color: white;
+        }
+        .position-6 .status-badge {
+            background: var(--zone-limb);
+            color: white;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .player-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .player-team {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .points {
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-align: right;
+        }
+
+        /* Cards de confronto - VERSÃO MELHORADA */
+        .match-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .match-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-fast);
+            min-height: 70px;
+        }
+
+        .match-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .match-card.completed {
+            opacity: 0.85;
+        }
+
+        .match-player {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 0; /* Permite que o conteúdo encolha */
+        }
+
+        .match-player.away {
+            justify-content: flex-end;
+        }
+
+        .match-player-info {
+            flex: 1;
+            min-width: 0; /* Permite que o conteúdo encolha */
+            overflow: hidden;
+        }
+
+        .match-player.away .match-player-info {
+            text-align: right;
+        }
+
+        .match-player-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .match-player-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .match-player-team {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .match-result {
+            padding: 0 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent-primary);
+            min-width: 70px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .match-status {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        /* Layout do mata-mata - REESTRUTURADO */
+        .knockout-stage {
+            margin-bottom: 2rem;
+        }
+
+        .stage-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-align: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .knockout-brackets {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .knockout-brackets {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .knockout-brackets {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .knockout-series {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .series-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .series-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .series-a .series-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+            border-bottom: 2px solid var(--zone-serie-a);
+        }
+        .series-a .series-title { 
+            color: var(--zone-serie-a); 
+        }
+
+        .series-b .series-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+            border-bottom: 2px solid var(--zone-serie-b);
+        }
+        .series-b .series-title { 
+            color: var(--zone-serie-b); 
+        }
+
+        .series-c .series-header {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+            border-bottom: 2px solid var(--zone-serie-c);
+        }
+        .series-c .series-title { 
+            color: var(--zone-serie-c); 
+        }
+
+        .series-content {
+            padding: 1rem;
+            flex: 1;
+        }
+
+        .series-match {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .series-match:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        /* Final especial */
+        .knockout-final {
+            grid-column: 1 / -1;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .final-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .final-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            text-align: center;
+            color: white;
+        }
+
+        .final-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .final-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .final-content {
+            padding: 2rem;
+        }
+
+        .final-match {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .final-player {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .final-player.away {
+            justify-content: flex-end;
+        }
+
+        .final-player-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-primary);
+        }
+
+        .final-player-info {
+            flex: 1;
+        }
+
+        .final-player-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .final-player-team {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .final-player-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 0.25rem;
+        }
+
+        .final-result {
+            padding: 0 1.5rem;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .winner-banner {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--accent-success);
+            color: white;
+            border-radius: 0.75rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Zonas de classificação */
+        .zones-info {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .zones-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .zones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .zone-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .zone-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .zone-color.serie-a {
+            background: var(--zone-serie-a);
+        }
+
+        .zone-color.serie-b {
+            background: var(--zone-serie-b);
+        }
+
+        .zone-color.serie-c {
+            background: var(--zone-serie-c);
+        }
+
+        .zone-color.limb {
+            background: var(--zone-limb);
+        }
+
+        .zone-info {
+            flex: 1;
+        }
+
+        .zone-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .zone-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Estados vazios */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-tertiary);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state small {
+            font-size: 0.75rem;
+            opacity: 0.75;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .tabs {
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+            }
+            
+            .tab {
+                flex: none;
+                min-width: 120px;
+            }
+            
+            .match-card {
+                padding: 0.75rem;
+                min-height: 65px;
+            }
+            
+            .match-player {
+                gap: 0.5rem;
+            }
+            
+            .match-player-avatar {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .match-player-name {
+                font-size: 0.8rem;
+            }
+            
+            .match-player-team {
+                font-size: 0.65rem;
+            }
+            
+            .match-result {
+                font-size: 1.1rem;
+                min-width: 60px;
+                padding: 0 0.5rem;
+            }
+            
+            .match-status {
+                font-size: 0.65rem;
+            }
+            
+            .final-match {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .final-player {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .final-player.away {
+                justify-content: center;
+            }
+            
+            .final-player-info {
+                text-align: center;
+            }
+            
+            .final-result {
+                order: -1;
+                width: 100%;
+                padding: 0.5rem;
+                background: var(--bg-primary);
+                border-radius: 0.5rem;
+                font-size: 2rem;
+            }
+            
+            .knockout-brackets {
+                grid-template-columns: 1fr;
+            }
+        }
+        /*
+        ============================================================
+        FIM DOS ESTILOS EXISTENTES
+        ============================================================
+        */
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="header-title"><i class="fas fa-shield-alt"></i> Supercopa</h1>
-        <div class="tabs main-tabs">
-            <div class="tab active" data-stage="groups">Fase de Grupos</div>
-            <div class="tab" data-stage="quarterFinals">Quartas</div>
-            <div class="tab" data-stage="semiFinals">Semifinais</div>
-            <div class="tab" data-stage="final">Final</div>
-        </div>
-
-        <!-- Conteúdo da Fase de Grupos -->
-        <div id="groups-stage-content">
-            <div class="tabs group-tabs-container">
-                <div class="tab group-tab active" data-group="group1">Grupo A</div>
-                <div class="tab group-tab" data-group="group2">Grupo B</div>
-                <div class="tab group-tab" data-group="group3">Grupo C</div>
-                <div class="tab group-tab" data-group="group4">Grupo D</div>
-            </div>
-            <div class="groups-content-grid">
-                <div id="standings-container">
-                    <h2 class="section-header"><i class="fas fa-list-ol"></i> Classificação</h2>
-                    <div id="standings-list" class="standings-list"></div>
-                </div>
-                 <div id="matches-container">
-                    <h2 class="section-header"><i class="fas fa-futbol"></i> Jogos da Rodada Ativa</h2>
-                    <div id="matches-list" class="standings-list"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="home.html" class="logo">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>BR<span>Depressão</span></span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="btn-icon" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Conteúdo do Mata-Mata -->
-        <div id="knockout-stage-content" style="display:none;">
-             <h2 class="section-header" id="knockout-title-main"></h2>
-             <div class="knockout-grid">
-                <div class="knockout-series-container series-a">
-                    <h3 class="series-title">Série A</h3>
-                    <div id="knockout-matches-a"></div>
+        <!-- Conteúdo Principal -->
+        <main>
+            <h1 class="page-title">
+                <i class="fas fa-shield-alt"></i>
+                Supercopa
+            </h1>
+            
+            <p class="page-subtitle">
+                Torneio eliminatório entre os melhores da temporada. Vença para conquistar o troféu e garantir vaga nas competições continentais.
+            </p>
+
+            <!-- Tabs principais -->
+            <div class="tabs-container">
+                <div class="tabs" id="main-tabs">
+                    <button class="tab active" data-stage="groups">Fase de Grupos</button>
+                    <button class="tab" data-stage="quarterFinals">Quartas de Final</button>
+                    <button class="tab" data-stage="semiFinals">Semifinais</button>
+                    <button class="tab" data-stage="final">Final</button>
                 </div>
-                <div class="knockout-series-container series-b">
-                    <h3 class="series-title">Série B</h3>
-                    <div id="knockout-matches-b"></div>
+            </div>
+
+            <!-- Conteúdo da Fase de Grupos -->
+            <div id="groups-stage" class="stage-content">
+                <!-- Tabs de grupos -->
+                <div class="group-tabs-container">
+                    <div class="group-tabs">
+                        <button class="group-tab active" data-group="group1">
+                            <i class="fas fa-users"></i>
+                            Grupo A
+                        </button>
+                        <button class="group-tab" data-group="group2">
+                            <i class="fas fa-users"></i>
+                            Grupo B
+                        </button>
+                        <button class="group-tab" data-group="group3">
+                            <i class="fas fa-users"></i>
+                            Grupo C
+                        </button>
+                        <button class="group-tab" data-group="group4">
+                            <i class="fas fa-users"></i>
+                            Grupo D
+                        </button>
+                    </div>
                 </div>
-                <div class="knockout-series-container series-c">
-                    <h3 class="series-title">Série C</h3>
-                    <div id="knockout-matches-c"></div>
+
+                <!-- Layout de duas colunas -->
+                <div class="two-column-layout">
+                    <!-- Coluna 1: Classificação -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-trophy"></i>
+                                Classificação
+                            </h2>
+                        </div>
+                        <div class="section-content">
+                            <div id="standings-loading" style="padding: 2rem; text-align: center; display: none;">
+                                <div class="loading-skeleton" style="height: 400px; border-radius: 0.75rem;"></div>
+                            </div>
+                            <div id="standings-content">
+                                <table class="standings-table" id="standings-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Pos</th>
+                                            <th>Jogador</th>
+                                            <th style="text-align: right;">PTS</th>
+                                            <th>J</th>
+                                            <th>V</th>
+                                            <th>E</th>
+                                            <th>D</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="standings-body">
+                                        <!-- Carregado dinamicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 2: Confrontos da Rodada -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-futbol"></i>
+                                Rodada Atual
+                            </h2>
+                        </div>
+                        <div class="section-content">
+                            <div id="matches-loading" style="padding: 2rem; text-align: center; display: none;">
+                                <div class="loading-skeleton" style="height: 300px; border-radius: 0.75rem;"></div>
+                            </div>
+                            <div id="matches-content">
+                                <div class="match-cards" id="matches-container">
+                                    <!-- Carregado dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-             </div>
-        </div>
+
+                <!-- Zonas de Classificação -->
+                <div class="zones-info">
+                    <h3 class="zones-title">Zonas de Classificação</h3>
+                    <div class="zones-grid">
+                        <div class="zone-item">
+                            <span class="zone-color serie-a"></span>
+                            <div class="zone-info">
+                                <div class="zone-name">Série A (Top 8)</div>
+                                <div class="zone-desc">1º e 2º de cada grupo (Quartas A)</div>
+                            </div>
+                        </div>
+                        <div class="zone-item">
+                            <span class="zone-color serie-b"></span>
+                            <div class="zone-info">
+                                <div class="zone-name">Série B (Top 16)</div>
+                                <div class="zone-desc">3º e 4º de cada grupo (Quartas B)</div>
+                            </div>
+                        </div>
+                        <div class="zone-item">
+                            <span class="zone-color serie-c"></span>
+                            <div class="zone-info">
+                                <div class="zone-name">Série C (Top 24)</div>
+                                <div class="zone-desc">5º e 6º de cada grupo (Quartas C)</div>
+                            </div>
+                        </div>
+                        <div class="zone-item">
+                            <span class="zone-color limb"></span>
+                            <div class="zone-info">
+                                <div class="zone-name">O Limbo</div>
+                                <div class="zone-desc">Rebaixamento e Eliminação</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conteúdo do Mata-Mata -->
+            <div id="knockout-stage" class="stage-content" style="display: none;">
+                
+                <h2 class="stage-title" id="knockout-main-title">Mata-Mata</h2>
+
+                <!-- Quartas de Final / Semifinais / Final -->
+                <div class="knockout-brackets" id="knockout-brackets-container">
+                    <!-- Conteúdo dinâmico de Mata-Mata -->
+                </div>
+            </div>
+        </main>
     </div>
 
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-        <script>
+    <script>
+        // Firebase Configuration (Mantida)
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
@@ -143,267 +1060,662 @@
             appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
             measurementId: "G-4JXFEZ8DW6"
         };
+
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
         const auth = firebase.auth();
+        const database = firebase.database();
 
-        // --- VARIÁVEIS DE CACHE GLOBAIS ---
-        let teamsDataCache = null;
-        let usersDataCache = null;
-        let supercopaDataCache = null;
-        let activeSuperligaRoundData = null;
+        // Estado da aplicação
+        let currentUser = null;
+        let teamsData = {};
+        let usersData = {};
+        let supercopaData = {};
+        let activeRoundData = null; // Rodada ativa da Superliga (para placares ao vivo)
 
-        // --- MAPEAMENTO DA UI ---
-        const ui = {
-            mainTabs: document.querySelectorAll('.main-tabs .tab'),
-            groupTabs: document.querySelectorAll('.group-tabs-container .tab'),
-            groupsContent: document.getElementById('groups-stage-content'),
-            knockoutContent: document.getElementById('knockout-stage-content'),
-            standingsList: document.getElementById('standings-list'),
-            matchesList: document.getElementById('matches-list'),
-            knockoutTitleMain: document.getElementById('knockout-title-main'),
-            knockoutMatches: {
-                a: document.getElementById('knockout-matches-a'),
-                b: document.getElementById('knockout-matches-b'),
-                c: document.getElementById('knockout-matches-c'),
-            }
-        };
-
-        // --- INICIALIZAÇÃO ---
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                initializeApp();
-            } else {
-                window.location.href = 'index.html';
-            }
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAuth();
         });
 
-        async function initializeApp() {
-            try {
-                // ETAPA 1: Garante que TODOS os dados essenciais sejam carregados ANTES de qualquer outra coisa.
-                await Promise.all([
-                    loadDataOnce('teams').then(data => teamsDataCache = data),
-                    loadDataOnce('users').then(data => {
-                        // Adiciona o ID a cada objeto de usuário para facilitar o acesso
-                        Object.keys(data).forEach(key => data[key].id = key);
-                        usersDataCache = data;
-                    }),
-                    loadDataOnce('tournaments/supercopa').then(data => supercopaDataCache = data),
-                ]);
+        // --- TEMA (Mantido) ---
+        function initTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
-                // ETAPA 2: Inicia o listener para a rodada da Superliga (para os placares ao vivo)
-                findActiveSuperligaRoundAndListen();
-                
-                // ETAPA 3: Configura os botões e abas
-                setupEventListeners();
-                
-                // ETAPA 4: Lógica para determinar o estágio ativo da Supercopa
-                const { groups, quarterFinals, semiFinals, final } = supercopaDataCache || {};
-                let activeStage = 'groups';
-                if (final?.status === 1) activeStage = 'final';
-                else if (semiFinals?.status === 1) activeStage = 'semiFinals';
-                else if (quarterFinals?.status === 1) activeStage = 'quarterFinals';
-                
-                // ETAPA 5: Clica programaticamente na aba correta para iniciar a renderização
-                const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage}"]`);
-                if (activeTab) {
-                    activeTab.click();
-                } else {
-                    // Fallback para o primeiro tab se nada for encontrado
-                    document.querySelector('.main-tabs .tab').click();
-                }
-
-            } catch (error) {
-                console.error("Erro fatal na inicialização:", error);
-                document.body.innerHTML = '<div class="empty-state">Ocorreu um erro ao carregar os dados. Por favor, tente novamente.</div>';
-            }
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
         }
 
-        // --- FUNÇÕES DE DADOS ---
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // --- AUTENTICAÇÃO E CARREGAMENTO (Adaptado) ---
+        function initAuth() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadInitialData();
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
+        async function loadInitialData() {
+            try {
+                // Carrega todos os dados estáticos essenciais
+                await Promise.all([
+                    loadDataOnce('teams').then(data => teamsData = data),
+                    loadDataOnce('users').then(data => {
+                        Object.keys(data).forEach(key => data[key].id = key);
+                        usersData = data;
+                    }),
+                    loadDataOnce('tournaments/supercopa').then(data => supercopaData = data),
+                ]);
+                
+                // Inicia o listener para a rodada da Superliga (para os placares ao vivo)
+                findActiveSuperligaRoundAndListen();
+                
+                // Determinar estágio ativo
+                determineActiveStage();
+                
+                // Configurar navegação
+                setupStageNavigation();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                showError('Erro ao carregar dados. Tente recarregar a página.');
+            }
+        }
+        
         async function loadDataOnce(path) {
             const snapshot = await database.ref(path).once('value');
             return snapshot.val() || {};
         }
 
+        // Listener que reage a mudanças na rodada ativa da Superliga
         function findActiveSuperligaRoundAndListen() {
+            // Este listener garante que `activeRoundData` esteja sempre atualizado
             database.ref('rounds').orderByChild('status').equalTo(1).on('value', (snapshot) => {
-                activeSuperligaRoundData = snapshot.exists() ? Object.values(snapshot.val())[0] : null;
+                activeRoundData = snapshot.exists() ? Object.values(snapshot.val())[0] : null;
                 
-                // Re-renderiza o conteúdo visível para atualizar os placares ao vivo
-                const activeMainTab = document.querySelector('.main-tabs .tab.active');
+                // Força a re-renderização do conteúdo visível para atualizar placares
+                const activeMainTab = document.querySelector('#main-tabs .tab.active');
                 if (activeMainTab) {
                     loadStage(activeMainTab.dataset.stage);
                 }
             });
         }
         
-        // --- LÓGICA DE RENDERIZAÇÃO PRINCIPAL ---
+        // --- NAVEGAÇÃO E LÓGICA DE ESTÁGIO ---
+        
+        function determineActiveStage() {
+            const stages = ['groups', 'quarterFinals', 'semiFinals', 'final'];
+            let activeStage = 'groups'; // Default
+            
+            // 1. Primeiro verifica se há algum estágio com status = 1
+            for (const stage of stages) {
+                const stageData = supercopaData[stage];
+                
+                // Verifica se o status está direto na fase
+                if (stageData?.status === 1) {
+                    activeStage = stage;
+                    break;
+                }
+                
+                // Verifica se o status está dentro de matches
+                if (stageData?.matches?.status === 1) {
+                    activeStage = stage;
+                    break;
+                }
+            }
+            
+            // 2. Se não encontrou status = 1, verifica se todos são 2 (fase concluída)
+            if (activeStage === 'groups') {
+                let allCompleted = true;
+                
+                // Verifica groups, quarterFinals e semiFinals (exclui final)
+                const stagesToCheck = ['groups', 'quarterFinals', 'semiFinals'];
+                
+                for (const stage of stagesToCheck) {
+                    const stageData = supercopaData[stage];
+                    const status = stageData?.status || stageData?.matches?.status;
+                    
+                    if (status !== 2) {
+                        allCompleted = false;
+                        break;
+                    }
+                }
+                
+                // Se todos os estágios anteriores estão concluídos (status 2), vai para a final
+                if (allCompleted && supercopaData.final) {
+                    activeStage = 'final';
+                }
+            }
+            
+            // 3. Ativar a aba correspondente
+            const tab = document.querySelector(`[data-stage="${activeStage}"]`);
+            if (tab) {
+                // Remove a classe active de todas as tabs
+                document.querySelectorAll('#main-tabs .tab').forEach(t => t.classList.remove('active'));
+                // Adiciona a classe active na tab correta
+                tab.classList.add('active');
+                
+                // Carrega o conteúdo da fase
+                loadStage(activeStage);
+            }
+        }
+        
+        function findUserGroupKey(userId) {
+            const groupsData = supercopaData.groups;
+            if (!groupsData) return 'group1';
+            
+            // Procura em group1, group2, group3, group4
+            for (let i = 1; i <= 4; i++) {
+                const groupKey = `group${i}`;
+                const players = groupsData[groupKey];
+                
+                if (Array.isArray(players) && players.includes(userId)) {
+                    return groupKey;
+                }
+            }
+            
+            return 'group1'; // Fallback
+        }
+
+        function setupStageNavigation() {
+            // Tabs principais
+            document.querySelectorAll('#main-tabs .tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const stage = tab.dataset.stage;
+                    
+                    // Atualizar tabs ativos
+                    document.querySelectorAll('#main-tabs .tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Se for a fase de grupos, selecionar o grupo do usuário logado
+                    if (stage === 'groups' && currentUser) {
+                        const userGroup = findUserGroupKey(currentUser.uid);
+                        
+                        // Ativar o tab do grupo do usuário
+                        const groupTab = document.querySelector(`.group-tab[data-group="${userGroup}"]`);
+                        if (groupTab) {
+                            document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
+                            groupTab.classList.add('active');
+                        }
+                    }
+                    
+                    loadStage(stage);
+                });
+            });
+            
+            // Tabs de grupos
+            document.querySelectorAll('.group-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const group = tab.dataset.group;
+                    
+                    // Atualizar tabs ativos
+                    document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Carregar dados do grupo
+                    loadGroupData(group);
+                });
+            });
+        }
+        
         function loadStage(stage) {
-            ui.groupsContent.style.display = stage === 'groups' ? 'block' : 'none';
-            ui.knockoutContent.style.display = stage !== 'groups' ? 'block' : 'none';
+            const groupsContent = document.getElementById('groups-stage');
+            const knockoutContent = document.getElementById('knockout-stage');
+
+            groupsContent.style.display = stage === 'groups' ? 'block' : 'none';
+            knockoutContent.style.display = stage !== 'groups' ? 'block' : 'none';
 
             if (stage === 'groups') {
-                const activeGroupTab = document.querySelector('.group-tabs-container .tab.active');
-                if (activeGroupTab) {
-                    loadGroupData(activeGroupTab.dataset.group);
-                }
+                const activeGroup = document.querySelector('.group-tab.active')?.dataset.group || 'group1';
+                loadGroupData(activeGroup);
             } else {
-                loadKnockoutData(stage);
+                loadKnockoutStage(stage);
+            }
+        }
+        
+        // --- FASE DE GRUPOS (Adaptado para Tabela) ---
+
+        async function loadGroupData(groupKey) {
+            const standingsLoading = document.getElementById('standings-loading');
+            const matchesLoading = document.getElementById('matches-loading');
+            
+            standingsLoading.style.display = 'block';
+            matchesLoading.style.display = 'block';
+            
+            try {
+                // Carregar classificação do grupo
+                renderGroupStandings(groupKey);
+                
+                // Carregar confrontos da rodada
+                renderGroupMatches();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados do grupo:', error);
+                showError('Erro ao carregar dados do grupo.');
+            } finally {
+                standingsLoading.style.display = 'none';
+                matchesLoading.style.display = 'none';
             }
         }
 
-        function loadGroupData(groupKey) {
-            renderGroupStandings(groupKey);
-            renderGroupMatches();
-        }
-
-        function loadKnockoutData(stageKey) {
-            const stageNameMap = { quarterFinals: 'Quartas de Final', semiFinals: 'Semifinais', final: 'Final' };
-            ui.knockoutTitleMain.textContent = stageNameMap[stageKey] || 'Mata-Mata';
-            
-            const stageData = supercopaDataCache[stageKey];
-            
-            renderKnockoutSeries(stageData?.matches, ui.knockoutMatches.a);
-            renderKnockoutSeries(stageData?.b, ui.knockoutMatches.b);
-            renderKnockoutSeries(stageData?.c, ui.knockoutMatches.c);
-        }
-
-        // --- FUNÇÕES DE RENDERIZAÇÃO DE COMPONENTES ---
         function renderGroupStandings(groupKey) {
-            const { standings = {}, status, ...groups } = supercopaDataCache.groups || {};
-            const groupPlayerIds = groups[groupKey] || [];
+            const { groups = {} } = supercopaData;
+            const { standings = {}, status: groupStatus } = groups;
+            const groupPlayers = groups[groupKey] || [];
             
-            const groupStandings = groupPlayerIds
-                .map(id => standings[id])
+            const groupStandings = groupPlayers
+                .map(playerId => standings[playerId])
                 .filter(Boolean)
+                .map(playerData => ({
+                    ...playerData,
+                    playerInfo: usersData[playerData.playerId],
+                    teamInfo: teamsData[usersData[playerData.playerId]?.teamId] || teamsData[usersData[playerData.playerId]?.team]
+                }))
                 .sort((a, b) => {
-                    const a_gd = (a.goalsFor || 0) - (a.goalsAg || 0);
-                    const b_gd = (b.goalsFor || 0) - (b.goalsAg || 0);
-                    return (b.points || 0) - (a.points || 0) || (b.wins || 0) - (a.wins || 0) || b_gd - a_gd || (b.goalsFor || 0) - (a.goalsFor || 0);
+                    // Ordenar por: pontos, vitórias, saldo de gols, gols pró
+                    if ((b.points || 0) !== (a.points || 0)) return (b.points || 0) - (a.points || 0);
+                    if ((b.wins || 0) !== (a.wins || 0)) return (b.wins || 0) - (a.wins || 0);
+                    const aGD = (a.goalsFor || 0) - (a.goalsAg || 0);
+                    const bGD = (b.goalsFor || 0) - (b.goalsAg || 0);
+                    if (bGD !== aGD) return bGD - aGD;
+                    return (b.goalsFor || 0) - (a.goalsFor || 0);
                 });
-
-            ui.standingsList.innerHTML = groupStandings.map((playerData, index) => {
-                const player = usersDataCache[playerData.playerId];
-                // Se o jogador não for encontrado no cache, pula a renderização deste card
-                if (!player) return ''; 
-                
-                const team = teamsDataCache[player.teamId] || {};
+            
+            const tbody = document.getElementById('standings-body');
+            
+            if (groupStandings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7">${renderEmptyState('Nenhum dado disponível para este grupo', 'fas fa-info-circle')}</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = groupStandings.map((player, index) => {
                 const position = index + 1;
+                let statusHtml = '';
+                let statusBadge = '';
                 
-                let statusClass = '', statusHtml = '';
-                if (status === 2) {
+                if (groupStatus === 2) { // Fase de grupos concluída
                     if (position <= 2) {
-                        statusClass = 'status-classified';
-                        statusHtml = `<div class="status-badge"><i class="fas fa-crown"></i> Série A</div>`;
+                        statusBadge = 'Série A';
+                        statusHtml = `<div class="status-badge zone-a"><i class="fas fa-crown"></i> ${statusBadge}</div>`;
                     } else if (position <= 4) {
-                        statusClass = 'status-serie-b';
-                        statusHtml = `<div class="status-badge"><i class="fas fa-arrow-up"></i> Série B</div>`;
+                        statusBadge = 'Série B';
+                        statusHtml = `<div class="status-badge zone-b"><i class="fas fa-arrow-up"></i> ${statusBadge}</div>`;
+                    } else if (position <= 6) {
+                        statusBadge = 'Série C';
+                        statusHtml = `<div class="status-badge zone-c"><i class="fas fa-poo"></i> ${statusBadge}</div>`;
                     } else {
-                        statusClass = 'status-serie-c';
-                        statusHtml = `<div class="status-badge"><i class="fas fa-poo"></i> O Limbo</div>`;
+                        statusBadge = 'O Limbo';
+                        statusHtml = `<div class="status-badge zone-limb"><i class="fas fa-ban"></i> ${statusBadge}</div>`;
                     }
                 }
-
+                
                 return `
-                    <div class="player-standing-card ${statusClass}" style="animation-delay: ${index * 50}ms">
-                        <span class="pos">${position}</span>
-                        <img src="${team.image || ''}" alt="${player.name || ''}" class="logo">
-                        <div class="name-container" style="flex-grow: 1;">
-                            <div class="name">${player.name || 'Desconhecido'}</div>
-                            ${statusHtml}
-                        </div>
-                        <div class="points">${playerData.points || 0}</div>
-                    </div>
+                    <tr class="position-${position}">
+                        <td>
+                            <span class="position-badge">${position}</span>
+                        </td>
+                        <td>
+                            <div class="player-info">
+                                <img src="${player.teamInfo?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(player.playerInfo?.name || '?')}&background=3b82f6&color=fff`}" 
+                                     alt="${player.playerInfo?.name}" 
+                                     class="player-avatar">
+                                <div style="display: flex; flex-direction: column;">
+                                    <div class="player-name">${player.playerInfo?.name || 'Desconhecido'}</div>
+                                    <div class="player-team">${player.teamInfo?.abbr || '---'}</div>
+                                    <div class="status-badge-container">${statusHtml}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points" style="text-align: right;">${player.points || 0}</td>
+                        <td>${player.games || 0}</td>
+                        <td>${player.wins || 0}</td>
+                        <td>${player.draws || 0}</td>
+                        <td>${player.losses || 0}</td>
+                    </tr>
                 `;
-            }).join('') || `<div class="empty-state">Classificação indisponível.</div>`;
+            }).join('');
         }
 
         function renderGroupMatches() {
-            const activeCopaRound = Object.values(supercopaDataCache.groups.rounds || {}).find(r => r.status === 1);
+            const container = document.getElementById('matches-container');
+            const rounds = supercopaData.groups?.rounds || {};
+            
+            // Encontrar rodada ativa da Supercopa
+            const activeCopaRound = Object.values(rounds).find(round => round.status === 1);
+            
             if (!activeCopaRound || !activeCopaRound.matches) {
-                ui.matchesList.innerHTML = `<div class="empty-state">Nenhum jogo da Supercopa ativo.</div>`;
+                container.innerHTML = renderEmptyState('Nenhum jogo ativo da Supercopa.', 'fas fa-calendar-times');
                 return;
             }
-            ui.matchesList.innerHTML = Object.values(activeCopaRound.matches).map(match => renderMatchCard(match, true)).join('');
-        }
-
-        function renderKnockoutSeries(matches, container) {
-            if (!matches) {
-                container.innerHTML = `<div class="empty-state">Confrontos não definidos.</div>`;
-                return;
-            }
-            container.innerHTML = Object.values(matches).map(match => renderMatchCard(match, false)).join('');
+            
+            container.innerHTML = Object.values(activeCopaRound.matches).map(match => renderMatchCard(match, true)).join('');
         }
         
-        function renderMatchCard(match, isGroupStage) {
+        // --- FUNÇÃO CENTRAL DE RENDERIZAÇÃO DE PARTIDAS (MELHORADA) ---
+        function renderMatchCard(match, isGroupStage = false) {
             const p1Id = isGroupStage ? match.player1Id : match.homeTeam;
             const p2Id = isGroupStage ? match.player2Id : match.awayTeam;
 
-            const player1 = p1Id ? usersDataCache[p1Id] : null;
-            const player2 = p2Id ? usersDataCache[p2Id] : null;
+            const player1 = p1Id ? usersData[p1Id] : null;
+            const player2 = p2Id ? usersData[p2Id] : null;
             
-            const team1 = player1 ? teamsDataCache[player1.teamId] : null;
-            const team2 = player2 ? teamsDataCache[player2.teamId] : null;
+            const team1 = player1 ? (teamsData[player1.teamId] || teamsData[player1.team]) : null;
+            const team2 = player2 ? (teamsData[player2.teamId] || teamsData[player2.team]) : null;
             
             let result = "vs";
+            let status = 'Aguardando';
+
             if (match.result && match.result.trim() !== "") {
                 result = match.result;
-            } else if (activeSuperligaRoundData && p1Id && p2Id) {
-                const p1Score = calculateLiveRoundPoints(p1Id);
-                const p2Score = calculateLiveRoundPoints(p2Id);
+                status = 'Finalizado';
+            } else if (activeRoundData && p1Id && p2Id) {
+                const p1Score = calculateLiveScore(p1Id);
+                const p2Score = calculateLiveScore(p2Id);
                 result = `${p1Score} x ${p2Score}`;
+                status = 'Ao Vivo (Superliga)';
             }
+            
+            const p1Abbr = player1?.abbr || 'TBD';
+            const p2Abbr = player2?.abbr || 'TBD';
+            const p1Name = player1?.name || 'A definir';
+            const p2Name = player2?.name || 'A definir';
+            
+            const team1Name = team1?.abbr || (team1?.name ? team1.name.substring(0, 12) : '---');
+            const team2Name = team2?.abbr || (team2?.name ? team2.name.substring(0, 12) : '---');
+
+            const defaultAvatar = (abbr) => `https://ui-avatars.com/api/?name=${encodeURIComponent(abbr)}&background=3b82f6&color=fff`;
 
             return `
-                <div class="match-card">
-                    <div class="match-player">
-                        <img src="${team1?.image || ''}" alt="" class="logo">
-                        <span class="name">${player1?.abbr || 'A Definir'}</span>
+                <div>
+                    <div class="match-card ${match.result ? 'completed' : ''}">
+                        <div class="match-player">
+                            <img src="${team1?.image || defaultAvatar(p1Abbr)}" 
+                                 alt="${p1Name}" 
+                                 class="match-player-avatar">
+                            <div class="match-player-info">
+                                <div class="match-player-name" title="${p1Name}">${p1Abbr}</div>
+                                <div class="match-player-team" title="${team1?.name || ''}">${team1Name}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="match-result">${result}</div>
+                        
+                        <div class="match-player away">
+                            <div class="match-player-info">
+                                <div class="match-player-name" title="${p2Name}">${p2Abbr}</div>
+                                <div class="match-player-team" title="${team2?.name || ''}">${team2Name}</div>
+                            </div>
+                            <img src="${team2?.image || defaultAvatar(p2Abbr)}" 
+                                 alt="${p2Name}" 
+                                 class="match-player-avatar">
+                        </div>
                     </div>
-                    <div class="match-result">${result}</div>
-                    <div class="match-player away">
-                        <span class="name">${player2?.abbr || 'A Definir'}</span>
-                        <img src="${team2?.image || ''}" alt="" class="logo">
+                    <div class="match-status">${status}</div>
+                </div>
+            `;
+        }
+
+        // --- MATA-MATA (REESTRUTURADO) ---
+        
+        function loadKnockoutStage(stage) {
+            const container = document.getElementById('knockout-brackets-container');
+            const title = document.getElementById('knockout-main-title');
+
+            title.style.display = 'block';
+            container.innerHTML = '';
+            
+            const stageData = supercopaData[stage] || {};
+            
+            if (stage === 'quarterFinals') {
+                title.textContent = 'Quartas de Final';
+                renderKnockoutQuarters(stageData, container);
+            } else if (stage === 'semiFinals') {
+                title.textContent = 'Semifinais';
+                renderKnockoutSemifinals(stageData, container);
+            } else if (stage === 'final') {
+                title.textContent = 'Grande Final';
+                renderKnockoutFinal(stageData, container);
+            }
+        }
+        
+        function renderKnockoutQuarters(data, container) {
+            if (!data.matches) {
+                container.innerHTML = renderEmptyState('Chaveamento das Quartas de Final não definido.', 'fas fa-ticket-alt');
+                return;
+            }
+
+            // Garante que temos arrays vazios para B e C se não existirem
+            const seriesB = data.b || {};
+            const seriesC = data.c || {};
+
+            container.innerHTML = `
+                <div class="knockout-series series-a">
+                    <div class="series-header">
+                        <h3 class="series-title">
+                            <i class="fas fa-crown"></i>
+                            Série A (Chave Principal)
+                        </h3>
+                    </div>
+                    <div class="series-content">
+                        <div class="match-cards">
+                            ${renderKnockoutSeriesMatches(data.matches)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knockout-series series-b">
+                    <div class="series-header">
+                        <h3 class="series-title">
+                            <i class="fas fa-arrow-up"></i>
+                            Série B (Chave de Acesso)
+                        </h3>
+                    </div>
+                    <div class="series-content">
+                        <div class="match-cards">
+                            ${Object.keys(seriesB).length > 0 ? 
+                                renderKnockoutSeriesMatches(seriesB) : 
+                                renderEmptyState('Aguardando definição da Série B', 'fas fa-info-circle', '1.5rem')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knockout-series series-c">
+                    <div class="series-header">
+                        <h3 class="series-title">
+                            <i class="fas fa-trophy"></i>
+                            Série C (Chave de Prestígio)
+                        </h3>
+                    </div>
+                    <div class="series-content">
+                        <div class="match-cards">
+                            ${Object.keys(seriesC).length > 0 ? 
+                                renderKnockoutSeriesMatches(seriesC) : 
+                                renderEmptyState('Aguardando definição da Série C', 'fas fa-info-circle', '1.5rem')}
+                        </div>
                     </div>
                 </div>
             `;
         }
         
-        // --- FUNÇÕES AUXILIARES ---
-        function calculateLiveRoundPoints(playerId) {
-            if (!activeSuperligaRoundData || !playerId) return usersDataCache[playerId]?.lastRoundPointsLigaAbertura || 0;
-            let points = 0;
-            for (const match of Object.values(activeSuperligaRoundData.matches)) {
-                if (match.finalResult && match.predictions?.[playerId]) {
-                    points += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
+        function renderKnockoutSemifinals(data, container) {
+            if (!data.matches) {
+                container.innerHTML = renderEmptyState('Chaveamento das Semifinais não definido.', 'fas fa-ticket-alt');
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="knockout-series series-a" style="grid-column: 1 / -1; max-width: 600px; margin: 0 auto;">
+                    <div class="series-header">
+                        <h3 class="series-title">
+                            <i class="fas fa-flag-checkered"></i>
+                            Semifinais
+                        </h3>
+                    </div>
+                    <div class="series-content">
+                        <div class="match-cards">
+                            ${renderKnockoutSeriesMatches(data.matches)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderKnockoutSeriesMatches(matches) {
+            // Garante que temos um array ordenado
+            const matchesArray = Object.values(matches);
+            
+            // Ordena por ID se disponível, caso contrário mantém ordem original
+            if (matchesArray[0]?.id !== undefined) {
+                matchesArray.sort((a, b) => (a.id || 0) - (b.id || 0));
+            }
+            
+            return matchesArray.map(match => renderMatchCard(match, false)).join('');
+        }
+        
+        function renderKnockoutFinal(data, container) {
+            if (!data.homeTeam || !data.awayTeam) {
+                container.innerHTML = `
+                    <div class="knockout-final">
+                        <div class="final-card">
+                            <div class="final-header">
+                                <h3 class="final-title">Grande Final da Supercopa</h3>
+                                <p class="final-subtitle">Decisão do campeão da temporada</p>
+                            </div>
+                            <div class="final-content">
+                                ${renderEmptyState('Final não definida.', 'fas fa-trophy')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const homePlayer = usersData[data.homeTeam];
+            const awayPlayer = usersData[data.awayTeam];
+            const homeTeam = homePlayer ? (teamsData[homePlayer.teamId] || teamsData[homePlayer.team]) : null;
+            const awayTeam = awayPlayer ? (teamsData[awayPlayer.teamId] || teamsData[awayPlayer.team]) : null;
+
+            const winnerDeclared = data.result && data.result.trim() !== "";
+            const result = data.result || 'VS';
+            
+            const homeAbbr = homePlayer?.abbr || 'TBD';
+            const awayAbbr = awayPlayer?.abbr || 'TBD';
+            const homeTeamName = homeTeam?.abbr || (homeTeam?.name ? homeTeam.name.substring(0, 15) : '---');
+            const awayTeamName = awayTeam?.abbr || (awayTeam?.name ? awayTeam.name.substring(0, 15) : '---');
+
+            const defaultAvatar = (abbr) => `https://ui-avatars.com/api/?name=${encodeURIComponent(abbr)}&background=3b82f6&color=fff`;
+
+            container.innerHTML = `
+                <div class="knockout-final">
+                    <div class="final-card">
+                        <div class="final-header">
+                            <h3 class="final-title">Grande Final da Supercopa</h3>
+                            <p class="final-subtitle">Decisão do campeão da temporada</p>
+                        </div>
+                        
+                        <div class="final-content">
+                            <div class="final-match">
+                                <div class="final-player">
+                                    <img src="${homeTeam?.image || defaultAvatar(homeAbbr)}" 
+                                         alt="${homePlayer?.name}" 
+                                         class="final-player-avatar">
+                                    <div class="final-player-info">
+                                        <div class="final-player-name">${homeAbbr}</div>
+                                        <div class="final-player-team">${homeTeamName}</div>
+                                        <div class="final-player-label">${homePlayer?.name || 'A definir'}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="final-result">${result}</div>
+                                
+                                <div class="final-player away">
+                                    <div class="final-player-info">
+                                        <div class="final-player-name">${awayAbbr}</div>
+                                        <div class="final-player-team">${awayTeamName}</div>
+                                        <div class="final-player-label">${awayPlayer?.name || 'A definir'}</div>
+                                    </div>
+                                    <img src="${awayTeam?.image || defaultAvatar(awayAbbr)}" 
+                                         alt="${awayPlayer?.name}" 
+                                         class="final-player-avatar">
+                                </div>
+                            </div>
+                            
+                            ${winnerDeclared ? `
+                                <div class="winner-banner">
+                                    <i class="fas fa-trophy" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                                    <h4 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">Campeão Definido!</h4>
+                                    <p>Resultado final: ${data.result}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- FUNÇÕES AUXILIARES DE PLACAR AO VIVO (Mantidas) ---
+
+        function calculateLiveScore(playerId) {
+            if (!activeRoundData || !playerId) return 0;
+            
+            let totalPoints = 0;
+            for (const match of Object.values(activeRoundData.matches || {})) {
+                if (match.predictions?.[playerId]) {
+                    totalPoints += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
                 }
             }
-            return points;
+            return totalPoints;
         }
 
         function calculateMatchPoints(final, pred) {
             if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return 0;
+            
+            // Placar exato: 3 pontos
             if (final.homeScore == pred.homeScore && final.awayScore == pred.awayScore) return 3;
+            
+            // Vencedor correto: 1 ponto
             const finalW = Math.sign(final.homeScore - final.awayScore);
             const predW = Math.sign(pred.homeScore - pred.awayScore);
             if (finalW === predW) return 1;
+            
+            // Placar invertido: -1 ponto
             if (final.homeScore == pred.awayScore && final.awayScore == pred.homeScore) return -1;
+            
             return 0;
         }
 
-        // --- CONFIGURAÇÃO DE EVENTOS ---
-        function setupEventListeners() {
-            ui.mainTabs.forEach(tab => tab.addEventListener('click', () => {
-                ui.mainTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                loadStage(tab.dataset.stage);
-            }));
-
-            ui.groupTabs.forEach(tab => tab.addEventListener('click', () => {
-                ui.groupTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                loadGroupData(tab.dataset.group);
-            }));
+        function renderEmptyState(message, iconClass, padding = '2rem') {
+            return `
+                <div class="empty-state" style="padding: ${padding};">
+                    <i class="${iconClass}"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        function showError(message) {
+            console.error(message);
+            alert(message);
         }
     </script>
 </body>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palpites de Campeão - BRDepressão</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS REUTILIZADO DO MODELO */
+        :root {
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-card: #1e293b; --bg-input: #334155;
+            --text-primary: #f8fafc; --text-secondary: #94a3b8; --text-tertiary: #64748b;
+            --accent-primary: #3b82f6; --accent-secondary: #8b5cf6; --accent-success: #10b981;
+            --accent-warning: #f59e0b; --accent-danger: #ef4444; --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1); --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="light"] {
+            --bg-primary: #ffffff; --bg-secondary: #f8fafc; --bg-card: #ffffff; --bg-input: #e2e8f0;
+            --text-primary: #0f172a; --text-secondary: #475569; --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb; --accent-secondary: #7c3aed; --border-color: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
+        }
+        .app-container { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
+        .app-header { padding: 1rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); text-decoration: none; display: flex; align-items: center; }
+        .logo span { color: var(--accent-secondary); }
+        .btn-icon { width: 2.5rem; height: 2.5rem; border-radius: 50%; border: none; background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .btn-icon:hover { background: var(--accent-primary); color: white; transform: translateY(-2px); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 0.75rem; border: none; font-weight: 600; cursor: pointer; transition: all var(--transition-fast); display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-primary { background: var(--accent-primary); color: white; }
+        .btn-primary:hover { background: var(--accent-secondary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-secondary); }
+
+        .section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; color: var(--text-primary); }
+        .section-title i { color: var(--accent-primary); }
+
+        /* Estilos da Lista de Palpites */
+        .prediction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .prediction-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.3s ease-out;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .tournament-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tournament-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .tournament-type-badge {
+            background: var(--accent-secondary);
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .deadline-info {
+            font-size: 0.85rem;
+            color: var(--accent-warning);
+            font-weight: 500;
+        }
+        
+        /* Palpite do Usuário */
+        .user-prediction-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--accent-success);
+        }
+        
+        .user-prediction-status.pending { border-left-color: var(--accent-warning); }
+
+        .prediction-result {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .team-logo-small { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+        .text-success { color: var(--accent-success); }
+        .text-danger { color: var(--accent-danger); }
+
+        /* Modal e Seleção de Time */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center;
+            z-index: 1000; backdrop-filter: blur(4px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: var(--bg-card); border-radius: 1rem; padding: 2rem;
+            max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;
+            animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .team-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+        }
+
+        .team-option { 
+            padding: 0.75rem; background: var(--bg-secondary); border: 2px solid transparent; 
+            border-radius: 0.5rem; text-align: center; cursor: pointer; 
+            transition: all var(--transition-fast); 
+        }
+        .team-option:hover { transform: translateY(-2px); background: var(--bg-input); }
+        .team-option.selected { border-color: var(--accent-success); background: rgba(16, 185, 129, 0.1); }
+        .team-logo-medium { width: 40px; height: 40px; object-fit: contain; margin-bottom: 0.4rem; }
+        .team-name-small { font-size: 0.75rem; font-weight: 500; }
+        
+        .form-input { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-primary); font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="home.html" class="logo">
+                    <i class="fas fa-arrow-left" style="font-size: 1.1rem; margin-right: 0.5rem; color: var(--text-secondary);"></i>
+                    <span>Palpites de <span>Campeão</span></span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="btn-icon" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="home.html" class="btn-icon">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <h1 class="section-title">
+            <i class="fas fa-calendar-alt"></i>
+            Competições (Ano <span id="current-year">2026</span>)
+        </h1>
+        
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            Selecione o time que você acredita que será o campeão de cada torneio.
+            Seus palpites valem pontos extras no ranking!
+        </p>
+
+        <div class="prediction-list" id="prediction-list">
+            <div class="loading-message" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 1rem;">Carregando competições...</p>
+            </div>
+            <!-- Lista de Previsões Injetada Aqui -->
+        </div>
+    </div>
+    
+    <!-- Modal de Palpite -->
+    <div class="modal-overlay" id="prediction-modal">
+        <div class="modal-content">
+            <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-crown"></i>
+                Palpitar Campeão: <span id="modal-tournament-name"></span>
+            </h2>
+            
+            <input type="text" id="team-search-input" class="form-input" placeholder="Buscar time (nome ou sigla)">
+            
+            <div class="team-selector-grid" id="modal-team-selector">
+                <!-- Times serão injetados aqui -->
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="save-prediction-btn" onclick="savePrediction()">
+                    <i class="fas fa-save"></i>
+                    Salvar Palpite
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script>
+        // Configuração de Firebase (USE SUAS CREDENCIAIS REAIS)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        
+        let currentUser = null;
+        let teamsData = {};
+        let allTeamsArray = [];
+        let userPredictions = {};
+        let currentPredictionId = null;
+        let selectedTeamId = null;
+        const currentYear = new Date().getFullYear();
+
+        // --- TEMA ---
+        function initTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        
+        // --- AUTENTICAÇÃO E CARREGAMENTO ---
+        async function initAuth() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('current-year').textContent = currentYear;
+                    
+                    await loadTeamsData();
+                    await loadUserPredictions();
+                    loadPredictions();
+                } else {
+                    alert('Você precisa estar logado para fazer palpites.');
+                    window.location.href = 'index.html'; 
+                }
+            });
+        }
+
+        async function loadTeamsData() {
+            const snapshot = await database.ref('teams').once('value');
+            teamsData = snapshot.val() || {};
+            allTeamsArray = Object.entries(teamsData).map(([id, team]) => ({ id, ...team }));
+        }
+
+        async function loadUserPredictions() {
+            const snapshot = await database.ref(`userPredictions/${currentUser.uid}`).once('value');
+            userPredictions = snapshot.val() || {};
+        }
+
+        async function loadPredictions() {
+            const listEl = document.getElementById('prediction-list');
+            listEl.innerHTML = `
+                <div class="loading-message" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p style="margin-top: 1rem;">Buscando competições...</p>
+                </div>
+            `;
+            
+            try {
+                // Filtra apenas as previsões para o ano atual e que não estão resolvidas
+                const snapshot = await database.ref('predictions').orderByChild('year').equalTo(currentYear).once('value');
+                const predictionsData = snapshot.val() || {};
+
+                const activePredictions = Object.entries(predictionsData)
+                    .map(([id, pred]) => ({ id, ...pred }))
+                    .filter(pred => !pred.correctAnswer); // Mostrar apenas palpites em aberto
+
+                if (activePredictions.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="loading-message">
+                            <i class="fas fa-info-circle fa-2x"></i>
+                            <p style="margin-top: 1rem;">Nenhuma competição de campeão aberta para palpites em ${currentYear}.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                listEl.innerHTML = activePredictions.map((pred, index) => renderPredictionCard(pred, index)).join('');
+
+            } catch (error) {
+                console.error("Erro ao carregar previsões:", error);
+                listEl.innerHTML = '<div class="loading-message text-danger"><i class="fas fa-exclamation-triangle fa-2x"></i> Erro ao carregar competições.</div>';
+            }
+        }
+
+        // --- RENDERIZAÇÃO E AÇÕES ---
+        function getTeamDetails(teamId) {
+            return teamsData[teamId] || { name: 'Time Desconhecido', abbr: '???', image: '' };
+        }
+
+        function renderPredictionCard(prediction, index) {
+            const userPred = userPredictions[prediction.id];
+            const hasPrediction = !!userPred?.championTeamId;
+            const statusClass = hasPrediction ? 'text-success' : 'text-danger';
+            const buttonText = hasPrediction ? 'Editar Palpite' : 'Fazer Palpite';
+            const championTeam = hasPrediction ? getTeamDetails(userPred.championTeamId) : null;
+            
+            const deadlineDate = prediction.deadline ? new Date(prediction.deadline) : null;
+            const deadlineText = deadlineDate && deadlineDate > new Date()
+                ? `Prazo: ${deadlineDate.toLocaleDateString()} ${deadlineDate.toLocaleTimeString()}`
+                : 'Prazo não definido ou expirado';
+
+            return `
+                <div class="prediction-card" style="animation-delay: ${index * 0.1}s;">
+                    <div class="card-header">
+                        <div class="tournament-info">
+                            <div class="tournament-name">${prediction.name} (${prediction.year})</div>
+                            <span class="tournament-type-badge">${prediction.type.toUpperCase()}</span>
+                        </div>
+                        <div class="deadline-info">
+                            <i class="fas fa-clock"></i> ${deadlineText}
+                        </div>
+                    </div>
+
+                    ${hasPrediction ? 
+                        `<div class="user-prediction-status">
+                            <i class="fas fa-check-circle text-success" style="font-size: 1.5rem;"></i>
+                            <div class="prediction-result">
+                                Seu palpite: 
+                                <span style="color: var(--text-primary); margin-left: 0.5rem;">
+                                    <img src="${championTeam.image || `https://ui-avatars.com/api/?name=${championTeam.abbr}&background=ccc&color=fff`}" 
+                                        alt="${championTeam.abbr}" class="team-logo-small">
+                                    ${championTeam.name} (${championTeam.abbr})
+                                </span>
+                            </div>
+                        </div>` 
+                        :
+                        `<div class="user-prediction-status pending">
+                            <i class="fas fa-hourglass-half text-warning" style="font-size: 1.5rem;"></i>
+                            <div style="font-weight: 500; color: var(--text-secondary);">
+                                Você ainda não fez seu palpite de campeão.
+                            </div>
+                        </div>`
+                    }
+
+                    <button class="btn btn-primary" onclick="openModal('${prediction.id}', '${prediction.name}', '${userPred?.championTeamId || ''}')">
+                        <i class="fas fa-edit"></i>
+                        ${buttonText}
+                    </button>
+                </div>
+            `;
+        }
+
+        // --- MODAL E PALPITE ---
+        function openModal(predictionId, tournamentName, currentChampionId) {
+            currentPredictionId = predictionId;
+            selectedTeamId = currentChampionId;
+            
+            document.getElementById('modal-tournament-name').textContent = tournamentName;
+            
+            renderTeamSelector(allTeamsArray);
+            
+            document.getElementById('team-search-input').value = '';
+            document.getElementById('team-search-input').oninput = (e) => filterTeams(e.target.value);
+
+            document.getElementById('prediction-modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('prediction-modal').classList.remove('show');
+            currentPredictionId = null;
+            selectedTeamId = null;
+        }
+
+        function renderTeamSelector(teamsToRender) {
+            const container = document.getElementById('modal-team-selector');
+            container.innerHTML = teamsToRender.map(team => {
+                const isSelected = team.id === selectedTeamId ? 'selected' : '';
+                const avatarUrl = team.image || 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(team.abbr)}&background=ccc&color=fff`;
+
+                return `
+                    <div class="team-option ${isSelected}" data-team-id="${team.id}">
+                        <img src="${avatarUrl}" alt="${team.name}" class="team-logo-medium" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.abbr)}&background=ccc&color=fff'">
+                        <div class="team-name-small">${team.abbr}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.querySelectorAll('#modal-team-selector .team-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('#modal-team-selector .team-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedTeamId = option.dataset.teamId;
+                });
+            });
+        }
+        
+        function filterTeams(searchTerm) {
+            const normalizedSearch = searchTerm.toLowerCase().trim();
+            const filteredTeams = allTeamsArray.filter(team => 
+                team.name.toLowerCase().includes(normalizedSearch) || 
+                team.abbr.toLowerCase().includes(normalizedSearch)
+            );
+            renderTeamSelector(filteredTeams);
+        }
+
+        async function savePrediction() {
+            if (!currentPredictionId || !selectedTeamId) {
+                alert('Selecione um time campeão.');
+                return;
+            }
+
+            const saveBtn = document.getElementById('save-prediction-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+
+            try {
+                const predictionPath = `userPredictions/${currentUser.uid}/${currentPredictionId}`;
+                
+                await database.ref(predictionPath).update({
+                    championTeamId: selectedTeamId,
+                    predictedAt: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                // Atualiza cache e UI
+                userPredictions[currentPredictionId] = { championTeamId: selectedTeamId };
+                await loadPredictions(); 
+
+                alert('Palpite salvo com sucesso!');
+                closeModal();
+
+            } catch (error) {
+                console.error('Erro ao salvar palpite:', error);
+                alert('Erro ao salvar palpite. Tente novamente.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Palpite';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAuth();
+        });
+    </script>
+</body>
+</html>

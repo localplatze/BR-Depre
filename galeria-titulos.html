@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Títulos - BRDepressão</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS REUTILIZADO DO MODELO */
+        :root {
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-card: #1e293b; --bg-input: #334155;
+            --text-primary: #f8fafc; --text-secondary: #94a3b8; --text-tertiary: #64748b;
+            --accent-primary: #3b82f6; --accent-secondary: #8b5cf6; --accent-success: #10b981;
+            --accent-warning: #f59e0b; --accent-danger: #ef4444; --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1); --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="light"] {
+            --bg-primary: #ffffff; --bg-secondary: #f8fafc; --bg-card: #ffffff; --bg-input: #e2e8f0;
+            --text-primary: #0f172a; --text-secondary: #475569; --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb; --accent-secondary: #7c3aed; --border-color: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color var(--transition-base);
+        }
+        .app-container { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem; }
+        .app-header { padding: 1rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); text-decoration: none; display: flex; align-items: center; }
+        .logo span { color: var(--accent-secondary); }
+        .btn-icon { width: 2.5rem; height: 2.5rem; border-radius: 50%; border: none; background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .btn-icon:hover { background: var(--accent-primary); color: white; transform: translateY(-2px); }
+
+        .section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; color: var(--accent-primary); }
+        .section-title i { color: var(--accent-secondary); }
+
+        /* Estilos da Galeria de Títulos */
+        .titles-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .year-section {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .year-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-primary);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .title-category {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-base);
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .category-title {
+            font-weight: 600;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .category-count {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-input);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+        }
+
+        .titles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .title-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .title-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-secondary);
+        }
+
+        .title-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Cores dos Tipos de Título */
+        .mundial { background: linear-gradient(135deg, #FFD700, #FFA500); color: #333; }
+        .continental { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; }
+        .nacional { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .estadual { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .outro { background: linear-gradient(135deg, #94a3b8, #64748b); color: white; }
+
+        .title-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .title-name {
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .title-winner {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .title-description {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-top: 0.4rem;
+        }
+        
+        .loading-message, .error-message {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Ícones de Importância */
+        .importante { color: #FFD700; }
+        .media { color: #C0C0C0; }
+        .baixa { color: #CD7F32; }
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="home.html" class="logo">
+                    <i class="fas fa-arrow-left" style="font-size: 1.1rem; margin-right: 0.5rem; color: var(--text-secondary);"></i>
+                    <span>Galeria de <span>Troféus</span></span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="btn-icon" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="home.html" class="btn-icon">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <h1 class="section-title">
+            <i class="fas fa-trophy"></i>
+            Todos os Campeões (Histórico)
+        </h1>
+
+        <div class="titles-gallery" id="titles-gallery">
+            <div class="loading-message" id="loading-message">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 1rem;">Carregando histórico de títulos...</p>
+            </div>
+            <!-- Conteúdo será injetado aqui -->
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script>
+        // Configuração de Firebase (USE SUAS CREDENCIAIS REAIS)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        let usersData = {}; // Cache para IDs de jogadores
+        
+        // --- TEMA ---
+        function initTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // --- FUNÇÕES AUXILIARES DE TÍTULOS (Reutilizadas/Aprimoradas) ---
+        function getTypeDisplayName(type) {
+            const names = { 'mundial': 'Mundial', 'continental': 'Continental', 'nacional': 'Nacional', 'estadual': 'Estadual', 'outro': 'Outros' };
+            return names[type] || type.charAt(0).toUpperCase() + type.slice(1);
+        }
+
+        function getTypeIconClass(type) {
+            const icons = { 'mundial': 'fa-globe-americas', 'continental': 'fa-globe-europe', 'nacional': 'fa-flag', 'estadual': 'fa-landmark', 'outro': 'fa-award' };
+            return icons[type] || 'fa-award';
+        }
+
+        function getImportanceStars(importance) {
+            const num = parseInt(importance);
+            if (num === 1) return '<i class="fas fa-star importante" title="Importância Alta"></i>';
+            if (num === 2) return '<i class="fas fa-star media" title="Importância Média"></i>';
+            if (num === 3) return '<i class="fas fa-star baixa" title="Importância Baixa"></i>';
+            return '';
+        }
+        
+        function getPlayerInfo(playerId) {
+            const user = usersData[playerId];
+            if (user) {
+                return user.name || user.abbr || 'Jogador Desconhecido';
+            }
+            return 'Carregando Jogador...';
+        }
+
+        function renderTitleItem(title) {
+            const importanceStars = getImportanceStars(title.importance);
+            const winnerName = getPlayerInfo(title.playerId);
+
+            return `
+                <div class="title-item">
+                    <div class="title-icon ${title.type}">
+                        <i class="fas ${getTypeIconClass(title.type)}"></i>
+                    </div>
+                    <div class="title-info">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="title-name">${title.name}</div>
+                            ${importanceStars}
+                        </div>
+                        <div class="title-winner">Campeão: ${winnerName}</div>
+                        ${title.description ? `<div class="title-description">${title.description}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // --- CARREGAMENTO DE DADOS ---
+        async function loadDataAndRenderTitles() {
+            const gallery = document.getElementById('titles-gallery');
+            document.getElementById('loading-message').style.display = 'block';
+
+            try {
+                // 1. Carregar dados de usuários (para exibir quem venceu)
+                const usersSnapshot = await database.ref('users').once('value');
+                usersData = usersSnapshot.val() || {};
+
+                // 2. Carregar títulos
+                const titlesSnapshot = await database.ref('titles').once('value');
+                const allTitles = titlesSnapshot.val();
+
+                if (!allTitles) {
+                    gallery.innerHTML = '<div class="error-message">Nenhum título histórico encontrado.</div>';
+                    return;
+                }
+
+                const titlesArray = Object.values(allTitles).map(t => ({ 
+                    ...t, 
+                    year: t.year || 9999, // Garantir que tenha um ano para ordenar
+                    type: (t.type || 'outro').toLowerCase() 
+                }));
+
+                // Agrupar por ano
+                const titlesByYear = titlesArray.reduce((acc, title) => {
+                    const year = title.year.toString();
+                    if (!acc[year]) acc[year] = [];
+                    acc[year].push(title);
+                    return acc;
+                }, {});
+
+                // Ordenar anos (do mais recente para o mais antigo)
+                const sortedYears = Object.keys(titlesByYear).sort((a, b) => parseInt(b) - parseInt(a));
+
+                let galleryHTML = '';
+                let delay = 0;
+
+                const typeOrder = { 'mundial': 1, 'continental': 2, 'nacional': 3, 'estadual': 4, 'outro': 5 };
+
+                sortedYears.forEach(year => {
+                    const titlesOfYear = titlesByYear[year];
+
+                    // Agrupar títulos por tipo dentro do ano
+                    const titlesByType = titlesOfYear.reduce((acc, title) => {
+                        const type = title.type;
+                        if (!acc[type]) acc[type] = [];
+                        acc[type].push(title);
+                        return acc;
+                    }, {});
+
+                    // Ordenar tipos por importância (mundial, continental, nacional...)
+                    const sortedTypes = Object.keys(titlesByType).sort((a, b) => {
+                        return (typeOrder[a] || 99) - (typeOrder[b] || 99);
+                    });
+
+                    let categoriesHTML = '';
+                    sortedTypes.forEach(type => {
+                        const typeTitles = titlesByType[type];
+                        const typeName = getTypeDisplayName(type);
+                        const iconClass = getTypeIconClass(type);
+                        
+                        // Ordenar títulos dentro da categoria por nome
+                        typeTitles.sort((a, b) => a.name.localeCompare(b.name));
+
+                        categoriesHTML += `
+                            <div class="title-category">
+                                <div class="category-header">
+                                    <div class="category-title">
+                                        <i class="fas ${iconClass}"></i>
+                                        ${typeName}
+                                    </div>
+                                    <span class="category-count">${typeTitles.length}</span>
+                                </div>
+                                <div class="titles-list">
+                                    ${typeTitles.map(t => renderTitleItem(t)).join('')}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    galleryHTML += `
+                        <div class="year-section" style="animation-delay: ${delay}s;">
+                            <div class="year-header">Temporada ${year}</div>
+                            <div class="category-grid">
+                                ${categoriesHTML}
+                            </div>
+                        </div>
+                    `;
+                    delay += 0.1; 
+                });
+
+                gallery.innerHTML = galleryHTML;
+
+            } catch (error) {
+                console.error("Erro ao carregar títulos:", error);
+                gallery.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar dados. Verifique a conexão com o Firebase.</div>';
+            } finally {
+                document.getElementById('loading-message').style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadDataAndRenderTitles();
+        });
+    </script>
+</body>
+</html>
