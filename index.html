@@ -2,670 +2,957 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brasileirão da Depressão</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Brasileirão da Depressão · Palpite Cabuloso</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --gradient-start: #373B5B;
-            --gradient-end: #1D1D2E;
-            --primary-color: #4A5BCF;
-            --secondary-color: #6B7AE5;
-            --text-primary: #FFFFFF;
-            --text-secondary: #B0B8D4;
-            --input-bg: rgba(255,255,255,0.1);
-            --input-border: rgba(255,255,255,0.2);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --field-green: #0A2F2A;
+            --grass-light: #1E4A3B;
+            --pitch-glow: #2C7A4B;
+            --primary-gold: #FBBF24;
+            --gold-dark: #D97706;
+            --pure-white: #F9FAFB;
+            --off-white: #E5E7EB;
+            --charcoal: #111827;
+            --card-bg: rgba(17, 24, 39, 0.85);
+            --card-border: rgba(251, 191, 36, 0.25);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --transition-smooth: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
         body, html {
             height: 100%;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
-            color: var(--text-primary);
+            background: radial-gradient(circle at 10% 30%, #0B3B2F, #041E1A);
+            color: var(--pure-white);
+            overflow-x: hidden;
         }
 
-        .container {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Desktop Layout */
-        @media screen and (min-width: 1024px) {
-            .left-panel {
-                width: 60%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 2rem;
-                text-align: center;
-            }
-
-            .right-panel {
-                width: 40%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: rgba(255,255,255,0.05);
-                backdrop-filter: blur(10px);
-                padding: 2rem;
-            }
-
-            .logo {
-                margin-bottom: 2rem;
-                max-width: 250px;
-            }
-
-            .hero-image {
-                max-width: 80%;
-                margin: 2rem 0;
-                border-radius: 16px;
-                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            }
-
-            .hero-text {
-                max-width: 600px;
-            }
-        }
-
-        /* Mobile Layout */
-        @media screen and (max-width: 1023px) {
-            .container {
-                flex-direction: column;
-                min-height: 100vh; /* Mudança de height para min-height */
-                overflow-y: auto; /* Permitir scroll */
-            }
-
-            .top-content {
-                min-height: 60%; /* Mudança de height para min-height */
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 1rem;
-            }
-
-            .bottom-content {
-                min-height: 40%; /* Mudança de height para min-height */
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                padding: 1rem;
-                background: rgba(255,255,255,0.05);
-                backdrop-filter: blur(10px);
-                margin-bottom: 20px; /* Adiciona margem inferior */
-            }
-
-            .logo {
-                max-width: 200px;
-                margin: 0 auto 1rem;
-                display: block;
-            }
-
-            .hero-image {
-                max-width: 90%;
-                max-height: 60%;
-                object-fit: contain;
-                margin: 1rem 0;
-                border-radius: 16px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            }
-
-            /* Alinhando a .form-container ao centro */
-            .right-panel {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-grow: 1;
-                padding: 1rem;
-                background: rgba(255,255,255,0.05);
-                backdrop-filter: blur(10px);
-            }
-
-            .form-container {
-                width: 100%;
-                max-width: 400px;
-                background: rgba(255,255,255,0.1);
-                border-radius: 16px;
-                padding: 2rem;
-                box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-        }
-
-        .logo {
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
-        }
-
-        .hero-text {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .hero-text h1 {
-            font-size: 2.5rem;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .hero-text p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            max-width: 500px;
-            padding: 0 1rem;
-        }
-
-        .form-container {
-            width: 100%;
-            max-width: 400px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .input-wrapper {
-            margin-bottom: 1.5rem; /* Aumentando o margin-bottom */
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .input-wrapper input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74,91,207,0.2);
-        }
-
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.3s ease;
-        }
-
-        button:hover {
-            background: var(--secondary-color);
-        }
-
-        .form-switch {
-            margin-top: 1rem;
-            text-align: center;
-            font-size: small;
-            color: var(--text-secondary);
-        }
-
-        .form-switch a {
-            color: var(--primary-color);
-            text-decoration: none;
-            margin: 0 0.5rem;
-        }
-
-        #error-message {
-            color: #FF6B6B;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        #recover-form, 
-        #register-form {
-            display: none;
-        }
-
-        #register-form h2, 
-        #recover-form h2 {
-            margin-bottom: 2rem;
-        }
-
-        .back-button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            margin-right: 0.5rem;
-        }
-
-        h2 {
-            display: inline-flex;
-            align-items: center;
-        }
-        .back-button:hover {
-            color: var(--primary-color);
-        }
-
-        /* Improved team selection styles */
-        .team-select-wrapper {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        .select-selected {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .select-selected img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        .select-items {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            max-height: 250px;
-            overflow-y: auto;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            z-index: 10;
-        }
-
-        .select-items div {
-            padding: 0.5rem 1rem;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .select-items div:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .select-items img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        /* Estilizando o botão do time */
-        #selected-team {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background-color: var(--input-bg);
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-size: 1rem;
-            border: 1px solid var(--input-border);
-        }
-
-        /* Estilizando a imagem do time */
-        .team-logo {
-            width: 20px; /* Ajuste o tamanho do ícone */
-            height: 20px;
-            margin-right: 8px;
-        }
-
-        /* Estilizando o dropdown de times */
-        #team-dropdown {
-            max-height: 200px;
-            overflow-y: auto;
-            background-color: var(--input-bg);
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            padding: 10px 0;
-            position: absolute;
-            width: 100%;
-            z-index: 100;
-            display: none;
-        }
-
-        #team-dropdown div {
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        #team-dropdown div:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        /* Spinner de Carregamento */
-        .loading-spinner {
+        /* animated pitch lines */
+        body::before {
+            content: "";
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: white;
-            display: none; /* Inicialmente escondido */
-            justify-content: center;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(255,215,0,0.08) 0px, rgba(255,215,0,0.08) 2px, transparent 2px, transparent 40px),
+                repeating-linear-gradient(0deg, rgba(255,215,0,0.05) 0px, rgba(255,215,0,0.05) 2px, transparent 2px, transparent 60px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* glassmorphic card grid */
+        .auth-grid {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        /* left hero zone */
+        .hero-zone {
+            flex: 1.2;
+            padding: 3rem 2.5rem;
+            background: linear-gradient(135deg, rgba(10, 47, 42, 0.7), rgba(6, 27, 24, 0.85));
+            display: flex;
             flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .badge-icon {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .trophy-icon {
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            filter: drop-shadow(0 0 6px rgba(251,191,36,0.5));
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 1.7rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #FFF6E0, #FBBF24);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 1rem 0 1rem;
+        }
+
+        .hero-title span {
+            color: var(--primary-gold);
+            border-bottom: 3px solid var(--primary-gold);
+            display: inline-block;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 1.8rem;
+            margin: 2rem 0 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--primary-gold);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--off-white);
+        }
+
+        .pulse-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(251,191,36,0.12);
+            padding: 0.7rem 1.2rem;
+            border-radius: 40px;
+            width: fit-content;
+            backdrop-filter: blur(4px);
+        }
+
+        .pulse-text i {
+            font-size: 0.9rem;
+            color: var(--primary-gold);
+        }
+
+        /* right form panel */
+        .form-panel {
+            flex: 0.9;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            padding: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid rgba(251,191,36,0.3);
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .form-card {
+            transition: var(--transition-smooth);
+        }
+
+        h2 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2 i {
+            color: var(--primary-gold);
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            color: var(--off-white);
+        }
+
+        .input-group input, .custom-select-trigger {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            background: rgba(0,0,0,0.4);
+            box-shadow: 0 0 0 3px rgba(251,191,36,0.2);
+        }
+
+        .custom-select {
+            position: relative;
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            background: rgba(255,255,255,0.07);
+        }
+
+        .custom-select-trigger span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-logo-preview {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            border-radius: 30px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #0F2C26;
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            margin-top: 8px;
+            max-height: 240px;
+            overflow-y: auto;
+            z-index: 40;
+            border: 1px solid rgba(251,191,36,0.3);
+            box-shadow: 0 12px 28px black;
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: block;
+            animation: fadeDropdown 0.2s ease;
+        }
+
+        @keyframes fadeDropdown {
+            from { opacity: 0; transform: translateY(-6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .team-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .team-option:hover {
+            background: rgba(251,191,36,0.2);
+        }
+
+        .team-option img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(95deg, #FBBF24, #F59E0B);
+            border: none;
+            padding: 0.9rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0A2F2A;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(95deg, #FFD966, #FBBF24);
+            box-shadow: 0 12px 20px -8px rgba(251,191,36,0.4);
+        }
+
+        .form-footer {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .form-footer a {
+            color: var(--primary-gold);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-action {
+            background: none;
+            border: none;
+            color: var(--off-white);
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: color 0.2s;
+        }
+
+        .back-action i {
+            font-size: 0.8rem;
+        }
+
+        .back-action:hover {
+            color: var(--primary-gold);
+        }
+
+        .error-msg {
+            color: #FFA27B;
+            background: rgba(255,70,50,0.12);
+            padding: 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .success-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0F2C26;
+            border-left: 4px solid #FBBF24;
+            padding: 12px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        /* responsive */
+        @media (max-width: 920px) {
+            .auth-grid {
+                flex-direction: column;
+                border-radius: 2rem;
+            }
+            .hero-zone {
+                text-align: center;
+                align-items: center;
+                padding: 2rem;
+            }
+            .hero-stats {
+                justify-content: center;
+            }
+            .form-panel {
+                border-left: none;
+                border-top: 1px solid rgba(251,191,36,0.2);
+            }
+            .hero-title {
+                font-size: 2.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            .form-panel {
+                padding: 1.8rem;
+            }
+            .hero-title {
+                font-size: 1.9rem;
+            }
+        }
+
+        /* scrollbar custom */
+        .dropdown-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .dropdown-list::-webkit-scrollbar-track {
+            background: #1E4A3B;
+        }
+        .dropdown-list::-webkit-scrollbar-thumb {
+            background: #FBBF24;
+            border-radius: 8px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
         }
-
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid var(--primary-color);
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .loader-ball {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #FBBF24, #B45309);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+            animation: bounceBall 0.6s infinite alternate;
+        }
+        @keyframes bounceBall {
+            0% { transform: translateY(0px);}
+            100% { transform: translateY(25px);}
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        #teamSearchInput:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 2px rgba(251,191,36,0.2);
+        }
+        #teamSearchInput::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        .no-results {
+            padding: 12px;
+            text-align: center;
+            color: var(--off-white);
+            font-size: 0.85rem;
         }
 
-        .loading-spinner p {
-            margin-top: 1rem;
-            font-size: 1.2rem;
-            color: var(--primary-color);
+        /* Adicione ao style existente */
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #0F2C26;
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            margin-top: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 1000; /* Aumentado para garantir que fique acima */
+            border: 1px solid rgba(251,191,36,0.3);
+            box-shadow: 0 12px 28px black;
+            display: none;
+        }
+
+        .search-box {
+            position: sticky;
+            top: 0;
+            background: #0F2C26;
+            z-index: 10;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #teamSearchInput {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.85rem;
+            pointer-events: auto; /* Garantir que o input seja clicável */
+        }
+
+        #teamSearchInput:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 2px rgba(251,191,36,0.2);
         }
     </style>
 </head>
 <body>
+<div class="loading-overlay" id="globalLoader">
+    <div class="loader-ball"></div>
+</div>
 
-    <div id="loading-spinner" class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Carregando...</p>
-    </div>
-
-    <div class="container">
-        <div class="left-panel">
-            <img src="./logo.png" alt="Logo" class="logo">
-            <img src="./bg_login.png" alt="Hero Image" class="hero-image">
-            <div class="hero-text">
-                <p>Faça seus palpites, acompanhe os torneios e derrote o ademir atual campeão</p>
+<div class="container">
+    <div class="auth-grid">
+        <!-- LEFT HERO - SEM IMAGENS EXTERNAS, APENAS TEXTO/ÍCONES -->
+        <div class="hero-zone">
+            <div class="badge-icon">
+                <i class="fas fa-futbol trophy-icon"></i>
+                <span class="brand">BRASILEIRÃO DA DEPRESSÃO</span>
+            </div>
+            <div class="hero-title">
+                O CAMPO É <span>MENTAL</span><br>
+                FAÇA SEU PALPITE
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">+2</div>
+                    <div class="stat-label">TORCEDORES</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">+30</div>
+                    <div class="stat-label">RODADAS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">🔥</div>
+                    <div class="stat-label">ADM LÍDER</div>
+                </div>
+            </div>
+            <div class="pulse-text">
+                <i class="fas fa-chart-line"></i>
+                <span>Modo competitivo · Vença os atuais campeões</span>
             </div>
         </div>
-        
-        <div class="right-panel">
+
+        <!-- RIGHT FORMS -->
+        <div class="form-panel">
             <div class="form-container">
-                <form id="login-form">
-                    <div id="error-message"></div>
-                    <div class="input-wrapper">
-                        <input type="email" id="login-email" placeholder="E-mail" required>
+                <!-- LOGIN FORM -->
+                <div id="loginFormContainer" class="form-card">
+                    <h2><i class="fas fa-sign-in-alt"></i> Acessar arena</h2>
+                    <div id="loginError" class="error-msg" style="display: none;"></div>
+                    <div class="input-group">
+                        <label>E-MAIL</label>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com">
                     </div>
-                    <div class="input-wrapper">
-                        <input type="password" id="login-password" placeholder="Senha" required>
+                    <div class="input-group">
+                        <label>SENHA</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••">
                     </div>
-                    <button type="submit">Entrar</button>
-                    <div class="form-switch">
-                        <a href="#" id="show-recover">Esqueceu a senha?</a>
-                        <a href="#" id="show-register">Cadastre-se</a>
+                    <button class="btn-primary" id="btnLogin">Entrar no campeonato</button>
+                    <div class="form-footer">
+                        <a href="#" id="showRecoverLink">Esqueci a senha</a>
+                        <span>•</span>
+                        <a href="#" id="showRegisterLink">Criar conta</a>
                     </div>
-                </form>
+                </div>
 
-                <!-- Register Form -->
-                <form id="register-form" style="position: relative;">
-                    <button type="button" class="back-button" id="show-login-from-register">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h2>Novo Cadastro</h2>
-                    <div id="error-message-register"></div>
-                    <div class="input-wrapper">
-                        <input type="text" id="register-name" placeholder="Nome" required>
+                <!-- REGISTER FORM (inicialmente hidden) -->
+                <div id="registerFormContainer" class="form-card" style="display: none;">
+                    <button class="back-action" id="backToLoginFromReg"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <h2><i class="fas fa-user-plus"></i> Novo atleta</h2>
+                    <div id="registerError" class="error-msg" style="display: none;"></div>
+                    <div class="input-group">
+                        <label>NOME COMPLETO</label>
+                        <input type="text" id="regName" placeholder="Ex: Thiago Machucado">
                     </div>
-                    <div class="input-wrapper">
-                        <input type="text" id="register-abbr" placeholder="Sigla (3 letras)" maxlength="3" required>
+                    <div class="input-group">
+                        <label>SIGLA (3 LETRAS)</label>
+                        <input type="text" id="regAbbr" maxlength="3" placeholder="R10">
                     </div>
-                    <div class="input-wrapper">
-                        <input type="email" id="register-email" placeholder="E-mail" required>
+                    <div class="input-group">
+                        <label>E-MAIL</label>
+                        <input type="email" id="regEmail" placeholder="craque@email.com">
                     </div>
-                    <div class="input-wrapper">
-                        <input type="password" id="register-password" placeholder="Senha" required>
+                    <div class="input-group">
+                        <label>SENHA</label>
+                        <input type="password" id="regPassword" placeholder="mínimo 6 caracteres">
                     </div>
-                    <div class="input-wrapper team-select-wrapper" id="team-select-wrapper">
-                        <div class="select-selected" id="selected-team">Selecione seu time</div>
-                        <div class="select-items" id="team-dropdown"></div>
+                    <div class="input-group">
+                        <label>MEU TIME DO CORAÇÃO</label>
+                        <div class="custom-select" id="teamSelectWrapper">
+                            <div class="custom-select-trigger" id="teamTrigger">
+                                <span><i class="fas fa-shield-alt"></i> Selecionar clube</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="dropdown-list" id="teamDropdown">
+                                <div class="search-box" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <input type="text" id="teamSearchInput" placeholder="🔍 Buscar time..." style="width: 100%; padding: 8px 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; color: white; font-size: 0.85rem;">
+                                </div>
+                                <div id="teamsListContainer"></div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit">Cadastrar</button>
-                </form>
+                    <button class="btn-primary" id="btnRegister">Cadastrar e entrar</button>
+                </div>
 
-                <!-- Password Recovery Form (updated) -->
-                <form id="recover-form" style="position: relative;">
-                    <button type="button" class="back-button" id="show-login-from-recover">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h2>Recuperar Senha</h2>
-                    <div id="error-message-recover"></div>
-                    <div class="input-wrapper">
-                        <input type="email" id="recover-email" placeholder="E-mail" required>
+                <!-- RECOVER FORM -->
+                <div id="recoverFormContainer" class="form-card" style="display: none;">
+                    <button class="back-action" id="backToLoginFromRec"><i class="fas fa-arrow-left"></i> Voltar ao login</button>
+                    <h2><i class="fas fa-key"></i> Recuperar acesso</h2>
+                    <div id="recoverError" class="error-msg" style="display: none;"></div>
+                    <div class="input-group">
+                        <label>E-MAIL CADASTRADO</label>
+                        <input type="email" id="recoverEmail" placeholder="exemplo@dominio.com">
                     </div>
-                    <button type="submit">Enviar Link de Recuperação</button>
-                </form>
+                    <button class="btn-primary" id="btnSendRecover">Enviar link mágico</button>
+                    <div class="form-footer">
+                        <span style="font-size: 0.7rem;">Enviamos um e-mail elegante com instruções</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<div id="toastMessage" class="success-toast"></div>
 
-    <script>
-        // Firebase Configuration (já configurado anteriormente)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
-            authDomain: "brdepre.firebaseapp.com",
-            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
-            projectId: "brdepre",
-            storageBucket: "brdepre.firebasestorage.app",
-            messagingSenderId: "1077826896098",
-            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
-            measurementId: "G-4JXFEZ8DW6"
-        };
-    
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-    
-        // Form Elements
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const recoverForm = document.getElementById('recover-form');
-        const errorMessage = document.getElementById('error-message');
-        const errorMessageRegister = document.getElementById('error-message-register');
-        const errorMessageRecover = document.getElementById('error-message-recover');
-        const selectedTeam = document.getElementById('selected-team');
-        const teamDropdown = document.getElementById('team-dropdown');
-        const teamSelectWrapper = document.getElementById('team-select-wrapper');
-    
-        let selectedTeamId = '';
-    
-        // Custom Select Dropdown (continua igual)
-        function createCustomTeamSelect() {
-            const teamsRef = database.ref('teams');
-            teamsRef.once('value', (snapshot) => {
-                const teams = snapshot.val();
-                if (teams) {
-                    for (let teamId in teams) {
-                        const teamDiv = document.createElement('div');
-    
-                        // Criar a opção com logo e nome do time
-                        const teamOption = document.createElement('div');
-                        teamOption.innerHTML = 
-                            `<img src="${teams[teamId].image || ''}" class="team-logo" alt="${teams[teamId].name}">
-                            ${teams[teamId].name} (${teams[teamId].abbr})`
-                        ;
-    
-                        // Quando clicar na opção de time, exibe o nome do time selecionado
-                        teamDiv.appendChild(teamOption);
-                        teamDiv.addEventListener('click', () => {
-                            selectedTeam.innerHTML = teamOption.innerHTML;
-                            selectedTeamId = teamId;
-                            teamDropdown.style.display = 'none'; // Esconde o dropdown
-                        });
-    
-                        teamDropdown.appendChild(teamDiv);
-                    }
-                } else {
-                    console.error('Nenhum time encontrado no Firebase');
-                }
-            });
+<!-- FIREBASE SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+<script>
+    // FIREBASE CONFIG (mesma fornecida)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+        authDomain: "brdepre.firebaseapp.com",
+        databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+        projectId: "brdepre",
+        storageBucket: "brdepre.firebasestorage.app",
+        messagingSenderId: "1077826896098",
+        appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+        measurementId: "G-4JXFEZ8DW6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    // DOM elements
+    const loginDiv = document.getElementById('loginFormContainer');
+    const registerDiv = document.getElementById('registerFormContainer');
+    const recoverDiv = document.getElementById('recoverFormContainer');
+    const loginError = document.getElementById('loginError');
+    const registerError = document.getElementById('registerError');
+    const recoverError = document.getElementById('recoverError');
+    const teamTrigger = document.getElementById('teamTrigger');
+    const teamDropdown = document.getElementById('teamDropdown');
+    const teamWrapper = document.getElementById('teamSelectWrapper');
+
+    let selectedTeamId = '';
+    let selectedTeamHtml = '';
+
+    // Helper: toast bonito
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toastMessage');
+        toast.textContent = message;
+        toast.style.backgroundColor = isError ? '#AA2E1E' : '#0F2C26';
+        toast.style.transform = 'translateX(0)';
+        setTimeout(() => {
+            toast.style.transform = 'translateX(120%)';
+        }, 3800);
+    }
+
+    function showLoader(show) {
+        const loader = document.getElementById('globalLoader');
+        if(show) loader.classList.add('active');
+        else loader.classList.remove('active');
+    }
+
+    let allTeamsArray = [];
+
+    // Carregar times e criar dropdown moderno
+    function loadTeams() {
+        database.ref('teams').once('value', (snapshot) => {
+            const teams = snapshot.val();
+            if(!teams) {
+                document.getElementById('teamsListContainer').innerHTML = '<div class="team-option">Nenhum time disponível</div>';
+                return;
+            }
+            
+            // Converter para array para facilitar filtro
+            allTeamsArray = [];
+            for(let teamId in teams) {
+                allTeamsArray.push({
+                    id: teamId,
+                    name: teams[teamId].name || 'Time',
+                    abbr: teams[teamId].abbr || '',
+                    image: teams[teamId].image || ''
+                });
+            }
+            
+            renderTeamsList(allTeamsArray);
+            
+            // Configurar busca com prevenção de fechamento
+            const searchInput = document.getElementById('teamSearchInput');
+            if(searchInput) {
+                // Impedir que o clique no input feche o dropdown
+                searchInput.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dropdown = document.getElementById('teamDropdown');
+                    dropdown.classList.add('show');
+                });
+                
+                searchInput.addEventListener('input', (e) => {
+                    e.stopPropagation();
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    const filtered = allTeamsArray.filter(team => 
+                        team.name.toLowerCase().includes(searchTerm) || 
+                        team.abbr.toLowerCase().includes(searchTerm)
+                    );
+                    renderTeamsList(filtered);
+                });
+            }
+        }).catch(err => {
+            console.warn(err);
+            document.getElementById('teamsListContainer').innerHTML = '<div class="team-option">Erro ao carregar times</div>';
+        });
+    }
+
+function renderTeamsList(teams) {
+        const container = document.getElementById('teamsListContainer');
+        if(!container) return;
+        
+        if(teams.length === 0) {
+            container.innerHTML = '<div class="no-results">⚽ Nenhum time encontrado</div>';
+            return;
         }
-    
-        // Toggle team dropdown (continua igual)
-        selectedTeam.addEventListener('click', () => {
-            teamDropdown.style.display = teamDropdown.style.display === 'block' ? 'none' : 'block';
+        
+        container.innerHTML = '';
+        teams.forEach(team => {
+            const optionDiv = document.createElement('div');
+            optionDiv.classList.add('team-option');
+            const logoUrl = team.image;
+            optionDiv.innerHTML = `
+                ${logoUrl ? `<img src="${logoUrl}" alt="${team.name}" onerror="this.src='https://via.placeholder.com/28?text=⚽'">` : '<i class="fas fa-shield-alt" style="font-size:1.3rem;"></i>'}
+                <span><strong>${team.name}</strong> ${team.abbr ? `(${team.abbr})` : ''}</span>
+            `;
+            optionDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectedTeamId = team.id;
+                // Atualizar trigger visual
+                const triggerSpan = document.querySelector('#teamTrigger span');
+                triggerSpan.innerHTML = `${logoUrl ? `<img src="${logoUrl}" class="team-logo-preview" style="width:24px;height:24px;object-fit:contain;">` : '<i class="fas fa-shield-alt"></i>'} ${team.name} ${team.abbr ? `(${team.abbr})` : ''}`;
+                document.getElementById('teamDropdown').classList.remove('show');
+                // Limpar busca ao fechar
+                const searchInput = document.getElementById('teamSearchInput');
+                if(searchInput) searchInput.value = '';
+            });
+            container.appendChild(optionDiv);
         });
-    
-        // Fechar o dropdown ao clicar fora dele
-        document.addEventListener('click', (event) => {
-            if (!teamSelectWrapper.contains(event.target)) {
-                teamDropdown.style.display = 'none';
-            }
-        });
-    
-        // Login Handler
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-    
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    // Armazenar dados do usuário no localStorage
-                    localStorage.setItem('user', JSON.stringify({
-                        uid: user.uid,
-                        email: user.email,
-                        name: user.displayName || 'Usuário'
-                    }));
-    
-                    // Redirecionar para a home
-                    window.location.href = 'home.html';
-                })
-                .catch((error) => {
-                    errorMessage.textContent = 'Erro ao fazer login: ' + error.message;
-                });
-        });
-    
-        // Registration Handler (continua igual)
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const abbr = document.getElementById('register-abbr').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-    
-            // Validate abbreviation
-            if (abbr.length !== 3) {
-                errorMessageRegister.textContent = 'A sigla deve ter exatamente 3 letras';
-                return;
-            }
-    
-            // Validate team selection
-            if (!selectedTeamId) {
-                errorMessageRegister.textContent = 'Por favor, selecione um time';
-                return;
-            }
-    
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    // Save additional user info to database
-                    return database.ref('users/' + user.uid).set({
-                        name: name,
-                        abbr: abbr,
-                        email: email,
-                        team: selectedTeamId
-                    });
-                })
-                .then(() => {
-                    window.location.href = 'home.html';
-                })
-                .catch((error) => {
-                    errorMessageRegister.textContent = 'Erro ao cadastrar: ' + error.message;
-                });
-        });
-    
-        // Recover Password Handler (continua igual)
-        recoverForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('recover-email').value;
-    
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    alert('Link de recuperação de senha enviado!');
-                })
-                .catch((error) => {
-                    errorMessageRecover.textContent = 'Erro ao enviar o link de recuperação: ' + error.message;
-                });
-        });
+    }
 
-        document.getElementById('show-register').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            recoverForm.style.display = 'none';
-            errorMessageRegister.textContent = '';
-        });
+    // abrir/fechar dropdown
+    const originalTriggerClick = teamTrigger.onclick;
+    teamTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dropdown = document.getElementById('teamDropdown');
+        dropdown.classList.toggle('show');
+        // Focar na busca quando abrir
+        if(dropdown.classList.contains('show')) {
+            setTimeout(() => {
+                const searchInput = document.getElementById('teamSearchInput');
+                if(searchInput) searchInput.focus();
+            }, 100);
+        }
+    });
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('teamDropdown');
+        const wrapper = document.getElementById('teamSelectWrapper');
+        const searchInput = document.getElementById('teamSearchInput');
+        
+        // Se o clique foi dentro do wrapper OU dentro do input de busca, não fecha
+        if(wrapper && wrapper.contains(e.target)) {
+            return;
+        }
+        if(dropdown) dropdown.classList.remove('show');
+    });
 
-        document.getElementById('show-recover').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'block';
-            errorMessageRecover.textContent = '';
-        });
+    // alternar formulários
+    document.getElementById('showRegisterLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        loginDiv.style.display = 'none';
+        registerDiv.style.display = 'block';
+        recoverDiv.style.display = 'none';
+        registerError.style.display = 'none';
+    });
+    document.getElementById('showRecoverLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        loginDiv.style.display = 'none';
+        registerDiv.style.display = 'none';
+        recoverDiv.style.display = 'block';
+        recoverError.style.display = 'none';
+    });
+    document.getElementById('backToLoginFromReg').addEventListener('click', () => {
+        loginDiv.style.display = 'block';
+        registerDiv.style.display = 'none';
+        recoverDiv.style.display = 'none';
+        loginError.style.display = 'none';
+    });
+    document.getElementById('backToLoginFromRec').addEventListener('click', () => {
+        loginDiv.style.display = 'block';
+        registerDiv.style.display = 'none';
+        recoverDiv.style.display = 'none';
+        loginError.style.display = 'none';
+    });
 
-        document.getElementById('show-login-from-register').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'none';
-            errorMessage.textContent = '';
-        });
+    // LOGIN
+    document.getElementById('btnLogin').addEventListener('click', async () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPassword').value;
+        if(!email || !pass) {
+            loginError.innerText = 'Preencha e-mail e senha';
+            loginError.style.display = 'block';
+            return;
+        }
+        showLoader(true);
+        try {
+            const userCred = await auth.signInWithEmailAndPassword(email, pass);
+            const user = userCred.user;
+            localStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email }));
+            showToast('Entrada no gramado! Redirecionando...');
+            setTimeout(() => { window.location.href = 'home.html'; }, 1200);
+        } catch(err) {
+            showLoader(false);
+            loginError.innerText = `Falha no acesso: ${err.message}`;
+            loginError.style.display = 'block';
+            showToast(err.message, true);
+        }
+    });
 
-        document.getElementById('show-login-from-recover').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'none';
-            errorMessage.textContent = '';
+    // REGISTER
+    document.getElementById('btnRegister').addEventListener('click', async () => {
+        const name = document.getElementById('regName').value.trim();
+        const abbr = document.getElementById('regAbbr').value.trim().toUpperCase();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        if(!name || !abbr || !email || !password) {
+            registerError.innerText = 'Todos os campos são obrigatórios';
+            registerError.style.display = 'block';
+            return;
+        }
+        if(abbr.length !== 3) {
+            registerError.innerText = 'A sigla deve ter exatamente 3 letras';
+            registerError.style.display = 'block';
+            return;
+        }
+        if(!selectedTeamId) {
+            registerError.innerText = 'Escolha seu time no dropdown!';
+            registerError.style.display = 'block';
+            return;
+        }
+        showLoader(true);
+        try {
+            const userCred = await auth.createUserWithEmailAndPassword(email, password);
+            const uid = userCred.user.uid;
+            await database.ref('users/' + uid).set({
+                name: name,
+                abbr: abbr,
+                email: email,
+                team: selectedTeamId,
+                createdAt: Date.now()
+            });
+            await userCred.user.updateProfile({ displayName: name });
+            localStorage.setItem('user', JSON.stringify({ uid, email, name }));
+            showToast('Cadastro realizado! Bem-vindo ao Brasileirão da Depressão.');
+            setTimeout(() => { window.location.href = 'home.html'; }, 1500);
+        } catch(err) {
+            showLoader(false);
+            registerError.innerText = `Erro: ${err.message}`;
+            registerError.style.display = 'block';
+            showToast(err.message, true);
+        }
+    });
+
+    // RECUPERAR SENHA - EMAIL ESTILIZADO (mensagem mais bonita mas sem alterar template real do firebase)
+    // O Firebase envia o e-mail padrão, mas podemos customizar via console, porém a mensagem de alerta fica mais profissional
+    document.getElementById('btnSendRecover').addEventListener('click', async () => {
+        const email = document.getElementById('recoverEmail').value.trim();
+        if(!email) {
+            recoverError.innerText = 'Informe seu e-mail para recuperação';
+            recoverError.style.display = 'block';
+            return;
+        }
+        showLoader(true);
+        try {
+            await auth.sendPasswordResetEmail(email, {
+                url: window.location.origin + window.location.pathname,
+                handleCodeInApp: false
+            });
+            showToast('✨ Link de recuperação enviado! Verifique sua caixa de entrada (e spam). ✨');
+            recoverError.style.display = 'none';
+            // limpar campo
+            document.getElementById('recoverEmail').value = '';
+            setTimeout(() => {
+                loginDiv.style.display = 'block';
+                recoverDiv.style.display = 'none';
+            }, 2000);
+        } catch(err) {
+            showLoader(false);
+            recoverError.innerText = `Erro: ${err.message}`;
+            recoverError.style.display = 'block';
+            showToast(err.message, true);
+        } finally {
+            showLoader(false);
+        }
+    });
+
+    // Inicializar times e pequenos ajustes
+    loadTeams();
+
+    // Opcional: se não houver imagem, manter estilo consistente
+    window.addEventListener('load', () => {
+        // garantir que ao clicar fora feche dropdowns globais
+        document.body.addEventListener('click', () => {
+            if(teamDropdown) teamDropdown.classList.remove('show');
         });
-    
-        // Initialize the Team Select Dropdown
-        createCustomTeamSelect();
-    </script>
-    <script src="app.js?v=2.2.0"></script>    
+    });
+</script>
 </body>
 </html>

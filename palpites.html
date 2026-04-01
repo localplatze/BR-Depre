@@ -2,305 +2,680 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogos da Rodada - BR Deprê</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Palpites - BR Depressão</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary-color: #007bff;
-            --primary-glow: rgba(0, 123, 255, 0.5);
-            --background-color: #101418;
-            --card-bg-color: #1a2027;
-            --card-bg-light: #242c36;
-            --text-color: #e4e6eb;
-            --text-color-light: #b0b3b8;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --border-radius: 12px;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --neutral-color: #6c757d;
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --primary-glow: rgba(59, 130, 246, 0.3);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark-bg: #0F172A;
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --card-border: rgba(59, 130, 246, 0.2);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
-        /* ESTILOS GERAIS E FUNDO */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
-
-        /* HEADER E BOTÕES */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; animation: fadeInDown 0.5s ease-out; }
-        .header h1 { font-size: 32px; font-weight: 700; }
-        .action-button {
-            background-image: linear-gradient(to right, var(--primary-color), #0056b3);
-            color: white; border: none; padding: 12px 24px;
-            border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; font-size: 15px;
-            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-        }
-        .action-button:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3); }
-        .action-button:disabled {
-            background: var(--neutral-color);
-            cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6;
-        }
-        #save-predictions.has-changes {
-            background-image: linear-gradient(to right, var(--warning-color), #d39e00);
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
         }
 
-        /* TIMER E TABS */
-        .timer {
-            text-align: center; font-size: 1.1em; color: var(--text-color-light);
-            margin-bottom: 25px; padding: 16px; background-color: var(--card-bg-color);
-            border-radius: var(--border-radius); border: 1px solid var(--border-color);
-            animation: fadeIn 0.6s ease-out;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
-        .main-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); animation: fadeIn 0.7s ease-out; }
-        .tab-button {
-            padding: 12px 20px; background-color: transparent; border: none; border-bottom: 3px solid transparent;
-            cursor: pointer; font-weight: 600; font-size: 16px; color: var(--text-color-light); transition: all 0.3s;
-        }
-        .tab-button:hover { color: var(--primary-color); }
-        .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
-        /* CONTAINER DE JOGOS E CARDS */
-        .matches-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header h1 i {
+            color: var(--primary);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 2rem;
+            padding: 0.6rem 1.25rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Timer Card */
+        .timer-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .timer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .timer-info i {
+            font-size: 1.25rem;
+            color: var(--warning);
+        }
+
+        .timer-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            background: none;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Matches Grid */
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.25rem;
+        }
+
         .match-card {
-            background-color: var(--card-bg-color); border-radius: var(--border-radius); overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: fadeInUp 0.5s ease-out backwards;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
-        .match-card:hover { transform: translateY(-5px); box-shadow: 0 0 20px var(--primary-glow); border-color: var(--primary-color); }
-        .match-card.is-locked { opacity: 0.6; border-color: var(--neutral-color); }
-        .match-card.is-locked:hover { transform: none; box-shadow: none; }
-        .match-header { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 0.9em; color: var(--text-color-light); background-color: var(--card-bg-light); position: relative; }
-        .lock-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
-        .match-content { padding: 20px; }
-        .match-teams { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .team { display: flex; flex-direction: column; align-items: center; width: 40%; text-align: center; }
-        .team img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
-        .team-name { font-weight: 600; font-size: 1.1em; }
-        .versus { font-size: 18px; color: var(--text-color-light); }
-        
-        /* NOVO INPUT DE PLACAR COM BOTÕES +/- */
-        .prediction-inputs { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .score-input-wrapper { display: flex; align-items: center; gap: 8px; background-color: var(--background-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; }
-        .score-stepper-btn { background: var(--card-bg-light); color: var(--text-color); border: none; width: 30px; height: 30px; border-radius: 6px; font-size: 1.2em; cursor: pointer; transition: background-color 0.2s; }
-        .score-stepper-btn:hover { background-color: var(--primary-color); }
-        .score-stepper-btn:disabled { background-color: var(--neutral-color); opacity: 0.5; cursor: not-allowed; }
-        .prediction-inputs input { width: 50px; height: 40px; font-size: 22px; text-align: center; border: none; background-color: transparent; color: var(--text-color); -moz-appearance: textfield; }
-        .prediction-inputs input::-webkit-outer-spin-button, .prediction-inputs input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .prediction-inputs input:focus { outline: none; }
-        .prediction-inputs input:disabled { color: var(--text-color-light); }
-        
-        .match-result { display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 700; }
-        .match-footer { padding: 15px; text-align: center; border-top: 1px solid var(--border-color); min-height: 60px; }
-        
-        /* LOADER */
-        .loader-container { display: flex; justify-content: center; align-items: center; min-height: 300px; }
-        .loader { border: 5px solid var(--card-bg-light); border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* DIALOGS (MODAIS) */
-        dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid var(--border-color); border-radius: var(--border-radius); box-shadow: var(--shadow); width: 90%; padding: 0; margin: 0; background-color: var(--card-bg-color); color: var(--text-color); }
-        dialog::backdrop { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
-        .dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); background-color: var(--card-bg-light); }
-        .dialog-content { padding: 24px; max-height: 70vh; overflow-y: auto; }
-        
-        /* TABELA NO DIALOG */
-        #player-status-dialog { max-width: 900px; }
-        .player-status-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .player-status-table th { background-color: var(--card-bg-light); position: sticky; top: -25px; /* Compensa padding do dialog */ z-index: 10; padding: 16px 12px; }
-        .player-status-table td { padding: 12px; }
-        .player-status-table tbody tr { transition: background-color 0.2s; }
-        .player-status-table tbody tr:nth-child(even) { background-color: rgba(0,0,0,0.1); }
-        .player-status-table tbody tr:hover { background-color: var(--card-bg-light); }
-        .points-3 { background-color: rgba(40, 167, 69, 0.3); }
-        .points-1 { background-color: rgba(255, 193, 7, 0.3); }
-        .points--1 { background-color: rgba(220, 53, 69, 0.3); }
+        .match-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
 
+        .match-card.locked {
+            opacity: 0.7;
+        }
+
+        .match-card.locked:hover {
+            transform: none;
+        }
+
+        .match-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .lock-icon {
+            color: var(--warning);
+        }
+
+        .match-body {
+            padding: 1.5rem;
+        }
+
+        .teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .team {
+            text-align: center;
+            flex: 1;
+        }
+
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .vs {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 0 0.75rem;
+        }
+
+        .final-result {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.75rem;
+        }
+
+        .prediction-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .score-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0.75rem;
+            padding: 0.25rem;
+        }
+
+        .score-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .score-btn:hover:not(:disabled) {
+            background: var(--primary);
+        }
+
+        .score-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .score-input {
+            width: 50px;
+            height: 40px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            -moz-appearance: textfield;
+        }
+
+        .score-input::-webkit-outer-spin-button,
+        .score-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .score-input:focus {
+            outline: none;
+        }
+
+        .score-input:disabled {
+            color: var(--text-secondary);
+        }
+
+        .match-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+        }
+
+        .view-predictions {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-predictions:hover {
+            color: var(--primary);
+        }
+
+        /* Save Button */
+        .save-container {
+            position: sticky;
+            bottom: 1rem;
+            margin-top: 2rem;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .save-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .save-btn.has-changes {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Loader */
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .loader i {
+            font-size: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Dialog */
+        dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 800px;
+            padding: 0;
+            margin: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            color: var(--text-primary);
+            z-index: 1000;
+        }
+
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .dialog-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .dialog-content {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* Predictions List */
         .predictions-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 0.5rem;
         }
 
         .prediction-item {
             display: flex;
             align-items: center;
-            padding: 12px;
-            border-radius: 8px;
-            background-color: var(--card-bg-light);
-            border-left: 4px solid transparent; /* Borda que será colorida */
-            transition: background-color 0.2s;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.75rem;
+            border-left: 4px solid transparent;
         }
 
+        .prediction-item.points-3 { border-left-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .prediction-item.points-1 { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.1); }
+        .prediction-item.points-0 { border-left-color: var(--text-muted); }
+        .prediction-item.points--1 { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+
         .prediction-player {
-            flex-grow: 1;
             font-weight: 500;
+            flex: 1;
         }
 
         .prediction-score {
             font-weight: 600;
-            font-size: 1.1em;
-            margin-right: 16px;
+            margin: 0 1rem;
         }
 
         .prediction-points {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            color: white;
-            font-size: 1em;
-            font-weight: 700;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            font-weight: 700;
+            font-size: 0.875rem;
         }
 
-        /* Cores baseadas na pontuação para a lista de palpites */
-        .prediction-item.points-3 { border-left-color: var(--success-color); background-color: rgba(40, 167, 69, 0.1); }
-        .prediction-item.points-1 { border-left-color: var(--warning-color); background-color: rgba(255, 193, 7, 0.1); }
-        .prediction-item.points-0 { border-left-color: var(--text-color-light); }
-        .prediction-item.points--1 { border-left-color: var(--danger-color); background-color: rgba(220, 53, 69, 0.1); }
+        .prediction-points.points-3 { background: var(--success); }
+        .prediction-points.points-1 { background: var(--warning); color: #000; }
+        .prediction-points.points-0 { background: var(--text-muted); }
+        .prediction-points.points--1 { background: var(--danger); }
 
-        .prediction-points.points-3 { background-color: var(--success-color); }
-        .prediction-points.points-1 { background-color: var(--warning-color); color: #111; }
-        .prediction-points.points-0 { background-color: var(--text-color-light); }
-        .prediction-points.points--1 { background-color: var(--danger-color); }
-        .prediction-points.points-none { background-color: var(--card-bg-light); }
-
-
-        /* --- Estilos para o Dialog de "Status dos Jogadores" --- */
-
-        .status-icon {
-            font-size: 1.2em;
+        /* Player Status Table */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
         }
-        .status-pending {
-            color: var(--text-color-light);
-        }
-        .status-missing {
-            color: var(--warning-color);
-        }
-        .table-container td { /* Centraliza o conteúdo da tabela */
+
+        .status-table th,
+        .status-table td {
+            padding: 0.75rem 0.5rem;
             text-align: center;
-        }
-        .table-container .status-table-player { /* Alinha nome do jogador à esquerda */
-            text-align: left !important;
+            border-bottom: 1px solid var(--card-border);
         }
 
-        /* Legenda */
-        .legend-container {
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
+        .status-table th:first-child,
+        .status-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .status-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .points-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .points-3-badge { background: var(--success); }
+        .points-1-badge { background: var(--warning); color: #000; }
+        .points--1-badge { background: var(--danger); }
+
+        /* Legend */
+        .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--card-border);
             justify-content: center;
-            font-size: 0.9em;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
         }
 
-        .legend-color-box {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
         }
-        /* Cores para as caixas da legenda */
-        .legend-color-box.points-0 {
-            background-color: transparent;
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+            .team-logo {
+                width: 45px;
+                height: 45px;
+            }
+            .team-name {
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Próxima Rodada</h1>
-            <a href="home.html" class="action-button"><i class="fas fa-arrow-left"></i> Voltar</a>
-        </div>
-        <div id="timer-container" class="timer"><i class="fas fa-clock"></i> Carregando...</div>
-
-        <div class="main-tabs">
-            <button id="matches-tab" class="tab-button active"><i class="fas fa-futbol"></i> Jogos</button>
-            <button id="player-status-tab" class="tab-button"><i class="fas fa-users"></i> Status dos Jogadores</button>
+            <h1><i class="fas fa-futbol"></i> Próxima Rodada</h1>
+            <a href="home.html" class="back-btn"><i class="fas fa-arrow-left"></i> Voltar</a>
         </div>
 
-        <div id="loader" class="loader-container"><div class="loader"></div></div>
-        <div id="matches-container" class="matches-container" style="display: none;"></div>
-        <div id="action-container" class="action-container" style="margin-top: 30px; text-align: center; position: sticky; bottom: 20px; z-index: 100;">
-            <button id="save-predictions" class="action-button" disabled><i class="fas fa-save"></i> Salvar Palpites</button>
+        <div class="timer-card" id="timer-container">
+            <div class="timer-info">
+                <i class="fas fa-hourglass-half"></i>
+                <span>Carregando...</span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button id="matches-tab" class="tab active"><i class="fas fa-futbol"></i> Jogos</button>
+            <button id="player-status-tab" class="tab"><i class="fas fa-users"></i> Status</button>
+        </div>
+
+        <div id="loader" class="loader"><i class="fas fa-spinner fa-pulse"></i> Carregando jogos...</div>
+        <div id="matches-container" class="matches-grid" style="display: none;"></div>
+
+        <div class="save-container">
+            <button id="save-predictions" class="save-btn" disabled><i class="fas fa-save"></i> Salvar Palpites</button>
         </div>
     </div>
 
+    <!-- Dialogs -->
     <dialog id="player-status-dialog">
         <div class="dialog-header">
-            <h2><i class="fas fa-clipboard-check"></i> Status dos Palpites</h2>
-            <button class="close-btn" aria-label="Fechar">×</button>
+            <h2><i class="fas fa-clipboard-list"></i> Status dos Palpites</h2>
+            <button class="close-btn">×</button>
         </div>
         <div class="dialog-content">
-            <div class="table-container" style="overflow-x: auto;">
-                <table class="player-status-table">
-                    <thead id="player-status-header"></thead>
-                    <tbody id="player-status-body"></tbody>
+            <div style="overflow-x: auto;">
+                <table class="status-table" id="status-table">
+                    <thead id="status-header"></thead>
+                    <tbody id="status-body"></tbody>
                 </table>
             </div>
-
-            <!-- CORREÇÃO 1: ADIÇÃO DA LEGENDA DE CORES E ÍCONES -->
-            <div class="legend-container">
-                <div class="legend-item"><span class="legend-color-box points-3"></span> 3 pts (Placar Exato)</div>
-                <div class="legend-item"><span class="legend-color-box points-1"></span> 1 pt (Acertou Vencedor/Empate)</div>
-                <div class="legend-item"><span class="legend-color-box points-0"></span> 0 pts (Errou Vencedor)</div>
-                <div class="legend-item"><span class="legend-color-box points--1"></span> -1 pt (Placar Invertido)</div>
-                <div class="legend-item"><i class="fas fa-futbol status-icon status-pending"></i> Palpite Feito</div>
-                <div class="legend-item"><i class="fas fa-question-circle status-icon status-missing"></i> Não Palpitou</div>
+            <div class="legend">
+                <div class="legend-item"><span class="legend-color" style="background: var(--success);"></span> 3 pts (Placar Exato)</div>
+                <div class="legend-item"><span class="legend-color" style="background: var(--warning);"></span> 1 pt (Vencedor/Empate)</div>
+                <div class="legend-item"><span class="legend-color" style="background: var(--text-muted);"></span> 0 pts (Errou)</div>
+                <div class="legend-item"><span class="legend-color" style="background: var(--danger);"></span> -1 pt (Placar Invertido)</div>
+                <div class="legend-item"><i class="fas fa-futbol"></i> Palpite Feito</div>
+                <div class="legend-item"><i class="fas fa-question-circle"></i> Não Palpitou</div>
             </div>
         </div>
     </dialog>
 
     <dialog id="predictions-dialog">
         <div class="dialog-header">
-            <h2 id="predictions-dialog-title">Palpites do Jogo</h2>
-            <button class="close-btn" aria-label="Fechar">×</button>
+            <h2 id="predictions-title"><i class="fas fa-eye"></i> Palpites do Jogo</h2>
+            <button class="close-btn">×</button>
         </div>
         <div class="dialog-content">
-            <ul id="predictions-list-body" style="list-style: none; padding: 0;"></ul>
+            <div id="predictions-list" class="predictions-list"></div>
         </div>
     </dialog>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // Config do Firebase (mantém igual)
         const firebaseConfig = {
             apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
             authDomain: "brdepre.firebaseapp.com",
             databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
             projectId: "brdepre",
-            storageBucket: "brdepre.appspot.com",
+            storageBucket: "brdepre.firebasestorage.app",
             messagingSenderId: "1077826896098",
             appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
             measurementId: "G-4JXFEZ8DW6"
@@ -310,494 +685,367 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        const ui = {
-            matchesContainer: document.getElementById('matches-container'),
-            timerContainer: document.getElementById('timer-container'),
-            savePredictionsButton: document.getElementById('save-predictions'),
-            loader: document.getElementById('loader'),
-            matchesTab: document.getElementById('matches-tab'),
-            playerStatusTab: document.getElementById('player-status-tab'),
-            playerStatusDialog: document.getElementById('player-status-dialog'),
-            playerStatusHeader: document.getElementById('player-status-header'),
-            playerStatusBody: document.getElementById('player-status-body'),
-            actionContainer: document.querySelector('.action-container'),
-            predictionsDialog: document.getElementById('predictions-dialog'),
-            predictionsDialogTitle: document.getElementById('predictions-dialog-title'),
-            predictionsListBody: document.getElementById('predictions-list-body'),
-        };
-
         let currentRoundKey = null;
         let allPlayers = {};
         let allTeams = {};
         let allMatches = {};
         let roundFinishTimestamp = null;
+        let unsavedPredictions = {};
         let countdownInterval;
 
-        let unsavedPredictions = {};
+        // DOM Elements
+        const matchesContainer = document.getElementById('matches-container');
+        const timerContainer = document.getElementById('timer-container');
+        const saveBtn = document.getElementById('save-predictions');
+        const loader = document.getElementById('loader');
+        const matchesTab = document.getElementById('matches-tab');
+        const statusTab = document.getElementById('player-status-tab');
+        const statusDialog = document.getElementById('player-status-dialog');
+        const predictionsDialog = document.getElementById('predictions-dialog');
 
-        // --- LÓGICA DE RASCUNHO (DRAFT) COM localStorage ---
-        function getDraftStorageKey(roundKey, userId) {
-            return `predictionsDraft_${userId}_${roundKey}`;
+        // Storage helpers
+        function getDraftKey() {
+            return `predictions_${auth.currentUser?.uid}_${currentRoundKey}`;
         }
-        function saveDraftToLocalStorage() {
+
+        function saveDraft() {
             if (currentRoundKey && auth.currentUser) {
-                const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
-                localStorage.setItem(key, JSON.stringify(unsavedPredictions));
+                localStorage.setItem(getDraftKey(), JSON.stringify(unsavedPredictions));
             }
         }
-        function loadDraftFromLocalStorage() {
+
+        function loadDraft() {
             if (currentRoundKey && auth.currentUser) {
-                const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
-                const draft = localStorage.getItem(key);
+                const draft = localStorage.getItem(getDraftKey());
                 unsavedPredictions = draft ? JSON.parse(draft) : {};
             }
         }
-        function clearDraftFromLocalStorage() {
+
+        function clearDraft() {
             if (currentRoundKey && auth.currentUser) {
-                const key = getDraftStorageKey(currentRoundKey, auth.currentUser.uid);
-                localStorage.removeItem(key);
+                localStorage.removeItem(getDraftKey());
             }
         }
 
-        // --- LÓGICA DO BOTÃO DE SALVAR INTELIGENTE ---
-        function updateSaveButtonState() {
+        function updateSaveButton() {
             const hasChanges = Object.keys(unsavedPredictions).length > 0;
-            ui.savePredictionsButton.disabled = !hasChanges;
+            saveBtn.disabled = !hasChanges;
             if (hasChanges) {
-                ui.savePredictionsButton.classList.add('has-changes');
-                ui.savePredictionsButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Salvar Alterações';
+                saveBtn.classList.add('has-changes');
+                saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Salvar Alterações';
             } else {
-                ui.savePredictionsButton.classList.remove('has-changes');
-                ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+                saveBtn.classList.remove('has-changes');
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
             }
         }
 
-        auth.onAuthStateChanged((user) => {
-            if (user) initializeApp(user.uid);
-            else window.location.href = 'index.html';
-        });
-
-        async function initializeApp(userId) {
-            try {
-                await Promise.all([fetchAllPlayers(), fetchAllTeams()]);
-                const roundSnapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
-                
-                if (!roundSnapshot.exists()) {
-                    // Lógica para quando não há rodada
-                    return;
-                }
-                
-                roundSnapshot.forEach(child => {
-                    currentRoundKey = child.key;
-                    const roundData = child.val();
-                    allMatches = roundData.matches || [];
-                    roundFinishTimestamp = roundData.finishTimestamp;
-                });
-                
-                loadDraftFromLocalStorage(); // Carrega o rascunho antes de renderizar
-                startCountdown();
-                renderMatchCards(userId);
-                setupEventListeners(userId);
-                updateSaveButtonState();
-
-                ui.loader.style.display = 'none';
-                ui.matchesContainer.style.display = 'grid';
-
-            } catch (error) {
-                console.error("Erro na inicialização:", error);
-            }
-        }
-
-        async function fetchAllPlayers() {
-            const snapshot = await database.ref('users').once('value');
-            allPlayers = snapshot.val() || {};
-        }
-
-        async function fetchAllTeams() {
-            const snapshot = await database.ref('teams').once('value');
-            allTeams = snapshot.val() || {};
-        }
-
-        async function fetchCurrentRound(userId) {
-            const roundsRef = database.ref('rounds');
-            const snapshot = await roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value');
-            
-            if (!snapshot.exists()) {
-                ui.loader.style.display = 'none';
-                ui.matchesContainer.innerHTML = '<p style="text-align:center;">Não há rodadas disponíveis no momento.</p>';
-                ui.timerContainer.innerHTML = '<i class="fas fa-info-circle"></i> Nenhuma rodada ativa';
-                ui.actionContainer.style.display = 'none';
-                document.querySelector('.main-tabs').style.display = 'none';
-                return;
-            }
-            
-            // --- MUDANÇA 2: Usar um listener em tempo real (opcional, mas bom) ---
-            // Em vez de 'once', usamos 'on' para que a tela reaja a mudanças (como resultados de jogos).
-            // Nossa nova lógica de "rascunho" vai proteger os dados do usuário.
-            roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).on('value', (snapshot) => {
-                if (!snapshot.exists()) return;
-                
-                snapshot.forEach(childSnapshot => {
-                    currentRoundKey = childSnapshot.key;
-                    const roundData = childSnapshot.val();
-                    allMatches = roundData.matches || [];
-                    roundFinishTimestamp = roundData.finishTimestamp;
-                });
-
-                // A primeira chamada do countdown e do loadMatchesData
-                if (!countdownInterval) {
-                    startCountdown();
-                }
-                
-                loadMatchesData(currentRoundKey, userId);
-            });
-        }
-
-        function startCountdown() {
-            if (countdownInterval) clearInterval(countdownInterval);
-
-            const updateTimer = () => {
-                const diff = new Date(roundFinishTimestamp) - new Date();
-                
-                if (diff <= 0) {
-                    clearInterval(countdownInterval);
-                    ui.timerContainer.innerHTML = '<i class="fas fa-clock"></i> Tempo da rodada esgotado!';
-                    if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
-                    // --- MUDANÇA 3: O timer não precisa mais recarregar todos os dados ---
-                    // A chamada loadMatchesData() foi removida daqui para evitar recargas desnecessárias.
-                } else {
-                    const d = Math.floor(diff / 86400000);
-                    const h = Math.floor((diff % 86400000) / 3600000);
-                    const m = Math.floor((diff % 3600000) / 60000);
-                    ui.timerContainer.innerHTML = `<i class="fas fa-clock"></i> Tempo restante da rodada: ${d}d ${h}h ${m}m`;
-                }
-            };
-            updateTimer();
-            countdownInterval = setInterval(updateTimer, 1000 * 60);
-        }
-
-        function isBettingDisabled(match) {
-            const now = new Date().getTime();
-            const deadline = match.timestamp ? new Date(match.timestamp).getTime() : new Date(roundFinishTimestamp).getTime();
-            return now >= deadline;
-        }
-
-        async function loadMatchesData(roundKey, userId) {
-            ui.loader.style.display = 'flex';
-            ui.matchesContainer.style.display = 'none';
-
-            const matchesData = allMatches.map((match, index) => ({
-                matchId: index, match, 
-                homeTeam: allTeams[match.homeTeam] || {}, 
-                awayTeam: allTeams[match.awayTeam] || {}, 
-                userPrediction: match.predictions?.[userId] || {}
-            }));
-            
-            renderMatchCards(matchesData);
-            
-            const isRoundOver = new Date() >= new Date(roundFinishTimestamp);
-            if (!isRoundOver) {
-                setupSavePredictionsButton(roundKey, userId);
-            } else {
-                if(ui.savePredictionsButton) ui.savePredictionsButton.style.display = 'none';
-            }
-            
-            ui.loader.style.display = 'none';
-            ui.matchesContainer.style.display = 'grid';
-        }
-
-        function renderMatchCards(userId) {
-            ui.matchesContainer.innerHTML = allMatches.map((match, matchId) => {
-                const homeTeam = allTeams[match.homeTeam] || {};
-                const awayTeam = allTeams[match.awayTeam] || {};
-                const userPrediction = match.predictions?.[userId] || {};
-                const isDisabled = isBettingDisabled(match);
-
-                const unsaved = unsavedPredictions[matchId];
-                const homeScoreValue = unsaved?.homeScore ?? userPrediction.homeScore ?? '';
-                const awayScoreValue = unsaved?.awayScore ?? userPrediction.awayScore ?? '';
-                
-                return `
-                <div class="match-card ${isDisabled ? 'is-locked' : ''}" data-match-id="${matchId}" style="--animation-delay: ${matchId * 100}ms">
-                    <div class="match-header">
-                        <span>${new Date(match.timestamp).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})}</span>
-                        ${isDisabled ? '<i class="fas fa-lock lock-icon"></i>' : ''}
-                    </div>
-                    <div class="match-content">
-                        <div class="match-teams">
-                            <div class="team"><img src="${homeTeam.image}" alt="${homeTeam.name}"><p class="team-name">${homeTeam.name}</p></div>
-                            <span class="versus">vs</span>
-                            <div class="team"><img src="${awayTeam.image}" alt="${awayTeam.name}"><p class="team-name">${awayTeam.name}</p></div>
-                        </div>
-                        ${match.finalResult ? `
-                            <div class="match-result">${match.finalResult.homeScore} : ${match.finalResult.awayScore}</div>
-                        ` : `
-                            <div class="prediction-inputs">
-                                <div class="score-input-wrapper">
-                                    <button class="score-stepper-btn score-decrement" data-match-id="${matchId}" data-team="home" ${isDisabled ? 'disabled' : ''}>-</button>
-                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="home" value="${homeScoreValue}" ${isDisabled ? 'disabled' : ''}>
-                                    <button class="score-stepper-btn score-increment" data-match-id="${matchId}" data-team="home" ${isDisabled ? 'disabled' : ''}>+</button>
-                                </div>
-                                <span>×</span>
-                                <div class="score-input-wrapper">
-                                    <button class="score-stepper-btn score-decrement" data-match-id="${matchId}" data-team="away" ${isDisabled ? 'disabled' : ''}>-</button>
-                                    <input type="number" min="0" placeholder="-" data-match-id="${matchId}" data-team="away" value="${awayScoreValue}" ${isDisabled ? 'disabled' : ''}>
-                                    <button class="score-stepper-btn score-increment" data-match-id="${matchId}" data-team="away" ${isDisabled ? 'disabled' : ''}>+</button>
-                                </div>
-                            </div>
-                        `}
-                    </div>
-                    <div class="match-footer">
-                        ${isDisabled ? `<button class="action-button view-predictions-btn" data-match-id="${matchId}"><i class="fas fa-eye"></i> Ver Palpites</button>` : ''}
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        function setupSavePredictionsButton(roundKey, userId) {
-            const button = ui.savePredictionsButton.cloneNode(true);
-            if(ui.savePredictionsButton.parentNode) {
-                ui.savePredictionsButton.parentNode.replaceChild(button, ui.savePredictionsButton);
-            }
-            ui.savePredictionsButton = button;
-            
-            ui.savePredictionsButton.addEventListener('click', async () => {
-                ui.savePredictionsButton.disabled = true;
-                ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-                try {
-                    const updates = {};
-                    // Agora, lemos do nosso "rascunho" para salvar
-                    for (const matchId in unsavedPredictions) {
-                        const prediction = unsavedPredictions[matchId];
-                        // Validar se o palpite está completo
-                        if (prediction.homeScore.trim() !== '' && prediction.awayScore.trim() !== '') {
-                            updates[`/rounds/${roundKey}/matches/${matchId}/predictions/${userId}`] = {
-                                homeScore: parseInt(prediction.homeScore),
-                                awayScore: parseInt(prediction.awayScore),
-                            };
-                        }
-                    }
-
-                    if (Object.keys(updates).length > 0) {
-                        await database.ref().update(updates);
-                        // --- MUDANÇA 5: Limpar o rascunho após salvar com sucesso ---
-                        unsavedPredictions = {};
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvos!';
-                        ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
-                    } else {
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-info-circle"></i> Nenhum palpite novo para salvar';
-                    }
-                } catch (error) {
-                    console.error('Erro ao salvar:', error);
-                    ui.savePredictionsButton.innerHTML = '<i class="fas fa-times"></i> Erro!';
-                    ui.savePredictionsButton.style.backgroundColor = 'var(--danger-color)';
-                } finally {
-                    setTimeout(() => {
-                        ui.savePredictionsButton.disabled = false;
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
-                        ui.savePredictionsButton.style.backgroundColor = 'var(--primary-color)';
-                    }, 3000);
-                }
-            });
-        }
-
-        // ... (função calculateMatchPoints permanece a mesma)
         function calculateMatchPoints(final, pred) {
             if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return null;
             if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
-            const finalW = Math.sign(final.homeScore - final.awayScore);
-            const predW = Math.sign(pred.homeScore - pred.awayScore);
-            if (finalW === predW) return 1;
+            const finalWinner = Math.sign(final.homeScore - final.awayScore);
+            const predWinner = Math.sign(pred.homeScore - pred.awayScore);
+            if (finalWinner === predWinner) return 1;
             if (final.homeScore === pred.awayScore && final.awayScore === pred.homeScore) return -1;
             return 0;
         }
 
-        // ... (função populatePlayerStatusTable permanece a mesma)
-        function populatePlayerStatusTable() {
-            const headerRow = document.createElement('tr');
-            headerRow.innerHTML = '<th>Jogador</th>';
-            allMatches.forEach(match => {
-                const homeTeam = allTeams[match.homeTeam];
-                const awayTeam = allTeams[match.awayTeam];
-                headerRow.innerHTML += `<th>${homeTeam.abbr || homeTeam.name} vs ${awayTeam.abbr || awayTeam.name}</th>`;
-            });
-            ui.playerStatusHeader.innerHTML = '';
-            ui.playerStatusHeader.appendChild(headerRow);
-            
-            ui.playerStatusBody.innerHTML = Object.entries(allPlayers).map(([playerId, player]) => {
-                let rowHtml = `<tr class="player-row"><td class="status-table-player">${player.name}</td>`;
-                allMatches.forEach((match, matchId) => {
-                    const prediction = match.predictions?.[playerId];
-                    if (prediction !== undefined) {
-                        if (match.finalResult) {
-                            const points = calculateMatchPoints(match.finalResult, prediction);
-                            const pointsClass = `points-${String(points).replace('-', '_')}`;
-                            rowHtml += `<td class="${pointsClass}">${prediction.homeScore} x ${prediction.awayScore}</td>`;
-                        } else {
-                            rowHtml += `<td><i class="fas fa-futbol status-icon status-pending" title="Palpite: ${prediction.homeScore}x${prediction.awayScore}"></i></td>`;
-                        }
-                    } else {
-                        rowHtml += `<td><i class="fas fa-question-circle status-icon status-missing" title="Não palpitou"></i></td>`;
-                    }
-                });
-                rowHtml += '</tr>';
-                return rowHtml;
-            }).join('');
+        async function fetchData() {
+            const [usersSnap, teamsSnap] = await Promise.all([
+                database.ref('users').once('value'),
+                database.ref('teams').once('value')
+            ]);
+            allPlayers = usersSnap.val() || {};
+            allTeams = teamsSnap.val() || {};
         }
 
-        function setupEventListeners(userId) {
-            // --- EVENT LISTENER PARA INPUTS, BOTÕES +/- E "VER PALPITES" ---
-            ui.matchesContainer.addEventListener('click', e => {
-                const target = e.target;
-                const stepperBtn = target.closest('.score-stepper-btn');
-                const predictionsBtn = target.closest('.view-predictions-btn');
+        async function loadRound() {
+            const roundSnap = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
+            if (!roundSnap.exists()) {
+                timerContainer.innerHTML = '<div class="timer-info"><i class="fas fa-info-circle"></i><span>Nenhuma rodada ativa</span></div>';
+                matchesContainer.innerHTML = '<div class="loader"><i class="fas fa-calendar-times"></i> Aguarde a próxima rodada</div>';
+                saveBtn.style.display = 'none';
+                return false;
+            }
 
-                // Lógica para os botões de incrementar/decrementar placar
-                if (stepperBtn) {
-                    const matchId = stepperBtn.dataset.matchId;
-                    const team = stepperBtn.dataset.team;
-                    const input = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="${team}"]`);
-                    let currentValue = parseInt(input.value) || 0;
-                    
-                    if (stepperBtn.classList.contains('score-increment')) {
-                        currentValue++;
-                    } else if (stepperBtn.classList.contains('score-decrement') && currentValue > 0) {
-                        currentValue--;
-                    }
-                    input.value = currentValue;
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-
-                // CORREÇÃO 2.1: LÓGICA PARA O BOTÃO "VER PALPITES"
-                if (predictionsBtn) {
-                    const matchId = predictionsBtn.dataset.matchId;
-                    showPredictionsForMatch(matchId);
-                }
+            roundSnap.forEach(child => {
+                currentRoundKey = child.key;
+                const roundData = child.val();
+                allMatches = roundData.matches || [];
+                roundFinishTimestamp = roundData.finishTimestamp;
             });
+            return true;
+        }
 
-            // Lógica para salvar os inputs no rascunho
-            ui.matchesContainer.addEventListener('input', e => {
-                if (e.target.tagName === 'INPUT') {
-                    const matchId = e.target.dataset.matchId;
-                    const homeInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="home"]`);
-                    const awayInput = ui.matchesContainer.querySelector(`input[data-match-id="${matchId}"][data-team="away"]`);
-                    const homeScore = homeInput.value;
-                    const awayScore = awayInput.value;
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            const updateTimer = () => {
+                const now = new Date().getTime();
+                const diff = roundFinishTimestamp - now;
+                
+                if (diff <= 0) {
+                    clearInterval(countdownInterval);
+                    timerContainer.innerHTML = '<div class="timer-info"><i class="fas fa-clock"></i><span>Tempo esgotado!</span></div>';
+                    saveBtn.style.display = 'none';
+                } else {
+                    const hours = Math.floor(diff / 3600000);
+                    const minutes = Math.floor((diff % 3600000) / 60000);
+                    timerContainer.innerHTML = `
+                        <div class="timer-info"><i class="fas fa-hourglass-half"></i><span>Prazo para palpites</span></div>
+                        <div class="timer-value"><i class="fas fa-clock"></i> ${hours}h ${minutes}m restantes</div>
+                    `;
+                }
+            };
+            updateTimer();
+            countdownInterval = setInterval(updateTimer, 60000);
+        }
 
-                    if (homeScore.trim() !== '' || awayScore.trim() !== '') {
-                        unsavedPredictions[matchId] = { homeScore, awayScore };
+        function isMatchLocked(match) {
+            const now = new Date().getTime();
+            const deadline = match.timestamp ? new Date(match.timestamp).getTime() : roundFinishTimestamp;
+            return now >= deadline;
+        }
+
+        function renderMatches(userId) {
+            if (!allMatches.length) {
+                matchesContainer.innerHTML = '<div class="loader"><i class="fas fa-info-circle"></i> Nenhum jogo disponível</div>';
+                return;
+            }
+
+            matchesContainer.innerHTML = allMatches.map((match, idx) => {
+                const homeTeam = allTeams[match.homeTeam] || { name: '?', image: '' };
+                const awayTeam = allTeams[match.awayTeam] || { name: '?', image: '' };
+                const savedPred = match.predictions?.[userId] || {};
+                const unsaved = unsavedPredictions[idx];
+                const homeScore = unsaved?.homeScore ?? savedPred.homeScore ?? '';
+                const awayScore = unsaved?.awayScore ?? savedPred.awayScore ?? '';
+                const isLocked = isMatchLocked(match);
+                const hasResult = match.finalResult;
+
+                return `
+                    <div class="match-card ${isLocked ? 'locked' : ''}" data-match-id="${idx}">
+                        <div class="match-header">
+                            <span><i class="far fa-calendar-alt"></i> ${new Date(match.timestamp).toLocaleDateString('pt-BR')}</span>
+                            <span><i class="far fa-clock"></i> ${new Date(match.timestamp).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
+                            ${isLocked && !hasResult ? '<i class="fas fa-lock lock-icon"></i>' : ''}
+                        </div>
+                        <div class="match-body">
+                            <div class="teams">
+                                <div class="team">
+                                    <img src="${homeTeam.image || ''}" class="team-logo" onerror="this.src='default-avatar.png'">
+                                    <div class="team-name">${homeTeam.name}</div>
+                                </div>
+                                <div class="vs">VS</div>
+                                <div class="team">
+                                    <img src="${awayTeam.image || ''}" class="team-logo" onerror="this.src='default-avatar.png'">
+                                    <div class="team-name">${awayTeam.name}</div>
+                                </div>
+                            </div>
+                            ${hasResult ? `
+                                <div class="final-result">
+                                    ${match.finalResult.homeScore} : ${match.finalResult.awayScore}
+                                </div>
+                            ` : `
+                                <div class="prediction-inputs">
+                                    <div class="score-control">
+                                        <button class="score-btn dec" data-match="${idx}" data-team="home" ${isLocked ? 'disabled' : ''}>-</button>
+                                        <input type="number" class="score-input" data-match="${idx}" data-team="home" value="${homeScore}" placeholder="-" ${isLocked ? 'disabled' : ''}>
+                                        <button class="score-btn inc" data-match="${idx}" data-team="home" ${isLocked ? 'disabled' : ''}>+</button>
+                                    </div>
+                                    <span style="color: var(--text-muted);">×</span>
+                                    <div class="score-control">
+                                        <button class="score-btn dec" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>-</button>
+                                        <input type="number" class="score-input" data-match="${idx}" data-team="away" value="${awayScore}" placeholder="-" ${isLocked ? 'disabled' : ''}>
+                                        <button class="score-btn inc" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>+</button>
+                                    </div>
+                                </div>
+                            `}
+                        </div>
+                        ${isLocked && !hasResult ? `
+                            <div class="match-footer">
+                                <button class="view-predictions" data-match="${idx}"><i class="fas fa-eye"></i> Ver palpites dos jogadores</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Event listeners for inputs
+            document.querySelectorAll('.score-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const matchId = input.dataset.match;
+                    const team = input.dataset.team;
+                    const homeInput = document.querySelector(`.score-input[data-match="${matchId}"][data-team="home"]`);
+                    const awayInput = document.querySelector(`.score-input[data-match="${matchId}"][data-team="away"]`);
+                    const homeVal = homeInput.value;
+                    const awayVal = awayInput.value;
+                    
+                    if (homeVal.trim() !== '' || awayVal.trim() !== '') {
+                        unsavedPredictions[matchId] = { homeScore: homeVal, awayScore: awayVal };
                     } else {
                         delete unsavedPredictions[matchId];
                     }
-                    saveDraftToLocalStorage();
-                    updateSaveButtonState();
-                }
+                    saveDraft();
+                    updateSaveButton();
+                });
             });
 
-            // --- EVENT LISTENER DO BOTÃO SALVAR ---
-            ui.savePredictionsButton.addEventListener('click', async () => {
-                ui.savePredictionsButton.disabled = true;
-                ui.savePredictionsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-                
-                try {
-                    const updates = {};
-                    for (const matchId in unsavedPredictions) {
-                        const pred = unsavedPredictions[matchId];
-                        if (pred.homeScore.trim() !== '' && pred.awayScore.trim() !== '') {
-                            updates[`/rounds/${currentRoundKey}/matches/${matchId}/predictions/${userId}`] = {
-                                homeScore: parseInt(pred.homeScore),
-                                awayScore: parseInt(pred.awayScore)
-                            };
-                        }
-                    }
-
-                    if (Object.keys(updates).length > 0) {
-                        await database.ref().update(updates);
-                        unsavedPredictions = {};
-                        clearDraftFromLocalStorage();
-                        ui.savePredictionsButton.innerHTML = '<i class="fas fa-check"></i> Salvo com Sucesso!';
-                        ui.savePredictionsButton.style.backgroundColor = 'var(--success-color)';
-                    } else {
-                         ui.savePredictionsButton.innerHTML = '<i class="fas fa-info-circle"></i> Nada para salvar';
-                    }
-
-                } catch (error) {
-                    ui.savePredictionsButton.innerHTML = '<i class="fas fa-times"></i> Erro ao Salvar';
-                    ui.savePredictionsButton.style.backgroundColor = 'var(--danger-color)';
-                } finally {
-                    setTimeout(() => {
-                        updateSaveButtonState();
-                        ui.savePredictionsButton.style.backgroundColor = '';
-                    }, 2500);
-                }
-            });
-            
-            ui.matchesTab.addEventListener('click', () => {
-                ui.playerStatusTab.classList.remove('active');
-                ui.matchesTab.classList.add('active');
+            document.querySelectorAll('.score-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const matchId = btn.dataset.match;
+                    const team = btn.dataset.team;
+                    const input = document.querySelector(`.score-input[data-match="${matchId}"][data-team="${team}"]`);
+                    let val = parseInt(input.value) || 0;
+                    if (btn.classList.contains('inc')) val++;
+                    else if (btn.classList.contains('dec') && val > 0) val--;
+                    input.value = val;
+                    input.dispatchEvent(new Event('input'));
+                });
             });
 
-            ui.playerStatusTab.addEventListener('click', () => {
-                ui.matchesTab.classList.remove('active');
-                ui.playerStatusTab.classList.add('active');
-                populatePlayerStatusTable();
-                ui.playerStatusDialog.showModal();
-            });
-
-            // Listeners para fechar os dialogs
-            [ui.playerStatusDialog, ui.predictionsDialog].forEach(dialog => {
-                const closeBtn = dialog.querySelector('.close-btn');
-                closeBtn.addEventListener('click', () => dialog.close());
-                dialog.addEventListener('click', (e) => {
-                    if (e.target === dialog) dialog.close();
+            document.querySelectorAll('.view-predictions').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const matchId = parseInt(btn.dataset.match);
+                    await showPredictions(matchId);
                 });
             });
         }
 
-        async function showPredictionsForMatch(matchId) {
-            const matchData = allMatches[matchId];
-            if (!matchData) return;
-
-            const homeTeam = allTeams[matchData.homeTeam]?.name || "Time A";
-            const awayTeam = allTeams[matchData.awayTeam]?.name || "Time B";
-            ui.predictionsDialogTitle.innerHTML = `<i class="fas fa-futbol"></i> ${homeTeam} vs ${awayTeam}`;
+        async function showPredictions(matchId) {
+            const match = allMatches[matchId];
+            const homeTeam = allTeams[match.homeTeam]?.name || 'Time A';
+            const awayTeam = allTeams[match.awayTeam]?.name || 'Time B';
+            document.getElementById('predictions-title').innerHTML = `<i class="fas fa-eye"></i> ${homeTeam} vs ${awayTeam}`;
             
-            const predictions = matchData.predictions || {};
-            let predictionsArray = Object.entries(predictions).map(([playerId, prediction]) => {
-                const player = allPlayers[playerId] || { name: "Desconhecido" };
-                const points = calculateMatchPoints(matchData.finalResult, prediction);
-                return { ...player, ...prediction, points };
-            });
-
-            predictionsArray.sort((a, b) => {
-                if (a.points !== null && b.points !== null) {
-                    if (b.points !== a.points) return b.points - a.points;
-                }
-                return a.name.localeCompare(b.name);
-            });
-
-            // CORREÇÃO 3: Adicionar as classes de pontuação ao item da lista e ao badge
-            ui.predictionsListBody.innerHTML = predictionsArray.map(p => {
-                const pointsClass = p.points !== null ? `points-${String(p.points).replace('-', '-1')}` : 'points-none';
-                
-                // O nome da classe para -1 ponto deve ser "points--1"
-                const finalPointsClass = pointsClass.replace('points--11', 'points--1');
-                
+            const predictions = match.predictions || {};
+            const list = Object.entries(predictions).map(([pid, pred]) => {
+                const player = allPlayers[pid] || { name: 'Desconhecido' };
+                const points = calculateMatchPoints(match.finalResult, pred);
+                return { ...player, ...pred, points };
+            }).sort((a, b) => (b.points || -999) - (a.points || -999));
+            
+            const container = document.getElementById('predictions-list');
+            container.innerHTML = list.map(p => {
+                const pointsClass = p.points !== null ? `points-${String(p.points).replace('-', '-1')}` : 'points-0';
                 return `
-                    <li class="prediction-item ${finalPointsClass}">
+                    <div class="prediction-item ${pointsClass}">
                         <span class="prediction-player">${p.name}</span>
                         <span class="prediction-score">${p.homeScore} × ${p.awayScore}</span>
-                        <div class="prediction-points ${finalPointsClass}">
-                            ${p.points !== null ? p.points : '-'}
-                        </div>
-                    </li>
+                        <div class="prediction-points ${pointsClass}">${p.points !== null ? p.points : '-'}</div>
+                    </div>
                 `;
-            }).join('') || '<li>Nenhum palpite para este jogo.</li>';
+            }).join('') || '<div style="text-align:center; padding:1rem;">Nenhum palpite para este jogo</div>';
             
-            ui.predictionsDialog.showModal();
+            predictionsDialog.showModal();
         }
 
+        function showStatusDialog() {
+            if (!allMatches.length) return;
+            
+            const headerRow = document.getElementById('status-header');
+            const body = document.getElementById('status-body');
+            
+            headerRow.innerHTML = '<th>Jogador</th>' + allMatches.map((m, i) => {
+                const home = allTeams[m.homeTeam]?.abbr || '?';
+                const away = allTeams[m.awayTeam]?.abbr || '?';
+                return `<th>${home}×${away}</th>`;
+            }).join('');
+            
+            body.innerHTML = Object.entries(allPlayers).map(([pid, player]) => {
+                let row = `<tr><td style="text-align:left;">${player.name}</td>`;
+                allMatches.forEach(match => {
+                    const pred = match.predictions?.[pid];
+                    if (pred) {
+                        if (match.finalResult) {
+                            const points = calculateMatchPoints(match.finalResult, pred);
+                            let badgeClass = '';
+                            if (points === 3) badgeClass = 'points-3-badge';
+                            else if (points === 1) badgeClass = 'points-1-badge';
+                            else if (points === -1) badgeClass = 'points--1-badge';
+                            row += `<td><span class="points-badge ${badgeClass}">${pred.homeScore}×${pred.awayScore}<br>${points}pts</span>`;
+                        } else {
+                            row += `<td><i class="fas fa-futbol" style="color: var(--primary);" title="${pred.homeScore}×${pred.awayScore}"></i>`;
+                        }
+                    } else {
+                        row += `<td><i class="fas fa-question-circle" style="color: var(--text-muted);"></i>`;
+                    }
+                    row += '</td>';
+                });
+                row += '</tr>';
+                return row;
+            }).join('');
+            
+            statusDialog.showModal();
+        }
+
+        async function savePredictions(userId) {
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Salvando...';
+            
+            try {
+                const updates = {};
+                for (const [matchId, pred] of Object.entries(unsavedPredictions)) {
+                    if (pred.homeScore.trim() !== '' && pred.awayScore.trim() !== '') {
+                        updates[`/rounds/${currentRoundKey}/matches/${matchId}/predictions/${userId}`] = {
+                            homeScore: parseInt(pred.homeScore),
+                            awayScore: parseInt(pred.awayScore)
+                        };
+                    }
+                }
+                
+                if (Object.keys(updates).length > 0) {
+                    await database.ref().update(updates);
+                    unsavedPredictions = {};
+                    clearDraft();
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Salvo com sucesso!';
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    saveBtn.innerHTML = '<i class="fas fa-info-circle"></i> Nada para salvar';
+                    setTimeout(updateSaveButton, 2000);
+                }
+            } catch (error) {
+                saveBtn.innerHTML = '<i class="fas fa-times"></i> Erro ao salvar';
+                setTimeout(updateSaveButton, 2000);
+            }
+        }
+
+        async function init() {
+            const user = auth.currentUser;
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            await fetchData();
+            const hasRound = await loadRound();
+            if (!hasRound) {
+                loader.style.display = 'none';
+                return;
+            }
+            
+            loadDraft();
+            startCountdown();
+            renderMatches(user.uid);
+            updateSaveButton();
+            
+            loader.style.display = 'none';
+            matchesContainer.style.display = 'grid';
+            
+            saveBtn.onclick = () => savePredictions(user.uid);
+            matchesTab.onclick = () => { matchesTab.classList.add('active'); statusTab.classList.remove('active'); };
+            statusTab.onclick = () => { statusTab.classList.add('active'); matchesTab.classList.remove('active'); showStatusDialog(); };
+            
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.onclick = () => btn.closest('dialog')?.close();
+            });
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) init();
+            else window.location.href = 'index.html';
+        });
     </script>
 </body>
 </html>
