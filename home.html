@@ -1081,14 +1081,20 @@
         countdownInterval = setInterval(update, 1000);
     }
 
+    function getManausTimestamp(dateString) {
+        if (!dateString) return 0;
+        if (typeof dateString === 'number') return dateString;
+        if (dateString.includes('Z') || dateString.match(/[+-]\d\d:\d\d$/)) {
+            return new Date(dateString).getTime();
+        }
+        return new Date(dateString + '-04:00').getTime();
+    }
+
     async function loadNextRound() {
         const round = await findActiveRound();
         if (round?.finishTimestamp) {
-            // Converter o timestamp para o horário local do usuário
-            const finishDateUTC = new Date(round.finishTimestamp);
-            
-            // Opção 1: Usar o horário local do navegador automaticamente
-            const localDate = new Date(finishDateUTC.getTime());
+            const finishTime = getManausTimestamp(round.finishTimestamp);
+            const localDate = new Date(finishTime);
             
             // Formatar data e hora no horário local
             const options = { 
@@ -1103,11 +1109,10 @@
             const formattedDate = localDate.toLocaleDateString('pt-BR', options);
             roundDeadline.textContent = `Palpites até ${formattedDate}`;
             
-            // Iniciar contagem regressiva usando o horário local
-            startCountdown(round.finishTimestamp);
+            // Iniciar contagem regressiva usando o horário convertido
+            startCountdown(finishTime);
             nextRoundCard.onclick = () => window.location.href = 'palpites.html';
             
-            // Opcional: mostrar o fuso horário do usuário
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             console.log(`Horário local (${timezone}): ${formattedDate}`);
             

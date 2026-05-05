@@ -758,6 +758,15 @@
             allTeams = teamsSnap.val() || {};
         }
 
+        function getManausTimestamp(dateString) {
+            if (!dateString) return 0;
+            if (typeof dateString === 'number') return dateString;
+            if (dateString.includes('Z') || dateString.match(/[+-]\d\d:\d\d$/)) {
+                return new Date(dateString).getTime();
+            }
+            return new Date(dateString + '-04:00').getTime();
+        }
+
         async function loadRound() {
             const roundSnap = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
             if (!roundSnap.exists()) {
@@ -771,7 +780,7 @@
                 currentRoundKey = child.key;
                 const roundData = child.val();
                 allMatches = roundData.matches || [];
-                roundFinishTimestamp = roundData.finishTimestamp;
+                roundFinishTimestamp = getManausTimestamp(roundData.finishTimestamp);
             });
             return true;
         }
@@ -802,7 +811,7 @@
 
         function isMatchLocked(match) {
             const now = new Date().getTime();
-            const deadline = match.timestamp ? new Date(match.timestamp).getTime() : roundFinishTimestamp;
+            const deadline = match.timestamp ? getManausTimestamp(match.timestamp) : roundFinishTimestamp;
             return now >= deadline;
         }
 
@@ -825,8 +834,8 @@
                 return `
                     <div class="match-card ${isLocked ? 'locked' : ''}" data-match-id="${idx}">
                         <div class="match-header">
-                            <span><i class="far fa-calendar-alt"></i> ${new Date(match.timestamp).toLocaleDateString('pt-BR')}</span>
-                            <span><i class="far fa-clock"></i> ${new Date(match.timestamp).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
+                            <span><i class="far fa-calendar-alt"></i> ${new Date(match.timestamp ? getManausTimestamp(match.timestamp) : roundFinishTimestamp).toLocaleDateString('pt-BR')}</span>
+                            <span><i class="far fa-clock"></i> ${new Date(match.timestamp ? getManausTimestamp(match.timestamp) : roundFinishTimestamp).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
                             ${isLocked && !hasResult ? '<i class="fas fa-lock lock-icon"></i>' : ''}
                         </div>
                         <div class="match-body">

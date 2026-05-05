@@ -946,6 +946,14 @@ function renderTeamsList(teams) {
     // Inicializar times e pequenos ajustes
     loadTeams();
 
+    // Verificar se já está logado para pular o login
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            showLoader(true);
+            window.location.href = 'home.html';
+        }
+    });
+
     // Opcional: se não houver imagem, manter estilo consistente
     window.addEventListener('load', () => {
         // garantir que ao clicar fora feche dropdowns globais
