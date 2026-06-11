@@ -1574,67 +1574,74 @@
         }
 
         // Adicionar listener para o submit do formulário de edição
-        document.getElementById('edit-round-form').addEventListener('submit', (e) => {
+        document.getElementById('edit-round-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const roundId = document.getElementById('edit-round-id').value;
             const roundRef = database.ref('rounds/' + roundId);
+            const roundStatus = parseInt(document.getElementById('edit-round-status').value);
 
-            // Primeiro, busque os dados existentes
-            roundRef.once('value')
-                .then((snapshot) => {
-                    const existingRoundData = snapshot.val();
+            try {
+                // Primeiro, busque os dados existentes
+                const snapshot = await roundRef.once('value');
+                const existingRoundData = snapshot.val() || {};
 
-                    // Crie o objeto de atualização, preservando predictions e outros dados existentes
-                    const updatedRoundData = {
-                        ...existingRoundData, // Espalha os dados existentes
-                        status: parseInt(document.getElementById('edit-round-status').value),
-                        finishTimestamp: document.getElementById('edit-round-finish-timestamp').value,
-                        tournaments: document.getElementById('edit-round-tournaments').value.split(',').map(t => t.trim()),
-                        matches: existingRoundData.matches || [] // Mantém matches existentes como base
-                    };
+                // Crie o objeto de atualização, preservando predictions e outros dados existentes
+                const updatedRoundData = {
+                    ...existingRoundData,
+                    status: roundStatus,
+                    finishTimestamp: document.getElementById('edit-round-finish-timestamp').value,
+                    tournaments: document.getElementById('edit-round-tournaments').value.split(',').map(t => t.trim()),
+                    matches: existingRoundData.matches || []
+                };
 
-                    // Atualiza os matches com os novos dados
-                    const matchRows = document.querySelectorAll('#edit-matches-container .match-card-row');
-                    matchRows.forEach((row, index) => {
-                        // CORREÇÃO: Lê o ID do time do atributo 'data-team-id'
-                        const homeTeamId = row.querySelector('.home-team').dataset.teamId;
-                        const awayTeamId = row.querySelector('.away-team').dataset.teamId;
-                        const homeScore = row.querySelector('.home-score').value;
-                        const awayScore = row.querySelector('.away-score').value;
-                        const timestamp = row.querySelector('.match-timestamp').value;
+                // Atualiza os matches com os novos dados
+                const matchRows = document.querySelectorAll('#edit-matches-container .match-card-row');
+                matchRows.forEach((row, index) => {
+                    const homeTeamId = row.querySelector('.home-team').dataset.teamId;
+                    const awayTeamId = row.querySelector('.away-team').dataset.teamId;
+                    const homeScore = row.querySelector('.home-score').value;
+                    const awayScore = row.querySelector('.away-score').value;
+                    const timestamp = row.querySelector('.match-timestamp').value;
 
-                        if (homeTeamId && awayTeamId) {
-                            const matchData = {
-                                ...(updatedRoundData.matches[index] || {}), // Preserva dados existentes como 'predictions'
-                                homeTeam: homeTeamId,
-                                awayTeam: awayTeamId,
-                                timestamp: timestamp,
-                                finalResult: {
-                                    homeScore: homeScore !== '' ? parseInt(homeScore) : null,
-                                    awayScore: awayScore !== '' ? parseInt(awayScore) : null,
-                                }
-                            };
-
-                            if (updatedRoundData.matches[index]) {
-                                updatedRoundData.matches[index] = matchData;
-                            } else {
-                                updatedRoundData.matches.push(matchData);
+                    if (homeTeamId && awayTeamId) {
+                        const matchData = {
+                            ...(updatedRoundData.matches[index] || {}),
+                            homeTeam: homeTeamId,
+                            awayTeam: awayTeamId,
+                            timestamp: timestamp,
+                            finalResult: {
+                                homeScore: homeScore !== '' ? parseInt(homeScore) : null,
+                                awayScore: awayScore !== '' ? parseInt(awayScore) : null,
                             }
-                        }
-                    });
+                        };
 
-                    // Atualiza o banco de dados
-                    return roundRef.update(updatedRoundData);
-                })
-                .then(() => {
-                    alert('Rodada atualizada com sucesso!');
-                    document.getElementById('edit-round-modal').style.display = 'none';
-                    loadRoundsList();
-                })
-                .catch(error => {
-                    console.error('Erro ao atualizar rodada:', error);
-                    alert('Erro ao atualizar rodada.');
+                        if (updatedRoundData.matches[index]) {
+                            updatedRoundData.matches[index] = matchData;
+                        } else {
+                            updatedRoundData.matches.push(matchData);
+                        }
+                    }
                 });
+
+                // Atualiza o banco de dados
+                await roundRef.update(updatedRoundData);
+
+                // Se a rodada foi finalizada, processa as pontuações da Superliga e Supercopa
+                if (roundStatus === 2) {
+                    await processRoundScores(roundId);
+                    await processSupercopaScores(roundId);
+                    alert('Rodada finalizada e pontuações atualizadas com sucesso!');
+                } else {
+                    alert('Alterações salvas com sucesso!');
+                }
+
+                document.getElementById('edit-round-modal').style.display = 'none';
+                loadRoundsList();
+
+            } catch (error) {
+                console.error('Erro ao atualizar rodada:', error);
+                alert('Erro ao atualizar rodada.');
+            }
         });
 
         // Botão de adicionar partida no modal de edição
@@ -1836,79 +1843,7 @@
             return 'Abertura'; // Padrão <--- ESSA VAR ESTÁ DEFINIDA MANUALMENTE !!!!!! TODO
         }
 
-        // Executar processamento de pontuação quando status muda para 2
-        document.getElementById('edit-round-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const roundId = document.getElementById('edit-round-id').value;
-            const roundStatus = parseInt(document.getElementById('edit-round-status').value);
-
-            console.log('roundStatus: ' + roundStatus)
-            
-            try {
-                await saveRoundChanges(roundId);
-                
-                if (roundStatus === 2) { // Rodada finalizada
-                    // Processa a Superliga primeiro
-                    await processRoundScores(roundId);
-
-                    console.log('finalizado')
-                    
-                    // Depois processa a Supercopa se for o caso
-                    await processSupercopaScores(roundId);
-                    
-                    alert('Rodada finalizada e pontuações atualizadas com sucesso!');
-                } else {
-                    alert('Alterações salvas com sucesso!');
-                }
-                
-                document.getElementById('edit-round-modal').style.display = 'none';
-                loadRoundsList();
-            } catch (error) {
-                console.error("Erro ao processar rodada:", error);
-                alert('Ocorreu um erro ao processar a rodada.');
-            }
-        });
-
-        // Função auxiliar para salvar alterações na rodada
-        async function saveRoundChanges(roundId) {
-            const roundRef = database.ref('rounds/' + roundId);
-            const existingRoundData = (await roundRef.once('value')).val();
-            
-            const updatedRoundData = {
-                ...existingRoundData,
-                status: parseInt(document.getElementById('edit-round-status').value),
-                finishTimestamp: document.getElementById('edit-round-finish-timestamp').value,
-                tournaments: document.getElementById('edit-round-tournaments').value.split(',').map(t => t.trim()),
-            };
-            
-            // Atualiza os matches
-            const matchRows = document.querySelectorAll('#edit-matches-container .match-card-row');
-            updatedRoundData.matches = existingRoundData.matches || [];
-            
-            matchRows.forEach((row, index) => {
-                const homeTeam = row.querySelector('.home-team').value;
-                const awayTeam = row.querySelector('.away-team').value;
-                const homeScore = row.querySelector('input[placeholder="Casa"]').value;
-                const awayScore = row.querySelector('input[placeholder="Fora"]').value;
-                const timestamp = row.querySelector('input[type="datetime-local"]').value;
-
-                if (homeTeam && awayTeam) {
-                    updatedRoundData.matches[index] = {
-                        ...(updatedRoundData.matches[index] || {}),
-                        homeTeam,
-                        awayTeam,
-                        timestamp, // Adiciona o timestamp da partida
-                        finalResult: {
-                            homeScore: homeScore ? parseInt(homeScore) : null,
-                            awayScore: awayScore ? parseInt(awayScore) : null
-                        }
-                    };
-                }
-            });
-
-            await roundRef.update(updatedRoundData);
-        }
+        // O processamento de pontuação agora é tratado diretamente no submit handler unificado acima.
 
         async function processSupercopaScores(roundId) {
             const roundRef = database.ref('tournaments/');
@@ -2410,6 +2345,7 @@
             try {
                 console.log(`[processRoundScores] Iniciando processamento de pontos para a rodada: ${roundId}`);
 
+                // Carrega a rodada atual
                 const roundRef = database.ref('rounds/' + roundId);
                 const roundSnapshot = await roundRef.once('value');
                 const roundData = roundSnapshot.val();
@@ -2425,7 +2361,6 @@
                     return;
                 }
 
-                // Garanta que sua função getCurrentSuperligaStage(tournaments) exista e funcione corretamente
                 const currentSuperligaStage = getCurrentSuperligaStage(roundData.tournaments);
                 if (!currentSuperligaStage) {
                     console.error(`[processRoundScores] Erro: Não foi possível determinar o estágio da Superliga (Abertura/Clausura) para a rodada ${roundId}.`);
@@ -2433,79 +2368,75 @@
                 }
                 console.log(`[processRoundScores] Estágio da Superliga determinado: ${currentSuperligaStage}`);
 
+                // Carrega todos os usuários
                 const usersRef = database.ref('users');
                 const usersSnapshot = await usersRef.once('value');
-
                 if (!usersSnapshot.exists()) {
                     console.warn("[processRoundScores] Nenhum usuário encontrado no banco de dados.");
                     return;
                 }
-
                 const allUsersData = usersSnapshot.val() || {};
+
+                // Carrega todas as rodadas para fazer o recálculo do total do zero
+                const roundsRef = database.ref('rounds');
+                const roundsSnapshot = await roundsRef.once('value');
+                const allRoundsData = roundsSnapshot.val() || {};
+
                 const updates = {}; // Objeto para acumular todas as atualizações do Firebase
 
-                // Itera sobre cada ID de usuário encontrado no banco
+                // Itera sobre cada usuário encontrado no banco
                 for (const userId in allUsersData) {
                     const currentUserData = allUsersData[userId];
-                    let userPointsThisRound = 0; // Zera a pontuação DESTA rodada para este usuário
+                    let userPointsThisRound = 0;
+                    let userTotalPoints = 0;
 
-                    console.log(`[processRoundScores] Processando usuário: ${currentUserData.name} (${userId})`);
+                    console.log(`[processRoundScores] Processando recálculo de pontos para: ${currentUserData.name} (${userId})`);
 
-                    // Verifica se a rodada tem partidas e se 'matches' é um array
-                    if (roundData.matches && Array.isArray(roundData.matches)) {
-                        
-                        roundData.matches.forEach((match, matchIndex) => {
-                            
-                            // Validação 1: A partida tem um resultado final válido?
-                            if (match.finalResult && match.finalResult.homeScore !== null && match.finalResult.awayScore !== null) {
-                                
-                                // Validação 2: Existem palpites ("predictions") para esta partida?
-                                if (match.predictions && typeof match.predictions === 'object' && Object.keys(match.predictions).length > 0) {
-                                    
-                                    // Validação 3: O usuário ATUAL fez um palpite para esta partida?
-                                    // O palpite do usuário pode estar diretamente sob a chave do seu ID
-                                    const userPrediction = match.predictions[userId];
+                    // Varre todas as rodadas do banco de dados para recalcular o total acumulado
+                    for (const roundKey in allRoundsData) {
+                        const rData = allRoundsData[roundKey];
+                        const isSuperliga = rData.tournaments && rData.tournaments.includes('superliga');
+                        const rStage = getCurrentSuperligaStage(rData.tournaments);
+                        // Considera se a rodada está finalizada (status === 2) ou se é a própria rodada que está sendo finalizada agora
+                        const isFinalized = rData.status === 2 || roundKey === roundId;
 
-                                    if (userPrediction && userPrediction.homeScore !== null && userPrediction.awayScore !== null) {
-                                        const pointsForMatch = calculateMatchPoints(match.finalResult, userPrediction);
-                                        userPointsThisRound += pointsForMatch;
-                                        
-                                        console.log(`  -> Match ${matchIndex}: Palpite encontrado (${userPrediction.homeScore}x${userPrediction.awayScore}). Resultado: ${match.finalResult.homeScore}x${match.finalResult.awayScore}. Pontos: ${pointsForMatch}. Total na rodada: ${userPointsThisRound}`);
+                        if (isSuperliga && rStage === currentSuperligaStage && isFinalized) {
+                            let roundPoints = 0;
+                            const matches = rData.matches ? (Array.isArray(rData.matches) ? rData.matches : Object.values(rData.matches)) : [];
+
+                            matches.forEach(match => {
+                                if (match.finalResult && match.finalResult.homeScore !== null && match.finalResult.awayScore !== null) {
+                                    if (match.predictions && match.predictions[userId]) {
+                                        const userPrediction = match.predictions[userId];
+                                        if (userPrediction && userPrediction.homeScore !== null && userPrediction.awayScore !== null) {
+                                            const pointsForMatch = calculateMatchPoints(match.finalResult, userPrediction);
+                                            roundPoints += pointsForMatch;
+                                        }
                                     }
-                                    // Se não houver palpite do usuário para esta partida, nada acontece (pontos continuam 0 para esta partida).
-
-                                } else {
-                                    // console.log(`  -> Match ${matchIndex}: Sem palpites (predictions) nesta partida.`);
                                 }
+                            });
 
-                            } else {
-                                // console.warn(`  -> Match ${matchIndex}: Resultado final ausente ou incompleto. Pontos não calculados.`);
+                            userTotalPoints += roundPoints;
+
+                            // Se for a rodada atual sendo salva/finalizada, guarda o valor separado
+                            if (roundKey === roundId) {
+                                userPointsThisRound = roundPoints;
                             }
-                        }); // Fim do loop de partidas
-                    } else {
-                        console.warn(`[processRoundScores] Rodada ${roundId} não contém 'matches' ou o formato é inválido.`);
+                        }
                     }
 
-                    // --- PONTO CRÍTICO DA CORREÇÃO ---
-                    // Prepara a atualização para lastRoundPointsLiga... SEMPRE,
-                    // usando o valor calculado (userPointsThisRound), que será 0 se não houve pontos/palpites.
-                    console.log(`  => Pontos FINAIS para ${currentUserData.name} nesta rodada: ${userPointsThisRound}`);
-                    
-                    updates[`/users/${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userPointsThisRound;
+                    console.log(`  => Pontos DESTA rodada (${roundId}): ${userPointsThisRound}`);
+                    console.log(`  => Pontos TOTAIS recalculados (${currentSuperligaStage}): ${userTotalPoints}`);
 
-                    // Prepara a atualização para o total de pontos da Superliga para o estágio atual
-                    const currentTotalPoints = currentUserData[`pointsSuperliga${currentSuperligaStage}`] || 0;
-                    updates[`/users/${userId}/pointsSuperliga${currentSuperligaStage}`] = currentTotalPoints + userPointsThisRound;
-                    
-                    console.log(`  => Pontos TOTAIS (${currentSuperligaStage}) de ${currentUserData.name} atualizados para ${currentTotalPoints + userPointsThisRound}`);
+                    updates[`/users/${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userPointsThisRound;
+                    updates[`/users/${userId}/pointsSuperliga${currentSuperligaStage}`] = userTotalPoints;
                 }
 
                 // Aplica todas as atualizações no banco de dados de uma só vez
                 if (Object.keys(updates).length > 0) {
-                    console.log("[processRoundScores] Atualizando pontuações de todos os usuários no Firebase...");
-                    console.log("Objeto de atualizações:", updates); // Log para ver o que será enviado
-                    await database.ref().update(updates); // Atualiza a partir da raiz do DB
-                    console.log(`[processRoundScores] PONTUAÇÕES DA SUPERLIGA ${currentSuperligaStage} ATUALIZADAS COM SUCESSO.`);
+                    console.log("[processRoundScores] Atualizando pontuações recalculadas no Firebase...");
+                    await database.ref().update(updates);
+                    console.log(`[processRoundScores] PONTUAÇÕES DA SUPERLIGA ${currentSuperligaStage} RECALCULADAS E ATUALIZADAS COM SUCESSO.`);
                 } else {
                     console.warn("[processRoundScores] Nenhuma atualização de pontuação foi gerada.");
                 }
