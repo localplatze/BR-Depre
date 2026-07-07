@@ -767,8 +767,14 @@
             return new Date(dateString + '-04:00').getTime();
         }
 
+        function hasFinalResult(match) {
+            return match?.finalResult &&
+                Number.isInteger(match.finalResult.homeScore) &&
+                Number.isInteger(match.finalResult.awayScore);
+        }
+
         async function loadRound() {
-            const roundSnap = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
+            const roundSnap = await database.ref('rounds').orderByChild('status').equalTo(1).once('value');
             if (!roundSnap.exists()) {
                 timerContainer.innerHTML = '<div class="timer-info"><i class="fas fa-info-circle"></i><span>Nenhuma rodada ativa</span></div>';
                 matchesContainer.innerHTML = '<div class="loader"><i class="fas fa-calendar-times"></i> Aguarde a próxima rodada</div>';
@@ -776,12 +782,22 @@
                 return false;
             }
 
+            let selectedRound = null;
             roundSnap.forEach(child => {
-                currentRoundKey = child.key;
                 const roundData = child.val();
-                allMatches = roundData.matches || [];
-                roundFinishTimestamp = getManausTimestamp(roundData.finishTimestamp);
+                const finishTimestamp = getManausTimestamp(roundData.finishTimestamp);
+                if (!selectedRound || finishTimestamp > selectedRound.finishTimestamp) {
+                    selectedRound = {
+                        key: child.key,
+                        data: roundData,
+                        finishTimestamp
+                    };
+                }
             });
+
+            currentRoundKey = selectedRound.key;
+            allMatches = selectedRound.data.matches || [];
+            roundFinishTimestamp = selectedRound.finishTimestamp;
             return true;
         }
 
@@ -829,7 +845,7 @@
                 const homeScore = unsaved?.homeScore ?? savedPred.homeScore ?? '';
                 const awayScore = unsaved?.awayScore ?? savedPred.awayScore ?? '';
                 const isLocked = isMatchLocked(match);
-                const hasResult = match.finalResult;
+                const hasResult = hasFinalResult(match);
 
                 return `
                     <div class="match-card ${isLocked ? 'locked' : ''}" data-match-id="${idx}">
@@ -965,7 +981,7 @@
                 allMatches.forEach(match => {
                     const pred = match.predictions?.[pid];
                     if (pred) {
-                        if (match.finalResult) {
+                        if (hasFinalResult(match)) {
                             const points = calculateMatchPoints(match.finalResult, pred);
                             let badgeClass = '';
                             if (points === 3) badgeClass = 'points-3-badge';

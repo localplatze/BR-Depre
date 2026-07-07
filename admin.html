@@ -187,6 +187,13 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .btn:active {
             transform: translateY(0);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -595,6 +602,8 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .card-header h3 {
@@ -812,13 +821,41 @@
         .score-stepper-btn:hover { background-color: #e9e9e9; }
         .score-stepper-group input { width: 40px; height: 32px; text-align: center; font-weight: bold; font-size: 16px; border: none; background: transparent; -moz-appearance: textfield; }
         .score-stepper-group input::-webkit-outer-spin-button, .score-stepper-group input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .score-panel { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 150px; }
+        .score-panel-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .score-input-row { display: flex; gap: 8px; align-items: center; }
         .match-card-footer { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 12px; border-top: 1px dashed #e2e8f0; }
         .datetime-group { display: flex; flex-direction: column; gap: 6px; }
         .datetime-group label { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 0; }
         .datetime-group input { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; }
+        .match-live-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #eef2ff; color: #3730a3; font-size: 12px; font-weight: 700; }
+        .match-live-pill.final { background: #dcfce7; color: #166534; }
+        .match-live-pill.review { background: #fef3c7; color: #92400e; }
         .remove-match-btn { background: #fee2e2; color: #ef4444; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .remove-match-btn:hover { background: #fca5a5; color: #b91c1c; }
+        .api-import-panel { border: 1px solid #dbeafe; background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 18px; }
+        .api-import-grid { display: grid; grid-template-columns: 1.4fr 0.8fr 0.8fr 0.8fr auto; gap: 12px; align-items: end; }
+        .api-league-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin: 12px 0; }
+        .api-league-option { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; font-size: 13px; cursor: pointer; }
+        .api-league-option:hover { border-color: #94a3b8; background: #f8fafc; }
+        .api-league-option input { width: auto; }
+        .api-league-tools { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; margin-top: 10px; }
+        .api-league-tools input { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; }
+        .api-custom-league { display: grid; grid-template-columns: 0.8fr 0.8fr 1.4fr; gap: 12px; margin-top: 10px; }
+        .api-import-results { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+        .api-fixture-row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; }
+        .api-fixture-teams { font-weight: 700; color: #1e293b; }
+        .api-fixture-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; font-size: 12px; color: #64748b; }
+        .api-map-warning { color: #b45309; font-weight: 700; }
+        .api-ai-suggestion { color: #2563eb; font-weight: 700; }
+        .api-create-suggestion { color: #047857; font-weight: 700; }
+        .api-import-actions { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-top: 14px; }
+        .api-ai-tools { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; margin-top: 12px; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .table-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .data-safety-note { color: #64748b; font-size: 13px; margin-top: 6px; }
         @media (max-width: 768px) { .match-teams-grid { grid-template-columns: 1fr; gap: 12px; } .match-teams-grid > div:nth-child(2) { justify-content: center; margin: 10px 0; } }
+        @media (max-width: 900px) { .api-import-grid, .api-custom-league, .api-ai-tools, .api-league-tools { grid-template-columns: 1fr; } .api-fixture-row { grid-template-columns: auto 1fr; } .api-fixture-row .badge { grid-column: 2; justify-self: start; } }
 
     </style>
 </head>
@@ -839,8 +876,12 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-calendar-alt"></i> Gerenciamento de Rodadas</h3>
-                    <button id="create-round-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Criar Nova Rodada</button>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button id="sync-espn-scores-btn" class="btn btn-secondary"><i class="fas fa-rotate"></i> Sincronizar placares ESPN</button>
+                        <button id="create-round-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Criar Nova Rodada</button>
+                    </div>
                 </div>
+                <div id="sync-espn-status" class="help-text"></div>
                 
                 <div id="rounds-list">
                     <div class="alert alert-info">
@@ -887,6 +928,98 @@
                                 </button>
                             </div>
                             
+                            <div class="api-import-panel">
+                                <h4><i class="fas fa-cloud-download-alt"></i> Importar jogos</h4>
+                                <div class="api-import-grid">
+                                    <div class="form-group">
+                                        <label>Fonte</label>
+                                        <select id="fixture-provider" class="form-control">
+                                            <option value="espn">ESPN gratis</option>
+                                            <option value="api-football">API-Football</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>API Key</label>
+                                        <input type="password" id="api-football-key" class="form-control" placeholder="Cole sua chave para testar">
+                                        <p class="help-text">Apenas para API-Football. ESPN nao usa chave.</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Temporada</label>
+                                        <input type="number" id="api-football-season" class="form-control" min="2000" max="2100">
+                                        <p class="help-text">Usada apenas pela API-Football.</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Data inicio</label>
+                                        <input type="date" id="api-football-date-from" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Data fim</label>
+                                        <input type="date" id="api-football-date-to" class="form-control">
+                                    </div>
+                                    <button type="button" id="api-football-search" class="btn btn-secondary">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                                <label style="display:block; margin-top:14px; font-weight:700;">Campeonatos</label>
+                                <div class="api-league-tools">
+                                    <input type="search" id="api-league-filter" placeholder="Filtrar campeonatos...">
+                                    <button type="button" id="api-select-all-leagues" class="btn btn-secondary btn-sm"><i class="fas fa-check-double"></i> Marcar todos</button>
+                                    <button type="button" id="api-clear-leagues" class="btn btn-secondary btn-sm"><i class="fas fa-eraser"></i> Limpar</button>
+                                </div>
+                                <div class="api-league-grid">
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="71" data-espn="bra.1" data-name="Brasileirao Serie A" checked> Brasileirao Serie A</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="72" data-espn="bra.2" data-name="Brasileirao Serie B"> Brasileirao Serie B</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="73" data-espn="bra.copa_do_brazil" data-name="Copa do Brasil"> Copa do Brasil</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="1" data-espn="fifa.world" data-name="Copa do Mundo"> Copa do Mundo</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="15" data-espn="fifa.cwc" data-name="Mundial de Clubes"> Mundial de Clubes</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="9" data-espn="conmebol.america" data-name="Copa America"> Copa America</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="13" data-espn="conmebol.libertadores" data-name="Libertadores"> Libertadores</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="11" data-espn="conmebol.sudamericana" data-name="Sul-Americana"> Sul-Americana</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="2" data-espn="uefa.champions" data-name="Champions League"> Champions League</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="3" data-espn="uefa.europa" data-name="Europa League"> Europa League</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="848" data-espn="uefa.europa.conf" data-name="Conference League"> Conference League</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="39" data-espn="eng.1" data-name="Premier League"> Premier League</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="45" data-espn="eng.fa" data-name="FA Cup"> FA Cup</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="48" data-espn="eng.league_cup" data-name="EFL Cup"> EFL Cup</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="140" data-espn="esp.1" data-name="La Liga"> La Liga</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="143" data-espn="esp.copa_del_rey" data-name="Copa del Rey"> Copa del Rey</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="135" data-espn="ita.1" data-name="Serie A Italiana"> Serie A Italiana</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="137" data-espn="ita.coppa_italia" data-name="Coppa Italia"> Coppa Italia</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="78" data-espn="ger.1" data-name="Bundesliga"> Bundesliga</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="81" data-espn="ger.dfb_pokal" data-name="DFB Pokal"> DFB Pokal</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="61" data-espn="fra.1" data-name="Ligue 1"> Ligue 1</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="66" data-espn="fra.coupe_de_france" data-name="Coupe de France"> Coupe de France</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="94" data-espn="por.1" data-name="Primeira Liga"> Primeira Liga</label>
+                                    <label class="api-league-option"><input type="checkbox" class="api-football-league" value="88" data-espn="ned.1" data-name="Eredivisie"> Eredivisie</label>
+                                </div>
+                                <div class="api-custom-league">
+                                    <div class="form-group">
+                                        <label>ID extra API-Football</label>
+                                        <input type="number" id="api-football-custom-league-id" class="form-control" placeholder="Ex: 475">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Codigo extra ESPN</label>
+                                        <input type="text" id="espn-custom-league-code" class="form-control" placeholder="Ex: bra.1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nome do torneio extra</label>
+                                        <input type="text" id="api-football-custom-league-name" class="form-control" placeholder="Ex: Paulista A1">
+                                    </div>
+                                </div>
+                                <div id="api-football-status" class="help-text">ESPN gratis e a fonte padrao para jogos atuais. API-Football permanece como opcao.</div>
+                                <div class="api-ai-tools">
+                                    <div class="form-group">
+                                        <label>DeepSeek API Key</label>
+                                        <input type="password" id="deepseek-api-key" class="form-control" placeholder="Cole sua chave para sugerir vínculos">
+                                        <p class="help-text">Salva apenas neste navegador. Use para sugerir times similares quando nomes vierem diferentes.</p>
+                                    </div>
+                                    <button type="button" id="deepseek-suggest-mappings" class="btn btn-secondary">
+                                        <i class="fas fa-wand-magic-sparkles"></i> Sugerir vinculos
+                                    </button>
+                                </div>
+                                <div id="api-football-results" class="api-import-results"></div>
+                            </div>
+
                             <div id="matches-container">
                                 <!-- As partidas dinâmicas aparecem aqui -->
                             </div>
@@ -1133,6 +1266,11 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
+        const API_FOOTBALL_BASE_URL = 'https://v3.football.api-sports.io';
+        const DEEPSEEK_API_BASE_URL = 'https://api.deepseek.com';
+        const DEFAULT_DEEPSEEK_API_KEY = 'sk-78967fb812124f12985215291bc9e1b5';
+        let teamsCache = null;
+        let latestApiFixtures = [];
 
         // Authentication and Authorization
         auth.onAuthStateChanged((user) => {
@@ -1333,32 +1471,81 @@
             document.getElementById('create-round-form').style.display = 'none';
         });
 
+        function getApiMatchMeta(matchEntry) {
+            if (!matchEntry.dataset.apiFixtureId) return {};
+
+            const liveHomeScore = matchEntry.dataset.liveHomeScore;
+            const liveAwayScore = matchEntry.dataset.liveAwayScore;
+
+            return {
+                apiProvider: matchEntry.dataset.apiProvider || 'api-football',
+                apiFixtureId: parseInt(matchEntry.dataset.apiFixtureId),
+                apiLeagueId: matchEntry.dataset.apiLeagueId ? parseInt(matchEntry.dataset.apiLeagueId) : null,
+                apiLeagueName: matchEntry.dataset.apiLeagueName || '',
+                apiLeagueCode: matchEntry.dataset.apiLeagueCode || '',
+                apiHomeTeamId: matchEntry.dataset.apiHomeTeamId ? parseInt(matchEntry.dataset.apiHomeTeamId) : null,
+                apiAwayTeamId: matchEntry.dataset.apiAwayTeamId ? parseInt(matchEntry.dataset.apiAwayTeamId) : null,
+                liveStatus: matchEntry.dataset.liveStatus || 'scheduled',
+                elapsed: matchEntry.dataset.elapsed ? parseInt(matchEntry.dataset.elapsed) : null,
+                liveScore: {
+                    home: liveHomeScore !== '' ? parseInt(liveHomeScore) : null,
+                    away: liveAwayScore !== '' ? parseInt(liveAwayScore) : null
+                },
+                syncChecks: {
+                    kickoff: false,
+                    halftime: false,
+                    fulltime: false,
+                    finalRetry: false
+                }
+            };
+        }
+
         function createMatchCardUI(containerId, match = {}) {
             const matchesContainer = document.getElementById(containerId);
             const matchDiv = document.createElement('div');
             matchDiv.className = 'match-card-row';
+            matchDiv.dataset.apiProvider = match.apiProvider || '';
+            matchDiv.dataset.apiFixtureId = match.apiFixtureId || '';
+            matchDiv.dataset.apiLeagueId = match.apiLeagueId || '';
+            matchDiv.dataset.apiLeagueName = match.apiLeagueName || '';
+            matchDiv.dataset.apiLeagueCode = match.apiLeagueCode || '';
+            matchDiv.dataset.apiHomeTeamId = match.apiHomeTeamId || '';
+            matchDiv.dataset.apiAwayTeamId = match.apiAwayTeamId || '';
+            matchDiv.dataset.liveStatus = match.liveStatus || '';
+            matchDiv.dataset.elapsed = match.elapsed ?? '';
+            matchDiv.dataset.liveHomeScore = match.liveScore?.home ?? '';
+            matchDiv.dataset.liveAwayScore = match.liveScore?.away ?? '';
+            const livePill = match.liveStatus
+                ? `<span class="match-live-pill ${match.needsManualReview ? 'review' : match.liveStatus === 'FT' ? 'final' : ''}">
+                    <i class="fas fa-signal"></i> ${match.liveStatus}${match.elapsed ? ` ${match.elapsed}'` : ''}
+                    ${match.liveScore && Number.isInteger(match.liveScore.home) && Number.isInteger(match.liveScore.away) ? ` ${match.liveScore.home}x${match.liveScore.away}` : ''}
+                   </span>`
+                : '';
             matchDiv.innerHTML = `
                 <div class="match-teams-grid">
                     <div class="team-selection-group">
                         <label>Time da Casa</label>
-                        <input list="teams-datalist" class="home-team" placeholder="Buscar..." data-team-id="${match.homeTeam || ''}">
+                        <input list="teams-datalist" class="home-team" placeholder="Buscar time da casa..." data-team-id="${match.homeTeam || ''}">
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <div class="score-stepper-group">
-                            <button type="button" class="score-stepper-btn" data-action="decrement">-</button>
-                            <input type="number" placeholder="0" class="home-score" value="${match.finalResult?.homeScore ?? ''}">
-                            <button type="button" class="score-stepper-btn" data-action="increment">+</button>
-                        </div>
-                        <span class="score-divider" style="font-weight: bold; color: #94a3b8;">X</span>
-                        <div class="score-stepper-group">
-                            <button type="button" class="score-stepper-btn" data-action="decrement">-</button>
-                            <input type="number" placeholder="0" class="away-score" value="${match.finalResult?.awayScore ?? ''}">
-                            <button type="button" class="score-stepper-btn" data-action="increment">+</button>
+                    <div class="score-panel">
+                        <span class="score-panel-label">Placar final</span>
+                        <div class="score-input-row">
+                            <div class="score-stepper-group">
+                                <button type="button" class="score-stepper-btn" data-action="decrement">-</button>
+                                <input type="number" min="0" placeholder="0" class="home-score" value="${match.finalResult?.homeScore ?? ''}">
+                                <button type="button" class="score-stepper-btn" data-action="increment">+</button>
+                            </div>
+                            <span class="score-divider" style="font-weight: bold; color: #94a3b8;">X</span>
+                            <div class="score-stepper-group">
+                                <button type="button" class="score-stepper-btn" data-action="decrement">-</button>
+                                <input type="number" min="0" placeholder="0" class="away-score" value="${match.finalResult?.awayScore ?? ''}">
+                                <button type="button" class="score-stepper-btn" data-action="increment">+</button>
+                            </div>
                         </div>
                     </div>
                     <div class="team-selection-group">
                         <label>Time Visitante</label>
-                        <input list="teams-datalist" class="away-team" placeholder="Buscar..." data-team-id="${match.awayTeam || ''}">
+                        <input list="teams-datalist" class="away-team" placeholder="Buscar time visitante..." data-team-id="${match.awayTeam || ''}">
                     </div>
                 </div>
                 <div class="match-card-footer">
@@ -1366,6 +1553,8 @@
                         <label>Data/Hora</label>
                         <input type="datetime-local" class="match-timestamp" value="${match.timestamp || ''}">
                     </div>
+                    ${livePill}
+                    ${match.apiFixtureId ? `<span class="badge badge-light"><i class="fas fa-link"></i> ${match.apiProvider === 'espn' ? 'ESPN' : 'API-Football'}</span>` : ''}
                     <button type="button" class="remove-match-btn"><i class="fas fa-trash"></i></button>
                 </div>
             `;
@@ -1414,17 +1603,1043 @@
             createMatchCardUI('matches-container');
         });
 
-        document.getElementById('new-round-form').addEventListener('submit', (e) => {
+        function toDateInputValue(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function toDatetimeLocalValue(dateString) {
+            const date = new Date(dateString);
+            if (Number.isNaN(date.getTime())) return '';
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        function normalizeTeamName(name) {
+            return (name || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\b(fc|ec|sc|ac|cf|cr|cd|club|de|do|da)\b/gi, '')
+                .replace(/[^a-z0-9]/gi, '')
+                .toLowerCase();
+        }
+
+        async function getTeamsCache() {
+            if (teamsCache) return teamsCache;
+            const snapshot = await database.ref('teams').once('value');
+            teamsCache = snapshot.val() || {};
+            return teamsCache;
+        }
+
+        function getApiTeamMappings() {
+            try {
+                return JSON.parse(localStorage.getItem('apiFootballTeamMappings') || '{}');
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function saveApiTeamMapping(apiTeamId, localTeamId) {
+            const mappings = getApiTeamMappings();
+            mappings[String(apiTeamId)] = localTeamId;
+            localStorage.setItem('apiFootballTeamMappings', JSON.stringify(mappings));
+        }
+
+        function getFixtureTeamKey(fixture, side) {
+            const teamId = side === 'home' ? fixture.apiHomeTeamId : fixture.apiAwayTeamId;
+            const teamName = side === 'home' ? fixture.homeName : fixture.awayName;
+            return `${fixture.apiProvider || 'api-football'}:${teamId || normalizeTeamName(teamName)}`;
+        }
+
+        function getFixtureTeamMappingId(fixture, side) {
+            const teamId = side === 'home' ? fixture.apiHomeTeamId : fixture.apiAwayTeamId;
+            const teamName = side === 'home' ? fixture.homeName : fixture.awayName;
+            if (fixture.apiProvider === 'espn') return `espn-${teamId || normalizeTeamName(teamName)}`;
+            return teamId || normalizeTeamName(teamName);
+        }
+
+        function getUnmatchedFixtureTeams() {
+            const teams = new Map();
+            latestApiFixtures.forEach((fixture) => {
+                if (!fixture.localHomeTeamId) {
+                    const teamKey = getFixtureTeamKey(fixture, 'home');
+                    teams.set(teamKey, {
+                        teamKey,
+                        provider: fixture.apiProvider || 'api-football',
+                        externalId: fixture.apiHomeTeamId || '',
+                        name: fixture.homeName,
+                        leagueName: fixture.leagueName
+                    });
+                }
+                if (!fixture.localAwayTeamId) {
+                    const teamKey = getFixtureTeamKey(fixture, 'away');
+                    teams.set(teamKey, {
+                        teamKey,
+                        provider: fixture.apiProvider || 'api-football',
+                        externalId: fixture.apiAwayTeamId || '',
+                        name: fixture.awayName,
+                        leagueName: fixture.leagueName
+                    });
+                }
+            });
+            return Array.from(teams.values());
+        }
+
+        function parseDeepSeekJson(content) {
+            const trimmed = (content || '').trim();
+            try {
+                return JSON.parse(trimmed);
+            } catch (error) {
+                const match = trimmed.match(/\{[\s\S]*\}/);
+                if (match) return JSON.parse(match[0]);
+                throw error;
+            }
+        }
+
+        function getTeamAbbrFromName(name) {
+            return (name || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .split(/\s+/)
+                .filter(Boolean)
+                .map((part) => part[0])
+                .join('')
+                .slice(0, 3)
+                .toUpperCase() || 'TIM';
+        }
+
+        function applyDeepSeekSuggestions(suggestions, localTeams) {
+            let applied = 0;
+            let createSuggestions = 0;
+
+            suggestions.forEach((suggestion) => {
+                const confidence = Number(suggestion.confidence || 0);
+                latestApiFixtures.forEach((fixture) => {
+                    ['home', 'away'].forEach((side) => {
+                        if (getFixtureTeamKey(fixture, side) !== suggestion.teamKey) return;
+
+                        const suggestionLabel = suggestion.action === 'match'
+                            ? `${localTeams[suggestion.localTeamId]?.name || suggestion.localTeamId} (${Math.round(confidence * 100)}%)`
+                            : `criar ${suggestion.suggestedName || suggestion.externalName || suggestion.teamName || 'novo time'}`;
+
+                        const fieldName = side === 'home' ? 'aiHomeSuggestion' : 'aiAwaySuggestion';
+                        fixture[fieldName] = {
+                            action: suggestion.action,
+                            label: suggestionLabel,
+                            confidence,
+                            localTeamId: suggestion.localTeamId || '',
+                            suggestedName: suggestion.suggestedName || suggestion.externalName || suggestion.teamName || '',
+                            suggestedAbbr: suggestion.suggestedAbbr || getTeamAbbrFromName(suggestion.suggestedName || suggestion.externalName || suggestion.teamName),
+                            reason: suggestion.reason || '',
+                            teamKey: suggestion.teamKey
+                        };
+
+                        if (suggestion.action === 'match' && confidence >= 0.72 && suggestion.localTeamId && localTeams[suggestion.localTeamId]) {
+                            if (side === 'home') fixture.localHomeTeamId = suggestion.localTeamId;
+                            else fixture.localAwayTeamId = suggestion.localTeamId;
+                            saveApiTeamMapping(getFixtureTeamMappingId(fixture, side), suggestion.localTeamId);
+                            saveApiTeamMapping(getFixtureTeamKey(fixture, side), suggestion.localTeamId);
+                            applied++;
+                        } else if (suggestion.action === 'create') {
+                            createSuggestions++;
+                        }
+                    });
+                });
+            });
+
+            renderApiFixtureResults(latestApiFixtures);
+            setApiStatus(`DeepSeek sugeriu vinculos. ${applied} vinculo(s) aplicado(s), ${createSuggestions} sugestao(oes) para criar time.`, applied || createSuggestions ? 'success' : 'info');
+        }
+
+        async function suggestTeamMappingsWithDeepSeek() {
+            const keyInput = document.getElementById('deepseek-api-key');
+            const apiKey = keyInput.value.trim() || localStorage.getItem('deepSeekApiKey') || '';
+            if (!apiKey) {
+                setApiStatus('Cole sua DeepSeek API Key antes de pedir sugestoes.', 'error');
+                keyInput.focus();
+                return;
+            }
+            if (!latestApiFixtures.length) {
+                setApiStatus('Busque jogos antes de pedir sugestoes de vinculo.', 'error');
+                return;
+            }
+
+            const unmatchedTeams = getUnmatchedFixtureTeams();
+            if (!unmatchedTeams.length) {
+                setApiStatus('Todos os times encontrados ja possuem vinculo local.', 'success');
+                return;
+            }
+
+            localStorage.setItem('deepSeekApiKey', apiKey);
+            setApiStatus(`<i class="fas fa-spinner fa-pulse"></i> Pedindo sugestoes ao DeepSeek para ${unmatchedTeams.length} time(s)...`);
+
+            try {
+                const localTeams = await getTeamsCache();
+                const localTeamsPayload = Object.entries(localTeams).map(([id, team]) => ({
+                    id,
+                    name: team.name || '',
+                    abbr: team.abbr || '',
+                    from: team.from || ''
+                }));
+
+                const response = await fetch(`${DEEPSEEK_API_BASE_URL}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-v4-flash',
+                        stream: false,
+                        response_format: { type: 'json_object' },
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'Voce vincula nomes de times de futebol vindos de APIs externas a uma lista local. Responda somente JSON valido.'
+                            },
+                            {
+                                role: 'user',
+                                content: JSON.stringify({
+                                    task: 'Para cada externalTeam, escolha action match quando houver time local equivalente mesmo com idioma, sufixo, acento ou abreviacao diferente. Use create quando nao houver equivalente. Nao invente localTeamId.',
+                                    outputSchema: {
+                                        suggestions: [
+                                            {
+                                                teamKey: 'string igual ao input',
+                                                action: 'match|create|ignore',
+                                                localTeamId: 'id local quando action=match',
+                                                confidence: 'numero 0 a 1',
+                                                suggestedName: 'nome padrao quando action=create',
+                                                suggestedAbbr: '3 letras quando action=create',
+                                                reason: 'curto'
+                                            }
+                                        ]
+                                    },
+                                    externalTeams: unmatchedTeams,
+                                    localTeams: localTeamsPayload
+                                })
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`DeepSeek HTTP ${response.status}`);
+                }
+
+                const payload = await response.json();
+                const content = payload.choices?.[0]?.message?.content || '';
+                const parsed = parseDeepSeekJson(content);
+                applyDeepSeekSuggestions(parsed.suggestions || [], localTeams);
+            } catch (error) {
+                console.error('Erro ao consultar DeepSeek:', error);
+                setApiStatus(`Erro ao consultar DeepSeek: ${error.message}. Se for bloqueio de CORS, precisaremos colocar essa chamada em backend/Function.`, 'error');
+            }
+        }
+
+        async function createDeepSeekSuggestedTeams() {
+            const pendingCreates = new Map();
+            latestApiFixtures.forEach((fixture) => {
+                [
+                    { side: 'home', suggestion: fixture.aiHomeSuggestion, name: fixture.homeName, leagueName: fixture.leagueName },
+                    { side: 'away', suggestion: fixture.aiAwaySuggestion, name: fixture.awayName, leagueName: fixture.leagueName }
+                ].forEach(({ side, suggestion, name, leagueName }) => {
+                    if (!suggestion || suggestion.action !== 'create') return;
+                    pendingCreates.set(suggestion.teamKey, {
+                        fixture,
+                        side,
+                        name: suggestion.suggestedName || name,
+                        abbr: (suggestion.suggestedAbbr || getTeamAbbrFromName(suggestion.suggestedName || name)).slice(0, 3).toUpperCase(),
+                        from: leagueName || 'Importado'
+                    });
+                });
+            });
+
+            if (!pendingCreates.size) {
+                setApiStatus('Nao ha sugestoes de criacao pendentes.', 'info');
+                return;
+            }
+
+            if (!confirm(`Criar ${pendingCreates.size} time(s) sugerido(s) no Firebase?`)) return;
+
+            try {
+                const teamsRef = database.ref('teams');
+                for (const item of pendingCreates.values()) {
+                    const newTeam = {
+                        name: item.name,
+                        abbr: item.abbr,
+                        from: item.from,
+                        color1: '#000000',
+                        color2: '#000000',
+                        image: ''
+                    };
+                    const createdRef = await teamsRef.push(newTeam);
+                    const teamId = createdRef.key;
+                    if (item.side === 'home') item.fixture.localHomeTeamId = teamId;
+                    else item.fixture.localAwayTeamId = teamId;
+                    saveApiTeamMapping(getFixtureTeamMappingId(item.fixture, item.side), teamId);
+                    saveApiTeamMapping(getFixtureTeamKey(item.fixture, item.side), teamId);
+                    teamsCache = {
+                        ...(teamsCache || {}),
+                        [teamId]: newTeam
+                    };
+                }
+
+                populateDatalist();
+                renderApiFixtureResults(latestApiFixtures);
+                setApiStatus(`${pendingCreates.size} time(s) criado(s) e vinculado(s).`, 'success');
+            } catch (error) {
+                console.error('Erro ao criar times sugeridos:', error);
+                setApiStatus(`Erro ao criar times sugeridos: ${error.message}`, 'error');
+            }
+        }
+
+        function findLocalTeamId(apiTeam, localTeams) {
+            if (!apiTeam) return '';
+            const mappings = getApiTeamMappings();
+            const mappedId = mappings[String(apiTeam.id)];
+            if (mappedId && localTeams[mappedId]) return mappedId;
+
+            const apiName = normalizeTeamName(apiTeam.name);
+            let fallbackId = '';
+            Object.entries(localTeams).some(([teamId, team]) => {
+                const localName = normalizeTeamName(team.name);
+                const localAbbr = normalizeTeamName(team.abbr);
+                const isMatch = localName === apiName ||
+                    localAbbr === apiName ||
+                    (apiName.length > 4 && localName.includes(apiName)) ||
+                    (localName.length > 4 && apiName.includes(localName));
+
+                if (isMatch) {
+                    fallbackId = teamId;
+                    saveApiTeamMapping(apiTeam.id, teamId);
+                    return true;
+                }
+                return false;
+            });
+
+            return fallbackId;
+        }
+
+        function getApiStatusText(shortStatus) {
+            return {
+                NS: 'Nao iniciado',
+                TBD: 'A definir',
+                '1H': 'Ao vivo',
+                LIVE: 'Ao vivo',
+                HT: 'Intervalo',
+                '2H': 'Ao vivo',
+                ET: 'Prorrogacao',
+                BT: 'Intervalo',
+                P: 'Penaltis',
+                FT: 'Finalizado',
+                AET: 'Finalizado',
+                PEN: 'Finalizado',
+                SUSP: 'Suspenso',
+                PST: 'Adiado',
+                CANC: 'Cancelado',
+                ABD: 'Abandonado'
+            }[shortStatus] || shortStatus || 'Desconhecido';
+        }
+
+        function setApiStatus(message, type = 'info') {
+            const status = document.getElementById('api-football-status');
+            status.className = type === 'error' ? 'alert alert-danger' : type === 'success' ? 'alert alert-success' : 'help-text';
+            status.innerHTML = message;
+        }
+
+        function formatApiFootballErrors(errors) {
+            if (!errors) return 'Erro desconhecido da API.';
+            if (typeof errors === 'string') return errors;
+            if (Array.isArray(errors)) return errors.join(', ');
+            if (typeof errors === 'object') {
+                return Object.entries(errors)
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join(', ');
+            }
+            return String(errors);
+        }
+
+        function renderApiFixtureResults(fixtures) {
+            const container = document.getElementById('api-football-results');
+            if (!fixtures.length) {
+                container.innerHTML = '<div class="alert alert-info">Nenhum jogo encontrado para estes filtros.</div>';
+                return;
+            }
+
+            container.innerHTML = fixtures.map((fixture, index) => {
+                const homeMapped = fixture.localHomeTeamId ? 'OK' : 'Ajustar time da casa depois';
+                const awayMapped = fixture.localAwayTeamId ? 'OK' : 'Ajustar visitante depois';
+                const homeWarning = fixture.localHomeTeamId ? '' : '<span class="api-map-warning">casa sem vinculo</span>';
+                const awayWarning = fixture.localAwayTeamId ? '' : '<span class="api-map-warning">visitante sem vinculo</span>';
+                const homeAi = fixture.aiHomeSuggestion ? `<span class="${fixture.aiHomeSuggestion.action === 'create' ? 'api-create-suggestion' : 'api-ai-suggestion'}">IA casa: ${fixture.aiHomeSuggestion.label}</span>` : '';
+                const awayAi = fixture.aiAwaySuggestion ? `<span class="${fixture.aiAwaySuggestion.action === 'create' ? 'api-create-suggestion' : 'api-ai-suggestion'}">IA visitante: ${fixture.aiAwaySuggestion.label}</span>` : '';
+                return `
+                    <label class="api-fixture-row">
+                        <input type="checkbox" class="api-fixture-check" data-index="${index}" checked>
+                        <div>
+                            <div class="api-fixture-teams">${fixture.homeName} x ${fixture.awayName}</div>
+                            <div class="api-fixture-meta">
+                                <span>${fixture.leagueName}</span>
+                                <span><i class="far fa-clock"></i> ${new Date(fixture.timestamp).toLocaleString('pt-BR')}</span>
+                                <span>${getApiStatusText(fixture.statusShort)}</span>
+                                <span>${homeMapped}</span>
+                                <span>${awayMapped}</span>
+                                ${homeWarning}
+                                ${awayWarning}
+                                ${homeAi}
+                                ${awayAi}
+                            </div>
+                        </div>
+                        <span class="badge badge-light">ID ${fixture.apiFixtureId}</span>
+                    </label>
+                `;
+            }).join('') + `
+                <div class="api-import-actions">
+                    <span class="help-text">Jogos sem vinculo podem ser ajustados nos cards abaixo antes de salvar.</span>
+                    <button type="button" id="deepseek-create-teams" class="btn btn-secondary">
+                        <i class="fas fa-user-plus"></i> Criar times sugeridos
+                    </button>
+                    <button type="button" id="api-football-add-selected" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Adicionar selecionados
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('api-football-add-selected').addEventListener('click', () => {
+                document.querySelectorAll('.api-fixture-check:checked').forEach((checkbox) => {
+                    const fixture = latestApiFixtures[parseInt(checkbox.dataset.index)];
+                    createMatchCardUI('matches-container', {
+                        homeTeam: fixture.localHomeTeamId,
+                        awayTeam: fixture.localAwayTeamId,
+                        timestamp: toDatetimeLocalValue(fixture.timestamp),
+                        apiProvider: fixture.apiProvider || 'api-football',
+                        apiFixtureId: fixture.apiFixtureId,
+                        apiLeagueId: fixture.apiLeagueId,
+                        apiLeagueName: fixture.leagueName,
+                        apiLeagueCode: fixture.apiLeagueCode,
+                        apiHomeTeamId: fixture.apiHomeTeamId,
+                        apiAwayTeamId: fixture.apiAwayTeamId,
+                        liveStatus: fixture.statusShort || 'NS',
+                        elapsed: fixture.elapsed,
+                        liveScore: fixture.liveScore
+                    });
+                });
+                setApiStatus('Jogos selecionados adicionados. Revise os times e horarios antes de salvar a rodada.', 'success');
+            });
+
+            document.getElementById('deepseek-create-teams').addEventListener('click', createDeepSeekSuggestedTeams);
+        }
+
+        function getSelectedApiLeagues() {
+            const selected = Array.from(document.querySelectorAll('.api-football-league:checked')).map((input) => ({
+                id: input.value,
+                espnCode: input.dataset.espn || '',
+                name: input.dataset.name || `Liga ${input.value}`
+            }));
+
+            const customId = document.getElementById('api-football-custom-league-id').value.trim();
+            const customEspnCode = document.getElementById('espn-custom-league-code').value.trim();
+            const customName = document.getElementById('api-football-custom-league-name').value.trim();
+            if (customId || customEspnCode) {
+                selected.push({
+                    id: customId,
+                    espnCode: customEspnCode,
+                    name: customName || customEspnCode || `Liga ${customId}`
+                });
+            }
+
+            return selected;
+        }
+
+        function toEspnDate(dateValue) {
+            return dateValue.replace(/-/g, '');
+        }
+
+        function getEspnDateRange(dateFrom, dateTo) {
+            const from = toEspnDate(dateFrom);
+            const to = toEspnDate(dateTo);
+            return from === to ? from : `${from}-${to}`;
+        }
+
+        function getEspnStatusShort(statusType) {
+            const name = statusType?.name || '';
+            const state = statusType?.state || '';
+            if (statusType?.completed || name.includes('FINAL') || state === 'post') return 'FT';
+            if (name.includes('HALFTIME')) return 'HT';
+            if (state === 'in' || name.includes('IN_PROGRESS')) return 'LIVE';
+            if (name.includes('POSTPONED')) return 'PST';
+            if (name.includes('CANCELED') || name.includes('CANCELLED')) return 'CANC';
+            return 'NS';
+        }
+
+        async function fetchEspnFixturesForLeague({ espnCode, name }, dateFrom, dateTo, localTeams) {
+            if (!espnCode) {
+                throw new Error(`${name}: sem codigo ESPN configurado.`);
+            }
+
+            const params = new URLSearchParams({
+                dates: getEspnDateRange(dateFrom, dateTo),
+                limit: '200'
+            });
+            const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${espnCode}/scoreboard?${params.toString()}`);
+
+            if (!response.ok) {
+                throw new Error(`${name}: ESPN HTTP ${response.status}`);
+            }
+
+            const payload = await response.json();
+            return (payload.events || []).map((event) => {
+                const competition = event.competitions?.[0] || {};
+                const competitors = competition.competitors || [];
+                const homeCompetitor = competitors.find((competitor) => competitor.homeAway === 'home') || competitors[0] || {};
+                const awayCompetitor = competitors.find((competitor) => competitor.homeAway === 'away') || competitors[1] || {};
+                const homeTeam = homeCompetitor.team || {};
+                const awayTeam = awayCompetitor.team || {};
+                const statusShort = getEspnStatusShort(event.status?.type);
+
+                return {
+                    apiProvider: 'espn',
+                    apiFixtureId: event.id,
+                    apiLeagueId: null,
+                    leagueName: event.league?.name || event.league?.abbreviation || name,
+                    apiLeagueCode: espnCode,
+                    apiHomeTeamId: homeTeam.id || '',
+                    apiAwayTeamId: awayTeam.id || '',
+                    homeName: homeTeam.displayName || homeTeam.name || homeCompetitor.displayName || 'Mandante',
+                    awayName: awayTeam.displayName || awayTeam.name || awayCompetitor.displayName || 'Visitante',
+                    localHomeTeamId: findLocalTeamId({ id: `espn-${homeTeam.id}`, name: homeTeam.displayName || homeTeam.name }, localTeams),
+                    localAwayTeamId: findLocalTeamId({ id: `espn-${awayTeam.id}`, name: awayTeam.displayName || awayTeam.name }, localTeams),
+                    timestamp: event.date,
+                    statusShort,
+                    statusName: event.status?.type?.name || '',
+                    statusDescription: event.status?.type?.description || '',
+                    statusCompleted: Boolean(event.status?.type?.completed),
+                    elapsed: event.status?.period || null,
+                    liveScore: {
+                        home: homeCompetitor.score !== undefined ? parseInt(homeCompetitor.score) : null,
+                        away: awayCompetitor.score !== undefined ? parseInt(awayCompetitor.score) : null
+                    }
+                };
+            });
+        }
+
+        async function fetchApiFixturesForLeague({ id, name }, season, dateFrom, dateTo, apiKey, localTeams) {
+            const params = new URLSearchParams({ league: id, season, from: dateFrom, to: dateTo });
+            const response = await fetch(`${API_FOOTBALL_BASE_URL}/fixtures?${params.toString()}`, {
+                headers: {
+                    'x-apisports-key': apiKey
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`${name}: HTTP ${response.status}`);
+            }
+
+            const payload = await response.json();
+            if (payload.errors && Object.keys(payload.errors).length) {
+                throw new Error(`${name}: ${formatApiFootballErrors(payload.errors)}`);
+            }
+
+            return (payload.response || []).map((item) => {
+                const home = item.teams?.home || {};
+                const away = item.teams?.away || {};
+                return {
+                    apiFixtureId: item.fixture?.id,
+                    apiLeagueId: item.league?.id ? parseInt(item.league.id) : parseInt(id),
+                    leagueName: item.league?.name || name,
+                    apiHomeTeamId: home.id,
+                    apiAwayTeamId: away.id,
+                    homeName: home.name || 'Mandante',
+                    awayName: away.name || 'Visitante',
+                    localHomeTeamId: findLocalTeamId(home, localTeams),
+                    localAwayTeamId: findLocalTeamId(away, localTeams),
+                    timestamp: item.fixture?.date,
+                    statusShort: item.fixture?.status?.short || 'NS',
+                    elapsed: item.fixture?.status?.elapsed ?? null,
+                    liveScore: {
+                        home: item.goals?.home ?? null,
+                        away: item.goals?.away ?? null
+                    }
+                };
+            });
+        }
+
+        async function searchApiFootballFixtures() {
+            const provider = document.getElementById('fixture-provider').value;
+            const keyInput = document.getElementById('api-football-key');
+            const apiKey = keyInput.value.trim() || localStorage.getItem('apiFootballKey') || '';
+            const selectedLeagues = getSelectedApiLeagues();
+            const season = document.getElementById('api-football-season').value;
+            const dateFrom = document.getElementById('api-football-date-from').value;
+            const dateTo = document.getElementById('api-football-date-to').value;
+
+            if (provider === 'api-football' && !apiKey) {
+                setApiStatus('Cole sua API key antes de buscar.', 'error');
+                keyInput.focus();
+                return;
+            }
+            if (!selectedLeagues.length || !dateFrom || !dateTo || (provider === 'api-football' && !season)) {
+                setApiStatus('Selecione pelo menos um campeonato e informe o periodo da rodada.', 'error');
+                return;
+            }
+            if (dateTo < dateFrom) {
+                setApiStatus('A data final precisa ser igual ou posterior a data inicial.', 'error');
+                return;
+            }
+
+            if (provider === 'api-football') {
+                localStorage.setItem('apiFootballKey', apiKey);
+            }
+            setApiStatus(`<i class="fas fa-spinner fa-pulse"></i> Buscando jogos via ${provider === 'espn' ? 'ESPN' : 'API-Football'} em ${selectedLeagues.length} campeonato(s), de ${dateFrom} ate ${dateTo}...`);
+
+            try {
+                const localTeams = await getTeamsCache();
+                const fixturesById = new Map();
+                const leagueErrors = [];
+
+                for (const league of selectedLeagues) {
+                    try {
+                        const fixtures = provider === 'espn'
+                            ? await fetchEspnFixturesForLeague(league, dateFrom, dateTo, localTeams)
+                            : await fetchApiFixturesForLeague(league, season, dateFrom, dateTo, apiKey, localTeams);
+                        fixtures.forEach((fixture) => {
+                            if (fixture.apiFixtureId) fixturesById.set(String(fixture.apiFixtureId), fixture);
+                        });
+                    } catch (error) {
+                        console.error(`Erro ao buscar campeonato via ${provider}:`, error);
+                        leagueErrors.push(error.message);
+                    }
+                }
+
+                latestApiFixtures = Array.from(fixturesById.values()).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                renderApiFixtureResults(latestApiFixtures);
+
+                if (leagueErrors.length) {
+                    const planLimitHint = leagueErrors.some((message) => message.toLowerCase().includes('free plans'));
+                    const hint = planLimitHint ? ' Para testar no plano Free, tente temporada/data entre 2022 e 2024; para temporada atual, provavelmente precisa de plano pago.' : '';
+                    setApiStatus(`${latestApiFixtures.length} jogo(s) encontrados entre ${dateFrom} e ${dateTo}. ${leagueErrors.length} campeonato(s) falharam. Buscas feitas: ${selectedLeagues.length}.${hint}<br><small>${leagueErrors.join('<br>')}</small>`, 'error');
+                } else {
+                    setApiStatus(`${latestApiFixtures.length} jogo(s) encontrados entre ${dateFrom} e ${dateTo}. Buscas feitas: ${selectedLeagues.length}.`, 'success');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar jogos:', error);
+                setApiStatus(`Erro ao buscar jogos: ${error.message}`, 'error');
+            }
+        }
+
+        function initApiFootballImporter() {
+            const providerInput = document.getElementById('fixture-provider');
+            const keyInput = document.getElementById('api-football-key');
+            const deepSeekKeyInput = document.getElementById('deepseek-api-key');
+            const seasonInput = document.getElementById('api-football-season');
+            const dateFromInput = document.getElementById('api-football-date-from');
+            const dateToInput = document.getElementById('api-football-date-to');
+            const savedKey = localStorage.getItem('apiFootballKey');
+            const savedDeepSeekKey = localStorage.getItem('deepSeekApiKey');
+            if (savedKey) keyInput.value = savedKey;
+            if (savedDeepSeekKey) {
+                deepSeekKeyInput.value = savedDeepSeekKey;
+            } else if (DEFAULT_DEEPSEEK_API_KEY) {
+                localStorage.setItem('deepSeekApiKey', DEFAULT_DEEPSEEK_API_KEY);
+                deepSeekKeyInput.value = DEFAULT_DEEPSEEK_API_KEY;
+            }
+            if (!seasonInput.value) seasonInput.value = new Date().getFullYear();
+            if (!dateFromInput.value) dateFromInput.value = toDateInputValue(new Date());
+            if (!dateToInput.value) dateToInput.value = dateFromInput.value;
+            dateFromInput.addEventListener('change', () => {
+                if (!dateToInput.value || dateToInput.value < dateFromInput.value) {
+                    dateToInput.value = dateFromInput.value;
+                }
+            });
+            providerInput.addEventListener('change', () => {
+                if (providerInput.value === 'espn') {
+                    setApiStatus('ESPN gratis selecionada. Nao precisa de API key nem temporada; usa apenas campeonato e periodo.');
+                } else {
+                    setApiStatus('API-Football selecionada. Requer API key e temporada; o plano Free pode bloquear temporadas atuais.');
+                }
+            });
+            document.getElementById('api-football-search').addEventListener('click', searchApiFootballFixtures);
+            document.getElementById('deepseek-suggest-mappings').addEventListener('click', suggestTeamMappingsWithDeepSeek);
+        }
+
+        initApiFootballImporter();
+
+        function initLeaguePickerControls() {
+            const filterInput = document.getElementById('api-league-filter');
+            const leagueOptions = Array.from(document.querySelectorAll('.api-league-option'));
+            filterInput.addEventListener('input', () => {
+                const query = normalizeTeamName(filterInput.value);
+                leagueOptions.forEach((label) => {
+                    const text = normalizeTeamName(label.textContent);
+                    label.style.display = !query || text.includes(query) ? 'flex' : 'none';
+                });
+            });
+
+            document.getElementById('api-select-all-leagues').addEventListener('click', () => {
+                leagueOptions.forEach((label) => {
+                    if (label.style.display !== 'none') label.querySelector('input').checked = true;
+                });
+            });
+
+            document.getElementById('api-clear-leagues').addEventListener('click', () => {
+                leagueOptions.forEach((label) => {
+                    if (label.style.display !== 'none') label.querySelector('input').checked = false;
+                });
+            });
+        }
+
+        initLeaguePickerControls();
+
+        function getMatchesArray(matches) {
+            if (!matches) return [];
+            return Array.isArray(matches) ? matches.filter(Boolean) : Object.values(matches).filter(Boolean);
+        }
+
+        function getMatchCount(matches) {
+            return getMatchesArray(matches).length;
+        }
+
+        function sanitizeTournamentList(value) {
+            return value
+                .split(',')
+                .map((tournament) => tournament.trim())
+                .filter(Boolean);
+        }
+
+        function validateRoundData(roundData) {
+            const errors = [];
+            if (!roundData.finishTimestamp) errors.push('Informe a data de termino da rodada.');
+            if (!roundData.tournaments.length) errors.push('Informe pelo menos um torneio.');
+            if (!roundData.matches.length) errors.push('Adicione pelo menos uma partida.');
+
+            roundData.matches.forEach((match, index) => {
+                const label = `Partida ${index + 1}`;
+                if (!match.homeTeam || !match.awayTeam) errors.push(`${label}: selecione os dois times.`);
+                if (match.homeTeam && match.awayTeam && match.homeTeam === match.awayTeam) errors.push(`${label}: os times precisam ser diferentes.`);
+                if (!match.timestamp) errors.push(`${label}: informe data/hora.`);
+                const hasOnlyOneScore = Boolean(match.finalResult) &&
+                    ((match.finalResult.homeScore === null) !== (match.finalResult.awayScore === null));
+                if (hasOnlyOneScore) errors.push(`${label}: preencha os dois placares finais ou deixe ambos vazios.`);
+            });
+
+            if (errors.length) {
+                alert(errors.join('\n'));
+                return false;
+            }
+            return true;
+        }
+
+        async function createDataBackup(collectionName, itemId, data, reason) {
+            if (!itemId || !data) return;
+            const backupRef = database.ref(`backups/${collectionName}/${itemId}`).push();
+            await backupRef.set({
+                reason,
+                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                data
+            });
+        }
+
+        function setEspnSyncStatus(message, type = 'info') {
+            const status = document.getElementById('sync-espn-status');
+            status.className = type === 'error' ? 'alert alert-danger' : type === 'success' ? 'alert alert-success' : type === 'warning' ? 'alert alert-warning' : 'help-text';
+            status.innerHTML = message;
+        }
+
+        function getTimestampMs(dateString) {
+            if (!dateString) return 0;
+            if (typeof dateString === 'number') return dateString;
+            if (dateString.includes('Z') || dateString.match(/[+-]\d\d:\d\d$/)) {
+                return new Date(dateString).getTime();
+            }
+            return new Date(dateString + '-04:00').getTime();
+        }
+
+        function getDateValueFromTimestamp(dateString) {
+            const date = new Date(getTimestampMs(dateString));
+            if (Number.isNaN(date.getTime())) return toDateInputValue(new Date());
+            return toDateInputValue(date);
+        }
+
+        function getEspnLeagueCodeFromName(name) {
+            const normalized = normalizeTeamName(name || '');
+            const map = {
+                brazilianseriea: 'bra.1',
+                brasileiraoseriea: 'bra.1',
+                brazilseria: 'bra.1',
+                brazilianserieb: 'bra.2',
+                brasileiraoserieb: 'bra.2',
+                copabrasil: 'bra.copa_do_brazil',
+                copadobrasil: 'bra.copa_do_brazil',
+                fifaworldcup: 'fifa.world',
+                copamundo: 'fifa.world',
+                copadomundo: 'fifa.world',
+                fifaclubworldcup: 'fifa.cwc',
+                mundialclubes: 'fifa.cwc',
+                mundialdeclubes: 'fifa.cwc',
+                conmebolcopaamerica: 'conmebol.america',
+                copaamerica: 'conmebol.america',
+                conmebollibertadores: 'conmebol.libertadores',
+                libertadores: 'conmebol.libertadores',
+                conmebolsudamericana: 'conmebol.sudamericana',
+                sulamericana: 'conmebol.sudamericana',
+                uefachampionsleague: 'uefa.champions',
+                championsleague: 'uefa.champions',
+                uefaeuropaleague: 'uefa.europa',
+                europaleague: 'uefa.europa',
+                premierleague: 'eng.1',
+                laliga: 'esp.1',
+                serieaitaliana: 'ita.1',
+                bundesliga: 'ger.1',
+                ligue1: 'fra.1'
+            };
+            return map[normalized] || '';
+        }
+
+        function getEspnLeagueCodeForMatch(match) {
+            return match.apiLeagueCode || match.espnLeagueCode || getEspnLeagueCodeFromName(match.apiLeagueName);
+        }
+
+        function getKnownEspnLeagues() {
+            const leagues = Array.from(document.querySelectorAll('.api-football-league[data-espn]')).map((input) => ({
+                espnCode: input.dataset.espn,
+                name: input.dataset.name || input.dataset.espn
+            }));
+            const customEspnCode = document.getElementById('espn-custom-league-code')?.value.trim();
+            const customName = document.getElementById('api-football-custom-league-name')?.value.trim();
+            if (customEspnCode) {
+                leagues.push({
+                    espnCode: customEspnCode,
+                    name: customName || customEspnCode
+                });
+            }
+            return leagues.filter((league, index, all) =>
+                league.espnCode && all.findIndex((item) => item.espnCode === league.espnCode) === index
+            );
+        }
+
+        function getRoundEspnDateRange(matches) {
+            const dates = matches
+                .map(({ match }) => getDateValueFromTimestamp(match.timestamp))
+                .filter(Boolean)
+                .sort();
+            return {
+                dateFrom: dates[0] || toDateInputValue(new Date()),
+                dateTo: dates[dates.length - 1] || dates[0] || toDateInputValue(new Date())
+            };
+        }
+
+        async function findEspnFixturesByBroadSearch(matches) {
+            const { dateFrom, dateTo } = getRoundEspnDateRange(matches);
+            const targetIds = new Set(matches.map(({ match }) => String(match.apiFixtureId)).filter(Boolean));
+            const foundFixtures = new Map();
+            const searchedCodes = [];
+
+            for (const league of getKnownEspnLeagues()) {
+                if (!targetIds.size) break;
+                try {
+                    const fixtures = await fetchEspnFixturesForLeague(league, dateFrom, dateTo, {});
+                    searchedCodes.push(league.espnCode);
+                    fixtures.forEach((fixture) => {
+                        const fixtureId = String(fixture.apiFixtureId);
+                        if (targetIds.has(fixtureId)) {
+                            foundFixtures.set(fixtureId, fixture);
+                            targetIds.delete(fixtureId);
+                        }
+                    });
+                } catch (error) {
+                    console.warn(`Falha ao procurar jogos ESPN em ${league.espnCode}:`, error);
+                }
+            }
+
+            return {
+                foundFixtures,
+                searchedCodes
+            };
+        }
+
+        function shouldReviewEspnResult(fixture) {
+            const statusName = (fixture.statusName || '').toUpperCase();
+            const statusDescription = (fixture.statusDescription || '').toUpperCase();
+            return statusName.includes('PEN') ||
+                statusName.includes('EXTRA') ||
+                statusDescription.includes('PEN') ||
+                statusDescription.includes('EXTRA') ||
+                ['ET', 'AET', 'PEN'].includes(fixture.statusShort);
+        }
+
+        async function getActiveRoundForEspnSync() {
+            const snapshot = await database.ref('rounds').orderByChild('status').equalTo(1).once('value');
+            if (!snapshot.exists()) return null;
+
+            let selected = null;
+            snapshot.forEach((child) => {
+                const data = child.val();
+                const finishTimestamp = getTimestampMs(data.finishTimestamp);
+                if (!selected || finishTimestamp > selected.finishTimestamp) {
+                    selected = {
+                        key: child.key,
+                        data,
+                        finishTimestamp
+                    };
+                }
+            });
+            return selected;
+        }
+
+        async function syncEspnScoresNow() {
+            const button = document.getElementById('sync-espn-scores-btn');
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sincronizando...';
+            setEspnSyncStatus('Buscando rodada em andamento...');
+
+            try {
+                const activeRound = await getActiveRoundForEspnSync();
+                if (!activeRound) {
+                    setEspnSyncStatus('Nenhuma rodada em andamento encontrada.', 'warning');
+                    return;
+                }
+
+                const matchEntries = Object.entries(activeRound.data.matches || {});
+                const espnMatches = matchEntries
+                    .map(([matchKey, match]) => ({ matchKey, match, leagueCode: getEspnLeagueCodeForMatch(match) }))
+                    .filter(({ match }) => match?.apiProvider === 'espn' && match.apiFixtureId);
+
+                if (!espnMatches.length) {
+                    setEspnSyncStatus('A rodada ativa nao tem jogos importados da ESPN com ID salvo.', 'warning');
+                    return;
+                }
+
+                setEspnSyncStatus(`Sincronizando ${espnMatches.length} jogo(s) ESPN...`);
+                const groups = new Map();
+                const matchesWithoutLeagueCode = [];
+                espnMatches.forEach((entry) => {
+                    if (!entry.leagueCode) {
+                        matchesWithoutLeagueCode.push(entry);
+                        return;
+                    }
+                    if (!groups.has(entry.leagueCode)) groups.set(entry.leagueCode, []);
+                    groups.get(entry.leagueCode).push(entry);
+                });
+
+                const updates = {};
+                let updatedCount = 0;
+                let finalizedCount = 0;
+                let reviewCount = 0;
+                const syncedFixturesById = new Map();
+
+                for (const [leagueCode, entries] of groups.entries()) {
+                    const dates = entries.map(({ match }) => getDateValueFromTimestamp(match.timestamp)).sort();
+                    const dateFrom = dates[0];
+                    const dateTo = dates[dates.length - 1];
+                    const fixtures = await fetchEspnFixturesForLeague({ espnCode: leagueCode, name: leagueCode }, dateFrom, dateTo, {});
+                    const fixturesById = new Map(fixtures.map((fixture) => [String(fixture.apiFixtureId), fixture]));
+                    fixtures.forEach((fixture) => syncedFixturesById.set(String(fixture.apiFixtureId), fixture));
+
+                    entries.forEach(({ matchKey, match }) => {
+                        const fixture = fixturesById.get(String(match.apiFixtureId));
+                        if (!fixture) return;
+
+                        const path = `/rounds/${activeRound.key}/matches/${matchKey}`;
+                        updates[`${path}/liveStatus`] = fixture.statusShort;
+                        updates[`${path}/elapsed`] = fixture.elapsed ?? null;
+                        updates[`${path}/liveScore`] = fixture.liveScore;
+                        updates[`${path}/lastScoreSyncAt`] = firebase.database.ServerValue.TIMESTAMP;
+                        updates[`${path}/needsManualReview`] = false;
+                        updatedCount++;
+
+                        if (fixture.statusShort === 'FT') {
+                            if (shouldReviewEspnResult(fixture)) {
+                                updates[`${path}/needsManualReview`] = true;
+                                updates[`${path}/manualReviewReason`] = 'ESPN indicou prorrogação, pênaltis ou status especial. Conferir placar do tempo regulamentar.';
+                                reviewCount++;
+                            } else if (Number.isInteger(fixture.liveScore.home) && Number.isInteger(fixture.liveScore.away)) {
+                                updates[`${path}/finalResult`] = {
+                                    homeScore: fixture.liveScore.home,
+                                    awayScore: fixture.liveScore.away
+                                };
+                                finalizedCount++;
+                            }
+                        }
+                    });
+                }
+
+                if (matchesWithoutLeagueCode.length) {
+                    setEspnSyncStatus(`Procurando automaticamente o codigo de liga de ${matchesWithoutLeagueCode.length} jogo(s) sem codigo salvo...`);
+                    const { foundFixtures, searchedCodes } = await findEspnFixturesByBroadSearch(matchesWithoutLeagueCode);
+                    foundFixtures.forEach((fixture, fixtureId) => syncedFixturesById.set(fixtureId, fixture));
+
+                    matchesWithoutLeagueCode.forEach(({ matchKey, match }) => {
+                        const fixture = foundFixtures.get(String(match.apiFixtureId));
+                        if (!fixture) return;
+
+                        const path = `/rounds/${activeRound.key}/matches/${matchKey}`;
+                        updates[`${path}/apiLeagueCode`] = fixture.apiLeagueCode || '';
+                        updates[`${path}/apiLeagueName`] = fixture.leagueName || match.apiLeagueName || '';
+                        updates[`${path}/liveStatus`] = fixture.statusShort;
+                        updates[`${path}/elapsed`] = fixture.elapsed ?? null;
+                        updates[`${path}/liveScore`] = fixture.liveScore;
+                        updates[`${path}/lastScoreSyncAt`] = firebase.database.ServerValue.TIMESTAMP;
+                        updates[`${path}/needsManualReview`] = false;
+                        updatedCount++;
+
+                        if (fixture.statusShort === 'FT') {
+                            if (shouldReviewEspnResult(fixture)) {
+                                updates[`${path}/needsManualReview`] = true;
+                                updates[`${path}/manualReviewReason`] = 'ESPN indicou prorrogação, pênaltis ou status especial. Conferir placar do tempo regulamentar.';
+                                reviewCount++;
+                            } else if (Number.isInteger(fixture.liveScore.home) && Number.isInteger(fixture.liveScore.away)) {
+                                updates[`${path}/finalResult`] = {
+                                    homeScore: fixture.liveScore.home,
+                                    awayScore: fixture.liveScore.away
+                                };
+                                finalizedCount++;
+                            }
+                        }
+                    });
+
+                    if (!foundFixtures.size) {
+                        console.warn('Busca ampla ESPN nao encontrou jogos pelos IDs salvos. Codigos consultados:', searchedCodes);
+                    }
+                }
+
+                if (!Object.keys(updates).length) {
+                    setEspnSyncStatus('Nenhum placar novo encontrado na ESPN para os jogos da rodada ativa.', 'warning');
+                    return;
+                }
+
+                await createDataBackup('rounds', activeRound.key, activeRound.data, 'sync-espn-scores');
+                await database.ref().update(updates);
+                loadRoundsList();
+                setEspnSyncStatus(`${updatedCount} jogo(s) sincronizados. ${finalizedCount} resultado(s) final(is) gravado(s). ${reviewCount} jogo(s) marcado(s) para revisao manual.`, 'success');
+            } catch (error) {
+                console.error('Erro ao sincronizar placares ESPN:', error);
+                setEspnSyncStatus(`Erro ao sincronizar placares ESPN: ${error.message}`, 'error');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-rotate"></i> Sincronizar placares ESPN';
+            }
+        }
+
+        document.getElementById('sync-espn-scores-btn').addEventListener('click', syncEspnScoresNow);
+
+        document.getElementById('new-round-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const submitBtn = e.submitter || e.target.querySelector('button[type="submit"]');
             const roundData = {
                 status: parseInt(document.getElementById('round-status').value),
                 finishTimestamp: document.getElementById('round-finish-timestamp').value,
-                tournaments: document.getElementById('round-tournaments').value.split(',').map(t => t.trim()),
+                tournaments: sanitizeTournamentList(document.getElementById('round-tournaments').value),
                 matches: []
             };
 
             // Collect match data
-            document.querySelectorAll('.match-card-row').forEach(matchEntry => {
+            document.querySelectorAll('#matches-container .match-card-row').forEach(matchEntry => {
                 const homeTeam = matchEntry.querySelector('.home-team').dataset.teamId;
                 const awayTeam = matchEntry.querySelector('.away-team').dataset.teamId;
                 const homeScore = matchEntry.querySelector('.home-score').value;
@@ -1432,29 +2647,42 @@
                 const matchTimestamp = matchEntry.querySelector('.match-timestamp').value;
 
                 if (homeTeam && awayTeam) {
-                    roundData.matches.push({
+                    const matchData = {
                         homeTeam,
                         awayTeam,
-                        timestamp: matchTimestamp, // Adiciona o timestamp da partida
-                        finalResult: {
+                        timestamp: matchTimestamp // Adiciona o timestamp da partida
+                    };
+                    Object.assign(matchData, getApiMatchMeta(matchEntry));
+
+                    if (homeScore !== '' && awayScore !== '') {
+                        matchData.finalResult = {
                             homeScore: homeScore ? parseInt(homeScore) : null,
                             awayScore: awayScore ? parseInt(awayScore) : null
-                        }
-                    });
+                        };
+                    }
+
+                    roundData.matches.push(matchData);
                 }
             });
 
-            // Save to Firebase
-            const roundsRef = database.ref('rounds');
-            roundsRef.push(roundData).then(() => {
+            if (!validateRoundData(roundData)) return;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Salvando...';
+                const roundsRef = database.ref('rounds');
+                await roundsRef.push(roundData);
                 alert('Rodada criada com sucesso!');
                 document.getElementById('create-round-form').style.display = 'none';
                 document.getElementById('new-round-form').reset();
                 loadRoundsList();
-            }).catch(error => {
+            } catch (error) {
                 console.error('Erro ao criar rodada:', error);
                 alert('Erro ao criar rodada. Verifique os dados.');
-            });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Rodada';
+            }
         });
 
         // populateTeamSelects removida (usamos populateDatalist e datalists agora)
@@ -1469,7 +2697,7 @@
                     return;
                 }
                 
-                let roundsHtml = '<table><thead><tr><th>ID</th><th>Status</th><th>Término</th><th>Torneios</th><th>Partidas</th><th>Ações</th></tr></thead><tbody>';
+                let roundsHtml = '<div class="table-responsive"><table><thead><tr><th>ID</th><th>Status</th><th>Termino</th><th>Torneios</th><th>Partidas</th><th>Acoes</th></tr></thead><tbody>';
                 
                 snapshot.forEach((childSnapshot) => {
                     const roundData = childSnapshot.val();
@@ -1483,18 +2711,18 @@
                         <tr>
                             <td>${childSnapshot.key}</td>
                             <td>${statusText}</td>
-                            <td>${new Date(roundData.finishTimestamp).toLocaleString('pt-BR')}</td>
-                            <td>${roundData.tournaments.join(', ')}</td>
-                            <td>${roundData.matches.length}</td>
-                            <td>
+                            <td>${roundData.finishTimestamp ? new Date(roundData.finishTimestamp).toLocaleString('pt-BR') : '-'}</td>
+                            <td>${(roundData.tournaments || []).join(', ') || '-'}</td>
+                            <td>${getMatchCount(roundData.matches)}</td>
+                            <td><div class="table-actions">
                                 <button onclick="openEditRoundModal('${childSnapshot.key}')" class="btn btn-secondary"><i class="fas fa-edit"></i> Editar</button>
                                 <button onclick="deleteRound('${childSnapshot.key}')" class="btn btn-danger"><i class="fas fa-trash"></i> Excluir</button>
-                            </td>
+                            </div></td>
                         </tr>
                     `;
                 });
 
-                roundsHtml += '</tbody></table>';
+                roundsHtml += '</tbody></table></div><div class="data-safety-note"><i class="fas fa-shield-alt"></i> Edicoes e exclusoes criam backup automatico em /backups.</div>';
                 roundsList.innerHTML = roundsHtml;
             });
         }
@@ -1511,7 +2739,7 @@
                 document.getElementById('edit-round-id').value = roundId;
                 document.getElementById('edit-round-status').value = roundData.status;
                 document.getElementById('edit-round-finish-timestamp').value = roundData.finishTimestamp;
-                document.getElementById('edit-round-tournaments').value = roundData.tournaments.join(', ');
+                document.getElementById('edit-round-tournaments').value = (roundData.tournaments || []).join(', ');
 
                 const matchesContainer = document.getElementById('edit-matches-container');
                 matchesContainer.innerHTML = '';
@@ -1519,8 +2747,9 @@
                 // Prepara a lista de times para busca ANTES de adicionar as partidas
                 populateDatalist();
 
-                if (roundData.matches) {
-                    roundData.matches.forEach((match, index) => {
+                const roundMatches = getMatchesArray(roundData.matches);
+                if (roundMatches.length) {
+                    roundMatches.forEach((match, index) => {
                         // Chama a nova função de renderização
                         addMatchToEditModal(match);
                     });
@@ -1584,14 +2813,15 @@
                 // Primeiro, busque os dados existentes
                 const snapshot = await roundRef.once('value');
                 const existingRoundData = snapshot.val() || {};
+                const existingMatches = getMatchesArray(existingRoundData.matches);
 
                 // Crie o objeto de atualização, preservando predictions e outros dados existentes
                 const updatedRoundData = {
                     ...existingRoundData,
                     status: roundStatus,
                     finishTimestamp: document.getElementById('edit-round-finish-timestamp').value,
-                    tournaments: document.getElementById('edit-round-tournaments').value.split(',').map(t => t.trim()),
-                    matches: existingRoundData.matches || []
+                    tournaments: sanitizeTournamentList(document.getElementById('edit-round-tournaments').value),
+                    matches: []
                 };
 
                 // Atualiza os matches com os novos dados
@@ -1605,23 +2835,28 @@
 
                     if (homeTeamId && awayTeamId) {
                         const matchData = {
-                            ...(updatedRoundData.matches[index] || {}),
+                            ...(existingMatches[index] || {}),
                             homeTeam: homeTeamId,
                             awayTeam: awayTeamId,
-                            timestamp: timestamp,
-                            finalResult: {
-                                homeScore: homeScore !== '' ? parseInt(homeScore) : null,
-                                awayScore: awayScore !== '' ? parseInt(awayScore) : null,
-                            }
+                            timestamp: timestamp
                         };
+                        Object.assign(matchData, getApiMatchMeta(row));
 
-                        if (updatedRoundData.matches[index]) {
-                            updatedRoundData.matches[index] = matchData;
+                        if (homeScore !== '' && awayScore !== '') {
+                            matchData.finalResult = {
+                                homeScore: parseInt(homeScore),
+                                awayScore: parseInt(awayScore),
+                            };
                         } else {
-                            updatedRoundData.matches.push(matchData);
+                            delete matchData.finalResult;
                         }
+
+                        updatedRoundData.matches.push(matchData);
                     }
                 });
+
+                if (!validateRoundData(updatedRoundData)) return;
+                await createDataBackup('rounds', roundId, existingRoundData, 'edit-round');
 
                 // Atualiza o banco de dados
                 await roundRef.update(updatedRoundData);
@@ -1659,25 +2894,26 @@
         });
 
         // Delete Round function
-        function deleteRound(roundId) {
+        async function deleteRound(roundId) {
             if (confirm('Tem certeza que deseja excluir esta rodada?')) {
-                database.ref('rounds/' + roundId).remove()
-                    .then(() => {
-                        alert('Rodada excluída com sucesso!');
-                        loadRoundsList();
-                    })
-                    .catch(error => {
-                        console.error('Erro ao excluir rodada:', error);
-                        alert('Erro ao excluir rodada.');
-                    });
+                try {
+                    const roundRef = database.ref('rounds/' + roundId);
+                    const snapshot = await roundRef.once('value');
+                    await createDataBackup('rounds', roundId, snapshot.val(), 'delete-round');
+                    await roundRef.remove();
+                    alert('Rodada excluida com sucesso!');
+                    loadRoundsList();
+                } catch (error) {
+                    console.error('Erro ao excluir rodada:', error);
+                    alert('Erro ao excluir rodada.');
+                }
             }
         }
-
         function loadTeamsList() {
             const teamsRef = database.ref('teams');
             const teamsList = document.getElementById('teams-list');
             const searchInput = document.getElementById('team-search');
-            console.log('oi')
+
 
             teamsRef.once('value', (snapshot) => {
                 if (!snapshot.exists()) {
@@ -1685,7 +2921,7 @@
                     return;
                 }
                 
-                let teamsHtml = '<table><thead><tr><th>Nome</th><th>Abreviação</th><th>Origem</th><th>Ações</th></tr></thead><tbody>';
+                let teamsHtml = '<div class="table-responsive"><table><thead><tr><th>Nome</th><th>Abreviacao</th><th>Origem</th><th>Acoes</th></tr></thead><tbody>';
                 
                 snapshot.forEach((childSnapshot) => {
                     const teamData = childSnapshot.val();
@@ -1694,15 +2930,15 @@
                             <td>${teamData.name}</td>
                             <td>${teamData.abbr}</td>
                             <td>${teamData.from || '-'}</td>
-                            <td>
+                            <td><div class="table-actions">
                                 <button onclick="editTeam('${childSnapshot.key}')" class="btn btn-secondary"><i class="fas fa-edit"></i> Editar</button>
                                 <button onclick="deleteTeam('${childSnapshot.key}')" class="btn btn-danger"><i class="fas fa-trash"></i> Excluir</button>
-                            </td>
+                            </div></td>
                         </tr>
                     `;
                 });
 
-                teamsHtml += '</tbody></table>';
+                teamsHtml += '</tbody></table></div>';
                 teamsList.innerHTML = teamsHtml;
 
                 // Filtro de times
@@ -1732,45 +2968,50 @@
                 document.getElementById('team-image').value = teamData.image || '';
 
                 document.getElementById('team-form').style.display = 'block';
-                document.getElementById('new-team-form').onsubmit = (e) => {
+                document.getElementById('new-team-form').onsubmit = async (e) => {
                     e.preventDefault();
                     const updatedTeam = {
-                        name: document.getElementById('team-name').value,
-                        abbr: document.getElementById('team-abbr').value,
-                        from: document.getElementById('team-from').value,
+                        name: document.getElementById('team-name').value.trim(),
+                        abbr: document.getElementById('team-abbr').value.trim().toUpperCase(),
+                        from: document.getElementById('team-from').value.trim(),
                         color1: document.getElementById('team-color1').value,
                         color2: document.getElementById('team-color2').value,
-                        image: document.getElementById('team-image').value
+                        image: document.getElementById('team-image').value.trim()
                     };
 
-                    teamRef.update(updatedTeam)
-                        .then(() => {
-                            alert('Time atualizado com sucesso!');
-                            document.getElementById('team-form').style.display = 'none';
-                            loadTeamsList();
-                        })
-                        .catch(error => {
-                            console.error('Erro ao atualizar time:', error);
-                            alert('Erro ao atualizar time.');
-                        });
+                    try {
+                        await createDataBackup('teams', teamId, teamData, 'edit-team');
+                        await teamRef.update(updatedTeam);
+                        teamsCache = null;
+                        alert('Time atualizado com sucesso!');
+                        document.getElementById('team-form').style.display = 'none';
+                        loadTeamsList();
+                        populateDatalist();
+                    } catch (error) {
+                        console.error('Erro ao atualizar time:', error);
+                        alert('Erro ao atualizar time.');
+                    }
                 };
             });
         }
 
-        function deleteTeam(teamId) {
+        async function deleteTeam(teamId) {
             if (confirm('Tem certeza que deseja excluir este time?')) {
-                database.ref('teams/' + teamId).remove()
-                    .then(() => {
-                        alert('Time excluído com sucesso!');
-                        loadTeamsList();
-                    })
-                    .catch(error => {
-                        console.error('Erro ao excluir time:', error);
-                        alert('Erro ao excluir time.');
-                    });
+                try {
+                    const teamRef = database.ref('teams/' + teamId);
+                    const snapshot = await teamRef.once('value');
+                    await createDataBackup('teams', teamId, snapshot.val(), 'delete-team');
+                    await teamRef.remove();
+                    teamsCache = null;
+                    alert('Time excluido com sucesso!');
+                    loadTeamsList();
+                    populateDatalist();
+                } catch (error) {
+                    console.error('Erro ao excluir time:', error);
+                    alert('Erro ao excluir time.');
+                }
             }
         }
-
         // Criar novo time
         document.getElementById('create-team-btn').addEventListener('click', () => {
             document.getElementById('new-team-form').reset();
@@ -1779,20 +3020,22 @@
             document.getElementById('new-team-form').onsubmit = (e) => {
                 e.preventDefault();
                 const newTeam = {
-                    name: document.getElementById('team-name').value,
-                    abbr: document.getElementById('team-abbr').value,
-                    from: document.getElementById('team-from').value,
+                    name: document.getElementById('team-name').value.trim(),
+                    abbr: document.getElementById('team-abbr').value.trim().toUpperCase(),
+                    from: document.getElementById('team-from').value.trim(),
                     color1: document.getElementById('team-color1').value,
                     color2: document.getElementById('team-color2').value,
-                    image: document.getElementById('team-image').value
+                    image: document.getElementById('team-image').value.trim()
                 };
 
                 const teamsRef = database.ref('teams');
                 teamsRef.push(newTeam)
                     .then(() => {
+                        teamsCache = null;
                         alert('Time criado com sucesso!');
                         document.getElementById('team-form').style.display = 'none';
                         loadTeamsList();
+                        populateDatalist();
                     })
                     .catch(error => {
                         console.error('Erro ao criar time:', error);
@@ -2470,3 +3713,5 @@
     </script>
 </body>
 </html>
+
+
