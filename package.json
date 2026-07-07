@@ -1,0 +1,11 @@
+{
+  "name": "br-depre-notifications",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "API de notificações por e-mail para palpites do BR Depressão",
+  "main": "api/send-confirmation.js",
+  "dependencies": {
+    "firebase-admin": "^11.8.0",
+    "nodemailer": "^6.9.1"
+  }
+}

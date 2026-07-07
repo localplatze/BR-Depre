@@ -1020,6 +1020,29 @@
                 
                 if (Object.keys(updates).length > 0) {
                     await database.ref().update(updates);
+                    
+                    // Enviar e-mail de confirmação em segundo plano
+                    try {
+                        const user = auth.currentUser;
+                        const playerName = allPlayers[userId]?.name || user.displayName || '';
+                        const userEmail = user.email;
+                        
+                        if (userEmail) {
+                            fetch('/api/send-confirmation', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    userId: userId,
+                                    email: userEmail,
+                                    name: playerName,
+                                    roundKey: currentRoundKey
+                                })
+                            }).catch(err => console.error('Erro ao enviar e-mail de confirmação:', err));
+                        }
+                    } catch (e) {
+                        console.error('Erro ao chamar API de e-mail:', e);
+                    }
+
                     unsavedPredictions = {};
                     clearDraft();
                     saveBtn.innerHTML = '<i class="fas fa-check"></i> Salvo com sucesso!';
