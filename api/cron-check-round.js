@@ -4,6 +4,14 @@ export const config = {
   maxDuration: 30
 };
 
+function withTimeout(promise, label, ms = 7000) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`Timeout em ${label} apos ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 export default async function handler(req, res) {
   // 1. Validar autenticação do Cron
   const authHeader = req.headers.authorization;
@@ -32,25 +40,33 @@ export default async function handler(req, res) {
   const dryRun = req.query.dryRun === '1';
 
   try {
-    // 2. Carregar dados auxiliares: times e usuários
+    const diagnostics = [];
+
+    // 2. Carregar primeiro apenas rodadas ativas (status = 1)
+    const roundsSnap = await withTimeout(
+      db.ref('rounds').orderByChild('status').equalTo(1).once('value'),
+      'consulta de rodadas ativas'
+    );
+    if (!roundsSnap.exists()) {
+      return res.status(200).json({ success: true, dryRun, diagnostics, message: 'Nenhuma rodada ativa encontrada.' });
+    }
+
+    const rounds = roundsSnap.val();
+    diagnostics.push(`Rodadas ativas encontradas: ${Object.keys(rounds).length}`);
+
+    // 3. Carregar dados auxiliares somente quando houver rodada ativa
     const [teamsSnap, usersSnap] = await Promise.all([
-      db.ref('teams').once('value'),
-      db.ref('users').once('value')
+      withTimeout(db.ref('teams').once('value'), 'consulta de times'),
+      withTimeout(db.ref('users').once('value'), 'consulta de usuarios')
     ]);
 
     const allTeams = teamsSnap.val() || {};
     const allUsers = usersSnap.val() || {};
+    diagnostics.push(`Times carregados: ${Object.keys(allTeams).length}`);
+    diagnostics.push(`Usuarios carregados: ${Object.keys(allUsers).length}`);
 
-    // 3. Carregar rodadas ativas (status = 1)
-    const roundsSnap = await db.ref('rounds').orderByChild('status').equalTo(1).once('value');
-    if (!roundsSnap.exists()) {
-      return res.status(200).json({ message: 'Nenhuma rodada ativa encontrada.' });
-    }
-
-    const rounds = roundsSnap.val();
     const log = [];
     const now = Date.now();
-
     // 4. Processar cada rodada ativa
     for (const [roundKey, roundData] of Object.entries(rounds)) {
       const matches = roundData.matches || [];
@@ -522,7 +538,7 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json({ success: true, dryRun, processed: log });
+    return res.status(200).json({ success: true, dryRun, diagnostics, processed: log });
   } catch (error) {
     console.error('Erro no cron-check-round:', error);
     return res.status(500).json({ error: 'Erro interno na checagem da rodada.', details: error.message });
