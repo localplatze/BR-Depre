@@ -28,6 +28,9 @@ export default async function handler(req, res) {
       now: new Date().toISOString()
     });
   }
+
+  const dryRun = req.query.dryRun === '1';
+
   try {
     // 2. Carregar dados auxiliares: times e usuários
     const [teamsSnap, usersSnap] = await Promise.all([
@@ -127,19 +130,23 @@ export default async function handler(req, res) {
           </html>
         `;
 
-        await sendEmail({
-          to: process.env.EMAIL_USER,
-          bcc: allEmails.join(','),
-          subject: '⚽ BR Depressão - Nova Rodada Aberta para Palpites!',
-          html: createdEmailHtml
-        });
-
-        if (process.env.NODE_ENV === 'test') {
-          console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/createdSent = true`);
+        if (dryRun) {
+          log.push(`[DRY RUN] Rodada ${roundKey}: enviaria e-mail de abertura para ${allEmails.length} usuários.`);
         } else {
-          await db.ref(`rounds/${roundKey}/emails/createdSent`).set(true);
+          await sendEmail({
+            to: process.env.EMAIL_USER,
+            bcc: allEmails.join(','),
+            subject: '⚽ BR Depressão - Nova Rodada Aberta para Palpites!',
+            html: createdEmailHtml
+          });
+
+          if (process.env.NODE_ENV === 'test') {
+            console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/createdSent = true`);
+          } else {
+            await db.ref(`rounds/${roundKey}/emails/createdSent`).set(true);
+          }
+          log.push(`Rodada ${roundKey}: E-mail de abertura enviado para ${allEmails.length} usuários.`);
         }
-        log.push(`Rodada ${roundKey}: E-mail de abertura enviado para ${allEmails.length} usuários.`);
       }
 
       // =========================================================================
@@ -216,19 +223,23 @@ export default async function handler(req, res) {
           </html>
         `;
 
-        await sendEmail({
-          to: process.env.EMAIL_USER,
-          bcc: allEmails.join(','),
-          subject: '⚠️ BR Depressão - Prazo de Palpites se encerra em 3 horas!',
-          html: warningEmailHtml
-        });
-
-        if (process.env.NODE_ENV === 'test') {
-          console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/warningSent = true`);
+        if (dryRun) {
+          log.push(`[DRY RUN] Rodada ${roundKey}: enviaria e-mail de lembrete (3h) para ${allEmails.length} usuários.`);
         } else {
-          await db.ref(`rounds/${roundKey}/emails/warningSent`).set(true);
+          await sendEmail({
+            to: process.env.EMAIL_USER,
+            bcc: allEmails.join(','),
+            subject: '⚠️ BR Depressão - Prazo de Palpites se encerra em 3 horas!',
+            html: warningEmailHtml
+          });
+
+          if (process.env.NODE_ENV === 'test') {
+            console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/warningSent = true`);
+          } else {
+            await db.ref(`rounds/${roundKey}/emails/warningSent`).set(true);
+          }
+          log.push(`Rodada ${roundKey}: E-mail de lembrete (3h) enviado para ${allEmails.length} usuários.`);
         }
-        log.push(`Rodada ${roundKey}: E-mail de lembrete (3h) enviado para ${allEmails.length} usuários.`);
       }
 
       // =========================================================================
@@ -301,19 +312,23 @@ export default async function handler(req, res) {
             </html>
           `;
 
-          await sendEmail({
-            to: process.env.EMAIL_USER,
-            bcc: emailList.join(','),
-            subject: 'BR Depressão - Palpites da Rodada Liberados!',
-            html: startEmailHtml
-          });
-
-          if (process.env.NODE_ENV === 'test') {
-            console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/startSent = true`);
+          if (dryRun) {
+            log.push(`[DRY RUN] Rodada ${roundKey}: enviaria e-mail de início para ${emailList.length} usuários.`);
           } else {
-            await db.ref(`rounds/${roundKey}/emails/startSent`).set(true);
+            await sendEmail({
+              to: process.env.EMAIL_USER,
+              bcc: emailList.join(','),
+              subject: 'BR Depressão - Palpites da Rodada Liberados!',
+              html: startEmailHtml
+            });
+
+            if (process.env.NODE_ENV === 'test') {
+              console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/startSent = true`);
+            } else {
+              await db.ref(`rounds/${roundKey}/emails/startSent`).set(true);
+            }
+            log.push(`Rodada ${roundKey}: E-mail de início enviado para ${emailList.length} usuários.`);
           }
-          log.push(`Rodada ${roundKey}: E-mail de início enviado para ${emailList.length} usuários.`);
         }
       }
 
@@ -486,24 +501,28 @@ export default async function handler(req, res) {
             </html>
           `;
 
-          await sendEmail({
-            to: process.env.EMAIL_USER,
-            bcc: emailList.join(','),
-            subject: 'BR Depressão - Resultados da Rodada Disponíveis!',
-            html: endEmailHtml
-          });
-
-          if (process.env.NODE_ENV === 'test') {
-            console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/endSent = true`);
+          if (dryRun) {
+            log.push(`[DRY RUN] Rodada ${roundKey}: enviaria e-mail de finalização para ${emailList.length} usuários.`);
           } else {
-            await db.ref(`rounds/${roundKey}/emails/endSent`).set(true);
+            await sendEmail({
+              to: process.env.EMAIL_USER,
+              bcc: emailList.join(','),
+              subject: 'BR Depressão - Resultados da Rodada Disponíveis!',
+              html: endEmailHtml
+            });
+
+            if (process.env.NODE_ENV === 'test') {
+              console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/endSent = true`);
+            } else {
+              await db.ref(`rounds/${roundKey}/emails/endSent`).set(true);
+            }
+            log.push(`Rodada ${roundKey}: E-mail de finalização enviado para ${emailList.length} usuários.`);
           }
-          log.push(`Rodada ${roundKey}: E-mail de finalização enviado para ${emailList.length} usuários.`);
         }
       }
     }
 
-    return res.status(200).json({ success: true, processed: log });
+    return res.status(200).json({ success: true, dryRun, processed: log });
   } catch (error) {
     console.error('Erro no cron-check-round:', error);
     return res.status(500).json({ error: 'Erro interno na checagem da rodada.', details: error.message });
