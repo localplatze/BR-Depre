@@ -1,5 +1,9 @@
 import { db, sendEmail, calculateMatchPoints, getManausTimestamp } from './_shared.js';
 
+export const config = {
+  maxDuration: 30
+};
+
 export default async function handler(req, res) {
   // 1. Validar autenticação do Cron
   const authHeader = req.headers.authorization;
@@ -10,6 +14,20 @@ export default async function handler(req, res) {
     }
   }
 
+  if (req.query.ping === '1') {
+    return res.status(200).json({
+      success: true,
+      mode: 'ping',
+      env: {
+        firebaseDatabaseUrl: Boolean(process.env.FIREBASE_DATABASE_URL),
+        firebaseServiceAccount: Boolean(process.env.FIREBASE_SERVICE_ACCOUNT),
+        emailUser: Boolean(process.env.EMAIL_USER),
+        emailPass: Boolean(process.env.EMAIL_PASS),
+        cronSecret: Boolean(process.env.CRON_SECRET)
+      },
+      now: new Date().toISOString()
+    });
+  }
   try {
     // 2. Carregar dados auxiliares: times e usuários
     const [teamsSnap, usersSnap] = await Promise.all([
