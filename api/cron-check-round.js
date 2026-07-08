@@ -1,4 +1,4 @@
-import { db, sendEmail, calculateMatchPoints, getManausTimestamp } from './_shared.js';
+import { sendEmail, calculateMatchPoints, getManausTimestamp } from './_shared.js';
 
 export const config = {
   maxDuration: 30
@@ -10,6 +10,35 @@ function withTimeout(promise, label, ms = 7000) {
     timer = setTimeout(() => reject(new Error(`Timeout em ${label} apos ${ms}ms`)), ms);
   });
   return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+function getDatabaseUrl() {
+  return (process.env.FIREBASE_DATABASE_URL || '').replace(/\/$/, '');
+}
+
+async function firebaseRestGet(path, query = '', label = path) {
+  const baseUrl = getDatabaseUrl();
+  if (!baseUrl) throw new Error('FIREBASE_DATABASE_URL nao configurado.');
+  const suffix = query ? `?${query}` : '';
+  const response = await withTimeout(fetch(`${baseUrl}/${path}.json${suffix}`), label);
+  if (!response.ok) {
+    throw new Error(`${label}: Firebase REST HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+async function firebaseRestSet(path, value, label = path) {
+  const baseUrl = getDatabaseUrl();
+  if (!baseUrl) throw new Error('FIREBASE_DATABASE_URL nao configurado.');
+  const response = await withTimeout(fetch(`${baseUrl}/${path}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(value)
+  }), label);
+  if (!response.ok) {
+    throw new Error(`${label}: Firebase REST HTTP ${response.status}`);
+  }
+  return response.json();
 }
 
 export default async function handler(req, res) {
@@ -43,25 +72,25 @@ export default async function handler(req, res) {
     const diagnostics = [];
 
     // 2. Carregar primeiro apenas rodadas ativas (status = 1)
-    const roundsSnap = await withTimeout(
-      db.ref('rounds').orderByChild('status').equalTo(1).once('value'),
+    const rounds = await firebaseRestGet(
+      'rounds',
+      'orderBy=%22status%22&equalTo=1',
       'consulta de rodadas ativas'
     );
-    if (!roundsSnap.exists()) {
+    if (!rounds || !Object.keys(rounds).length) {
       return res.status(200).json({ success: true, dryRun, diagnostics, message: 'Nenhuma rodada ativa encontrada.' });
     }
 
-    const rounds = roundsSnap.val();
     diagnostics.push(`Rodadas ativas encontradas: ${Object.keys(rounds).length}`);
 
     // 3. Carregar dados auxiliares somente quando houver rodada ativa
-    const [teamsSnap, usersSnap] = await Promise.all([
-      withTimeout(db.ref('teams').once('value'), 'consulta de times'),
-      withTimeout(db.ref('users').once('value'), 'consulta de usuarios')
+    const [teamsData, usersData] = await Promise.all([
+      firebaseRestGet('teams', '', 'consulta de times'),
+      firebaseRestGet('users', '', 'consulta de usuarios')
     ]);
 
-    const allTeams = teamsSnap.val() || {};
-    const allUsers = usersSnap.val() || {};
+    const allTeams = teamsData || {};
+    const allUsers = usersData || {};
     diagnostics.push(`Times carregados: ${Object.keys(allTeams).length}`);
     diagnostics.push(`Usuarios carregados: ${Object.keys(allUsers).length}`);
 
@@ -159,7 +188,7 @@ export default async function handler(req, res) {
           if (process.env.NODE_ENV === 'test') {
             console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/createdSent = true`);
           } else {
-            await db.ref(`rounds/${roundKey}/emails/createdSent`).set(true);
+            await firebaseRestSet(`rounds/${roundKey}/emails/createdSent`, true, 'gravacao createdSent');
           }
           log.push(`Rodada ${roundKey}: E-mail de abertura enviado para ${allEmails.length} usuários.`);
         }
@@ -252,7 +281,7 @@ export default async function handler(req, res) {
           if (process.env.NODE_ENV === 'test') {
             console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/warningSent = true`);
           } else {
-            await db.ref(`rounds/${roundKey}/emails/warningSent`).set(true);
+            await firebaseRestSet(`rounds/${roundKey}/emails/warningSent`, true, 'gravacao warningSent');
           }
           log.push(`Rodada ${roundKey}: E-mail de lembrete (3h) enviado para ${allEmails.length} usuários.`);
         }
@@ -341,7 +370,7 @@ export default async function handler(req, res) {
             if (process.env.NODE_ENV === 'test') {
               console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/startSent = true`);
             } else {
-              await db.ref(`rounds/${roundKey}/emails/startSent`).set(true);
+              await firebaseRestSet(`rounds/${roundKey}/emails/startSent`, true, 'gravacao startSent');
             }
             log.push(`Rodada ${roundKey}: E-mail de início enviado para ${emailList.length} usuários.`);
           }
@@ -530,7 +559,7 @@ export default async function handler(req, res) {
             if (process.env.NODE_ENV === 'test') {
               console.log(`[TESTE] Mock de escrita no banco: rounds/${roundKey}/emails/endSent = true`);
             } else {
-              await db.ref(`rounds/${roundKey}/emails/endSent`).set(true);
+              await firebaseRestSet(`rounds/${roundKey}/emails/endSent`, true, 'gravacao endSent');
             }
             log.push(`Rodada ${roundKey}: E-mail de finalização enviado para ${emailList.length} usuários.`);
           }
