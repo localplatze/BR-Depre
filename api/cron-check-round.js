@@ -16,6 +16,10 @@ function getDatabaseUrl() {
   return (process.env.FIREBASE_DATABASE_URL || '').replace(/\/$/, '');
 }
 
+function getAppUrl() {
+  return (process.env.APP_URL || 'https://brdadepre.vercel.app').replace(/\/$/, '');
+}
+
 async function firebaseRestGet(path, query = '', label = path) {
   const baseUrl = getDatabaseUrl();
   if (!baseUrl) throw new Error('FIREBASE_DATABASE_URL nao configurado.');
@@ -70,6 +74,7 @@ export default async function handler(req, res) {
 
   try {
     const diagnostics = [];
+    const appUrl = getAppUrl();
 
     // 2. Carregar primeiro apenas rodadas ativas (status = 1)
     const rounds = await firebaseRestGet(
@@ -162,7 +167,7 @@ export default async function handler(req, res) {
                 <p style="margin-top: 0; font-size: 15px; font-weight: 600; color: #0f172a;">Confrontos da Rodada:</p>
                 ${matchesListHtml}
                 <div style="text-align: center; margin: 30px 0 10px;">
-                  <a href="https://brdepre.firebaseapp.com/palpites.html" style="background-color: #3b82f6; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px rgba(59,130,246,0.2);">
+                  <a href="${appUrl}/palpites.html" style="background-color: #3b82f6; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px rgba(59,130,246,0.2);">
                     Enviar Meus Palpites
                   </a>
                 </div>
@@ -255,7 +260,7 @@ export default async function handler(req, res) {
                   </tbody>
                 </table>
                 <div style="text-align: center; margin: 30px 0 10px;">
-                  <a href="https://brdepre.firebaseapp.com/palpites.html" style="background-color: #d97706; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px rgba(217,119,6,0.2);">
+                  <a href="${appUrl}/palpites.html" style="background-color: #d97706; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px rgba(217,119,6,0.2);">
                     Ir Palpitar
                   </a>
                 </div>
