@@ -2305,11 +2305,26 @@
             return getMatchesArray(matches).length;
         }
 
+        function countPredictionsInMatches(matches) {
+            return getMatchesArray(matches).reduce((total, match) => {
+                return total + Object.keys(match.predictions || {}).length;
+            }, 0);
+        }
+
         function sanitizeTournamentList(value) {
             return value
                 .split(',')
                 .map((tournament) => tournament.trim())
                 .filter(Boolean);
+        }
+
+        function applyRoundTimestampFallback(roundData) {
+            if (!roundData?.finishTimestamp) return roundData;
+            roundData.matches = getMatchesArray(roundData.matches).map((match) => ({
+                ...match,
+                timestamp: match.timestamp || roundData.finishTimestamp
+            }));
+            return roundData;
         }
 
         function validateRoundData(roundData) {
@@ -2322,7 +2337,6 @@
                 const label = `Partida ${index + 1}`;
                 if (!match.homeTeam || !match.awayTeam) errors.push(`${label}: selecione os dois times.`);
                 if (match.homeTeam && match.awayTeam && match.homeTeam === match.awayTeam) errors.push(`${label}: os times precisam ser diferentes.`);
-                if (!match.timestamp) errors.push(`${label}: informe data/hora.`);
                 const hasOnlyOneScore = Boolean(match.finalResult) &&
                     ((match.finalResult.homeScore === null) !== (match.finalResult.awayScore === null));
                 if (hasOnlyOneScore) errors.push(`${label}: preencha os dois placares finais ou deixe ambos vazios.`);
@@ -2647,11 +2661,11 @@
                 const matchTimestamp = matchEntry.querySelector('.match-timestamp').value;
 
                 if (homeTeam && awayTeam) {
-                    const matchData = {
-                        homeTeam,
-                        awayTeam,
-                        timestamp: matchTimestamp // Adiciona o timestamp da partida
-                    };
+                        const matchData = {
+                            homeTeam,
+                            awayTeam,
+                            timestamp: matchTimestamp || roundData.finishTimestamp
+                        };
                     Object.assign(matchData, getApiMatchMeta(matchEntry));
 
                     if (homeScore !== '' && awayScore !== '') {
@@ -2665,6 +2679,7 @@
                 }
             });
 
+            applyRoundTimestampFallback(roundData);
             if (!validateRoundData(roundData)) return;
 
             try {
@@ -2838,7 +2853,7 @@
                             ...(existingMatches[index] || {}),
                             homeTeam: homeTeamId,
                             awayTeam: awayTeamId,
-                            timestamp: timestamp
+                            timestamp: timestamp || updatedRoundData.finishTimestamp
                         };
                         Object.assign(matchData, getApiMatchMeta(row));
 
@@ -2855,7 +2870,14 @@
                     }
                 });
 
+                applyRoundTimestampFallback(updatedRoundData);
                 if (!validateRoundData(updatedRoundData)) return;
+                const previousPredictionCount = countPredictionsInMatches(existingRoundData.matches);
+                const nextPredictionCount = countPredictionsInMatches(updatedRoundData.matches);
+                if (nextPredictionCount < previousPredictionCount) {
+                    const proceed = confirm(`Atenção: esta alteração reduziria os palpites salvos de ${previousPredictionCount} para ${nextPredictionCount}. Isso pode indicar perda de palpites. Deseja salvar mesmo assim?`);
+                    if (!proceed) return;
+                }
                 await createDataBackup('rounds', roundId, existingRoundData, 'edit-round');
 
                 // Atualiza o banco de dados
@@ -3049,32 +3071,37 @@
         });
 
         function calculateMatchPoints(finalResult, prediction) {
-            if (!finalResult || !prediction || 
-                finalResult.homeScore === null || finalResult.awayScore === null ||
-                prediction.homeScore === null || prediction.awayScore === null) {
+            if (!finalResult || !prediction ||
+                !Number.isFinite(Number(finalResult.homeScore)) ||
+                !Number.isFinite(Number(finalResult.awayScore)) ||
+                !Number.isFinite(Number(prediction.homeScore)) ||
+                !Number.isFinite(Number(prediction.awayScore))) {
                 return 0;
             }
 
+            const finalHome = Number(finalResult.homeScore);
+            const finalAway = Number(finalResult.awayScore);
+            const predictionHome = Number(prediction.homeScore);
+            const predictionAway = Number(prediction.awayScore);
+
             // Placar exato
-            if (finalResult.homeScore === prediction.homeScore && 
-                finalResult.awayScore === prediction.awayScore) {
+            if (finalHome === predictionHome && finalAway === predictionAway) {
                 return 3;
             }
 
             // Vencedor correto
-            const finalWinner = finalResult.homeScore > finalResult.awayScore ? 'home' :
-                                finalResult.homeScore < finalResult.awayScore ? 'away' : 'draw';
+            const finalWinner = finalHome > finalAway ? 'home' :
+                                finalHome < finalAway ? 'away' : 'draw';
             
-            const predictionWinner = prediction.homeScore > prediction.awayScore ? 'home' :
-                                    prediction.homeScore < prediction.awayScore ? 'away' : 'draw';
+            const predictionWinner = predictionHome > predictionAway ? 'home' :
+                                    predictionHome < predictionAway ? 'away' : 'draw';
 
             if (finalWinner === predictionWinner) {
                 return 1;
             }
 
             // Placar invertido
-            if (finalResult.homeScore === prediction.awayScore && 
-                finalResult.awayScore === prediction.homeScore) {
+            if (finalHome === predictionAway && finalAway === predictionHome) {
                 return -1;
             }
 
@@ -3626,12 +3653,21 @@
                 const allRoundsData = roundsSnapshot.val() || {};
 
                 const updates = {}; // Objeto para acumular todas as atualizações do Firebase
+                const previousScores = {};
+                const recalculatedScores = {};
+                const roundAudit = {};
 
                 // Itera sobre cada usuário encontrado no banco
                 for (const userId in allUsersData) {
                     const currentUserData = allUsersData[userId];
                     let userPointsThisRound = 0;
                     let userTotalPoints = 0;
+                    previousScores[userId] = {
+                        name: currentUserData.name || '',
+                        [`lastRoundPointsLiga${currentSuperligaStage}`]: currentUserData[`lastRoundPointsLiga${currentSuperligaStage}`] || 0,
+                        [`pointsSuperliga${currentSuperligaStage}`]: currentUserData[`pointsSuperliga${currentSuperligaStage}`] || 0,
+                        [`lastScoredRoundKeySuperliga${currentSuperligaStage}`]: currentUserData[`lastScoredRoundKeySuperliga${currentSuperligaStage}`] || null
+                    };
 
                     console.log(`[processRoundScores] Processando recálculo de pontos para: ${currentUserData.name} (${userId})`);
 
@@ -3673,11 +3709,31 @@
 
                     updates[`/users/${userId}/lastRoundPointsLiga${currentSuperligaStage}`] = userPointsThisRound;
                     updates[`/users/${userId}/pointsSuperliga${currentSuperligaStage}`] = userTotalPoints;
+                    updates[`/users/${userId}/lastScoredRoundKeySuperliga${currentSuperligaStage}`] = roundId;
+                    updates[`/users/${userId}/lastScoreRecalculatedAtSuperliga${currentSuperligaStage}`] = firebase.database.ServerValue.TIMESTAMP;
+                    recalculatedScores[userId] = {
+                        name: currentUserData.name || '',
+                        roundPoints: userPointsThisRound,
+                        totalPoints: userTotalPoints
+                    };
+                    roundAudit[userId] = userPointsThisRound;
                 }
 
                 // Aplica todas as atualizações no banco de dados de uma só vez
                 if (Object.keys(updates).length > 0) {
                     console.log("[processRoundScores] Atualizando pontuações recalculadas no Firebase...");
+                    await createDataBackup('scoreRecalculations', roundId, {
+                        stage: currentSuperligaStage,
+                        previousScores,
+                        recalculatedScores
+                    }, 'before-score-recalculation');
+                    updates[`/scoreAudits/superliga/${currentSuperligaStage}/${roundId}`] = {
+                        createdAt: firebase.database.ServerValue.TIMESTAMP,
+                        roundId,
+                        stage: currentSuperligaStage,
+                        roundPointsByUser: roundAudit,
+                        totalsByUser: recalculatedScores
+                    };
                     await database.ref().update(updates);
                     console.log(`[processRoundScores] PONTUAÇÕES DA SUPERLIGA ${currentSuperligaStage} RECALCULADAS E ATUALIZADAS COM SUCESSO.`);
                 } else {

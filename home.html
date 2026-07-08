@@ -1104,12 +1104,18 @@
     }
 
     function calculateMatchPoints(final, pred) {
-        if (final.homeScore === null || pred.homeScore === null) return 0;
-        if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
-        const finalWinner = Math.sign(final.homeScore - final.awayScore);
-        const predWinner = Math.sign(pred.homeScore - pred.awayScore);
+        if (!final || !pred) return 0;
+        if (!Number.isFinite(Number(final.homeScore)) || !Number.isFinite(Number(final.awayScore))) return 0;
+        if (!Number.isFinite(Number(pred.homeScore)) || !Number.isFinite(Number(pred.awayScore))) return 0;
+        const finalHome = Number(final.homeScore);
+        const finalAway = Number(final.awayScore);
+        const predHome = Number(pred.homeScore);
+        const predAway = Number(pred.awayScore);
+        if (finalHome === predHome && finalAway === predAway) return 3;
+        const finalWinner = Math.sign(finalHome - finalAway);
+        const predWinner = Math.sign(predHome - predAway);
         if (finalWinner === predWinner) return 1;
-        if (final.homeScore === pred.awayScore && final.awayScore === pred.homeScore) return -1;
+        if (finalHome === predAway && finalAway === predHome) return -1;
         return 0;
     }
 
@@ -1146,7 +1152,7 @@
             .filter(u => u[pointsField] !== undefined)
             .map(u => ({
                 ...u,
-                totalPoints: (u[pointsField] || 0) + (activeRound ? (livePoints[u.id] || 0) : (u[roundField] || 0)),
+                totalPoints: (u[pointsField] || 0) + (activeRound ? (livePoints[u.id] || 0) : 0),
                 roundPoints: activeRound ? (livePoints[u.id] || 0) : (u[roundField] || 0)
             }))
             .sort((a, b) => b.totalPoints - a.totalPoints || b.roundPoints - a.roundPoints);
