@@ -586,6 +586,61 @@
             border-radius: 2px;
         }
 
+        /* Jogo Estrela (2x) Styling */
+        .star-match-btn {
+            width: 100%;
+            margin-top: 0.75rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px dashed rgba(245, 158, 11, 0.5);
+            background: rgba(245, 158, 11, 0.08);
+            color: #f59e0b;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .star-match-btn:hover:not(:disabled) {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: #f59e0b;
+            transform: scale(1.01);
+        }
+
+        .star-match-btn.active {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            border: 1px solid #f59e0b;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
+        .star-match-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .match-card.is-star-card {
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 18px rgba(245, 158, 11, 0.3) !important;
+        }
+
+        .star-badge-tag {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .container {
@@ -844,13 +899,15 @@
                 const unsaved = unsavedPredictions[idx];
                 const homeScore = unsaved?.homeScore ?? savedPred.homeScore ?? '';
                 const awayScore = unsaved?.awayScore ?? savedPred.awayScore ?? '';
+                const isStar = unsaved?.isStarMatch !== undefined ? unsaved.isStarMatch : (savedPred.isStarMatch === true);
                 const isLocked = isMatchLocked(match);
                 const hasResult = hasFinalResult(match);
 
                 return `
-                    <div class="match-card ${isLocked ? 'locked' : ''}" data-match-id="${idx}">
+                    <div class="match-card ${isLocked ? 'locked' : ''} ${isStar ? 'is-star-card' : ''}" data-match-id="${idx}">
                         <div class="match-header">
                             <span><i class="far fa-calendar-alt"></i> ${new Date(match.timestamp ? getManausTimestamp(match.timestamp) : roundFinishTimestamp).toLocaleDateString('pt-BR')}</span>
+                            ${isStar ? '<span class="star-badge-tag"><i class="fas fa-star"></i> 2x ESTRELA</span>' : ''}
                             <span><i class="far fa-clock"></i> ${new Date(match.timestamp ? getManausTimestamp(match.timestamp) : roundFinishTimestamp).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
                             ${isLocked && !hasResult ? '<i class="fas fa-lock lock-icon"></i>' : ''}
                         </div>
@@ -884,6 +941,9 @@
                                         <button class="score-btn inc" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>+</button>
                                     </div>
                                 </div>
+                                <button class="star-match-btn ${isStar ? 'active' : ''}" data-match="${idx}" ${isLocked ? 'disabled' : ''}>
+                                    <i class="${isStar ? 'fas' : 'far'} fa-star"></i> ${isStar ? '⭐ Jogo Estrela (Pontuação Duplicada 2x)' : 'Definir como Jogo Estrela (2x)'}
+                                </button>
                             `}
                         </div>
                         ${isLocked && !hasResult ? `
@@ -899,14 +959,14 @@
             document.querySelectorAll('.score-input').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const matchId = input.dataset.match;
-                    const team = input.dataset.team;
                     const homeInput = document.querySelector(`.score-input[data-match="${matchId}"][data-team="home"]`);
                     const awayInput = document.querySelector(`.score-input[data-match="${matchId}"][data-team="away"]`);
                     const homeVal = homeInput.value;
                     const awayVal = awayInput.value;
+                    const isStar = unsavedPredictions[matchId]?.isStarMatch ?? (allMatches[matchId]?.predictions?.[userId]?.isStarMatch === true);
                     
                     if (homeVal.trim() !== '' || awayVal.trim() !== '') {
-                        unsavedPredictions[matchId] = { homeScore: homeVal, awayScore: awayVal };
+                        unsavedPredictions[matchId] = { homeScore: homeVal, awayScore: awayVal, isStarMatch: isStar };
                     } else {
                         delete unsavedPredictions[matchId];
                     }
@@ -925,6 +985,36 @@
                     else if (btn.classList.contains('dec') && val > 0) val--;
                     input.value = val;
                     input.dispatchEvent(new Event('input'));
+                });
+            });
+
+            // Listener para botão do Jogo Estrela (Apenas 1 por rodada por usuário)
+            document.querySelectorAll('.star-match-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const matchId = parseInt(btn.dataset.match);
+                    const currentStarState = btn.classList.contains('active');
+
+                    // Desmarcar Jogo Estrela de TODOS os jogos da rodada
+                    allMatches.forEach((m, i) => {
+                        const savedP = m.predictions?.[userId] || {};
+                        const currentHome = unsavedPredictions[i]?.homeScore ?? savedP.homeScore ?? '';
+                        const currentAway = unsavedPredictions[i]?.awayScore ?? savedP.awayScore ?? '';
+                        
+                        unsavedPredictions[i] = {
+                            homeScore: String(currentHome),
+                            awayScore: String(currentAway),
+                            isStarMatch: false
+                        };
+                    });
+
+                    // Se não estava ativo antes, ativar apenas para o jogo clicado
+                    if (!currentStarState) {
+                        unsavedPredictions[matchId].isStarMatch = true;
+                    }
+
+                    saveDraft();
+                    updateSaveButton();
+                    renderMatches(userId);
                 });
             });
 
@@ -952,9 +1042,10 @@
             const container = document.getElementById('predictions-list');
             container.innerHTML = list.map(p => {
                 const pointsClass = p.points !== null ? `points-${String(p.points).replace('-', '-1')}` : 'points-0';
+                const starTag = p.isStarMatch ? '<span style="color:#f59e0b; font-size:12px; font-weight:bold; margin-left:4px;" title="Jogo Estrela (2x Pontos)">⭐ 2x</span>' : '';
                 return `
                     <div class="prediction-item ${pointsClass}">
-                        <span class="prediction-player">${p.name}</span>
+                        <span class="prediction-player">${p.name} ${starTag}</span>
                         <span class="prediction-score">${p.homeScore} × ${p.awayScore}</span>
                         <div class="prediction-points ${pointsClass}">${p.points !== null ? p.points : '-'}</div>
                     </div>
@@ -981,15 +1072,16 @@
                 allMatches.forEach(match => {
                     const pred = match.predictions?.[pid];
                     if (pred) {
+                        const starBadge = pred.isStarMatch ? '⭐ ' : '';
                         if (hasFinalResult(match)) {
                             const points = calculateMatchPoints(match.finalResult, pred);
                             let badgeClass = '';
-                            if (points === 3) badgeClass = 'points-3-badge';
-                            else if (points === 1) badgeClass = 'points-1-badge';
-                            else if (points === -1) badgeClass = 'points--1-badge';
-                            row += `<td><span class="points-badge ${badgeClass}">${pred.homeScore}×${pred.awayScore}<br>${points}pts</span>`;
+                            if (points >= 3) badgeClass = 'points-3-badge';
+                            else if (points >= 1) badgeClass = 'points-1-badge';
+                            else if (points < 0) badgeClass = 'points--1-badge';
+                            row += `<td><span class="points-badge ${badgeClass}">${starBadge}${pred.homeScore}×${pred.awayScore}<br>${points}pts</span>`;
                         } else {
-                            row += `<td><i class="fas fa-futbol" style="color: var(--primary);" title="${pred.homeScore}×${pred.awayScore}"></i>`;
+                            row += `<td>${starBadge}<i class="fas fa-futbol" style="color: var(--primary);" title="${pred.homeScore}×${pred.awayScore}"></i>`;
                         }
                     } else {
                         row += `<td><i class="fas fa-question-circle" style="color: var(--text-muted);"></i>`;
@@ -1009,11 +1101,19 @@
             
             try {
                 const updates = {};
-                for (const [matchId, pred] of Object.entries(unsavedPredictions)) {
-                    if (pred.homeScore.trim() !== '' && pred.awayScore.trim() !== '') {
-                        updates[`/rounds/${currentRoundKey}/matches/${matchId}/predictions/${userId}`] = {
-                            homeScore: parseInt(pred.homeScore),
-                            awayScore: parseInt(pred.awayScore)
+                for (let idx = 0; idx < allMatches.length; idx++) {
+                    const match = allMatches[idx];
+                    const savedPred = match.predictions?.[userId] || {};
+                    const unsaved = unsavedPredictions[idx];
+                    const homeVal = unsaved?.homeScore ?? savedPred.homeScore;
+                    const awayVal = unsaved?.awayScore ?? savedPred.awayScore;
+                    const isStar = unsaved?.isStarMatch !== undefined ? unsaved.isStarMatch : (savedPred.isStarMatch === true);
+
+                    if (homeVal !== undefined && homeVal !== '' && awayVal !== undefined && awayVal !== '') {
+                        updates[`/rounds/${currentRoundKey}/matches/${idx}/predictions/${userId}`] = {
+                            homeScore: parseInt(homeVal),
+                            awayScore: parseInt(awayVal),
+                            isStarMatch: isStar === true
                         };
                     }
                 }

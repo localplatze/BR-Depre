@@ -77,15 +77,22 @@ export function calculateMatchPoints(final, pred) {
   const pHome = parseInt(pred.homeScore, 10);
   const pAway = parseInt(pred.awayScore, 10);
   
-  if (fHome === pHome && fAway === pAway) return 3;
+  let pts = 0;
+  if (fHome === pHome && fAway === pAway) {
+    pts = 3;
+  } else {
+    const finalWinner = Math.sign(fHome - fAway);
+    const predWinner = Math.sign(pHome - pAway);
+    if (finalWinner === predWinner) pts = 1;
+    else if (fHome === pAway && fAway === pHome) pts = -1;
+    else pts = 0;
+  }
   
-  const finalWinner = Math.sign(fHome - fAway);
-  const predWinner = Math.sign(pHome - pAway);
-  if (finalWinner === predWinner) return 1;
+  if (pred.isStarMatch || pred.isCaptain || pred.star || pred.doublePoints) {
+    pts *= 2;
+  }
   
-  if (fHome === pAway && fAway === pHome) return -1;
-  
-  return 0;
+  return pts;
 }
 
 // Helper para converter datas do formato do banco para timestamp

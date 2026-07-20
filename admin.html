@@ -3650,28 +3650,33 @@
             const predictionHome = Number(prediction.homeScore);
             const predictionAway = Number(prediction.awayScore);
 
+            let basePoints = 0;
             // Placar exato
             if (finalHome === predictionHome && finalAway === predictionAway) {
-                return 3;
+                basePoints = 3;
+            } else {
+                // Vencedor correto
+                const finalWinner = finalHome > finalAway ? 'home' :
+                    finalHome < finalAway ? 'away' : 'draw';
+
+                const predictionWinner = predictionHome > predictionAway ? 'home' :
+                    predictionHome < predictionAway ? 'away' : 'draw';
+
+                if (finalWinner === predictionWinner) {
+                    basePoints = 1;
+                } else if (finalHome === predictionAway && finalAway === predictionHome) {
+                    // Placar invertido
+                    basePoints = -1;
+                } else {
+                    basePoints = 0;
+                }
             }
 
-            // Vencedor correto
-            const finalWinner = finalHome > finalAway ? 'home' :
-                finalHome < finalAway ? 'away' : 'draw';
-
-            const predictionWinner = predictionHome > predictionAway ? 'home' :
-                predictionHome < predictionAway ? 'away' : 'draw';
-
-            if (finalWinner === predictionWinner) {
-                return 1;
+            if (prediction.isStarMatch || prediction.isCaptain || prediction.star || prediction.doublePoints) {
+                basePoints *= 2;
             }
 
-            // Placar invertido
-            if (finalHome === predictionAway && finalAway === predictionHome) {
-                return -1;
-            }
-
-            return 0;
+            return basePoints;
         }
 
         function getCurrentSuperligaStage(tournaments) {
