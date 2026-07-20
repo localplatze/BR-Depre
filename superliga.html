@@ -1006,7 +1006,11 @@
             const pointsField = `pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
             const lastRoundPointsField = `lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
 
-            const usersArray = Object.values(usersDataCache).filter(user => user[pointsField] !== undefined);
+            const usersArray = Object.values(usersDataCache).filter(user => {
+                if (stage === 'abertura' && user.playingAbertura === false) return false;
+                if (stage === 'clausura' && user.playingClausura === false) return false;
+                return user[pointsField] !== undefined || user.playingAbertura !== false || user.playingClausura !== false;
+            });
 
             // Calcular estatísticas completas para cada jogador
             const standings = usersArray.map(user => {
