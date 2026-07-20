@@ -1189,12 +1189,15 @@
         .section {
             display: none;
         }
+
         .section.active {
             display: block;
         }
+
         .subsection {
             display: none;
         }
+
         .subsection.active {
             display: block;
         }
@@ -1447,70 +1450,122 @@
                 </div>
                 <div class="card-body">
                     <!-- Banner de Fase Ativa no Site -->
-                    <div class="card" style="border: 2px solid #6366f1; background: #eef2ff; margin-bottom: 20px; padding: 15px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div class="card"
+                        style="border: 2px solid #6366f1; background: #eef2ff; margin-bottom: 20px; padding: 15px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                             <div>
-                                <h4 style="color: #3730a3; margin-bottom: 4px;"><i class="fas fa-play-circle"></i> Estágio / Fase Ativa da Supercopa no Site</h4>
-                                <p style="font-size: 13px; color: #4338ca; margin: 0;">Define qual fase a tela da Supercopa abrirá por padrão para os visitantes.</p>
+                                <h4 style="color: #3730a3; margin-bottom: 4px;"><i class="fas fa-play-circle"></i>
+                                    Estágio / Fase Ativa da Supercopa no Site</h4>
+                                <p style="font-size: 13px; color: #4338ca; margin: 0;">Define qual fase a tela da
+                                    Supercopa abrirá por padrão para os visitantes.</p>
                             </div>
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <select id="supercopa-active-stage-select" class="form-control" style="width: 200px; font-weight: 700;">
+                                <select id="supercopa-active-stage-select" class="form-control"
+                                    style="width: 200px; font-weight: 700;">
                                     <option value="groups">Fase de Grupos</option>
                                     <option value="quarterFinals">Quartas de Final</option>
                                     <option value="semiFinals">Semifinais</option>
                                     <option value="final">Final</option>
                                 </select>
-                                <button id="btn-save-supercopa-active-stage" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Fase Ativa</button>
+                                <button id="btn-save-supercopa-active-stage" class="btn btn-primary"><i
+                                        class="fas fa-save"></i> Salvar Fase Ativa</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="tabs supercopa-subtabs">
-                        <div class="tab active" data-subsection="groups"><i class="fas fa-table"></i> 1. Definição dos Grupos</div>
-                        <div class="tab" data-subsection="rounds"><i class="fas fa-calendar-alt"></i> 2. Rodadas dos Grupos</div>
-                        <div class="tab" data-subsection="knockout"><i class="fas fa-flag-checkered"></i> 3. Mata-Mata (Ida e Volta)</div>
+                        <div class="tab active" data-subsection="groups"><i class="fas fa-table"></i> 1. Definição dos
+                            Grupos</div>
+                        <div class="tab" data-subsection="rounds"><i class="fas fa-calendar-alt"></i> 2. Rodadas dos
+                            Grupos</div>
+                        <div class="tab" data-subsection="knockout"><i class="fas fa-flag-checkered"></i> 3. Mata-Mata
+                            (Ida e Volta)</div>
                     </div>
 
                     <!-- 1. Seção de Grupos -->
                     <div id="groups-subsection" class="subsection active">
                         <div class="card" style="border: 1px solid #e2e8f0; margin-bottom: 20px;">
                             <div class="card-header" style="background: #f8fafc;">
-                                <h3><i class="fas fa-users-rectangle"></i> Configurar Participantes dos Grupos (A, B, C e D)</h3>
+                                <h3><i class="fas fa-users-rectangle"></i> Configurar Participantes dos Grupos (A, B, C
+                                    e D)</h3>
                             </div>
                             <div class="card-body">
                                 <form id="supercopa-groups-form">
-                                    <div class="groups-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
-                                        <div class="card" style="padding: 15px; border: 2px solid #f59e0b; background: #fffbebf5;">
-                                            <h4 style="color: #b45309; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo A (Grupo 1)</h4>
-                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="1" data-pos="0"></select></div>
-                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="1" data-pos="1"></select></div>
-                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="1" data-pos="2"></select></div>
-                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="1" data-pos="3"></select></div>
+                                    <div class="groups-grid"
+                                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                                        <div class="card"
+                                            style="padding: 15px; border: 2px solid #f59e0b; background: #fffbebf5;">
+                                            <h4 style="color: #b45309; margin-bottom: 12px;"><i
+                                                    class="fas fa-shield"></i> Grupo A (Grupo 1)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select
+                                                    class="form-control group-player" data-group="1"
+                                                    data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select
+                                                    class="form-control group-player" data-group="1"
+                                                    data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select
+                                                    class="form-control group-player" data-group="1"
+                                                    data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select
+                                                    class="form-control group-player" data-group="1"
+                                                    data-pos="3"></select></div>
                                         </div>
-                                        <div class="card" style="padding: 15px; border: 2px solid #3b82f6; background: #eff6ff;">
-                                            <h4 style="color: #1d4ed8; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo B (Grupo 2)</h4>
-                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="2" data-pos="0"></select></div>
-                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="2" data-pos="1"></select></div>
-                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="2" data-pos="2"></select></div>
-                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="2" data-pos="3"></select></div>
+                                        <div class="card"
+                                            style="padding: 15px; border: 2px solid #3b82f6; background: #eff6ff;">
+                                            <h4 style="color: #1d4ed8; margin-bottom: 12px;"><i
+                                                    class="fas fa-shield"></i> Grupo B (Grupo 2)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select
+                                                    class="form-control group-player" data-group="2"
+                                                    data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select
+                                                    class="form-control group-player" data-group="2"
+                                                    data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select
+                                                    class="form-control group-player" data-group="2"
+                                                    data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select
+                                                    class="form-control group-player" data-group="2"
+                                                    data-pos="3"></select></div>
                                         </div>
-                                        <div class="card" style="padding: 15px; border: 2px solid #10b981; background: #ecfdf5;">
-                                            <h4 style="color: #047857; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo C (Grupo 3)</h4>
-                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="3" data-pos="0"></select></div>
-                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="3" data-pos="1"></select></div>
-                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="3" data-pos="2"></select></div>
-                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="3" data-pos="3"></select></div>
+                                        <div class="card"
+                                            style="padding: 15px; border: 2px solid #10b981; background: #ecfdf5;">
+                                            <h4 style="color: #047857; margin-bottom: 12px;"><i
+                                                    class="fas fa-shield"></i> Grupo C (Grupo 3)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select
+                                                    class="form-control group-player" data-group="3"
+                                                    data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select
+                                                    class="form-control group-player" data-group="3"
+                                                    data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select
+                                                    class="form-control group-player" data-group="3"
+                                                    data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select
+                                                    class="form-control group-player" data-group="3"
+                                                    data-pos="3"></select></div>
                                         </div>
-                                        <div class="card" style="padding: 15px; border: 2px solid #8b5cf6; background: #f5f3ff;">
-                                            <h4 style="color: #6d28d9; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo D (Grupo 4)</h4>
-                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="4" data-pos="0"></select></div>
-                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="4" data-pos="1"></select></div>
-                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="4" data-pos="2"></select></div>
-                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="4" data-pos="3"></select></div>
+                                        <div class="card"
+                                            style="padding: 15px; border: 2px solid #8b5cf6; background: #f5f3ff;">
+                                            <h4 style="color: #6d28d9; margin-bottom: 12px;"><i
+                                                    class="fas fa-shield"></i> Grupo D (Grupo 4)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select
+                                                    class="form-control group-player" data-group="4"
+                                                    data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select
+                                                    class="form-control group-player" data-group="4"
+                                                    data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select
+                                                    class="form-control group-player" data-group="4"
+                                                    data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select
+                                                    class="form-control group-player" data-group="4"
+                                                    data-pos="3"></select></div>
                                         </div>
                                     </div>
                                     <div style="margin-top: 20px; text-align: right;">
-                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Composição dos Grupos</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar
+                                            Composição dos Grupos</button>
                                     </div>
                                 </form>
                             </div>
@@ -1519,9 +1574,12 @@
 
                     <!-- 2. Seção de Rodadas -->
                     <div id="rounds-subsection" class="subsection">
-                        <div class="action-buttons" style="margin-bottom: 15px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                            <button id="create-supercopa-round" class="btn btn-primary"><i class="fas fa-plus"></i> Criar Nova Rodada do Grupo</button>
-                            <button id="btn-clear-supercopa-rounds" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Limpar Histórico de Rodadas da Supercopa</button>
+                        <div class="action-buttons"
+                            style="margin-bottom: 15px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                            <button id="create-supercopa-round" class="btn btn-primary"><i class="fas fa-plus"></i>
+                                Criar Nova Rodada do Grupo</button>
+                            <button id="btn-clear-supercopa-rounds" class="btn btn-danger"><i
+                                    class="fas fa-trash-alt"></i> Limpar Histórico de Rodadas da Supercopa</button>
                         </div>
 
                         <div id="supercopa-rounds-list">
@@ -1542,7 +1600,8 @@
                                         <div class="form-row">
                                             <div class="form-group">
                                                 <label>Identificador da Rodada (ex: round1, round2)</label>
-                                                <input type="text" id="supercopa-round-key-input" class="form-control" placeholder="round1" required>
+                                                <input type="text" id="supercopa-round-key-input" class="form-control"
+                                                    placeholder="round1" required>
                                             </div>
                                             <div class="form-group">
                                                 <label>Status da Rodada</label>
@@ -1555,15 +1614,19 @@
                                         </div>
 
                                         <h4>Confrontos Desta Rodada</h4>
-                                        <div id="supercopa-matches-container" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">
+                                        <div id="supercopa-matches-container"
+                                            style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">
                                             <!-- Partidas serão adicionadas aqui -->
                                         </div>
 
-                                        <button type="button" id="add-supercopa-match" class="btn btn-secondary"><i class="fas fa-plus"></i> Adicionar Confronto</button>
+                                        <button type="button" id="add-supercopa-match" class="btn btn-secondary"><i
+                                                class="fas fa-plus"></i> Adicionar Confronto</button>
 
                                         <div class="action-buttons" style="margin-top: 20px;">
-                                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Rodada</button>
-                                            <button type="button" id="cancel-supercopa-round" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+                                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>
+                                                Salvar Rodada</button>
+                                            <button type="button" id="cancel-supercopa-round"
+                                                class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
                                         </div>
                                     </form>
                                 </div>
@@ -1574,8 +1637,10 @@
                     <!-- 3. Seção de Mata-Mata (Ida e Volta) -->
                     <div id="knockout-subsection" class="subsection">
                         <div class="tabs knockout-phase-tabs" style="margin-bottom: 20px;">
-                            <div class="tab active" data-kphase="quarterFinals"><i class="fas fa-sitemap"></i> Quartas de Final</div>
-                            <div class="tab" data-kphase="semiFinals"><i class="fas fa-diagram-project"></i> Semifinais</div>
+                            <div class="tab active" data-kphase="quarterFinals"><i class="fas fa-sitemap"></i> Quartas
+                                de Final</div>
+                            <div class="tab" data-kphase="semiFinals"><i class="fas fa-diagram-project"></i> Semifinais
+                            </div>
                             <div class="tab" data-kphase="final"><i class="fas fa-trophy"></i> Final</div>
                         </div>
 
@@ -1594,11 +1659,15 @@
                     <h3><i class="fas fa-skull-crossbones"></i> Gerenciamento do Torneio Resta Um</h3>
                 </div>
                 <div class="card-body">
-                    <div class="card" style="border: 1px solid #e2e8f0; margin-bottom: 20px; padding: 15px; background: #f8fafc;">
-                        <h4 style="margin-bottom: 10px; color: #1e293b;"><i class="fas fa-bolt"></i> Ações do Torneio Resta Um</h4>
+                    <div class="card"
+                        style="border: 1px solid #e2e8f0; margin-bottom: 20px; padding: 15px; background: #f8fafc;">
+                        <h4 style="margin-bottom: 10px; color: #1e293b;"><i class="fas fa-bolt"></i> Ações do Torneio
+                            Resta Um</h4>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button id="btn-process-restaum-elimination" class="btn btn-primary"><i class="fas fa-skull"></i> Processar Eliminação da Rodada Atual</button>
-                            <button id="btn-reset-restaum-tournament" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Reiniciar Torneio Resta Um</button>
+                            <button id="btn-process-restaum-elimination" class="btn btn-primary"><i
+                                    class="fas fa-skull"></i> Processar Eliminação da Rodada Atual</button>
+                            <button id="btn-reset-restaum-tournament" class="btn btn-danger"><i
+                                    class="fas fa-trash-alt"></i> Reiniciar Torneio Resta Um</button>
                         </div>
                     </div>
 
@@ -1607,7 +1676,8 @@
                             <h3><i class="fas fa-list-ol"></i> Participantes & Status de Eliminação</h3>
                         </div>
                         <div class="card-body" id="restaum-participants-list">
-                            <div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Carregando dados do Resta Um...</div>
+                            <div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Carregando dados do
+                                Resta Um...</div>
                         </div>
                     </div>
                 </div>
@@ -1622,34 +1692,44 @@
                 </div>
                 <div class="card-body">
                     <form id="cinturao-form">
-                        <div class="card" style="border: 2px solid #f59e0b; background: #fffbebf5; margin-bottom: 20px; padding: 20px;">
-                            <h4 style="color: #b45309; margin-bottom: 15px;"><i class="fas fa-crown"></i> Detentor do Cinturão & Próximo Desafio</h4>
-                            <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                        <div class="card"
+                            style="border: 2px solid #f59e0b; background: #fffbebf5; margin-bottom: 20px; padding: 20px;">
+                            <h4 style="color: #b45309; margin-bottom: 15px;"><i class="fas fa-crown"></i> Detentor do
+                                Cinturão & Próximo Desafio</h4>
+                            <div class="form-row"
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
                                 <div class="form-group">
                                     <label><strong>🥊 Detentor Atual (Campeão)</strong></label>
-                                    <select id="cinturao-champion-select" class="form-control" style="font-weight: 700;"></select>
+                                    <select id="cinturao-champion-select" class="form-control"
+                                        style="font-weight: 700;"></select>
                                 </div>
                                 <div class="form-group">
                                     <label><strong>🔥 Desafiante da Rodada</strong></label>
-                                    <select id="cinturao-challenger-select" class="form-control" style="font-weight: 700;"></select>
+                                    <select id="cinturao-challenger-select" class="form-control"
+                                        style="font-weight: 700;"></select>
                                 </div>
                                 <div class="form-group">
                                     <label><strong>🏆 Sequência de Defesas Concluídas</strong></label>
-                                    <input type="number" id="cinturao-defenses-input" class="form-control" value="0" min="0">
+                                    <input type="number" id="cinturao-defenses-input" class="form-control" value="0"
+                                        min="0">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card" style="border: 1px solid #e2e8f0; margin-bottom: 20px; padding: 20px; background: #f8fafc;">
-                            <h4 style="color: #334155; margin-bottom: 15px;"><i class="fas fa-hand-fist"></i> Placar da Defesa / Duelo Atual</h4>
-                            <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                        <div class="card"
+                            style="border: 1px solid #e2e8f0; margin-bottom: 20px; padding: 20px; background: #f8fafc;">
+                            <h4 style="color: #334155; margin-bottom: 15px;"><i class="fas fa-hand-fist"></i> Placar da
+                                Defesa / Duelo Atual</h4>
+                            <div class="form-row"
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
                                 <div class="form-group">
                                     <label>Pontos do Campeão</label>
                                     <input type="number" id="cinturao-champ-score" class="form-control" placeholder="0">
                                 </div>
                                 <div class="form-group">
                                     <label>Pontos do Desafiante</label>
-                                    <input type="number" id="cinturao-challenger-score" class="form-control" placeholder="0">
+                                    <input type="number" id="cinturao-challenger-score" class="form-control"
+                                        placeholder="0">
                                 </div>
                                 <div class="form-group">
                                     <label>Status do Confronto</label>
@@ -1663,7 +1743,8 @@
                         </div>
 
                         <div style="text-align: right;">
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Estado do Cinturão</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Estado do
+                                Cinturão</button>
                         </div>
                     </form>
                 </div>
@@ -1858,7 +1939,7 @@
 
         // --- CONFIGURAÇÃO DE TURNOS DA SUPERLIGA ---
         // Número da rodada que encerra a Abertura (ex: 19). Se for null, todas pertencem ao turno único/Abertura.
-        const ABERTURA_CLAUSURA_SPLIT_ROUND = 21;
+        const ABERTURA_CLAUSURA_SPLIT_ROUND = 20;
 
         let teamsCache = null;
         let latestApiFixtures = [];
@@ -3791,19 +3872,19 @@
         }
 
         // Listener para salvar a fase ativa da Supercopa no site
-        document.getElementById('btn-save-supercopa-active-stage')?.addEventListener('click', function() {
+        document.getElementById('btn-save-supercopa-active-stage')?.addEventListener('click', function () {
             const activeStage = document.getElementById('supercopa-active-stage-select').value;
-            
+
             // Atualizar activeStage e ajustar o status das fases
             const updateData = { activeStage: activeStage };
-            
+
             database.ref('tournaments/supercopa').update(updateData).then(() => {
                 alert(`Estágio ativo da Supercopa definido com sucesso para: "${activeStage}"`);
             }).catch(err => alert('Erro ao salvar estágio ativo: ' + err.message));
         });
 
         // Listener para limpar histórico de rodadas da Supercopa
-        document.getElementById('btn-clear-supercopa-rounds')?.addEventListener('click', function() {
+        document.getElementById('btn-clear-supercopa-rounds')?.addEventListener('click', function () {
             if (confirm('⚠️ ATENÇÃO: Deseja realmente apagar todo o histórico de rodadas e classificação da Supercopa?\nEsta ação é recomendada apenas para virada de edição.')) {
                 if (confirm('Confirmação final: Deseja apagar permanentemente o histórico da Supercopa?')) {
                     database.ref('tournaments/supercopa/groups/rounds').remove()
@@ -4785,7 +4866,7 @@
 
                 const roundsList = Object.entries(roundsData).sort((a, b) => (a[1].finishTimestamp || 0) - (b[1].finishTimestamp || 0));
                 const completedRounds = roundsList.filter(([k, r]) => r.status === 2 || r.status === 1);
-                
+
                 if (completedRounds.length === 0) {
                     alert('Nenhuma rodada finalizada ou ativa encontrada para calcular eliminação.');
                     return;
