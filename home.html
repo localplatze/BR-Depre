@@ -944,6 +944,7 @@
             <a href="historico.html"><i class="fas fa-history"></i> Histórico</a>
             <a href="superliga.html"><i class="fas fa-trophy"></i> Superliga</a>
             <a href="supercopa.html"><i class="fas fa-shield-alt"></i> Supercopa</a>
+            <a href="resta-um.html"><i class="fas fa-skull-crossbones"></i> Resta Um</a>
             <a href="admin.html" id="admin-sidebar-link" style="display: none;"><i class="fas fa-crown"></i> Admin</a>
         </nav>
         <div class="sidebar-footer">
@@ -1037,6 +1038,28 @@
 
         <!-- Torneios Grid -->
         <div class="tournaments-grid">
+            <!-- Cinturão BR Depressão Card -->
+            <div class="tournament-card" id="cinturao-card" style="border-color: rgba(245, 158, 11, 0.4);">
+                <div class="tournament-header" style="background: rgba(245, 158, 11, 0.1);">
+                    <div class="tournament-title" style="color: #f59e0b;"><i class="fas fa-hand-fist" style="color: #f59e0b;"></i> Cinturão BR Depressão</div>
+                    <span class="status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" id="cinturao-defenses-badge">0 Defesas</span>
+                </div>
+                <div class="tournament-body" id="cinturao-content">
+                    <p>Carregando detentor do cinturão...</p>
+                </div>
+            </div>
+
+            <!-- Resta Um Card -->
+            <div class="tournament-card" id="restaum-card" onclick="window.location.href='resta-um.html'">
+                <div class="tournament-header">
+                    <div class="tournament-title" style="color: #ef4444;"><i class="fas fa-skull-crossbones" style="color: #ef4444;"></i> Torneio Resta Um</div>
+                    <span class="status-badge status-active" id="restaum-status">VIVO</span>
+                </div>
+                <div class="tournament-body" id="restaum-content">
+                    <p>Carregando status do Resta Um...</p>
+                </div>
+            </div>
+
             <!-- Supercopa Card -->
             <div class="tournament-card" id="supercopa-card">
                 <div class="tournament-header">
@@ -1353,7 +1376,15 @@
                                 const myScore = activeRound ? (livePoints[currentUser?.uid] || 0) : 0;
                                 const oppScore = activeRound ? (livePoints[opponentId] || 0) : 0;
 
+                                const isRivalryClasico = (me.rivalId === opponentId || opponent?.rivalId === currentUser?.uid);
+                                const clasicoBadge = isRivalryClasico ? `
+                                    <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 12px; text-align: center; margin-bottom: 8px; box-shadow: 0 0 12px rgba(239,68,68,0.5); letter-spacing: 0.5px;">
+                                        🔥 CLÁSSICO DOS RIVAIS 🔥
+                                    </div>
+                                ` : '';
+
                                 matchHtml = `
+                                ${clasicoBadge}
                                 <div class="next-match">
                                     <div class="match-player">
                                         <img src="${myAvatar}" onerror="this.src='default-avatar.png'">
@@ -1497,6 +1528,99 @@
             adminSidebar.style.display = isAdmin ? 'block' : 'none';
         }
 
+        async function loadRestaUmHome() {
+            const currentUser = auth.currentUser;
+            const snapshot = await database.ref('tournaments/restaUm').once('value');
+            const data = snapshot.val() || {};
+
+            const container = document.getElementById('restaum-content');
+            const statusEl = document.getElementById('restaum-status');
+            if (!container) return;
+
+            const participants = data.participants || Object.keys(usersCache);
+            const eliminations = data.eliminations || {};
+            const eliminatedSet = new Set(Object.values(eliminations).map(e => e.eliminatedUserId));
+
+            const isEliminated = eliminatedSet.has(currentUser?.uid);
+            const elimEntry = Object.values(eliminations).find(e => e.eliminatedUserId === currentUser?.uid);
+            const survivorsCount = participants.length - eliminatedSet.size;
+
+            if (isEliminated) {
+                statusEl.textContent = 'ELIMINADO';
+                statusEl.className = 'status-badge';
+                statusEl.style.background = 'rgba(239, 68, 68, 0.2)';
+                statusEl.style.color = '#ef4444';
+
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 0.5rem;">
+                        <i class="fas fa-skull" style="font-size: 1.8rem; color: #ef4444; margin-bottom: 0.5rem;"></i>
+                        <p style="font-weight: 700; color: #ef4444;">Você foi eliminado na Rodada ${elimEntry?.roundNumber || '?'}</p>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">Sobreviventes restantes: ${survivorsCount}</p>
+                    </div>
+                `;
+            } else {
+                statusEl.textContent = 'VIVO';
+                statusEl.className = 'status-badge status-active';
+                statusEl.style.background = 'rgba(16, 185, 129, 0.2)';
+                statusEl.style.color = '#10b981';
+
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 0.5rem;">
+                        <i class="fas fa-shield-halved" style="font-size: 1.8rem; color: #10b981; margin-bottom: 0.5rem;"></i>
+                        <p style="font-weight: 700; color: #10b981;">Você segue VIVO no Resta Um!</p>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">Faltam ${survivorsCount} sobreviventes para a vitória</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadCinturaoHome() {
+            const snapshot = await database.ref('tournaments/cinturao').once('value');
+            const data = snapshot.val() || {};
+
+            const container = document.getElementById('cinturao-content');
+            const defensesBadge = document.getElementById('cinturao-defenses-badge');
+            if (!container) return;
+
+            const champ = usersCache[data.championId];
+            const chall = usersCache[data.challengerId];
+
+            const champTeam = teamsCache[champ?.teamId] || {};
+            const challTeam = teamsCache[chall?.teamId] || {};
+
+            const champName = champ ? ((champ.customTeamName && champ.customTeamName.trim() !== '') ? champ.customTeamName.trim() : (champ.name || champTeam.name || 'Campeão')) : 'Sem Campeão';
+            const challName = chall ? ((chall.customTeamName && chall.customTeamName.trim() !== '') ? chall.customTeamName.trim() : (chall.name || challTeam.name || 'A Definir')) : 'A Definir';
+
+            const champAvatar = (champ?.useCustomShield && champ?.customShield) ? champ.customShield : (champTeam.image || 'default-avatar.png');
+            const challAvatar = (chall?.useCustomShield && chall?.customShield) ? chall.customShield : (challTeam.image || 'default-avatar.png');
+
+            if (defensesBadge) {
+                defensesBadge.textContent = `${data.defenses || 0} Defesas Consecutivas`;
+            }
+
+            const curMatch = data.currentMatch || {};
+            const resultStr = (curMatch.champScore !== undefined && curMatch.challengerScore !== undefined && curMatch.status > 0)
+                ? `${curMatch.champScore} x ${curMatch.challengerScore}`
+                : 'vs';
+
+            container.innerHTML = `
+                <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-align: center; margin-bottom: 8px; text-transform: uppercase;">
+                    🥊 DEFESA DE CINTURÃO 🥊
+                </div>
+                <div class="next-match">
+                    <div class="match-player">
+                        <img src="${champAvatar}" onerror="this.src='default-avatar.png'" style="border: 2px solid #f59e0b;">
+                        <span>👑 ${champName}</span>
+                    </div>
+                    <div class="match-score" style="border-color: rgba(245, 158, 11, 0.4); color: #f59e0b;">${resultStr}</div>
+                    <div class="match-player">
+                        <img src="${challAvatar}" onerror="this.src='default-avatar.png'">
+                        <span>🔥 ${challName}</span>
+                    </div>
+                </div>
+            `;
+        }
+
         async function init() {
             try {
                 await Promise.all([loadTeamsCache(), loadUsersCache()]);
@@ -1512,6 +1636,8 @@
                 await Promise.all([
                     loadSuperliga(activeRound, livePoints),
                     loadSupercopa(activeRound, livePoints),
+                    loadRestaUmHome(),
+                    loadCinturaoHome(),
                     loadNextRound()
                 ]);
 

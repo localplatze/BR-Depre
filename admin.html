@@ -1211,6 +1211,8 @@
         <div class="tabs">
             <div class="tab active" data-section="rounds"><i class="fas fa-calendar-alt"></i> Rodadas</div>
             <div class="tab" data-section="supercopa"><i class="fas fa-trophy"></i> Supercopa</div>
+            <div class="tab" data-section="restaum"><i class="fas fa-skull-crossbones"></i> Resta Um</div>
+            <div class="tab" data-section="cinturao"><i class="fas fa-hand-fist"></i> Cinturão UFC</div>
             <div class="tab" data-section="teams"><i class="fas fa-users"></i> Times</div>
             <div class="tab" data-section="players"><i class="fas fa-user-cog"></i> Jogadores</div>
         </div>
@@ -1585,6 +1587,89 @@
             </div>
         </div>
 
+        <!-- SEÇÃO: TORNEIO RESTA UM -->
+        <div id="restaum-section" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-skull-crossbones"></i> Gerenciamento do Torneio Resta Um</h3>
+                </div>
+                <div class="card-body">
+                    <div class="card" style="border: 1px solid #e2e8f0; margin-bottom: 20px; padding: 15px; background: #f8fafc;">
+                        <h4 style="margin-bottom: 10px; color: #1e293b;"><i class="fas fa-bolt"></i> Ações do Torneio Resta Um</h4>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button id="btn-process-restaum-elimination" class="btn btn-primary"><i class="fas fa-skull"></i> Processar Eliminação da Rodada Atual</button>
+                            <button id="btn-reset-restaum-tournament" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Reiniciar Torneio Resta Um</button>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border: 1px solid #e2e8f0;">
+                        <div class="card-header" style="background: #f1f5f9;">
+                            <h3><i class="fas fa-list-ol"></i> Participantes & Status de Eliminação</h3>
+                        </div>
+                        <div class="card-body" id="restaum-participants-list">
+                            <div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Carregando dados do Resta Um...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: CINTURÃO UFC -->
+        <div id="cinturao-section" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-hand-fist"></i> Gerenciamento do Cinturão BR Depressão (UFC)</h3>
+                </div>
+                <div class="card-body">
+                    <form id="cinturao-form">
+                        <div class="card" style="border: 2px solid #f59e0b; background: #fffbebf5; margin-bottom: 20px; padding: 20px;">
+                            <h4 style="color: #b45309; margin-bottom: 15px;"><i class="fas fa-crown"></i> Detentor do Cinturão & Próximo Desafio</h4>
+                            <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                                <div class="form-group">
+                                    <label><strong>🥊 Detentor Atual (Campeão)</strong></label>
+                                    <select id="cinturao-champion-select" class="form-control" style="font-weight: 700;"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label><strong>🔥 Desafiante da Rodada</strong></label>
+                                    <select id="cinturao-challenger-select" class="form-control" style="font-weight: 700;"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label><strong>🏆 Sequência de Defesas Concluídas</strong></label>
+                                    <input type="number" id="cinturao-defenses-input" class="form-control" value="0" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border: 1px solid #e2e8f0; margin-bottom: 20px; padding: 20px; background: #f8fafc;">
+                            <h4 style="color: #334155; margin-bottom: 15px;"><i class="fas fa-hand-fist"></i> Placar da Defesa / Duelo Atual</h4>
+                            <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                                <div class="form-group">
+                                    <label>Pontos do Campeão</label>
+                                    <input type="number" id="cinturao-champ-score" class="form-control" placeholder="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Pontos do Desafiante</label>
+                                    <input type="number" id="cinturao-challenger-score" class="form-control" placeholder="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Status do Confronto</label>
+                                    <select id="cinturao-match-status" class="form-control">
+                                        <option value="0">Em Agendamento</option>
+                                        <option value="1">Em Andamento</option>
+                                        <option value="2">Finalizado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Estado do Cinturão</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div id="teams-section" class="section">
             <div class="card">
                 <div class="card-header">
@@ -1804,6 +1889,8 @@
         // Carrega os dados da Supercopa quando a aba é clicada
         // Carrega os dados das seções quando clicadas
         document.querySelector('.tab[data-section="supercopa"]')?.addEventListener('click', loadSupercopaData);
+        document.querySelector('.tab[data-section="restaum"]')?.addEventListener('click', loadRestaUmAdmin);
+        document.querySelector('.tab[data-section="cinturao"]')?.addEventListener('click', loadCinturaoAdmin);
         document.querySelector('.tab[data-section="teams"]')?.addEventListener('click', loadTeamsList);
         document.querySelector('.tab[data-section="players"]')?.addEventListener('click', loadPlayersList);
 
@@ -4606,6 +4693,287 @@
                 console.error(err);
                 alert('Erro ao atualizar e-mails: ' + err.message);
             }
+        });
+
+        // --- GERENCIAMENTO DO TORNEIO RESTA UM ---
+        async function loadRestaUmAdmin() {
+            const container = document.getElementById('restaum-participants-list');
+            if (!container) return;
+
+            try {
+                const [usersSnap, teamsSnap, restaSnap] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value'),
+                    database.ref('tournaments/restaUm').once('value')
+                ]);
+
+                const usersData = usersSnap.val() || {};
+                const teamsData = teamsSnap.val() || {};
+                const restaData = restaSnap.val() || {};
+
+                const participants = restaData.participants || Object.keys(usersData);
+                const eliminations = restaData.eliminations || {};
+                const eliminatedSet = new Set(Object.values(eliminations).map(e => e.eliminatedUserId));
+
+                let html = `
+                    <div style="margin-bottom: 15px; font-weight: 700; color: #475569;">
+                        Participantes no Resta Um: ${participants.length} | Sobreviventes Vivos: ${participants.length - eliminatedSet.size} | Eliminados: ${eliminatedSet.size}
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Jogador / Time</th>
+                                    <th>Status no Torneio</th>
+                                    <th>Eliminado na Rodada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                participants.forEach((uid, index) => {
+                    const u = usersData[uid] || {};
+                    const team = teamsData[u.teamId || u.team] || {};
+                    const teamName = u.customTeamName || team.name || 'Time';
+                    const displayName = `${teamName} (${u.name || uid})`;
+                    const isEliminated = eliminatedSet.has(uid);
+
+                    const elimEntry = Object.values(eliminations).find(e => e.eliminatedUserId === uid);
+                    const statusBadge = isEliminated
+                        ? `<span class="badge badge-danger" style="background:#ef4444; color:#fff; padding:4px 8px; border-radius:4px;"><i class="fas fa-skull"></i> ELIMINADO</span>`
+                        : `<span class="badge badge-success" style="background:#10b981; color:#fff; padding:4px 8px; border-radius:4px;"><i class="fas fa-heart"></i> VIVO</span>`;
+
+                    const elimText = elimEntry
+                        ? `Rodada ${elimEntry.roundNumber || '?'} (${elimEntry.score} pts${elimEntry.tieBreakerUsed ? ' - Critério Tabela' : ''})`
+                        : '---';
+
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><strong>${displayName}</strong></td>
+                            <td>${statusBadge}</td>
+                            <td>${elimText}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+            } catch (err) {
+                console.error('Erro ao carregar Resta Um admin:', err);
+                container.innerHTML = '<div class="alert alert-danger">Erro ao carregar dados do Resta Um.</div>';
+            }
+        }
+
+        document.getElementById('btn-process-restaum-elimination')?.addEventListener('click', async () => {
+            try {
+                const [usersSnap, roundsSnap, restaSnap] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('rounds').once('value'),
+                    database.ref('tournaments/restaUm').once('value')
+                ]);
+
+                if (!usersSnap.exists() || !roundsSnap.exists()) {
+                    alert('Dados insuficientes para processar eliminação.');
+                    return;
+                }
+
+                const usersData = usersSnap.val();
+                const roundsData = roundsSnap.val();
+                const restaData = restaSnap.val() || {};
+
+                const roundsList = Object.entries(roundsData).sort((a, b) => (a[1].finishTimestamp || 0) - (b[1].finishTimestamp || 0));
+                const completedRounds = roundsList.filter(([k, r]) => r.status === 2 || r.status === 1);
+                
+                if (completedRounds.length === 0) {
+                    alert('Nenhuma rodada finalizada ou ativa encontrada para calcular eliminação.');
+                    return;
+                }
+
+                const [lastRoundKey, lastRound] = completedRounds[completedRounds.length - 1];
+                const eliminations = restaData.eliminations || {};
+
+                if (eliminations[lastRoundKey]) {
+                    if (!confirm(`A eliminação para a rodada (${lastRoundKey}) já foi processada! Deseja re-processar?`)) {
+                        return;
+                    }
+                }
+
+                const participants = restaData.participants || Object.keys(usersData);
+                const currentEliminated = new Set(Object.values(eliminations).map(e => e.eliminatedUserId));
+
+                const activeSurvivors = participants.filter(uid => !currentEliminated.has(uid));
+
+                if (activeSurvivors.length <= 1) {
+                    alert('Já restam 1 ou 0 participantes no torneio Resta Um! Torneio encerrado.');
+                    return;
+                }
+
+                const survivorScores = activeSurvivors.map(uid => {
+                    let pts = 0;
+                    if (lastRound.matches) {
+                        Object.values(lastRound.matches).forEach(m => {
+                            if (m.finalResult && m.predictions?.[uid]) {
+                                pts += calculateMatchPoints(m.finalResult, m.predictions[uid]);
+                            }
+                        });
+                    }
+                    const currentStage = typeof getCurrentSuperligaStage === 'function' ? getCurrentSuperligaStage() : 'Abertura';
+                    const overallPoints = usersData[uid]?.[`pointsSuperliga${currentStage}`] || 0;
+
+                    return {
+                        userId: uid,
+                        roundScore: pts,
+                        overallPoints: overallPoints,
+                        name: usersData[uid]?.customTeamName || usersData[uid]?.name || uid
+                    };
+                });
+
+                survivorScores.sort((a, b) => {
+                    if (a.roundScore !== b.roundScore) return a.roundScore - b.roundScore;
+                    return a.overallPoints - b.overallPoints;
+                });
+
+                const lowest = survivorScores[0];
+                const tiedWithLowest = survivorScores.filter(s => s.roundScore === lowest.roundScore);
+                const tieBreakerUsed = tiedWithLowest.length > 1;
+
+                const roundNumber = Object.keys(eliminations).length + 1;
+
+                if (confirm(`Confirmar eliminação no Resta Um:\n\n` +
+                    `🎮 Jogador a ser eliminado: ${lowest.name}\n` +
+                    `⚽ Pontos na Rodada: ${lowest.roundScore} pts\n` +
+                    (tieBreakerUsed ? `⚠️ Desempate aplicado: Menor pontuação geral na tabela da Superliga.\n` : '') +
+                    `Confirmar eliminação na Rodada ${roundNumber}?`)) {
+
+                    await database.ref(`tournaments/restaUm/eliminations/${lastRoundKey}`).set({
+                        roundKey: lastRoundKey,
+                        roundNumber: roundNumber,
+                        eliminatedUserId: lowest.userId,
+                        score: lowest.roundScore,
+                        tieBreakerUsed: tieBreakerUsed,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+
+                    alert(`💥 ELIMINAÇÃO REGISTRADA! ${lowest.name} foi eliminado na Rodada ${roundNumber}.`);
+                    loadRestaUmAdmin();
+                }
+
+            } catch (err) {
+                console.error('Erro ao processar eliminação no Resta Um:', err);
+                alert('Erro ao processar eliminação: ' + err.message);
+            }
+        });
+
+        document.getElementById('btn-reset-restaum-tournament')?.addEventListener('click', () => {
+            if (confirm('⚠️ ATENÇÃO: Deseja realmente reiniciar o Torneio Resta Um?\nTodas as eliminações serão apagadas para o início de uma nova edição.')) {
+                database.ref('tournaments/restaUm').remove().then(() => {
+                    alert('Torneio Resta Um reiniciado com sucesso!');
+                    loadRestaUmAdmin();
+                }).catch(err => alert('Erro ao reiniciar: ' + err.message));
+            }
+        });
+
+        // --- GERENCIAMENTO DO CINTURÃO BR DEPRESSÃO (UFC) ---
+        async function loadCinturaoAdmin() {
+            try {
+                const [usersSnap, teamsSnap, cinturaoSnap] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value'),
+                    database.ref('tournaments/cinturao').once('value')
+                ]);
+
+                const usersData = usersSnap.val() || {};
+                const teamsData = teamsSnap.val() || {};
+                const cinturaoData = cinturaoSnap.val() || {};
+
+                const champSelect = document.getElementById('cinturao-champion-select');
+                const challSelect = document.getElementById('cinturao-challenger-select');
+
+                if (champSelect && challSelect) {
+                    champSelect.innerHTML = '<option value="">(Selecione o Campeão)</option>';
+                    challSelect.innerHTML = '<option value="">(Selecione o Desafiante)</option>';
+
+                    Object.entries(usersData).forEach(([uId, uObj]) => {
+                        const team = teamsData[uObj.teamId || uObj.team] || {};
+                        const teamName = uObj.customTeamName || team.name || 'Time';
+                        const displayName = `${teamName} (${uObj.name || uId})`;
+
+                        const opt1 = document.createElement('option');
+                        opt1.value = uId;
+                        opt1.textContent = displayName;
+                        if (cinturaoData.championId === uId) opt1.selected = true;
+                        champSelect.appendChild(opt1);
+
+                        const opt2 = document.createElement('option');
+                        opt2.value = uId;
+                        opt2.textContent = displayName;
+                        if (cinturaoData.challengerId === uId) opt2.selected = true;
+                        challSelect.appendChild(opt2);
+                    });
+                }
+
+                document.getElementById('cinturao-defenses-input').value = cinturaoData.defenses || 0;
+
+                const curMatch = cinturaoData.currentMatch || {};
+                document.getElementById('cinturao-champ-score').value = curMatch.champScore !== undefined ? curMatch.champScore : '';
+                document.getElementById('cinturao-challenger-score').value = curMatch.challengerScore !== undefined ? curMatch.challengerScore : '';
+                document.getElementById('cinturao-match-status').value = curMatch.status !== undefined ? curMatch.status : 0;
+
+            } catch (err) {
+                console.error('Erro ao carregar admin Cinturão:', err);
+            }
+        }
+
+        document.getElementById('cinturao-form')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const champId = document.getElementById('cinturao-champion-select').value;
+            const challId = document.getElementById('cinturao-challenger-select').value;
+            let defenses = parseInt(document.getElementById('cinturao-defenses-input').value) || 0;
+            const champScore = parseInt(document.getElementById('cinturao-champ-score').value) || 0;
+            const challengerScore = parseInt(document.getElementById('cinturao-challenger-score').value) || 0;
+            const matchStatus = parseInt(document.getElementById('cinturao-match-status').value) || 0;
+
+            if (!champId) {
+                alert('Selecione quem é o Detentor Atual (Campeão) do Cinturão!');
+                return;
+            }
+
+            let newChampId = champId;
+            let newDefenses = defenses;
+
+            if (matchStatus === 2) {
+                if (challengerScore > champScore && challId) {
+                    newChampId = challId;
+                    newDefenses = 1;
+                    alert(`🥊 TROCA DE CINTURÃO! O Desafiante venceu (${challengerScore} x ${champScore}) e conquistou o Cinturão BR Depressão!`);
+                } else if (champScore >= challengerScore && challId) {
+                    newDefenses = defenses + 1;
+                    alert(`🏆 DEFESA BEM SUCEDIDA! O Campeão manteve o Cinturão (${champScore} x ${challengerScore})! Defesas consecutivas: ${newDefenses}.`);
+                }
+            }
+
+            const cinturaoUpdate = {
+                championId: newChampId,
+                challengerId: challId,
+                defenses: newDefenses,
+                currentMatch: {
+                    champScore: champScore,
+                    challengerScore: challengerScore,
+                    status: matchStatus,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                }
+            };
+
+            database.ref('tournaments/cinturao').update(cinturaoUpdate).then(() => {
+                alert('Estado do Cinturão salvo com sucesso!');
+                loadCinturaoAdmin();
+            }).catch(err => {
+                console.error('Erro ao salvar Cinturão:', err);
+                alert('Erro ao salvar: ' + err.message);
+            });
         });
     </script>
 </body>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Torneio Resta Um - BR Depressão</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #EF4444;
+            --primary-dark: #DC2626;
+            --primary-glow: rgba(239, 68, 68, 0.35);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark-bg: #0F172A;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-border: rgba(239, 68, 68, 0.25);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 3rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 20%, rgba(239, 68, 68, 0.12) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-title i {
+            font-size: 2.2rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFF 0%, #FCA5A5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 2rem;
+            padding: 0.6rem 1.25rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--primary);
+            color: #FFF;
+        }
+
+        /* Stats Counter Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .stat-icon.survivors {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .stat-icon.eliminated {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .stat-icon.round {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .stat-info h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-info p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Main Sections */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        /* Grid of Survivors */
+        .survivors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 3rem;
+        }
+
+        .survivor-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .survivor-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--success);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .survivor-card img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--success);
+        }
+
+        .survivor-details {
+            flex-grow: 1;
+        }
+
+        .survivor-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .survivor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+
+        /* Eliminations Timeline */
+        .elimination-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .elimination-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-left: 4px solid var(--primary);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .elimination-round {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elimination-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-grow: 1;
+        }
+
+        .elimination-user img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .elimination-score {
+            text-align: right;
+        }
+
+        .elimination-pts {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .tiebreaker-note {
+            font-size: 0.7rem;
+            color: var(--warning);
+            margin-top: 2px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: var(--card-bg);
+            border: 1px dashed var(--card-border);
+            border-radius: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Champion Banner */
+        .champion-banner {
+            background: linear-gradient(135deg, #B45309 0%, #F59E0B 50%, #78350F 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+
+        .champion-banner img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 4px solid #FFF;
+            margin-bottom: 1rem;
+        }
+
+        .champion-banner h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <i class="fas fa-skull-crossbones"></i>
+                <div>
+                    <h1>Torneio Resta Um</h1>
+                    <p>A cada rodada o menor pontuador da liga é eliminado. Sobreviva até o fim!</p>
+                </div>
+            </div>
+            <a href="home.html" class="back-btn"><i class="fas fa-arrow-left"></i> Voltar</a>
+        </div>
+
+        <div id="loader" class="loader"><i class="fas fa-spinner fa-spin"></i> Carregando dados do Resta Um...</div>
+
+        <div id="main-content" style="display: none;">
+            <div id="champion-container"></div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon survivors"><i class="fas fa-heart"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-survivors-count">0</h3>
+                        <p>Sobreviventes Vivos</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon eliminated"><i class="fas fa-skull"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-eliminated-count">0</h3>
+                        <p>Jogadores Eliminados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon round"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-rounds-count">0</h3>
+                        <p>Rodadas Processadas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sobreviventes -->
+            <div class="section-header">
+                <h2><i class="fas fa-shield-halved" style="color: var(--success);"></i> Sobreviventes Vivos</h2>
+            </div>
+            <div id="survivors-container" class="survivors-grid"></div>
+
+            <!-- Linha do Tempo -->
+            <div class="section-header">
+                <h2><i class="fas fa-skull-crossbones" style="color: var(--primary);"></i> Histórico de Eliminações</h2>
+            </div>
+            <div id="eliminations-container" class="elimination-timeline"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let usersCache = {};
+        let teamsCache = {};
+
+        async function initRestaUm() {
+            try {
+                const [usersSnap, teamsSnap, restaSnap] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value'),
+                    database.ref('tournaments/restaUm').once('value')
+                ]);
+
+                usersCache = usersSnap.val() || {};
+                teamsCache = teamsSnap.val() || {};
+                const restaData = restaSnap.val() || {};
+
+                const loader = document.getElementById('loader');
+                const mainContent = document.getElementById('main-content');
+                loader.style.display = 'none';
+                mainContent.style.display = 'block';
+
+                renderRestaUm(restaData);
+            } catch (err) {
+                console.error('Erro ao carregar Resta Um:', err);
+                document.getElementById('loader').innerHTML = '<div class="empty-state">Erro ao carregar dados do Resta Um.</div>';
+            }
+        }
+
+        function renderRestaUm(data) {
+            const participants = data.participants || Object.keys(usersCache);
+            const eliminations = data.eliminations || {};
+            const eliminatedUserIds = new Set(Object.values(eliminations).map(e => e.eliminatedUserId));
+
+            const survivors = participants.filter(uid => !eliminatedUserIds.has(uid));
+            const totalRounds = Object.keys(eliminations).length;
+
+            document.getElementById('stat-survivors-count').textContent = survivors.length;
+            document.getElementById('stat-eliminated-count').textContent = eliminatedUserIds.size;
+            document.getElementById('stat-rounds-count').textContent = totalRounds;
+
+            // Renderizar Campeão se restar apenas 1 participante
+            const champContainer = document.getElementById('champion-container');
+            if (survivors.length === 1 && totalRounds > 0) {
+                const champUser = usersCache[survivors[0]];
+                const champTeam = teamsCache[champUser?.teamId] || {};
+                const champName = (champUser?.customTeamName && champUser.customTeamName.trim() !== '') ? champUser.customTeamName.trim() : (champUser?.name || 'Campeão');
+                const champAvatar = (champUser?.useCustomShield && champUser?.customShield) ? champUser.customShield : (champTeam.image || 'default-avatar.png');
+
+                champContainer.innerHTML = `
+                    <div class="champion-banner">
+                        <i class="fas fa-crown" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                        <h2>👑 GRANDE CAMPEÃO DO RESTA UM 👑</h2>
+                        <img src="${champAvatar}" onerror="this.src='default-avatar.png'">
+                        <h3>${champName}</h3>
+                        <p style="opacity: 0.9; margin-top: 4px;">Sobreviveu a todas as eliminações da edição!</p>
+                    </div>
+                `;
+            } else {
+                champContainer.innerHTML = '';
+            }
+
+            // Renderizar Sobreviventes Vivos
+            const survivorsContainer = document.getElementById('survivors-container');
+            if (survivors.length === 0) {
+                survivorsContainer.innerHTML = '<div class="empty-state">Nenhum sobrevivente no momento.</div>';
+            } else {
+                survivorsContainer.innerHTML = survivors.map(uid => {
+                    const u = usersCache[uid];
+                    if (!u) return '';
+                    const team = teamsCache[u.teamId] || {};
+                    const displayName = (u.customTeamName && u.customTeamName.trim() !== '') ? u.customTeamName.trim() : (u.name || team.name || 'Jogador');
+                    const avatar = (u.useCustomShield && u.customShield) ? u.customShield : (team.image || 'default-avatar.png');
+
+                    return `
+                        <div class="survivor-card">
+                            <img src="${avatar}" alt="" onerror="this.src='default-avatar.png'">
+                            <div class="survivor-details">
+                                <div class="survivor-name">${displayName}</div>
+                                <span class="survivor-badge"><i class="fas fa-shield-halved"></i> VIVO</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Renderizar Histórico de Eliminações
+            const elimContainer = document.getElementById('eliminations-container');
+            const elimList = Object.entries(eliminations).sort((a, b) => (b[1].roundNumber || 0) - (a[1].roundNumber || 0));
+
+            if (elimList.length === 0) {
+                elimContainer.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i> Nenhuma eliminação foi processada ainda nesta edição.</div>';
+            } else {
+                elimContainer.innerHTML = elimList.map(([key, elim], idx) => {
+                    const u = usersCache[elim.eliminatedUserId];
+                    const team = teamsCache[u?.teamId] || {};
+                    const displayName = u ? ((u.customTeamName && u.customTeamName.trim() !== '') ? u.customTeamName.trim() : (u.name || team.name || 'Jogador')) : 'Desconhecido';
+                    const avatar = (u?.useCustomShield && u?.customShield) ? u.customShield : (team.image || 'default-avatar.png');
+                    const rNum = elim.roundNumber || (elimList.length - idx);
+
+                    return `
+                        <div class="elimination-card">
+                            <div class="elimination-round">
+                                <i class="fas fa-skull"></i> Rodada ${rNum}
+                            </div>
+                            <div class="elimination-user">
+                                <img src="${avatar}" alt="" onerror="this.src='default-avatar.png'">
+                                <div>
+                                    <div style="font-weight: 700;">${displayName}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Eliminado por menor pontuação</div>
+                                </div>
+                            </div>
+                            <div class="elimination-score">
+                                <div class="elimination-pts">${elim.score !== undefined ? elim.score + ' pts' : 'Menor Pontuação'}</div>
+                                ${elim.tieBreakerUsed ? '<div class="tiebreaker-note"><i class="fas fa-balance-scale"></i> Eliminado pelo critério da tabela</div>' : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        window.onload = initRestaUm;
+    </script>
+</body>
+</html>
