@@ -198,11 +198,13 @@
                 setupEventListeners();
                 
                 // ETAPA 4: Lógica para determinar o estágio ativo da Supercopa
-                const { groups, quarterFinals, semiFinals, final } = supercopaDataCache || {};
-                let activeStage = 'groups';
-                if (final?.status === 1) activeStage = 'final';
-                else if (semiFinals?.status === 1) activeStage = 'semiFinals';
-                else if (quarterFinals?.status === 1) activeStage = 'quarterFinals';
+                const { groups, quarterFinals, semiFinals, final, activeStage: savedActiveStage } = supercopaDataCache || {};
+                let activeStage = savedActiveStage || 'groups';
+                if (!savedActiveStage) {
+                    if (final?.status === 1) activeStage = 'final';
+                    else if (semiFinals?.status === 1) activeStage = 'semiFinals';
+                    else if (quarterFinals?.status === 1) activeStage = 'quarterFinals';
+                }
                 
                 // ETAPA 5: Clica programaticamente na aba correta para iniciar a renderização
                 const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage}"]`);
@@ -306,7 +308,7 @@
 
                 const teamName = player.customTeamName || team.name || 'Time';
                 const playerAvatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
-                const displayName = `${teamName} (${player.name || 'Jogador'})`;
+                const displayName = (player.customTeamName && player.customTeamName.trim() !== '') ? player.customTeamName.trim() : (player.name || team.name || 'Jogador');
 
                 return `
                     <div class="player-standing-card ${statusClass}" style="animation-delay: ${index * 50}ms">
@@ -352,8 +354,9 @@
             const avatar1 = (player1?.useCustomShield && player1?.customShield) ? player1.customShield : (team1?.image || 'default-avatar.png');
             const avatar2 = (player2?.useCustomShield && player2?.customShield) ? player2.customShield : (team2?.image || 'default-avatar.png');
 
-            const name1 = player1 ? `${player1.customTeamName || team1?.name || 'Time'} (${player1.name || ''})` : 'A Definir';
-            const name2 = player2 ? `${player2.customTeamName || team2?.name || 'Time'} (${player2.name || ''})` : 'A Definir';
+            const getPName = (p, t) => p ? ((p.customTeamName && p.customTeamName.trim() !== '') ? p.customTeamName.trim() : (p.name || t?.name || 'Jogador')) : 'A Definir';
+            const name1 = getPName(player1, team1);
+            const name2 = getPName(player2, team2);
             
             let result = "vs";
             if (match.result && match.result.trim() !== "") {

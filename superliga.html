@@ -928,8 +928,9 @@
                 const position = idx + 1;
                 const team = teamsDataCache[player.teamId || player.team] || {};
                 const playerAvatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
-                const teamName = player.customTeamName || team.name || 'Time';
-                const displayName = `${teamName} (${player.name || ''})`;
+                const displayName = (player.customTeamName && player.customTeamName.trim() !== '') 
+                    ? player.customTeamName.trim() 
+                    : (player.name || team.name || 'Jogador');
                 const isCurrentUser = player.id === currentUser?.uid;
                 const zoneClass = getZoneClass(position, totalPlayers);
 
@@ -1073,15 +1074,14 @@
             const homeTeam = teamsDataCache[homePlayer?.teamId] || {};
             const awayTeam = teamsDataCache[awayPlayer?.teamId] || {};
 
-            const homeTeamName = homePlayer?.customTeamName || homeTeam.name || 'Time';
-            const awayTeamName = awayPlayer?.customTeamName || awayTeam.name || 'Time';
+            const getDisplayName = (p, t) => (p?.customTeamName && p.customTeamName.trim() !== '') ? p.customTeamName.trim() : (p?.name || t?.name || '---');
             const homeAvatar = (homePlayer?.useCustomShield && homePlayer?.customShield) ? homePlayer.customShield : (homeTeam.image || 'default-avatar.png');
             const awayAvatar = (awayPlayer?.useCustomShield && awayPlayer?.customShield) ? awayPlayer.customShield : (awayTeam.image || 'default-avatar.png');
 
             document.querySelector('#final-player-home .logo').src = homeAvatar;
-            document.querySelector('#final-player-home .name').textContent = homePlayer ? `${homeTeamName} (${homePlayer.name || ''})` : '---';
+            document.querySelector('#final-player-home .name').textContent = homePlayer ? getDisplayName(homePlayer, homeTeam) : '---';
             document.querySelector('#final-player-away .logo').src = awayAvatar;
-            document.querySelector('#final-player-away .name').textContent = awayPlayer ? `${awayTeamName} (${awayPlayer.name || ''})` : '---';
+            document.querySelector('#final-player-away .name').textContent = awayPlayer ? getDisplayName(awayPlayer, awayTeam) : '---';
 
             const resultEl = document.getElementById('final-result');
             if (finalData.result) {
@@ -1098,11 +1098,11 @@
             const user = usersDataCache[userId];
             const team = teamsDataCache[user?.teamId] || {};
 
-            const userTeamName = user?.customTeamName || team.name || 'Time';
+            const mainName = (user?.customTeamName && user.customTeamName.trim() !== '') ? user.customTeamName.trim() : (user?.name || 'Jogador');
             const userAvatar = (user?.useCustomShield && user?.customShield) ? user.customShield : (team.image || 'default-avatar.png');
 
             document.getElementById('dialog-player-logo').src = userAvatar;
-            document.getElementById('dialog-player-name').textContent = user ? `${userTeamName} (${user.name || ''})` : 'Jogador';
+            document.getElementById('dialog-player-name').textContent = mainName;
             document.getElementById('dialog-player-team').textContent = team.name || 'Sem time';
             document.getElementById('dialog-player-position').textContent = `#${position}`;
 

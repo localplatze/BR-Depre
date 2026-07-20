@@ -1185,6 +1185,19 @@
                 justify-self: start;
             }
         }
+
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .subsection {
+            display: none;
+        }
+        .subsection.active {
+            display: block;
+        }
     </style>
 </head>
 
@@ -1431,19 +1444,82 @@
                     <h3><i class="fas fa-trophy"></i> Gerenciamento da Supercopa</h3>
                 </div>
                 <div class="card-body">
-                    <div class="tabs">
-                        <div class="tab active" data-subsection="rounds"><i class="fas fa-calendar-alt"></i> Rodadas
-                        </div>
-                        <div class="tab" data-subsection="groups"><i class="fas fa-table"></i> Grupos</div>
-                        <div class="tab" data-subsection="knockout"><i class="fas fa-flag-checkered"></i> Mata-Mata
+                    <!-- Banner de Fase Ativa no Site -->
+                    <div class="card" style="border: 2px solid #6366f1; background: #eef2ff; margin-bottom: 20px; padding: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <div>
+                                <h4 style="color: #3730a3; margin-bottom: 4px;"><i class="fas fa-play-circle"></i> Estágio / Fase Ativa da Supercopa no Site</h4>
+                                <p style="font-size: 13px; color: #4338ca; margin: 0;">Define qual fase a tela da Supercopa abrirá por padrão para os visitantes.</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <select id="supercopa-active-stage-select" class="form-control" style="width: 200px; font-weight: 700;">
+                                    <option value="groups">Fase de Grupos</option>
+                                    <option value="quarterFinals">Quartas de Final</option>
+                                    <option value="semiFinals">Semifinais</option>
+                                    <option value="final">Final</option>
+                                </select>
+                                <button id="btn-save-supercopa-active-stage" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Fase Ativa</button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Seção de Rodadas -->
-                    <div id="rounds-subsection" class="subsection active">
-                        <div class="action-buttons">
-                            <button id="create-supercopa-round" class="btn btn-primary"><i class="fas fa-plus"></i>
-                                Criar Nova Rodada</button>
+                    <div class="tabs supercopa-subtabs">
+                        <div class="tab active" data-subsection="groups"><i class="fas fa-table"></i> 1. Definição dos Grupos</div>
+                        <div class="tab" data-subsection="rounds"><i class="fas fa-calendar-alt"></i> 2. Rodadas dos Grupos</div>
+                        <div class="tab" data-subsection="knockout"><i class="fas fa-flag-checkered"></i> 3. Mata-Mata (Ida e Volta)</div>
+                    </div>
+
+                    <!-- 1. Seção de Grupos -->
+                    <div id="groups-subsection" class="subsection active">
+                        <div class="card" style="border: 1px solid #e2e8f0; margin-bottom: 20px;">
+                            <div class="card-header" style="background: #f8fafc;">
+                                <h3><i class="fas fa-users-rectangle"></i> Configurar Participantes dos Grupos (A, B, C e D)</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="supercopa-groups-form">
+                                    <div class="groups-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                                        <div class="card" style="padding: 15px; border: 2px solid #f59e0b; background: #fffbebf5;">
+                                            <h4 style="color: #b45309; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo A (Grupo 1)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="1" data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="1" data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="1" data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="1" data-pos="3"></select></div>
+                                        </div>
+                                        <div class="card" style="padding: 15px; border: 2px solid #3b82f6; background: #eff6ff;">
+                                            <h4 style="color: #1d4ed8; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo B (Grupo 2)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="2" data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="2" data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="2" data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="2" data-pos="3"></select></div>
+                                        </div>
+                                        <div class="card" style="padding: 15px; border: 2px solid #10b981; background: #ecfdf5;">
+                                            <h4 style="color: #047857; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo C (Grupo 3)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="3" data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="3" data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="3" data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="3" data-pos="3"></select></div>
+                                        </div>
+                                        <div class="card" style="padding: 15px; border: 2px solid #8b5cf6; background: #f5f3ff;">
+                                            <h4 style="color: #6d28d9; margin-bottom: 12px;"><i class="fas fa-shield"></i> Grupo D (Grupo 4)</h4>
+                                            <div class="form-group"><label>Jogador 1</label><select class="form-control group-player" data-group="4" data-pos="0"></select></div>
+                                            <div class="form-group"><label>Jogador 2</label><select class="form-control group-player" data-group="4" data-pos="1"></select></div>
+                                            <div class="form-group"><label>Jogador 3</label><select class="form-control group-player" data-group="4" data-pos="2"></select></div>
+                                            <div class="form-group"><label>Jogador 4</label><select class="form-control group-player" data-group="4" data-pos="3"></select></div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 20px; text-align: right;">
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Composição dos Grupos</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Seção de Rodadas -->
+                    <div id="rounds-subsection" class="subsection">
+                        <div class="action-buttons" style="margin-bottom: 15px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                            <button id="create-supercopa-round" class="btn btn-primary"><i class="fas fa-plus"></i> Criar Nova Rodada do Grupo</button>
+                            <button id="btn-clear-supercopa-rounds" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Limpar Histórico de Rodadas da Supercopa</button>
                         </div>
 
                         <div id="supercopa-rounds-list">
@@ -1453,36 +1529,39 @@
                         </div>
 
                         <!-- Formulário para criar/editar rodada -->
-                        <div id="supercopa-round-form" style="display:none;">
+                        <div id="supercopa-round-form" style="display:none; margin-top: 20px;">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3><i class="fas fa-edit"></i> Gerenciar Rodada</h3>
+                                    <h3><i class="fas fa-edit"></i> Gerenciar Rodada dos Grupos</h3>
                                 </div>
                                 <div class="card-body">
                                     <form id="supercopa-round-form-data">
                                         <input type="hidden" id="supercopa-round-id">
-                                        <div class="form-group">
-                                            <label>Status da Rodada</label>
-                                            <select id="supercopa-round-status" class="form-control">
-                                                <option value="0">Não Iniciada</option>
-                                                <option value="1">Em Progresso</option>
-                                                <option value="2">Finalizada</option>
-                                            </select>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Identificador da Rodada (ex: round1, round2)</label>
+                                                <input type="text" id="supercopa-round-key-input" class="form-control" placeholder="round1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Status da Rodada</label>
+                                                <select id="supercopa-round-status" class="form-control">
+                                                    <option value="0">Não Iniciada</option>
+                                                    <option value="1">Em Progresso</option>
+                                                    <option value="2">Finalizada</option>
+                                                </select>
+                                            </div>
                                         </div>
 
-                                        <h4>Partidas</h4>
-                                        <div id="supercopa-matches-container">
+                                        <h4>Confrontos Desta Rodada</h4>
+                                        <div id="supercopa-matches-container" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">
                                             <!-- Partidas serão adicionadas aqui -->
                                         </div>
 
-                                        <button type="button" id="add-supercopa-match" class="btn btn-secondary"><i
-                                                class="fas fa-plus"></i> Adicionar Partida</button>
+                                        <button type="button" id="add-supercopa-match" class="btn btn-secondary"><i class="fas fa-plus"></i> Adicionar Confronto</button>
 
-                                        <div class="action-buttons">
-                                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>
-                                                Salvar Rodada</button>
-                                            <button type="button" id="cancel-supercopa-round"
-                                                class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+                                        <div class="action-buttons" style="margin-top: 20px;">
+                                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Rodada</button>
+                                            <button type="button" id="cancel-supercopa-round" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
                                         </div>
                                     </form>
                                 </div>
@@ -1490,21 +1569,16 @@
                         </div>
                     </div>
 
-                    <!-- Seção de Grupos -->
-                    <div id="groups-subsection" class="subsection">
-                        <div class="groups-container" id="groups-container">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> Carregando grupos da Supercopa...
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Seção de Mata-Mata -->
+                    <!-- 3. Seção de Mata-Mata (Ida e Volta) -->
                     <div id="knockout-subsection" class="subsection">
-                        <div id="knockout-matches-container">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> Carregando fase mata-mata...
-                            </div>
+                        <div class="tabs knockout-phase-tabs" style="margin-bottom: 20px;">
+                            <div class="tab active" data-kphase="quarterFinals"><i class="fas fa-sitemap"></i> Quartas de Final</div>
+                            <div class="tab" data-kphase="semiFinals"><i class="fas fa-diagram-project"></i> Semifinais</div>
+                            <div class="tab" data-kphase="final"><i class="fas fa-trophy"></i> Final</div>
+                        </div>
+
+                        <div id="knockout-phase-editor">
+                            <!-- Editor dinâmico do mata-mata -->
                         </div>
                     </div>
                 </div>
@@ -1728,166 +1802,121 @@
         });
 
         // Carrega os dados da Supercopa quando a aba é clicada
-        document.querySelector('.tab[data-section="supercopa"]').addEventListener('click', loadSupercopaData);
-        document.querySelector('.tab[data-section="teams"]').addEventListener('click', loadTeamsList);
-        document.querySelector('.tab[data-section="players"]').addEventListener('click', loadPlayersList);
+        // Carrega os dados das seções quando clicadas
+        document.querySelector('.tab[data-section="supercopa"]')?.addEventListener('click', loadSupercopaData);
+        document.querySelector('.tab[data-section="teams"]')?.addEventListener('click', loadTeamsList);
+        document.querySelector('.tab[data-section="players"]')?.addEventListener('click', loadPlayersList);
 
-        // Navegação entre as subseções da Supercopa
+        // Navegação entre as subseções da Supercopa (Grupos, Rodadas, Mata-Mata)
         document.querySelectorAll('#supercopa-section .tab[data-subsection]').forEach(tab => {
             tab.addEventListener('click', function () {
                 const subsection = this.getAttribute('data-subsection');
 
-                // Esconde todas as subseções
                 document.querySelectorAll('#supercopa-section .subsection').forEach(section => {
                     section.classList.remove('active');
                 });
+                document.getElementById(`${subsection}-subsection`)?.classList.add('active');
 
-                // Mostra a subseção clicada
-                document.getElementById(`${subsection}-subsection`).classList.add('active');
-
-                // Atualiza as tabs ativas
-                document.querySelectorAll('#supercopa-section .tab').forEach(t => {
+                document.querySelectorAll('#supercopa-section .tab[data-subsection]').forEach(t => {
                     t.classList.remove('active');
                 });
                 this.classList.add('active');
+
+                if (subsection === 'groups') loadSupercopaGroups();
+                else if (subsection === 'rounds') loadSupercopaRounds();
+                else if (subsection === 'knockout') loadKnockoutPhaseEditor('quarterFinals');
             });
         });
 
-        // Botão para criar nova rodada
-        document.getElementById('create-supercopa-round').addEventListener('click', () => {
+        // Navegação entre as fases do Mata-Mata (Quartas, Semis, Final)
+        document.querySelectorAll('#knockout-subsection .knockout-phase-tabs .tab[data-kphase]').forEach(tab => {
+            tab.addEventListener('click', function () {
+                const kphase = this.getAttribute('data-kphase');
+
+                document.querySelectorAll('#knockout-subsection .knockout-phase-tabs .tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                loadKnockoutPhaseEditor(kphase);
+            });
+        });
+
+        // Botão para criar nova rodada na Supercopa
+        document.getElementById('create-supercopa-round')?.addEventListener('click', () => {
             document.getElementById('supercopa-round-form').style.display = 'block';
             document.getElementById('supercopa-round-id').value = '';
+            document.getElementById('supercopa-round-key-input').value = 'round' + (document.querySelectorAll('#supercopa-rounds-list tbody tr').length + 1);
             document.getElementById('supercopa-round-form-data').reset();
             document.getElementById('supercopa-matches-container').innerHTML = '';
         });
 
         // Botão para cancelar edição de rodada
-        document.getElementById('cancel-supercopa-round').addEventListener('click', () => {
+        document.getElementById('cancel-supercopa-round')?.addEventListener('click', () => {
             document.getElementById('supercopa-round-form').style.display = 'none';
         });
 
-        // Botão para adicionar partida
-        document.getElementById('add-supercopa-match').addEventListener('click', () => {
+        // Botão para adicionar confronto na rodada da Supercopa
+        document.getElementById('add-supercopa-match')?.addEventListener('click', () => {
             const container = document.getElementById('supercopa-matches-container');
-            const matchDiv = document.createElement('div');
-            matchDiv.className = 'match-card';
-            matchDiv.innerHTML = `
-                <div class="form-group">
-                    <label>Jogador 1</label>
-                    <select class="supercopa-player1">
-                        <!-- Jogadores serão carregados aqui -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Jogador 2</label>
-                    <select class="supercopa-player2">
-                        <!-- Jogadores serão carregados aqui -->
-                    </select>
-                </div>
-                <button type="button" class="btn btn-danger remove-supercopa-match"><i class="fas fa-trash"></i> Remover</button>
-            `;
-
-            // Carrega os jogadores nos selects
-            loadSupercopaPlayers(matchDiv);
-
-            // Adiciona evento para remover partida
-            matchDiv.querySelector('.remove-supercopa-match').addEventListener('click', () => {
-                container.removeChild(matchDiv);
-            });
-
-            container.appendChild(matchDiv);
+            if (container) addSupercopaMatchRow(container);
         });
 
-        // Formulário de rodada
-        document.getElementById('supercopa-round-form-data').addEventListener('submit', function (e) {
+        // Submissão do formulário de rodada da Supercopa
+        document.getElementById('supercopa-round-form-data')?.addEventListener('submit', function (e) {
             e.preventDefault();
 
             const roundId = document.getElementById('supercopa-round-id').value || null;
+            const customKey = document.getElementById('supercopa-round-key-input').value.trim();
             const status = parseInt(document.getElementById('supercopa-round-status').value);
 
-            // Coletar partidas - ESTRUTURA CORRIGIDA
+            const targetKey = roundId || customKey || `round${Date.now()}`;
+
             const matches = {};
-            let matchIndex = 1; // Começa em 1 para manter m1, m2, etc.
+            let matchIndex = 1;
 
             document.querySelectorAll('#supercopa-matches-container .match-card').forEach((matchDiv) => {
                 const player1 = matchDiv.querySelector('.supercopa-player1').value;
                 const player2 = matchDiv.querySelector('.supercopa-player2').value;
 
                 if (player1 && player2) {
-                    matches[`m${matchIndex}`] = { // Usando m1, m2, etc. diretamente
+                    matches[`m${matchIndex}`] = {
                         player1Id: player1,
                         player2Id: player2,
-                        result: ""
+                        result: matchDiv.dataset.currentResult || ""
                     };
                     matchIndex++;
                 }
             });
 
-            // Criar ou atualizar rodada
             const roundData = {
                 status: status,
                 matches: matches,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
-            const ref = roundId ?
-                database.ref(`tournaments/supercopa/groups/rounds/${roundId}`) :
-                database.ref('tournaments/supercopa/groups/rounds').push();
-
-            ref.update(roundData)
-                .then(() => {
-                    alert('Rodada salva com sucesso!');
+            database.ref(`tournaments/supercopa/groups/rounds/${targetKey}`).update(roundData)
+                .then(async () => {
+                    alert('Rodada da Supercopa salva com sucesso!');
                     document.getElementById('supercopa-round-form').style.display = 'none';
+                    await processSupercopaScores(targetKey);
                     loadSupercopaRounds();
                 })
                 .catch(error => {
-                    console.error('Erro ao salvar rodada:', error);
-                    alert('Erro ao salvar rodada.');
+                    console.error('Erro ao salvar rodada da Supercopa:', error);
+                    alert('Erro ao salvar rodada: ' + error.message);
                 });
         });
 
-        // Navegação entre as fases do mata-mata
-        document.querySelectorAll('.knockout-tabs .tab').forEach(tab => {
-            tab.addEventListener('click', function () {
-                const stage = this.getAttribute('data-knockoutstage');
-
-                // Atualiza as tabs ativas
-                document.querySelectorAll('.knockout-tabs .tab').forEach(t => {
-                    t.classList.remove('active');
-                });
-                this.classList.add('active');
-
-                // Carrega as partidas da fase selecionada
-                loadKnockoutMatches(stage);
-            });
-        });
-
-        // Tabs Navigation
-        document.querySelectorAll('.tab').forEach(tab => {
+        // Navegação de abas principais (Nível superior)
+        document.querySelectorAll('.tab[data-section]').forEach(tab => {
             tab.addEventListener('click', () => {
                 const section = tab.getAttribute('data-section');
-                const knockoutStage = tab.getAttribute('data-knockoutstage');
-                const subsection = tab.getAttribute('data-subsection');
-
-                // Handle main tabs
                 if (section) {
                     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                    document.getElementById(`${section}-section`).classList.add('active');
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.getElementById(`${section}-section`)?.classList.add('active');
+                    document.querySelectorAll('.tab[data-section]').forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                }
-
-                // Handle Supercopa subsections
-                if (subsection) {
-                    document.querySelectorAll('.subsection').forEach(s => s.classList.remove('active'));
-                    document.getElementById(`${subsection}-section`).classList.add('active');
-                    document.querySelectorAll('.tab[data-subsection]').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                }
-
-                // Handle knockout stages
-                if (knockoutStage) {
-                    // Future implementation for knockout stage management
                 }
             });
         });
@@ -3652,472 +3681,539 @@
 
         // O processamento de pontuação agora é tratado diretamente no submit handler unificado acima.
 
-        async function processSupercopaScores(roundId) {
-            const roundRef = database.ref('tournaments/');
-            const roundSnapshot = await roundRef.once('value');
-            const roundData = roundSnapshot.val();
+        // --- GERENCIAMENTO COMPLETO DA SUPERCOPA ---
 
-            // Verifica se é uma rodada da Supercopa
-            if (!roundData.hasOwnProperty('supercopa')) {
-                return;
-            }
+        // --- GERENCIAMENTO COMPLETO DA SUPERCOPA ---
 
-            const supercopaRef = database.ref('tournaments/supercopa');
-            const supercopaSnapshot = await supercopaRef.once('value');
-            const supercopaData = supercopaSnapshot.val();
-
-            // Verifica se está na fase de grupos
-            if (supercopaData.groups?.status !== 1) {
-                return;
-            }
-
-            console.log('grupos')
-
-            // Encontra a rodada ativa na Supercopa
-            const activeRoundEntry = Object.entries(supercopaData.groups.rounds || {})
-                .find(([_, round]) => round.status === 1);
-
-            if (!activeRoundEntry) {
-                console.log('Nenhuma rodada ativa na Supercopa');
-                return;
-            }
-
-            console.log('rodada ativa')
-
-            const [activeRoundKey, activeRound] = activeRoundEntry;
-            const updates = {};
-
-            console.log('activeRound.matches: ' + JSON.stringify(activeRound.matches))
-
-            // Processa cada partida da rodada ativa
-            for (const [matchGroupKey, matchGroup] of Object.entries(activeRound.matches || {})) {
-                const { player1Id, player2Id } = matchGroup;
-                if (!player1Id || !player2Id) continue;
-
-                const [player1, player2] = await Promise.all([
-                    getUserData(player1Id),
-                    getUserData(player2Id)
-                ]);
-                const currentLigaStage = getCurrentLigaStage();
-                const player1Points = player1[`lastRoundPointsLiga${currentLigaStage}`] || 0;
-                const player2Points = player2[`lastRoundPointsLiga${currentLigaStage}`] || 0;
-
-                // Define o resultado da partida
-                updates[`groups/rounds/${activeRoundKey}/matches/${matchGroupKey}/result`] =
-                    `${player1Points} x ${player2Points}`;
-
-                // Atualiza os standings
-                await updateStanding(updates, player1Id, player1Points, player2Points);
-                await updateStanding(updates, player2Id, player2Points, player1Points);
-            }
-
-            await supercopaRef.update(updates);
-        }
-
-        async function updateStanding(updates, playerId, goalsFor, goalsAg) {
-            const standingPath = `groups/standings/${playerId}/`;
-
-            // Buscar os valores atuais do banco
-            const standingRef = database.ref(`tournaments/supercopa/${standingPath}`);
-            const standingSnapshot = await standingRef.once('value');
-            const currentStanding = standingSnapshot.val() || {};
-
-            // Atualizar com os valores atuais do banco
-            updates[standingPath + 'playerId'] = playerId;
-            updates[standingPath + 'games'] = (currentStanding.games || 0) + 1;
-            updates[standingPath + 'goalsFor'] = (currentStanding.goalsFor || 0) + goalsFor;
-            updates[standingPath + 'goalsAg'] = (currentStanding.goalsAg || 0) + goalsAg;
-
-            if (goalsFor > goalsAg) {
-                updates[standingPath + 'points'] = (currentStanding.points || 0) + 3;
-                updates[standingPath + 'wins'] = (currentStanding.wins || 0) + 1;
-            } else if (goalsFor === goalsAg) {
-                updates[standingPath + 'points'] = (currentStanding.points || 0) + 1;
-                updates[standingPath + 'draws'] = (currentStanding.draws || 0) + 1;
-            }
-        }
-
-        // Função para atualizar os standings no Firebase
-        function updateSupercopaStandings(standingsUpdates) {
-            const supercopaRef = database.ref('tournaments/supercopa');
-            const updates = {};
-
-            for (const [path, data] of Object.entries(standingsUpdates)) {
-                updates[path] = data;
-            }
-
-            return supercopaRef.update(updates);
-        }
-
-        // Função principal para carregar os dados da Supercopa
         function loadSupercopaData() {
-            loadSupercopaRounds();
+            database.ref('tournaments/supercopa/activeStage').once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    const sel = document.getElementById('supercopa-active-stage-select');
+                    if (sel) sel.value = snapshot.val();
+                }
+            });
+
             loadSupercopaGroups();
+            loadSupercopaRounds();
+            loadKnockoutPhaseEditor('quarterFinals');
         }
 
-        // Carrega as rodadas da Supercopa
+        // Listener para salvar a fase ativa da Supercopa no site
+        document.getElementById('btn-save-supercopa-active-stage')?.addEventListener('click', function() {
+            const activeStage = document.getElementById('supercopa-active-stage-select').value;
+            
+            // Atualizar activeStage e ajustar o status das fases
+            const updateData = { activeStage: activeStage };
+            
+            database.ref('tournaments/supercopa').update(updateData).then(() => {
+                alert(`Estágio ativo da Supercopa definido com sucesso para: "${activeStage}"`);
+            }).catch(err => alert('Erro ao salvar estágio ativo: ' + err.message));
+        });
+
+        // Listener para limpar histórico de rodadas da Supercopa
+        document.getElementById('btn-clear-supercopa-rounds')?.addEventListener('click', function() {
+            if (confirm('⚠️ ATENÇÃO: Deseja realmente apagar todo o histórico de rodadas e classificação da Supercopa?\nEsta ação é recomendada apenas para virada de edição.')) {
+                if (confirm('Confirmação final: Deseja apagar permanentemente o histórico da Supercopa?')) {
+                    database.ref('tournaments/supercopa/groups/rounds').remove()
+                        .then(() => database.ref('tournaments/supercopa/groups/standings').remove())
+                        .then(() => {
+                            alert('Histórico de rodadas e classificação da Supercopa foi limpo com sucesso!');
+                            loadSupercopaRounds();
+                        })
+                        .catch(err => alert('Erro ao limpar histórico: ' + err.message));
+                }
+            }
+        });
+
+        async function processSupercopaScores(roundId) {
+            try {
+                const supercopaRef = database.ref('tournaments/supercopa');
+                const [supercopaSnap, usersSnap] = await Promise.all([
+                    supercopaRef.once('value'),
+                    database.ref('users').once('value')
+                ]);
+
+                if (!supercopaSnap.exists() || !usersSnap.exists()) return;
+
+                const supercopaData = supercopaSnap.val();
+                const usersData = usersSnap.val();
+                const currentLigaStage = typeof getCurrentLigaStage === 'function' ? getCurrentLigaStage() : 'Abertura';
+
+                const groupsData = supercopaData.groups || {};
+                const roundsData = groupsData.rounds || {};
+
+                // Recalcular standings do zero para evitar acúmulo duplo ou perda de dados
+                const standings = {};
+                for (let i = 1; i <= 4; i++) {
+                    const groupPlayers = groupsData[`group${i}`] || [];
+                    groupPlayers.forEach(pId => {
+                        standings[pId] = {
+                            playerId: pId,
+                            games: 0,
+                            points: 0,
+                            wins: 0,
+                            draws: 0,
+                            losses: 0,
+                            goalsFor: 0,
+                            goalsAg: 0
+                        };
+                    });
+                }
+
+                const updates = {};
+                for (const [rKey, rData] of Object.entries(roundsData)) {
+                    // Se a rodada estiver em progresso (1) ou finalizada (2)
+                    if (rData.status === 1 || rData.status === 2 || rKey === roundId) {
+                        const matches = rData.matches || {};
+                        for (const [mKey, match] of Object.entries(matches)) {
+                            const { player1Id, player2Id } = match;
+                            if (!player1Id || !player2Id) continue;
+
+                            const p1 = usersData[player1Id] || {};
+                            const p2 = usersData[player2Id] || {};
+
+                            const p1Points = p1[`lastRoundPointsLiga${currentLigaStage}`] || 0;
+                            const p2Points = p2[`lastRoundPointsLiga${currentLigaStage}`] || 0;
+
+                            updates[`groups/rounds/${rKey}/matches/${mKey}/result`] = `${p1Points} x ${p2Points}`;
+
+                            if (standings[player1Id]) {
+                                standings[player1Id].games += 1;
+                                standings[player1Id].goalsFor += p1Points;
+                                standings[player1Id].goalsAg += p2Points;
+                                if (p1Points > p2Points) {
+                                    standings[player1Id].points += 3;
+                                    standings[player1Id].wins += 1;
+                                } else if (p1Points === p2Points) {
+                                    standings[player1Id].points += 1;
+                                    standings[player1Id].draws += 1;
+                                } else {
+                                    standings[player1Id].losses += 1;
+                                }
+                            }
+
+                            if (standings[player2Id]) {
+                                standings[player2Id].games += 1;
+                                standings[player2Id].goalsFor += p2Points;
+                                standings[player2Id].goalsAg += p1Points;
+                                if (p2Points > p1Points) {
+                                    standings[player2Id].points += 3;
+                                    standings[player2Id].wins += 1;
+                                } else if (p2Points === p1Points) {
+                                    standings[player2Id].points += 1;
+                                    standings[player2Id].draws += 1;
+                                } else {
+                                    standings[player2Id].losses += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (const [pId, st] of Object.entries(standings)) {
+                    updates[`groups/standings/${pId}`] = st;
+                }
+
+                await supercopaRef.update(updates);
+                console.log('[processSupercopaScores] Classificação da Supercopa recalculada com sucesso.');
+            } catch (err) {
+                console.error('[processSupercopaScores] Erro:', err);
+            }
+        }
+
+        // --- SUB-ABA 1: CARREGAR E SALVAR GRUPOS ---
+        async function loadSupercopaGroups() {
+            try {
+                const [groupsSnap, usersSnap, teamsSnap] = await Promise.all([
+                    database.ref('tournaments/supercopa/groups').once('value'),
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value')
+                ]);
+
+                const groupsData = groupsSnap.val() || {};
+                const usersData = usersSnap.val() || {};
+                const teamsData = teamsSnap.val() || {};
+
+                // Preencher selects dos 4 grupos
+                for (let g = 1; g <= 4; g++) {
+                    const groupPlayers = groupsData[`group${g}`] || [];
+                    for (let pos = 0; pos < 4; pos++) {
+                        const select = document.querySelector(`.group-player[data-group="${g}"][data-pos="${pos}"]`);
+                        if (!select) continue;
+
+                        select.innerHTML = '<option value="">(Sem Jogador Selecionado)</option>';
+                        Object.entries(usersData).forEach(([uId, uObj]) => {
+                            const team = teamsData[uObj.teamId || uObj.team] || {};
+                            const teamName = uObj.customTeamName || team.name || 'Time';
+                            const displayName = `${teamName} (${uObj.name || uId})`;
+                            const option = document.createElement('option');
+                            option.value = uId;
+                            option.textContent = displayName;
+                            if (groupPlayers[pos] === uId) option.selected = true;
+                            select.appendChild(option);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Erro ao carregar grupos da Supercopa:', err);
+            }
+        }
+
+        // Listener para salvar composição dos grupos
+        document.getElementById('supercopa-groups-form')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const groups = { group1: [], group2: [], group3: [], group4: [] };
+
+            for (let g = 1; g <= 4; g++) {
+                for (let pos = 0; pos < 4; pos++) {
+                    const sel = document.querySelector(`.group-player[data-group="${g}"][data-pos="${pos}"]`);
+                    if (sel && sel.value) groups[`group${g}`].push(sel.value);
+                }
+            }
+
+            database.ref('tournaments/supercopa/groups').update({
+                group1: groups.group1,
+                group2: groups.group2,
+                group3: groups.group3,
+                group4: groups.group4,
+                status: 1
+            }).then(async () => {
+                alert('Grupos da Supercopa salvos com sucesso!');
+                await processSupercopaScores();
+            }).catch(err => {
+                console.error('Erro ao salvar grupos:', err);
+                alert('Erro ao salvar grupos.');
+            });
+        });
+
+        // --- SUB-ABA 2: RODADAS DA FASE DE GRUPOS ---
         function loadSupercopaRounds() {
             const container = document.getElementById('supercopa-rounds-list');
-            container.innerHTML = '<p>Carregando rodadas...</p>';
+            if (!container) return;
+            container.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Carregando rodadas da Supercopa...</div>';
 
             database.ref('tournaments/supercopa/groups/rounds').once('value').then(snapshot => {
                 if (!snapshot.exists()) {
-                    container.innerHTML = '<p>Nenhuma rodada criada ainda.</p>';
+                    container.innerHTML = '<div class="alert alert-info">Nenhuma rodada de grupos criada ainda.</div>';
                     return;
                 }
 
-                let html = '<table class="table"><thead><tr><th>Rodada</th><th>Status</th><th>Partidas</th><th>Ações</th></tr></thead><tbody>';
-
+                const roundsArray = [];
                 snapshot.forEach(roundSnapshot => {
-                    const roundData = roundSnapshot.val();
-                    const statusText = ['Não Iniciada', 'Em Progresso', 'Finalizada'][roundData.status];
-                    const statusClass = ['status-0', 'status-1', 'status-2'][roundData.status];
+                    roundsArray.push({
+                        key: roundSnapshot.key,
+                        ...roundSnapshot.val()
+                    });
+                });
+
+                roundsArray.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+                let html = '<div class="table-responsive"><table><thead><tr><th>Rodada</th><th>Status</th><th>Confrontos</th><th>Ações</th></tr></thead><tbody>';
+
+                roundsArray.forEach((roundData, index) => {
+                    const roundKey = roundData.key;
+                    const seqNum = index + 1;
+                    const statusText = ['Não Iniciada', 'Em Progresso', 'Finalizada'][roundData.status] || 'Desconhecido';
+                    const statusClass = ['status-0', 'status-1', 'status-2'][roundData.status] || 'status-0';
+                    const matchCount = Object.keys(roundData.matches || {}).length;
 
                     html += `
                         <tr>
-                            <td>${roundSnapshot.key}</td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                            <td>${Object.keys(roundData.matches || {}).length}</td>
                             <td>
-                                <button onclick="editSupercopaRound('${roundSnapshot.key}')" class="btn btn-secondary">Editar</button>
-                                <button onclick="deleteSupercopaRound('${roundSnapshot.key}')" class="btn btn-danger">Excluir</button>
+                                <strong>Rodada ${seqNum}</strong>
+                                <div style="font-size: 11px; color: #64748b;">ID: ${roundKey}</div>
+                            </td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>${matchCount} jogo(s)</td>
+                            <td>
+                                <button onclick="editSupercopaRound('${roundKey}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Editar</button>
+                                <button onclick="deleteSupercopaRound('${roundKey}')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Excluir</button>
                             </td>
                         </tr>
                     `;
                 });
 
-                html += '</tbody></table>';
+                html += '</tbody></table></div>';
                 container.innerHTML = html;
             });
         }
 
-        // Editar rodada existente
         function editSupercopaRound(roundId) {
             database.ref(`tournaments/supercopa/groups/rounds/${roundId}`).once('value').then(snapshot => {
+                if (!snapshot.exists()) return;
                 const roundData = snapshot.val();
 
                 document.getElementById('supercopa-round-id').value = roundId;
-                document.getElementById('supercopa-round-status').value = roundData.status;
+                document.getElementById('supercopa-round-key-input').value = roundId;
+                document.getElementById('supercopa-round-status').value = roundData.status || 0;
 
                 const container = document.getElementById('supercopa-matches-container');
                 container.innerHTML = '';
 
-                // Adiciona as partidas existentes
-                Object.entries(roundData.matches || {}).forEach(([matchId, match]) => {
-                    const matchDiv = document.createElement('div');
-                    matchDiv.className = 'match-card';
-                    matchDiv.innerHTML = `
-                        <div class="form-group">
-                            <label>Jogador 1</label>
-                            <select class="supercopa-player1">
-                                <!-- Jogadores serão carregados aqui -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Jogador 2</label>
-                            <select class="supercopa-player2">
-                                <!-- Jogadores serão carregados aqui -->
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-secondary remove-supercopa-match">Remover</button>
-                    `;
-
-                    // Carrega os jogadores e seleciona os atuais
-                    loadSupercopaPlayers(matchDiv, match.player1Id, match.player2Id);
-
-                    // Adiciona evento para remover partida
-                    matchDiv.querySelector('.remove-supercopa-match').addEventListener('click', () => {
-                        container.removeChild(matchDiv);
-                    });
-
-                    container.appendChild(matchDiv);
+                Object.entries(roundData.matches || {}).forEach(([mKey, match]) => {
+                    addSupercopaMatchRow(container, match.player1Id, match.player2Id, match.result);
                 });
 
                 document.getElementById('supercopa-round-form').style.display = 'block';
             });
         }
 
-        // Excluir rodada
         function deleteSupercopaRound(roundId) {
-            if (confirm('Tem certeza que deseja excluir esta rodada?')) {
+            if (confirm(`Tem certeza que deseja excluir a rodada "${roundId}" da Supercopa?`)) {
                 database.ref(`tournaments/supercopa/groups/rounds/${roundId}`).remove()
-                    .then(() => {
+                    .then(async () => {
                         alert('Rodada excluída com sucesso!');
+                        await processSupercopaScores();
                         loadSupercopaRounds();
                     })
-                    .catch(error => {
-                        console.error('Erro ao excluir rodada:', error);
-                        alert('Erro ao excluir rodada.');
-                    });
+                    .catch(err => alert('Erro ao excluir rodada: ' + err.message));
             }
         }
 
-        // Carrega os grupos da Supercopa
-        function loadSupercopaGroups() {
-            const container = document.getElementById('groups-container');
-            container.innerHTML = '<p>Carregando grupos...</p>';
+        function addSupercopaMatchRow(container, p1Id = '', p2Id = '', currentResult = '') {
+            const matchDiv = document.createElement('div');
+            matchDiv.className = 'match-card';
+            matchDiv.style.cssText = 'padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; margin-bottom: 8px;';
+            matchDiv.dataset.currentResult = currentResult;
 
-            database.ref('tournaments/supercopa/groups').once('value').then(snapshot => {
-                const groupsData = snapshot.val();
+            matchDiv.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label style="font-size:12px; font-weight:700;">Jogador 1 (Casa)</label>
+                        <select class="supercopa-player1 form-control"></select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label style="font-size:12px; font-weight:700;">Jogador 2 (Visitante)</label>
+                        <select class="supercopa-player2 form-control"></select>
+                    </div>
+                    <button type="button" class="btn btn-danger remove-supercopa-match" style="align-self: end; height: 38px;"><i class="fas fa-trash"></i></button>
+                </div>
+                ${currentResult ? `<div style="font-size:12px; color:#64748b; margin-top:6px;">Placar gravado: <strong>${currentResult}</strong></div>` : ''}
+            `;
 
-                let html = '';
-                for (let i = 1; i <= 4; i++) {
-                    const groupKey = `group${i}`;
-                    const players = groupsData[groupKey] || [];
+            loadSupercopaPlayers(matchDiv, p1Id, p2Id);
 
-                    if (players.length === 0) continue;
-
-                    html += `
-                        <div class="group-card">
-                            <h3>Grupo ${i}</h3>
-                            <ul>
-                                ${players.map(playerId => `<li>${playerId}</li>`).join('')}
-                            </ul>
-                        </div>
-                    `;
-                }
-
-                container.innerHTML = html || '<p>Nenhum grupo configurado.</p>';
+            matchDiv.querySelector('.remove-supercopa-match').addEventListener('click', () => {
+                container.removeChild(matchDiv);
             });
+
+            container.appendChild(matchDiv);
         }
 
-        // Carrega os jogadores nos selects de partidas
         function loadSupercopaPlayers(container, selectedPlayer1 = null, selectedPlayer2 = null) {
-            database.ref('users').once('value').then(snapshot => {
-                const player1Select = container.querySelector('.supercopa-player1');
-                const player2Select = container.querySelector('.supercopa-player2');
+            Promise.all([
+                database.ref('users').once('value'),
+                database.ref('teams').once('value')
+            ]).then(([usersSnap, teamsSnap]) => {
+                const usersData = usersSnap.val() || {};
+                const teamsData = teamsSnap.val() || {};
 
-                player1Select.innerHTML = '<option value="">Selecione um jogador</option>';
-                player2Select.innerHTML = '<option value="">Selecione um jogador</option>';
+                const select1 = container.querySelector('.supercopa-player1');
+                const select2 = container.querySelector('.supercopa-player2');
+                if (!select1 || !select2) return;
 
-                snapshot.forEach(userSnapshot => {
-                    const userData = userSnapshot.val();
-                    const option1 = document.createElement('option');
-                    const option2 = document.createElement('option');
+                select1.innerHTML = '<option value="">Selecione o Jogador 1</option>';
+                select2.innerHTML = '<option value="">Selecione o Jogador 2</option>';
 
-                    option1.value = userSnapshot.key;
-                    option1.textContent = userData.name;
+                Object.entries(usersData).forEach(([uId, uObj]) => {
+                    const team = teamsData[uObj.teamId || uObj.team] || {};
+                    const teamName = uObj.customTeamName || team.name || 'Time';
+                    const label = `${teamName} (${uObj.name || uId})`;
 
-                    option2.value = userSnapshot.key;
-                    option2.textContent = userData.name;
+                    const opt1 = document.createElement('option');
+                    opt1.value = uId;
+                    opt1.textContent = label;
+                    if (uId === selectedPlayer1) opt1.selected = true;
+                    select1.appendChild(opt1);
 
-                    if (userSnapshot.key === selectedPlayer1) option1.selected = true;
-                    if (userSnapshot.key === selectedPlayer2) option2.selected = true;
-
-                    player1Select.appendChild(option1);
-                    player2Select.appendChild(option2);
+                    const opt2 = document.createElement('option');
+                    opt2.value = uId;
+                    opt2.textContent = label;
+                    if (uId === selectedPlayer2) opt2.selected = true;
+                    select2.appendChild(opt2);
                 });
             });
         }
 
-        // Função para carregar a fase de grupos
-        function loadGroupStage(groupsData) {
-            const container = document.getElementById('groups-container');
+        // --- SUB-ABA 3: MATA-MATA (IDA E VOLTA: SÉRIE A, B E C) ---
+        async function loadKnockoutPhaseEditor(phaseKey = 'quarterFinals') {
+            const container = document.getElementById('knockout-phase-editor');
+            if (!container) return;
+            container.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Carregando dados da fase...</div>';
 
-            // Verifica se há dados
-            if (!groupsData || !groupsData.group1) {
-                container.innerHTML = '<p>Nenhum grupo configurado ainda.</p>';
-                return;
-            }
+            try {
+                const [phaseSnap, usersSnap, teamsSnap] = await Promise.all([
+                    database.ref(`tournaments/supercopa/${phaseKey}`).once('value'),
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value')
+                ]);
 
-            let html = '';
+                const phaseData = phaseSnap.val() || {};
+                const usersData = usersSnap.val() || {};
+                const teamsData = teamsSnap.val() || {};
 
-            // Para cada grupo (group1, group2, group3, group4)
-            for (let i = 1; i <= 4; i++) {
-                const groupKey = `group${i}`;
-                const groupPlayers = groupsData[groupKey] || [];
+                const phaseNames = { quarterFinals: 'Quartas de Final', semiFinals: 'Semifinais', final: 'Final' };
+                const requiredConfronts = phaseKey === 'quarterFinals' ? 4 : phaseKey === 'semiFinals' ? 2 : 1;
 
-                if (groupPlayers.length === 0) continue;
+                let html = `
+                    <div class="card" style="border: 1px solid #cbd5e1; margin-bottom: 20px;">
+                        <div class="card-header" style="background:#f8fafc; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                            <h3><i class="fas fa-sitemap"></i> ${phaseNames[phaseKey]} - Confrontos de Ida e Volta</h3>
+                            <div class="form-group" style="margin-bottom:0; min-width: 220px;">
+                                <label style="font-size:12px; font-weight:700;">Status da Fase</label>
+                                <select id="knockout-phase-status" class="form-control">
+                                    <option value="0" ${phaseData.status === 0 ? 'selected' : ''}>Não Iniciada</option>
+                                    <option value="1" ${phaseData.status === 1 ? 'selected' : ''}>Em Progresso (Ativa)</option>
+                                    <option value="2" ${phaseData.status === 2 ? 'selected' : ''}>Finalizada</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form id="knockout-phase-form">
+                `;
+
+                const seriesList = [
+                    { key: 'matches', label: '🥇 Série A (Disputa do Título Principal)', color: '#d97706', bg: '#fffbebf5' },
+                    { key: 'b', label: '🥈 Série B (Mata-Mata Intermediário)', color: '#2563eb', bg: '#eff6ff' },
+                    { key: 'c', label: '🥉 Série C (Mata-Mata de Consolação)', color: '#059669', bg: '#ecfdf5' }
+                ];
+
+                seriesList.forEach(s => {
+                    html += `
+                        <div class="card" style="margin-bottom: 20px; border: 2px solid ${s.color}; background: ${s.bg}; padding: 16px;">
+                            <h4 style="color: ${s.color}; margin-bottom: 12px;"><i class="fas fa-trophy"></i> ${s.label}</h4>
+                            <div class="series-confronts" data-series="${s.key}">
+                    `;
+
+                    const existingMatches = phaseData[s.key] || [];
+
+                    for (let idx = 0; idx < requiredConfronts; idx++) {
+                        const m = existingMatches[idx] || {};
+                        const p1Id = m.homeTeam || m.player1Id || '';
+                        const p2Id = m.awayTeam || m.player2Id || '';
+                        const s1Ida = m.score1Ida !== undefined ? m.score1Ida : '';
+                        const s2Ida = m.score2Ida !== undefined ? m.score2Ida : '';
+                        const s1Volta = m.score1Volta !== undefined ? m.score1Volta : '';
+                        const s2Volta = m.score2Volta !== undefined ? m.score2Volta : '';
+
+                        html += `
+                            <div class="match-confront-row" style="background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 10px;" data-idx="${idx}">
+                                <div style="font-weight: 700; color: #475569; margin-bottom: 8px;">Confronto ${idx + 1}</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+                                    <div>
+                                        <label style="font-size:11px; font-weight:700;">Jogador 1 (Ida Mandante / Volta Visitante)</label>
+                                        <select class="form-control kplayer1" data-selected="${p1Id}"></select>
+                                    </div>
+                                    <div>
+                                        <label style="font-size:11px; font-weight:700;">Jogador 2 (Ida Visitante / Volta Mandante)</label>
+                                        <select class="form-control kplayer2" data-selected="${p2Id}"></select>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8fafc; padding: 10px; border-radius: 6px;">
+                                    <div>
+                                        <label style="font-size:11px; font-weight:700; color:#1e293b;">⚽ Jogo de Ida</label>
+                                        <div style="display:flex; gap:6px; align-items:center;">
+                                            <input type="number" min="0" class="form-control kscore1-ida" value="${s1Ida}" placeholder="J1" style="text-align:center;">
+                                            <span>x</span>
+                                            <input type="number" min="0" class="form-control kscore2-ida" value="${s2Ida}" placeholder="J2" style="text-align:center;">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style="font-size:11px; font-weight:700; color:#1e293b;">⚽ Jogo de Volta</label>
+                                        <div style="display:flex; gap:6px; align-items:center;">
+                                            <input type="number" min="0" class="form-control kscore1-volta" value="${s1Volta}" placeholder="J1" style="text-align:center;">
+                                            <span>x</span>
+                                            <input type="number" min="0" class="form-control kscore2-volta" value="${s2Volta}" placeholder="J2" style="text-align:center;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    html += `</div></div>`;
+                });
 
                 html += `
-                    <div class="group-card">
-                        <h4>Grupo ${i}</h4>
-                        <table class="standings-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Jogador</th>
-                                    <th>Pts</th>
-                                    <th>J</th>
-                                    <th>V</th>
-                                    <th>E</th>
-                                    <th>GP</th>
-                                    <th>GC</th>
-                                    <th>SG</th>
-                                </tr>
-                            </thead>
-                            <tbody id="group-${i}-standings">
-                                <!-- Jogadores serão inseridos aqui -->
-                            </tbody>
-                        </table>
+                                <div style="text-align: right; margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Confrontos do Mata-Mata (${phaseNames[phaseKey]})</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 `;
-            }
 
-            container.innerHTML = html || '<p>Nenhum grupo ativo no momento.</p>';
+                container.innerHTML = html;
 
-            // Agora carrega os standings para cada grupo
-            loadGroupStandings(groupsData);
-
-            // Carrega as partidas da rodada atual
-            loadCurrentRoundMatches(groupsData.rounds);
-        }
-
-        function loadGroupMatches(roundsData) {
-            // Implementação para carregar as partidas dos grupos
-            // Pode ser exibido em uma seção separada ou modal
-            console.log('Partidas dos grupos:', roundsData);
-        }
-
-        function loadKnockoutStage(supercopaData) {
-            const knockoutContainer = document.getElementById('knockout-matches-container');
-            knockoutContainer.innerHTML = '';
-
-            // Implementar carregamento das partidas do mata-mata
-            // Quartas, semifinais e final
-            console.log('Dados do mata-mata:', supercopaData);
-        }
-
-        // Função para determinar o estágio atual da Superliga
-        function getCurrentSuperligaStage(tournaments) {
-            if (tournaments.includes('Clausura')) return 'Clausura';
-            return 'Abertura'; // Padrão
-        }
-
-        // Função para carregar a classificação de cada grupo
-        function loadGroupStandings(groupsData) {
-            if (!groupsData.standings) return;
-
-            // Para cada grupo (1 a 4)
-            for (let i = 1; i <= 4; i++) {
-                const groupKey = `group${i}`;
-                const groupPlayers = groupsData[groupKey] || [];
-
-                if (groupPlayers.length === 0) continue;
-
-                const tbody = document.getElementById(`group-${i}-standings`);
-                if (!tbody) continue;
-
-                // Coleta os standings dos jogadores deste grupo
-                const groupStandings = [];
-                groupPlayers.forEach(playerId => {
-                    if (groupsData.standings[playerId]) {
-                        groupStandings.push(groupsData.standings[playerId]);
-                    }
-                });
-
-                // Ordena por pontos, depois saldo de gols
-                groupStandings.sort((a, b) => {
-                    if (b.points !== a.points) return b.points - a.points;
-                    const saldoA = (a.goalsFor || 0) - (a.goalsAg || 0);
-                    const saldoB = (b.goalsFor || 0) - (b.goalsAg || 0);
-                    return saldoB - saldoA;
-                });
-
-                // Limpa o tbody
-                tbody.innerHTML = '';
-
-                // Adiciona cada jogador na tabela
-                groupStandings.forEach((standing, index) => {
-                    getUserData(standing.playerId).then(userData => {
-                        const tr = document.createElement('tr');
-                        if (index < 2) tr.classList.add('qualified');
-
-                        const saldo = (standing.goalsFor || 0) - (standing.goalsAg || 0);
-
-                        tr.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${userData.name}</td>
-                            <td>${standing.points || 0}</td>
-                            <td>${standing.games || 0}</td>
-                            <td>${standing.wins || 0}</td>
-                            <td>${standing.draws || 0}</td>
-                            <td>${standing.goalsFor || 0}</td>
-                            <td>${standing.goalsAg || 0}</td>
-                            <td>${saldo}</td>
-                        `;
-
-                        tbody.appendChild(tr);
+                // Preencher todos os dropdowns de jogadores no Mata-Mata
+                container.querySelectorAll('select.kplayer1, select.kplayer2').forEach(select => {
+                    const selectedVal = select.dataset.selected;
+                    select.innerHTML = '<option value="">(A Definir)</option>';
+                    Object.entries(usersData).forEach(([uId, uObj]) => {
+                        const team = teamsData[uObj.teamId || uObj.team] || {};
+                        const teamName = uObj.customTeamName || team.name || 'Time';
+                        const opt = document.createElement('option');
+                        opt.value = uId;
+                        opt.textContent = `${teamName} (${uObj.name || uId})`;
+                        if (uId === selectedVal) opt.selected = true;
+                        select.appendChild(opt);
                     });
                 });
+
+                // Handler de envio do formulário do Mata-Mata
+                document.getElementById('knockout-phase-form').onsubmit = function (e) {
+                    e.preventDefault();
+                    const status = parseInt(document.getElementById('knockout-phase-status').value);
+                    const updatePayload = { status: status };
+
+                    seriesList.forEach(s => {
+                        const seriesContainer = container.querySelector(`.series-confronts[data-series="${s.key}"]`);
+                        const matchesArray = [];
+
+                        seriesContainer.querySelectorAll('.match-confront-row').forEach(row => {
+                            const p1Id = row.querySelector('.kplayer1').value;
+                            const p2Id = row.querySelector('.kplayer2').value;
+                            const s1Ida = row.querySelector('.kscore1-ida').value;
+                            const s2Ida = row.querySelector('.kscore2-ida').value;
+                            const s1Volta = row.querySelector('.kscore1-volta').value;
+                            const s2Volta = row.querySelector('.kscore2-volta').value;
+
+                            let resultStr = "vs";
+                            if (s1Ida !== "" && s2Ida !== "") {
+                                const tot1 = (parseInt(s1Ida) || 0) + (parseInt(s1Volta) || 0);
+                                const tot2 = (parseInt(s2Ida) || 0) + (parseInt(s2Volta) || 0);
+                                if (s1Volta !== "" && s2Volta !== "") {
+                                    resultStr = `Ida: ${s1Ida}x${s2Ida} | Volta: ${s1Volta}x${s2Volta} (Agregado: ${tot1} x ${tot2})`;
+                                } else {
+                                    resultStr = `Ida: ${s1Ida}x${s2Ida}`;
+                                }
+                            }
+
+                            matchesArray.push({
+                                homeTeam: p1Id,
+                                awayTeam: p2Id,
+                                player1Id: p1Id,
+                                player2Id: p2Id,
+                                score1Ida: s1Ida !== "" ? parseInt(s1Ida) : null,
+                                score2Ida: s2Ida !== "" ? parseInt(s2Ida) : null,
+                                score1Volta: s1Volta !== "" ? parseInt(s1Volta) : null,
+                                score2Volta: s2Volta !== "" ? parseInt(s2Volta) : null,
+                                result: resultStr
+                            });
+                        });
+
+                        updatePayload[s.key] = matchesArray;
+                    });
+
+                    database.ref(`tournaments/supercopa/${phaseKey}`).update(updatePayload)
+                        .then(() => alert(`Mata-Mata (${phaseNames[phaseKey]}) salvo com sucesso!`))
+                        .catch(err => alert('Erro ao salvar Mata-Mata: ' + err.message));
+                };
+
+            } catch (err) {
+                console.error('Erro ao carregar editor do Mata-Mata:', err);
+                container.innerHTML = '<div class="alert alert-danger">Erro ao carregar os dados do Mata-Mata.</div>';
             }
-        }
-
-        // Função para carregar as partidas da rodada atual
-        function loadCurrentRoundMatches(roundsData) {
-            const container = document.getElementById('current-round-matches');
-            if (!roundsData) {
-                container.innerHTML = '<p>Nenhuma rodada em andamento.</p>';
-                return;
-            }
-
-            // Encontra a rodada ativa (status = 1)
-            let activeRound = null;
-            Object.entries(roundsData).forEach(([roundKey, round]) => {
-                if (round.status === 1) {
-                    activeRound = { key: roundKey, ...round };
-                }
-            });
-
-            if (!activeRound) {
-                container.innerHTML = '<p>Nenhuma rodada em andamento.</p>';
-                return;
-            }
-
-            container.innerHTML = `<h4>Rodada ${activeRound.key.replace('round', '')}</h4>`;
-
-            // Para cada partida na rodada
-            Object.entries(activeRound.matches).forEach(([matchGroupKey, matchGroup]) => {
-                Object.entries(matchGroup).forEach(([matchKey, match]) => {
-                    const matchDiv = document.createElement('div');
-                    matchDiv.className = 'match-card';
-
-                    // Cria a estrutura básica
-                    matchDiv.innerHTML = `
-                        <div class="match-players">
-                            <div class="match-player" id="player1-${matchKey}">
-                                <div class="player-name">Carregando...</div>
-                                <div class="player-points">-</div>
-                            </div>
-                            <div class="match-vs">vs</div>
-                            <div class="match-player" id="player2-${matchKey}">
-                                <div class="player-name">Carregando...</div>
-                                <div class="player-points">-</div>
-                            </div>
-                        </div>
-                        <div class="match-result">${match.result || 'Pendente'}</div>
-                    `;
-
-                    container.appendChild(matchDiv);
-
-                    // Carrega os dados dos jogadores
-                    loadPlayerData(match.player1Id, `player1-${matchKey}`);
-                    loadPlayerData(match.player2Id, `player2-${matchKey}`);
-                });
-            });
-        }
-
-        // Função auxiliar para carregar dados de um jogador
-        function loadPlayerData(playerId, containerId) {
-            if (!playerId) return;
-
-            getUserData(playerId).then(userData => {
-                const container = document.getElementById(containerId);
-                if (container) {
-                    container.querySelector('.player-name').textContent = userData.name;
-
-                    // Pega os pontos da última rodada da liga
-                    const currentLigaStage = getCurrentLigaStage(); // Implemente esta função conforme sua lógica
-                    const points = userData[`lastRoundPointsLiga${currentLigaStage}`] || 0;
-                    container.querySelector('.player-points').textContent = points;
-                }
-            });
-        }
-
-        // Função para carregar a fase de mata-mata
-        function loadKnockoutStage(supercopaData) {
-            // Implementação similar para carregar quartas, semifinais e final
-            // Você pode seguir o mesmo padrão das outras funções
         }
 
         // Funções auxiliares

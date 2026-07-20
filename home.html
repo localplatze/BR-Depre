@@ -1258,8 +1258,7 @@
             superligaTableBody.innerHTML = displayStandings.map(u => {
                 const team = teamsCache[u.teamId || u.team] || {};
                 const playerAvatar = (u.useCustomShield && u.customShield) ? u.customShield : (team.image || 'default-avatar.png');
-                const teamName = u.customTeamName || team.name || 'Time';
-                const displayName = `${teamName} (${u.name || 'Jogador'})`;
+                const displayName = (u.customTeamName && u.customTeamName.trim() !== '') ? u.customTeamName.trim() : (u.name || team.name || 'Jogador');
                 const pos = standings.findIndex(s => s.id === u.id) + 1;
                 const isCurrent = u.id === currentUser?.uid;
                 return `
@@ -1278,84 +1277,145 @@
             const snapshot = await database.ref('tournaments/supercopa').once('value');
             const data = snapshot.val();
 
-            if (!data?.groups) {
+            if (!data) {
                 supercopaStatus.textContent = 'Não iniciada';
                 supercopaStatus.className = 'status-badge status-upcoming';
                 supercopaContent.innerHTML = '<p class="supercopa-info">Aguardando início da competição</p>';
-                profileCopaPos.textContent = '--º Grupo';
+                profileCopaPos.textContent = '--º';
                 return;
             }
 
-            const status = data.groups.status || 0;
-            if (status === 0) {
-                supercopaStatus.textContent = 'Não iniciada';
-                supercopaStatus.className = 'status-badge status-upcoming';
-                supercopaContent.innerHTML = '<p class="supercopa-info">Em breve</p>';
-                profileCopaPos.textContent = '--º Grupo';
-            } else if (status === 2) {
-                supercopaStatus.textContent = 'Finalizada';
-                supercopaStatus.className = 'status-badge status-ongoing';
-                supercopaContent.innerHTML = '<p class="supercopa-info">🏆 Edição encerrada</p>';
+            const activeStage = data.activeStage || 'groups';
+            const me = usersCache[currentUser?.uid] || {};
+            const myTeam = teamsCache[me.teamId || me.team] || {};
+            const myDisplayName = (me.customTeamName && me.customTeamName.trim() !== '') ? me.customTeamName.trim() : (me.name || myTeam.name || 'Você');
+            const myAvatar = (me.useCustomShield && me.customShield) ? me.customShield : (myTeam.image || 'default-avatar.png');
+
+            if (activeStage === 'groups') {
+                if (!data.groups) {
+                    supercopaStatus.textContent = 'Não iniciada';
+                    supercopaStatus.className = 'status-badge status-upcoming';
+                    supercopaContent.innerHTML = '<p class="supercopa-info">Fase de grupos não configurada</p>';
+                    profileCopaPos.textContent = '--º Grupo';
+                    return;
+                }
+
+                const status = data.groups.status || 0;
+                if (status === 0) {
+                    supercopaStatus.textContent = 'Não iniciada';
+                    supercopaStatus.className = 'status-badge status-upcoming';
+                    supercopaContent.innerHTML = '<p class="supercopa-info">Em breve</p>';
+                    profileCopaPos.textContent = '--º Grupo';
+                } else if (status === 2) {
+                    supercopaStatus.textContent = 'Finalizada';
+                    supercopaStatus.className = 'status-badge status-ongoing';
+                    supercopaContent.innerHTML = '<p class="supercopa-info">🏆 Fase de Grupos encerrada</p>';
+                } else {
+                    supercopaStatus.textContent = 'Em andamento';
+                    supercopaStatus.className = 'status-badge status-active';
+
+                    const userGroupKey = Object.keys(data.groups).find(key =>
+                        Array.isArray(data.groups[key]) && data.groups[key].includes(currentUser?.uid)
+                    );
+
+                    if (userGroupKey) {
+                        const groupNames = { group1: 'A', group2: 'B', group3: 'C', group4: 'D' };
+                        const groupLetter = groupNames[userGroupKey] || userGroupKey.slice(-1);
+
+                        const standings = Object.values(data.groups.standings || {})
+                            .filter(p => data.groups[userGroupKey].includes(p.playerId))
+                            .sort((a, b) => (b.points || 0) - (a.points || 0));
+                        const userPos = standings.findIndex(p => p.playerId === currentUser?.uid) + 1;
+                        profileCopaPos.textContent = `${userPos}º Grupo ${groupLetter}`;
+
+                        let matchHtml = '<p class="group-position">Grupo ' + groupLetter + '</p>';
+
+                        const activeRoundData = Object.values(data.groups.rounds || {}).find(r => r.status === 1);
+                        if (activeRoundData?.matches) {
+                            const userMatch = Object.values(activeRoundData.matches).find(m =>
+                                m.player1Id === currentUser?.uid || m.player2Id === currentUser?.uid
+                            );
+                            if (userMatch) {
+                                const opponentId = userMatch.player1Id === currentUser?.uid ? userMatch.player2Id : userMatch.player1Id;
+                                const opponent = usersCache[opponentId];
+
+                                const oppTeam = teamsCache[opponent?.teamId || opponent?.team] || {};
+                                const oppDisplayName = (opponent?.customTeamName && opponent.customTeamName.trim() !== '') ? opponent.customTeamName.trim() : (opponent?.name || oppTeam.name || 'Adversário');
+                                const oppAvatar = (opponent?.useCustomShield && opponent?.customShield) ? opponent.customShield : (oppTeam.image || 'default-avatar.png');
+
+                                const myScore = activeRound ? (livePoints[currentUser?.uid] || 0) : 0;
+                                const oppScore = activeRound ? (livePoints[opponentId] || 0) : 0;
+
+                                matchHtml = `
+                                <div class="next-match">
+                                    <div class="match-player">
+                                        <img src="${myAvatar}" onerror="this.src='default-avatar.png'">
+                                        <span>${myDisplayName}</span>
+                                    </div>
+                                    <div class="match-score">${myScore} x ${oppScore}</div>
+                                    <div class="match-player">
+                                        <img src="${oppAvatar}" onerror="this.src='default-avatar.png'">
+                                        <span>${oppDisplayName}</span>
+                                    </div>
+                                </div>
+                            `;
+                            }
+                        }
+                        supercopaContent.innerHTML = matchHtml;
+                    } else {
+                        profileCopaPos.textContent = '--º Grupo';
+                        supercopaContent.innerHTML = '<p class="supercopa-info">Você não está nesta edição</p>';
+                    }
+                }
             } else {
-                supercopaStatus.textContent = 'Em andamento';
+                // Mata-Mata Ativo
+                const phaseNames = { quarterFinals: 'Quartas', semiFinals: 'Semis', final: 'Final' };
+                profileCopaPos.textContent = phaseNames[activeStage] || 'Mata-Mata';
+                supercopaStatus.textContent = 'Mata-Mata';
                 supercopaStatus.className = 'status-badge status-active';
 
-                const userGroupKey = Object.keys(data.groups).find(key =>
-                    Array.isArray(data.groups[key]) && data.groups[key].includes(currentUser?.uid)
-                );
+                const phaseData = data[activeStage] || {};
+                let userMatch = null;
+                let seriesName = 'Série A';
 
-                if (userGroupKey) {
-                    const groupNames = { group1: 'A', group2: 'B', group3: 'C', group4: 'D' };
-                    const groupLetter = groupNames[userGroupKey] || userGroupKey.slice(-1);
-
-                    const standings = Object.values(data.groups.standings || {})
-                        .filter(p => data.groups[userGroupKey].includes(p.playerId))
-                        .sort((a, b) => (b.points || 0) - (a.points || 0));
-                    const userPos = standings.findIndex(p => p.playerId === currentUser?.uid) + 1;
-                    profileCopaPos.textContent = `${userPos}º Grupo ${groupLetter}`;
-
-                    let matchHtml = '<p class="group-position">Participando do Grupo ' + groupLetter + '</p>';
-
-                    const activeRoundData = Object.values(data.groups.rounds || {}).find(r => r.status === 1);
-                    if (activeRoundData?.matches) {
-                        const userMatch = Object.values(activeRoundData.matches).find(m =>
-                            m.player1Id === currentUser?.uid || m.player2Id === currentUser?.uid
-                        );
-                        if (userMatch) {
-                            const opponentId = userMatch.player1Id === currentUser?.uid ? userMatch.player2Id : userMatch.player1Id;
-                            const opponent = usersCache[opponentId];
-
-                            const me = usersCache[currentUser?.uid] || {};
-                            const myTeam = teamsCache[me.teamId || me.team] || {};
-                            const myTeamName = me.customTeamName || myTeam.name || 'Meu Time';
-                            const myAvatar = (me.useCustomShield && me.customShield) ? me.customShield : (myTeam.image || 'default-avatar.png');
-
-                            const oppTeam = teamsCache[opponent?.teamId || opponent?.team] || {};
-                            const oppTeamName = opponent?.customTeamName || oppTeam.name || 'Adversário';
-                            const oppAvatar = (opponent?.useCustomShield && opponent?.customShield) ? opponent.customShield : (oppTeam.image || 'default-avatar.png');
-
-                            const myScore = activeRound ? (livePoints[currentUser?.uid] || 0) : 0;
-                            const oppScore = activeRound ? (livePoints[opponentId] || 0) : 0;
-
-                            matchHtml = `
-                            <div class="next-match">
-                                <div class="match-player">
-                                    <img src="${myAvatar}" onerror="this.src='default-avatar.png'">
-                                    <span>${myTeamName} (${me.name || 'Você'})</span>
-                                </div>
-                                <div class="match-score">${myScore} x ${oppScore}</div>
-                                <div class="match-player">
-                                    <img src="${oppAvatar}" onerror="this.src='default-avatar.png'">
-                                    <span>${oppTeamName} (${opponent?.name || 'Adversário'})</span>
-                                </div>
-                            </div>
-                        `;
-                        }
+                ['matches', 'b', 'c'].forEach((sKey, idx) => {
+                    const seriesArray = phaseData[sKey] || [];
+                    const found = seriesArray.find(m => m.homeTeam === currentUser?.uid || m.awayTeam === currentUser?.uid || m.player1Id === currentUser?.uid || m.player2Id === currentUser?.uid);
+                    if (found) {
+                        userMatch = found;
+                        seriesName = idx === 0 ? 'Série A' : idx === 1 ? 'Série B' : 'Série C';
                     }
-                    supercopaContent.innerHTML = matchHtml;
+                });
+
+                if (userMatch) {
+                    const p1Id = userMatch.homeTeam || userMatch.player1Id;
+                    const p2Id = userMatch.awayTeam || userMatch.player2Id;
+                    const isHome = p1Id === currentUser?.uid;
+                    const opponentId = isHome ? p2Id : p1Id;
+                    const opponent = usersCache[opponentId];
+
+                    const oppTeam = teamsCache[opponent?.teamId || opponent?.team] || {};
+                    const oppDisplayName = (opponent?.customTeamName && opponent.customTeamName.trim() !== '') ? opponent.customTeamName.trim() : (opponent?.name || oppTeam.name || 'Adversário');
+                    const oppAvatar = (opponent?.useCustomShield && opponent?.customShield) ? opponent.customShield : (oppTeam.image || 'default-avatar.png');
+
+                    const resultStr = userMatch.result || 'Aguardando jogo';
+
+                    supercopaContent.innerHTML = `
+                        <div style="font-size:12px; font-weight:700; color:#38bdf8; text-align:center; margin-bottom:8px;">${phaseNames[activeStage]} (${seriesName})</div>
+                        <div class="next-match">
+                            <div class="match-player">
+                                <img src="${myAvatar}" onerror="this.src='default-avatar.png'">
+                                <span>${myDisplayName}</span>
+                            </div>
+                            <div class="match-score" style="font-size:13px; font-weight:700;">${resultStr}</div>
+                            <div class="match-player">
+                                <img src="${oppAvatar}" onerror="this.src='default-avatar.png'">
+                                <span>${oppDisplayName}</span>
+                            </div>
+                        </div>
+                    `;
                 } else {
-                    profileCopaPos.textContent = '--º Grupo';
-                    supercopaContent.innerHTML = '<p class="supercopa-info">Você não está participando desta edição</p>';
+                    supercopaContent.innerHTML = `<p class="supercopa-info">Acompanhe a fase de ${phaseNames[activeStage] || 'Mata-Mata'}</p>`;
                 }
             }
         }
