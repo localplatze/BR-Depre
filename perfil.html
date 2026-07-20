@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Brasileirão da Depressão · Meu Perfil & Time</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --primary-glow: rgba(16, 185, 129, 0.3);
+            --cyan: #06B6D4;
+            --cyan-glow: rgba(6, 182, 212, 0.3);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --warning-glow: rgba(245, 158, 11, 0.3);
+            --danger: #EF4444;
+            --dark-bg: #090D16;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(16, 185, 129, 0.15);
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 25px rgba(16, 185, 129, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #090D16 0%, #111827 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+                linear-gradient(rgba(16, 185, 129, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.01) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--primary);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, #10B981, #06B6D4, #F59E0B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: rgba(9, 13, 22, 0.95);
+            backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(16, 185, 129, 0.15);
+            z-index: 1000;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-logo {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .sidebar-nav a {
+            padding: 0.85rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Container & Layout */
+        .container {
+            max-width: 1300px;
+            margin: 2rem auto 4rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #F8FAFC, #94A3B8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: var(--cyan);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 0.65rem 1.25rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+            transform: translateX(-3px);
+        }
+
+        /* Live Preview Banner Card */
+        .preview-banner {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .preview-shield-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            flex-shrink: 0;
+        }
+
+        .preview-shield-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            background: linear-gradient(#111827, #111827) padding-box,
+                linear-gradient(135deg, #10B981, #06B6D4) border-box;
+            box-shadow: var(--shadow-md);
+        }
+
+        .preview-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #000;
+            border: 2px solid #111827;
+        }
+
+        .preview-details h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+        }
+
+        .preview-details p {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-tags {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.35rem 0.85rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Grid Sections */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+        }
+
+        .card-header i {
+            color: var(--primary);
+            font-size: 1.35rem;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.35rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            background: rgba(9, 13, 22, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 0.85rem 1rem;
+            border-radius: 0.85rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+        }
+
+        .form-select option {
+            background: #111827;
+            color: #fff;
+        }
+
+        .help-text {
+            font-size: 0.775rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        /* Smart Team Selector Styles */
+        .smart-select-trigger {
+            width: 100%;
+            background: rgba(9, 13, 22, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        .smart-select-trigger:hover,
+        .smart-select-trigger.active {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+        }
+
+        .smart-selected-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .smart-team-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--card-border);
+        }
+
+        .smart-chevron {
+            color: var(--text-secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .smart-select-trigger.active .smart-chevron {
+            transform: rotate(180deg);
+            color: var(--cyan);
+        }
+
+        .smart-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 100%;
+            background: rgba(17, 24, 39, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--cyan);
+            border-radius: 1rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            z-index: 500;
+            display: none;
+            overflow: hidden;
+            animation: fadeInDown 0.2s ease-out;
+        }
+
+        .smart-dropdown-menu.show {
+            display: block;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .smart-search-wrapper {
+            position: relative;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .smart-search-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .smart-search-input {
+            width: 100%;
+            background: rgba(9, 13, 22, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 0.65rem 1rem 0.65rem 2.25rem;
+            border-radius: 0.65rem;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+
+        .smart-search-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+
+        .smart-team-options-list {
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .smart-team-opt {
+            padding: 0.65rem 0.85rem;
+            border-radius: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: var(--text-primary);
+        }
+
+        .smart-team-opt:hover,
+        .smart-team-opt.selected {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary);
+        }
+
+        .smart-opt-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .smart-opt-abbr {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.12);
+            padding: 0.2rem 0.6rem;
+            border-radius: 1rem;
+        }
+
+        /* Mode Selector Toggle */
+        .shield-mode-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            background: rgba(9, 13, 22, 0.6);
+            padding: 0.35rem;
+            border-radius: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.65rem 1rem;
+            border-radius: 0.65rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #000;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        /* Custom Shield Studio Controls */
+        .studio-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Color Picker Chips */
+        .color-chips {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .color-chip {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s ease;
+        }
+
+        .color-chip:hover {
+            transform: scale(1.15);
+        }
+
+        /* Icon Grid Picker */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .icon-opt {
+            background: rgba(9, 13, 22, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.65rem;
+            padding: 0.6rem;
+            text-align: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .icon-opt:hover,
+        .icon-opt.selected {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: var(--cyan);
+            color: var(--cyan);
+            transform: scale(1.05);
+        }
+
+        /* Interactive Shield Studio Preview Canvas Box */
+        .canvas-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, rgba(9, 13, 22, 0.8) 100%);
+            border: 1px dashed var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        #shield-canvas {
+            background: transparent;
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
+        }
+
+        .canvas-label {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Rival Card & Invites System */
+        .rival-card-preview {
+            background: rgba(9, 13, 22, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .rival-versus {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .vs-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            flex: 1;
+            text-align: center;
+        }
+
+        .vs-item img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--card-border);
+        }
+
+        .vs-item span {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .vs-badge {
+            background: linear-gradient(135deg, #EF4444, #B91C1C);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 2rem;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .vs-badge.pending {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .rival-status-banner {
+            background: rgba(9, 13, 22, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .rival-status-banner.warning {
+            border-color: rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .rival-status-banner.success {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .rival-status-banner .status-info {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .btn-rival-action {
+            padding: 0.6rem 1.1rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-send-invite {
+            background: linear-gradient(135deg, var(--cyan), #0284C7);
+            color: #fff;
+            width: 100%;
+            justify-content: center;
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 4px 12px var(--cyan-glow);
+        }
+
+        .btn-send-invite:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px var(--cyan-glow);
+        }
+
+        .btn-cancel {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+        }
+
+        .btn-cancel:hover {
+            background: #EF4444;
+            color: #fff;
+        }
+
+        .btn-break {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-secondary);
+        }
+
+        .btn-break:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .incoming-invite-card {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.08));
+            border: 1px solid var(--cyan);
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
+            margin-bottom: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .incoming-info {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .incoming-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-accept-invite {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #000;
+            font-weight: 800;
+        }
+
+        .btn-accept-invite:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        /* Submit Actions */
+        .actions-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #000;
+            border: none;
+            padding: 0.95rem 2.25rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #34D399, #10B981);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(17, 24, 39, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(6, 182, 212, 0.1);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="loading-screen" id="loading-screen">
+        <div class="loader"></div>
+        <p style="margin-top: 1rem; color: var(--text-secondary);">Carregando Estúdio de Personalização...</p>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">⚽ BR Depressão</span>
+            <button class="sidebar-close" id="sidebar-close">×</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="home.html"><i class="fas fa-home"></i> Arena Principal</a>
+            <a href="perfil.html" class="active"><i class="fas fa-user-cog"></i> Meu Perfil & Time</a>
+            <a href="palpites.html"><i class="fas fa-pencil-alt"></i> Fazer Palpite</a>
+            <a href="historico.html"><i class="fas fa-history"></i> Histórico</a>
+            <a href="superliga.html"><i class="fas fa-trophy"></i> Superliga</a>
+            <a href="supercopa.html"><i class="fas fa-shield-alt"></i> Supercopa</a>
+            <a href="admin.html" id="admin-sidebar-link" style="display: none;"><i class="fas fa-crown"></i> Admin</a>
+        </nav>
+    </div>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <a href="home.html" class="logo">🏆 BRASILEIRÃO DA DEPRESSÃO</a>
+            </div>
+            <div class="header-actions">
+                <a href="home.html" class="icon-btn" title="Voltar à Arena"><i class="fas fa-home"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-user-edit"></i> Meu Perfil & Escudo do Time</h1>
+            <a href="home.html" class="back-btn"><i class="fas fa-arrow-left"></i> Voltar à Arena</a>
+        </div>
+
+        <!-- Live Profile Card Preview Banner -->
+        <div class="preview-banner">
+            <div class="preview-shield-wrapper">
+                <img id="banner-shield-img" src="default-avatar.png" class="preview-shield-img" alt="Escudo">
+                <div class="preview-badge"><i class="fas fa-shield-alt"></i></div>
+            </div>
+            <div class="preview-details">
+                <h2 id="banner-user-name">Carregando...</h2>
+                <p id="banner-team-info"><i class="fas fa-shield-alt" style="color: var(--cyan);"></i> -- (---)</p>
+                <div class="preview-tags">
+                    <span class="tag" id="banner-rival-tag"><i class="fas fa-fire"></i> Sem Rival Definido</span>
+                    <span class="tag"><i class="fas fa-check-circle"></i> Perfil Ativo</span>
+                </div>
+            </div>
+        </div>
+
+        <form id="profile-form" class="settings-grid" onsubmit="return false;">
+            <!-- Left Card: User & Team Information -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-id-card"></i> Dados do Treinador & Equipe
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-user-name"><i class="fas fa-user"></i> Nome do Treinador / Jogador</label>
+                    <input type="text" id="input-user-name" class="form-input" placeholder="Seu nome no jogo" required>
+                </div>
+
+                <div class="form-group" style="position: relative;">
+                    <label class="form-label"><i class="fas fa-flag"></i> Time de Coração (Base)</label>
+                    <input type="hidden" id="input-base-team" value="">
+                    
+                    <div class="smart-select-trigger" id="smart-team-trigger">
+                        <div class="smart-selected-content" id="smart-selected-content">
+                            <img id="smart-selected-img" src="default-avatar.png" class="smart-team-thumb">
+                            <span id="smart-selected-text">Selecione seu time de coração...</span>
+                        </div>
+                        <i class="fas fa-chevron-down smart-chevron"></i>
+                    </div>
+
+                    <div class="smart-dropdown-menu" id="smart-team-dropdown">
+                        <div class="smart-search-wrapper">
+                            <i class="fas fa-search smart-search-icon"></i>
+                            <input type="text" id="smart-team-search" class="smart-search-input" placeholder="Buscar por nome ou sigla...">
+                        </div>
+                        <div class="smart-team-options-list" id="smart-team-options-list">
+                            <div style="padding: 1rem; text-align: center; color: var(--text-muted);">Carregando times...</div>
+                        </div>
+                    </div>
+                    <p class="help-text">Define o escudo base, cores padrão e estatísticas base do clube.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-custom-team"><i class="fas fa-tshirt"></i> Nome Personalizado da Equipe</label>
+                    <input type="text" id="input-custom-team" class="form-input" placeholder="Ex: Flamengo Deprê FC, Galácticos">
+                    <p class="help-text">Deixe em branco para usar o nome oficial do time de coração.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-abbr"><i class="fas fa-font"></i> Sigla da Equipe (3 Letras)</label>
+                    <input type="text" id="input-abbr" class="form-input" maxlength="3" placeholder="EX: FLA" style="text-transform: uppercase;" required>
+                </div>
+
+                <!-- Rival System Section -->
+                <div class="card-header" style="margin-top: 2rem;">
+                    <i class="fas fa-swords" style="color: var(--danger);"></i> Selecionar Time Rival
+                </div>
+
+                <!-- Incoming Rival Invites Alert Area -->
+                <div id="incoming-rival-requests" style="display: none; margin-bottom: 1rem;"></div>
+
+                <!-- Rival Status Management Box -->
+                <div id="rival-system-box">
+                    <!-- State A: Confirmed Mutual Rivalry -->
+                    <div id="rival-confirmed-block" class="rival-status-banner success" style="display: none;">
+                        <div class="status-info">
+                            <i class="fas fa-check-circle" style="color: var(--primary); font-size: 1.35rem;"></i>
+                            <div>
+                                <strong style="color: var(--text-primary); font-size: 0.95rem;">Rivalidade Mútua Confirmada!</strong>
+                                <p id="confirmed-rival-text" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem;">Rival: ...</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-rival-action btn-break" id="btn-break-rivalry">
+                            <i class="fas fa-unlink"></i> Desfazer Rivalidade
+                        </button>
+                    </div>
+
+                    <!-- State B: Pending Outgoing Convite -->
+                    <div id="rival-pending-block" class="rival-status-banner warning" style="display: none;">
+                        <div class="status-info">
+                            <i class="fas fa-hourglass-half fa-spin" style="color: var(--warning); font-size: 1.35rem;"></i>
+                            <div>
+                                <strong style="color: var(--text-primary); font-size: 0.95rem;">Convite Enviado (Aguardando Aceite)</strong>
+                                <p id="pending-rival-text" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem;">Aguardando resposta de ...</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-rival-action btn-cancel" id="btn-cancel-rival-invite">
+                            <i class="fas fa-times"></i> Cancelar Convite
+                        </button>
+                    </div>
+
+                    <!-- State C: Select New Rival & Send Convite -->
+                    <div id="rival-select-block">
+                        <div class="form-group">
+                            <label class="form-label" for="input-rival"><i class="fas fa-users-slash"></i> Escolha seu Maior Rival na Liga</label>
+                            <select id="input-rival" class="form-select">
+                                <option value="">Sem rival selecionado</option>
+                            </select>
+                            <p class="help-text">Ao enviar o convite, o treinador rival precisará aceitar para confirmar a rivalidade mútua.</p>
+                        </div>
+                        <button type="button" class="btn-rival-action btn-send-invite" id="btn-send-rival-invite" style="display: none;">
+                            <i class="fas fa-paper-plane"></i> Enviar Convite de Rivalidade
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live VS Card Preview -->
+                <div id="rival-preview-container" class="rival-card-preview" style="display: none;">
+                    <div class="rival-versus">
+                        <div class="vs-item">
+                            <img id="my-vs-img" src="default-avatar.png">
+                            <span id="my-vs-name">Você</span>
+                        </div>
+                        <div class="vs-badge" id="rival-vs-badge">VS</div>
+                        <div class="vs-item">
+                            <img id="rival-vs-img" src="default-avatar.png">
+                            <span id="rival-vs-name">Rival</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card: Custom Shield Studio -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-paint-brush"></i> Editor de Escudos Customizado
+                </div>
+
+                <div class="shield-mode-toggle">
+                    <button type="button" class="mode-btn active" id="btn-mode-official">
+                        <i class="fas fa-shield-alt"></i> Escudo Oficial
+                    </button>
+                    <button type="button" class="mode-btn" id="btn-mode-custom">
+                        <i class="fas fa-magic"></i> Criar Escudo Único
+                    </button>
+                </div>
+
+                <!-- Live Canvas Display -->
+                <div class="canvas-box">
+                    <canvas id="shield-canvas" width="220" height="220"></canvas>
+                    <div class="canvas-label" id="canvas-status-label">Pré-visualização do Escudo</div>
+                </div>
+
+                <!-- Custom Shield Customizer Panel -->
+                <div id="custom-studio-panel" class="studio-controls" style="display: none;">
+                    <div class="control-row">
+                        <div class="form-group">
+                            <label class="form-label">Formato do Escudo</label>
+                            <select id="shield-shape" class="form-select">
+                                <option value="ogival">🛡️ Clássico (Ogival)</option>
+                                <option value="circle">⚪ Circular (Moderno)</option>
+                                <option value="french">🔰 Francês (Bico clássico)</option>
+                                <option value="diamond">💎 Diamante / Losango</option>
+                                <option value="retro">🛡️ Retrô Europeu</option>
+                                <option value="crown">👑 Topo Coroa (Suíço)</option>
+                                <option value="samnite">🇮🇹 Italiano (Milan/Inter/Roma)</option>
+                                <option value="hexagon">🛑 Hexágono Esportivo</option>
+                                <option value="gothic">🏰 Gótico Bipartido (Barça/Real)</option>
+                                <option value="oval">🥚 Oval Clássico (Boca/Peñarol)</option>
+                                <option value="shield_crest">⚔️ Crest Império (Arsenal)</option>
+                                <option value="shield_star">⭐ Estrela Pentágono</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Estilo do Fundo</label>
+                            <select id="shield-pattern" class="form-select">
+                                <option value="solid">Sólido (Cor Única)</option>
+                                <option value="v-stripes">Listras Verticais</option>
+                                <option value="h-stripes">Listras Horizontais (Faixas)</option>
+                                <option value="diagonal">Faixa Diagonal (Vasco / River)</option>
+                                <option value="diagonal_inv">Faixa Diagonal Invertida</option>
+                                <option value="halves">Dividido 50/50 (Halves)</option>
+                                <option value="quarters">Quadriculado (Croácia)</option>
+                                <option value="chevron">V-Invertido / Chevron (Vélez)</option>
+                                <option value="cross">Cruz Central (São Jorge / Parma)</option>
+                                <option value="circle_target">Círculos Concêntricos (Bayern)</option>
+                                <option value="sunburst">Raios Radiais (Sunburst)</option>
+                                <option value="diagonal_double">Dupla Faixa Diagonal</option>
+                                <option value="gradient">Gradiente Suave 3D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <div class="form-group">
+                            <label class="form-label">Cor Primária</label>
+                            <input type="color" id="color-primary" class="form-input" value="#10B981" style="height: 42px; padding: 2px;">
+                            <div class="color-chips" data-target="color-primary">
+                                <div class="color-chip" style="background:#10B981" data-color="#10B981"></div>
+                                <div class="color-chip" style="background:#06B6D4" data-color="#06B6D4"></div>
+                                <div class="color-chip" style="background:#EF4444" data-color="#EF4444"></div>
+                                <div class="color-chip" style="background:#F59E0B" data-color="#F59E0B"></div>
+                                <div class="color-chip" style="background:#8B5CF6" data-color="#8B5CF6"></div>
+                                <div class="color-chip" style="background:#111827" data-color="#111827"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Cor Secundária</label>
+                            <input type="color" id="color-secondary" class="form-input" value="#06B6D4" style="height: 42px; padding: 2px;">
+                            <div class="color-chips" data-target="color-secondary">
+                                <div class="color-chip" style="background:#FFFFFF" data-color="#FFFFFF"></div>
+                                <div class="color-chip" style="background:#F59E0B" data-color="#F59E0B"></div>
+                                <div class="color-chip" style="background:#06B6D4" data-color="#06B6D4"></div>
+                                <div class="color-chip" style="background:#EF4444" data-color="#EF4444"></div>
+                                <div class="color-chip" style="background:#10B981" data-color="#10B981"></div>
+                                <div class="color-chip" style="background:#000000" data-color="#000000"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <div class="form-group">
+                            <label class="form-label">Cor da Borda</label>
+                            <input type="color" id="color-border" class="form-input" value="#F59E0B" style="height: 42px; padding: 2px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cor do Ícone</label>
+                            <input type="color" id="color-icon" class="form-input" value="#FFFFFF" style="height: 42px; padding: 2px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ícone Central do Escudo</label>
+                        <div class="icon-grid" id="icon-picker-grid">
+                            <div class="icon-opt selected" data-icon="ball" title="Bola de Futebol"><i class="fas fa-futbol"></i></div>
+                            <div class="icon-opt" data-icon="trophy" title="Taça de Campeão"><i class="fas fa-trophy"></i></div>
+                            <div class="icon-opt" data-icon="crown" title="Coroa Imperial"><i class="fas fa-crown"></i></div>
+                            <div class="icon-opt" data-icon="bolt" title="Raio Eletrizante"><i class="fas fa-bolt"></i></div>
+                            <div class="icon-opt" data-icon="fire" title="Chama Eletrizante"><i class="fas fa-fire"></i></div>
+                            <div class="icon-opt" data-icon="star" title="Estrela de Campeão"><i class="fas fa-star"></i></div>
+                            <div class="icon-opt" data-icon="eagle" title="Águia Imperial"><i class="fas fa-feather-alt"></i></div>
+                            <div class="icon-opt" data-icon="lion" title="Leão Guerreiro"><i class="fas fa-cat"></i></div>
+                            <div class="icon-opt" data-icon="anchor" title="Âncora Náutica"><i class="fas fa-anchor"></i></div>
+                            <div class="icon-opt" data-icon="swords" title="Espadas Cruzadas"><i class="fas fa-crosshairs"></i></div>
+                            <div class="icon-opt" data-icon="skull" title="Caveira"><i class="fas fa-skull"></i></div>
+                            <div class="icon-opt" data-icon="shield" title="Escudo Defensor"><i class="fas fa-shield-alt"></i></div>
+                            <div class="icon-opt" data-icon="dragon" title="Dragão"><i class="fas fa-dragon"></i></div>
+                            <div class="icon-opt" data-icon="gem" title="Diamante"><i class="fas fa-gem"></i></div>
+                            <div class="icon-opt" data-icon="bullseye" title="Alvo Esportivo"><i class="fas fa-bullseye"></i></div>
+                            <div class="icon-opt" data-icon="rocket" title="Foguete"><i class="fas fa-rocket"></i></div>
+                            <div class="icon-opt" data-icon="water" title="Mar / Onda"><i class="fas fa-water"></i></div>
+                            <div class="icon-opt" data-icon="boxing" title="Punho de Ferro"><i class="fas fa-hand-rock"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;" class="form-label">
+                            <input type="checkbox" id="show-abbr-on-shield" checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                            Exibir Sigla de 3 Letras no Escudo
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Save Actions -->
+            <div class="actions-bar">
+                <button type="button" class="save-btn" id="btn-save-profile">
+                    <i class="fas fa-save"></i> Salvar Perfil & Equipe
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" style="color: var(--primary); font-size: 1.2rem;"></i>
+        <span id="toast-message">Alterações salvas!</span>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        let teamsCache = {};
+        let usersCache = {};
+        let currentUserData = null;
+        let selectedIcon = 'ball';
+        let useCustomShield = false;
+        let cachedCustomShieldDataUrl = null;
+
+        // DOM Elements
+        const loadingScreen = document.getElementById('loading-screen');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+
+        // Form Inputs
+        const inputName = document.getElementById('input-user-name');
+        const inputBaseTeam = document.getElementById('input-base-team');
+        const inputCustomTeam = document.getElementById('input-custom-team');
+        const inputAbbr = document.getElementById('input-abbr');
+        const inputRival = document.getElementById('input-rival');
+        const btnSave = document.getElementById('btn-save-profile');
+
+        // Mode Buttons
+        const btnModeOfficial = document.getElementById('btn-mode-official');
+        const btnModeCustom = document.getElementById('btn-mode-custom');
+        const customStudioPanel = document.getElementById('custom-studio-panel');
+
+        // Studio Controls
+        const shieldShape = document.getElementById('shield-shape');
+        const shieldPattern = document.getElementById('shield-pattern');
+        const colorPrimary = document.getElementById('color-primary');
+        const colorSecondary = document.getElementById('color-secondary');
+        const colorBorder = document.getElementById('color-border');
+        const colorIcon = document.getElementById('color-icon');
+        const showAbbrCheckbox = document.getElementById('show-abbr-on-shield');
+
+        // Canvas
+        const canvas = document.getElementById('shield-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Banner Elements
+        const bannerShieldImg = document.getElementById('banner-shield-img');
+        const bannerUserName = document.getElementById('banner-user-name');
+        const bannerTeamInfo = document.getElementById('banner-team-info');
+        const bannerRivalTag = document.getElementById('banner-rival-tag');
+
+        // Rival Preview Elements
+        const rivalPreviewContainer = document.getElementById('rival-preview-container');
+        const myVsImg = document.getElementById('my-vs-img');
+        const myVsName = document.getElementById('my-vs-name');
+        const rivalVsImg = document.getElementById('rival-vs-img');
+        const rivalVsName = document.getElementById('rival-vs-name');
+
+        // Sidebar Navigation Toggles
+        function openSidebar() { sidebar.classList.add('active'); sidebarOverlay.classList.add('active'); }
+        function closeSidebar() { sidebar.classList.remove('active'); sidebarOverlay.classList.remove('active'); }
+        menuToggle?.addEventListener('click', openSidebar);
+        sidebarClose?.addEventListener('click', closeSidebar);
+        sidebarOverlay?.addEventListener('click', closeSidebar);
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = msg;
+            toast.className = `toast ${isError ? 'error' : ''} show`;
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        // Color chips helper
+        document.querySelectorAll('.color-chips').forEach(container => {
+            const targetId = container.dataset.target;
+            const targetInput = document.getElementById(targetId);
+            container.querySelectorAll('.color-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    targetInput.value = chip.dataset.color;
+                    renderCustomShield();
+                    updateBannerPreview();
+                });
+            });
+        });
+
+        // Icon picker listener
+        document.querySelectorAll('.icon-opt').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                selectedIcon = opt.dataset.icon;
+                renderCustomShield();
+                updateBannerPreview();
+            });
+        });
+
+        // Toggle mode buttons
+        btnModeOfficial.addEventListener('click', () => {
+            if (useCustomShield) {
+                cachedCustomShieldDataUrl = canvas.toDataURL("image/png");
+            }
+            useCustomShield = false;
+            btnModeOfficial.classList.add('active');
+            btnModeCustom.classList.remove('active');
+            customStudioPanel.style.display = 'none';
+            document.getElementById('canvas-status-label').textContent = 'Escudo Oficial Selecionado';
+            renderOfficialShield();
+            updateBannerPreview();
+        });
+
+        btnModeCustom.addEventListener('click', () => {
+            useCustomShield = true;
+            btnModeCustom.classList.add('active');
+            btnModeOfficial.classList.remove('active');
+            customStudioPanel.style.display = 'flex';
+            document.getElementById('canvas-status-label').textContent = 'Escudo Customizado em Tempo Real';
+
+            if (cachedCustomShieldDataUrl) {
+                const savedImg = new Image();
+                savedImg.src = cachedCustomShieldDataUrl;
+                savedImg.onload = () => {
+                    if (!useCustomShield) return;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(savedImg, 0, 0, canvas.width, canvas.height);
+                    updateBannerPreview();
+                };
+                savedImg.onerror = () => {
+                    renderCustomShield();
+                    updateBannerPreview();
+                };
+            } else {
+                renderCustomShield();
+                updateBannerPreview();
+            }
+        });
+
+        // Input change listeners
+        [shieldShape, shieldPattern, colorPrimary, colorSecondary, colorBorder, colorIcon, showAbbrCheckbox].forEach(el => {
+            el.addEventListener('input', () => {
+                if (useCustomShield) renderCustomShield();
+                updateBannerPreview();
+            });
+        });
+
+        inputAbbr.addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase();
+            if (useCustomShield) renderCustomShield();
+            updateBannerPreview();
+        });
+
+        inputName.addEventListener('input', updateBannerPreview);
+        inputCustomTeam.addEventListener('input', updateBannerPreview);
+        inputBaseTeam.addEventListener('change', () => {
+            if (!useCustomShield) renderOfficialShield();
+            updateBannerPreview();
+        });
+
+        inputRival.addEventListener('change', updateRivalPreview);
+
+        // Load DB Caches
+        let allTeamsArray = [];
+
+        async function loadTeamsCache() {
+            const snapshot = await database.ref('teams').once('value');
+            teamsCache = snapshot.val() || {};
+            
+            allTeamsArray = [];
+            for (let tid in teamsCache) {
+                allTeamsArray.push({
+                    id: tid,
+                    name: teamsCache[tid].name || 'Time',
+                    abbr: (teamsCache[tid].abbr || '---').toUpperCase(),
+                    image: teamsCache[tid].image || 'default-avatar.png'
+                });
+            }
+            renderSmartTeamList(allTeamsArray);
+        }
+
+        function renderSmartTeamList(list) {
+            const container = document.getElementById('smart-team-options-list');
+            if (!container) return;
+            if (!list.length) {
+                container.innerHTML = '<div style="padding: 1rem; text-align: center; color: var(--text-muted);">Nenhum time encontrado</div>';
+                return;
+            }
+            const selectedId = inputBaseTeam.value;
+            container.innerHTML = list.map(t => `
+                <div class="smart-team-opt ${t.id === selectedId ? 'selected' : ''}" data-id="${t.id}">
+                    <div class="smart-opt-info">
+                        <img src="${t.image}" class="smart-team-thumb" onerror="this.src='default-avatar.png'">
+                        <span>${t.name}</span>
+                    </div>
+                    <span class="smart-opt-abbr">${t.abbr}</span>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.smart-team-opt').forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectSmartTeam(opt.dataset.id);
+                    closeSmartDropdown();
+                });
+            });
+        }
+
+        function selectSmartTeam(teamId) {
+            inputBaseTeam.value = teamId;
+            const team = teamsCache[teamId] || {};
+            const imgEl = document.getElementById('smart-selected-img');
+            const txtEl = document.getElementById('smart-selected-text');
+            if (imgEl) imgEl.src = team.image || 'default-avatar.png';
+            if (txtEl) txtEl.textContent = `${team.name || 'Selecione seu time'} (${team.abbr || '---'})`;
+            
+            renderSmartTeamList(allTeamsArray);
+            if (!useCustomShield) renderOfficialShield();
+            updateBannerPreview();
+        }
+
+        const smartTrigger = document.getElementById('smart-team-trigger');
+        const smartDropdown = document.getElementById('smart-team-dropdown');
+        const smartSearch = document.getElementById('smart-team-search');
+
+        function toggleSmartDropdown(e) {
+            if (e) e.stopPropagation();
+            const isOpen = smartDropdown.classList.contains('show');
+            if (isOpen) closeSmartDropdown();
+            else openSmartDropdown();
+        }
+
+        function openSmartDropdown() {
+            smartDropdown.classList.add('show');
+            smartTrigger.classList.add('active');
+            smartSearch.focus();
+        }
+
+        function closeSmartDropdown() {
+            smartDropdown.classList.remove('show');
+            smartTrigger.classList.remove('active');
+        }
+
+        smartTrigger?.addEventListener('click', toggleSmartDropdown);
+        smartSearch?.addEventListener('click', (e) => e.stopPropagation());
+        smartSearch?.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            const filtered = allTeamsArray.filter(t => 
+                t.name.toLowerCase().includes(term) || t.abbr.toLowerCase().includes(term)
+            );
+            renderSmartTeamList(filtered);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (smartDropdown && !smartDropdown.contains(e.target) && !smartTrigger.contains(e.target)) {
+                closeSmartDropdown();
+            }
+        });
+
+        async function loadUsersCache() {
+            const snapshot = await database.ref('users').once('value');
+            usersCache = snapshot.val() || {};
+        }
+
+        function populateRivalOptions(currentUid) {
+            inputRival.innerHTML = '<option value="">Sem rival selecionado</option>';
+            for (let uid in usersCache) {
+                if (uid === currentUid) continue;
+                const u = usersCache[uid];
+                const t = teamsCache[u.teamId || u.team] || {};
+                const teamName = u.customTeamName || t.name || 'Time';
+                const opt = document.createElement('option');
+                opt.value = uid;
+                opt.textContent = `${teamName} (${u.name}) — ${u.abbr || '---'}`;
+                inputRival.appendChild(opt);
+            }
+        }
+
+        // Draw Official Shield onto Canvas
+        function renderOfficialShield() {
+            const selectedTeamId = inputBaseTeam.value;
+            const team = teamsCache[selectedTeamId] || {};
+            const imgUrl = team.image || 'default-avatar.png';
+
+            if (useCustomShield) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = imgUrl;
+            img.onload = () => {
+                if (useCustomShield) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(110, 110, 95, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(img, 15, 15, 190, 190);
+                ctx.restore();
+
+                // Outer border ring
+                ctx.beginPath();
+                ctx.arc(110, 110, 95, 0, Math.PI * 2);
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = "rgba(16, 185, 129, 0.6)";
+                ctx.stroke();
+            };
+            img.onerror = () => {
+                if (useCustomShield) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#111827";
+                ctx.beginPath();
+                ctx.arc(110, 110, 90, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "#94A3B8";
+                ctx.font = "bold 16px Inter";
+                ctx.textAlign = "center";
+                ctx.fillText("Escudo Oficial", 110, 115);
+            };
+        }
+
+        // Custom Shield Vector Drawing Engine
+        function renderCustomShield() {
+            const shape = shieldShape.value;
+            const pattern = shieldPattern.value;
+            const cPrimary = colorPrimary.value;
+            const cSecondary = colorSecondary.value;
+            const cBorder = colorBorder.value;
+            const cIcon = colorIcon.value;
+            const showAbbr = showAbbrCheckbox.checked;
+            const abbrText = (inputAbbr.value || 'BD').substring(0, 3);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+
+            // 1. Create Shield Path
+            ctx.beginPath();
+            if (shape === 'ogival') {
+                ctx.moveTo(110, 15);
+                ctx.bezierCurveTo(195, 15, 195, 110, 110, 205);
+                ctx.bezierCurveTo(25, 110, 25, 15, 110, 15);
+            } else if (shape === 'circle') {
+                ctx.arc(110, 110, 90, 0, Math.PI * 2);
+            } else if (shape === 'french') {
+                ctx.moveTo(35, 25);
+                ctx.lineTo(185, 25);
+                ctx.lineTo(185, 125);
+                ctx.bezierCurveTo(185, 185, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 185, 35, 125);
+                ctx.closePath();
+            } else if (shape === 'diamond') {
+                ctx.moveTo(110, 15);
+                ctx.lineTo(195, 110);
+                ctx.lineTo(110, 205);
+                ctx.lineTo(25, 110);
+                ctx.closePath();
+            } else if (shape === 'retro') {
+                ctx.moveTo(35, 30);
+                ctx.quadraticCurveTo(110, 50, 185, 30);
+                ctx.lineTo(185, 130);
+                ctx.bezierCurveTo(185, 190, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 190, 35, 130);
+                ctx.closePath();
+            } else if (shape === 'crown') {
+                ctx.moveTo(35, 45);
+                ctx.lineTo(72, 20);
+                ctx.lineTo(110, 40);
+                ctx.lineTo(148, 20);
+                ctx.lineTo(185, 45);
+                ctx.lineTo(185, 135);
+                ctx.bezierCurveTo(185, 195, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 195, 35, 135);
+                ctx.closePath();
+            } else if (shape === 'samnite') {
+                ctx.moveTo(35, 20);
+                ctx.lineTo(185, 20);
+                ctx.lineTo(185, 140);
+                ctx.lineTo(110, 205);
+                ctx.lineTo(35, 140);
+                ctx.closePath();
+            } else if (shape === 'hexagon') {
+                ctx.moveTo(110, 15);
+                ctx.lineTo(190, 55);
+                ctx.lineTo(190, 165);
+                ctx.lineTo(110, 205);
+                ctx.lineTo(30, 165);
+                ctx.lineTo(30, 55);
+                ctx.closePath();
+            } else if (shape === 'gothic') {
+                ctx.moveTo(35, 20);
+                ctx.bezierCurveTo(70, 35, 100, 25, 110, 40);
+                ctx.bezierCurveTo(120, 25, 150, 35, 185, 20);
+                ctx.lineTo(185, 130);
+                ctx.bezierCurveTo(185, 190, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 190, 35, 130);
+                ctx.closePath();
+            } else if (shape === 'oval') {
+                ctx.ellipse(110, 110, 75, 92, 0, 0, Math.PI * 2);
+            } else if (shape === 'shield_crest') {
+                ctx.moveTo(35, 35);
+                ctx.quadraticCurveTo(110, 20, 185, 35);
+                ctx.quadraticCurveTo(195, 110, 175, 155);
+                ctx.quadraticCurveTo(140, 195, 110, 210);
+                ctx.quadraticCurveTo(80, 195, 45, 155);
+                ctx.quadraticCurveTo(25, 110, 35, 35);
+                ctx.closePath();
+            } else if (shape === 'shield_star') {
+                ctx.moveTo(110, 15);
+                ctx.lineTo(190, 75);
+                ctx.lineTo(160, 195);
+                ctx.lineTo(60, 195);
+                ctx.lineTo(30, 75);
+                ctx.closePath();
+            }
+
+            ctx.clip();
+
+            // 2. Draw Pattern Background
+            ctx.fillStyle = cPrimary;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = cSecondary;
+            if (pattern === 'v-stripes') {
+                const stripeW = 28;
+                for (let x = 0; x < canvas.width; x += stripeW * 2) {
+                    ctx.fillRect(x + stripeW, 0, stripeW, canvas.height);
+                }
+            } else if (pattern === 'h-stripes') {
+                const stripeH = 28;
+                for (let y = 0; y < canvas.height; y += stripeH * 2) {
+                    ctx.fillRect(0, y + stripeH, canvas.width, stripeH);
+                }
+            } else if (pattern === 'diagonal') {
+                ctx.beginPath();
+                ctx.moveTo(0, 40);
+                ctx.lineTo(220, 170);
+                ctx.lineTo(220, 220);
+                ctx.lineTo(0, 90);
+                ctx.closePath();
+                ctx.fill();
+            } else if (pattern === 'diagonal_inv') {
+                ctx.beginPath();
+                ctx.moveTo(220, 40);
+                ctx.lineTo(0, 170);
+                ctx.lineTo(0, 220);
+                ctx.lineTo(220, 90);
+                ctx.closePath();
+                ctx.fill();
+            } else if (pattern === 'halves') {
+                ctx.fillRect(110, 0, 110, 220);
+            } else if (pattern === 'quarters') {
+                ctx.fillRect(110, 0, 110, 110);
+                ctx.fillRect(0, 110, 110, 110);
+            } else if (pattern === 'chevron') {
+                ctx.beginPath();
+                ctx.moveTo(0, 140);
+                ctx.lineTo(110, 60);
+                ctx.lineTo(220, 140);
+                ctx.lineTo(220, 190);
+                ctx.lineTo(110, 110);
+                ctx.lineTo(0, 190);
+                ctx.closePath();
+                ctx.fill();
+            } else if (pattern === 'cross') {
+                ctx.fillRect(90, 0, 40, 220);
+                ctx.fillRect(0, 90, 220, 40);
+            } else if (pattern === 'circle_target') {
+                ctx.beginPath();
+                ctx.arc(110, 110, 65, 0, Math.PI * 2);
+                ctx.lineWidth = 18;
+                ctx.strokeStyle = cSecondary;
+                ctx.stroke();
+            } else if (pattern === 'sunburst') {
+                ctx.beginPath();
+                for (let i = 0; i < 8; i += 2) {
+                    const a1 = (i * 45) * Math.PI / 180;
+                    const a2 = ((i + 1) * 45) * Math.PI / 180;
+                    ctx.moveTo(110, 110);
+                    ctx.arc(110, 110, 150, a1, a2);
+                    ctx.lineTo(110, 110);
+                }
+                ctx.fill();
+            } else if (pattern === 'diagonal_double') {
+                ctx.beginPath();
+                ctx.moveTo(0, 20); ctx.lineTo(220, 150); ctx.lineTo(220, 175); ctx.lineTo(0, 45);
+                ctx.moveTo(0, 75); ctx.lineTo(220, 205); ctx.lineTo(220, 220); ctx.lineTo(0, 100);
+                ctx.fill();
+            } else if (pattern === 'gradient') {
+                const grad = ctx.createLinearGradient(0, 0, 0, 220);
+                grad.addColorStop(0, cPrimary);
+                grad.addColorStop(1, cSecondary);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            ctx.restore();
+
+            // 3. Draw Outer & Inner Border
+            ctx.save();
+            ctx.beginPath();
+            if (shape === 'ogival') {
+                ctx.moveTo(110, 15);
+                ctx.bezierCurveTo(195, 15, 195, 110, 110, 205);
+                ctx.bezierCurveTo(25, 110, 25, 15, 110, 15);
+            } else if (shape === 'circle') {
+                ctx.arc(110, 110, 90, 0, Math.PI * 2);
+            } else if (shape === 'french') {
+                ctx.moveTo(35, 25);
+                ctx.lineTo(185, 25);
+                ctx.lineTo(185, 125);
+                ctx.bezierCurveTo(185, 185, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 185, 35, 125);
+                ctx.closePath();
+            } else if (shape === 'diamond') {
+                ctx.moveTo(110, 15);
+                ctx.lineTo(195, 110);
+                ctx.lineTo(110, 205);
+                ctx.lineTo(25, 110);
+                ctx.closePath();
+            } else if (shape === 'retro') {
+                ctx.moveTo(35, 30);
+                ctx.quadraticCurveTo(110, 50, 185, 30);
+                ctx.lineTo(185, 130);
+                ctx.bezierCurveTo(185, 190, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 190, 35, 130);
+                ctx.closePath();
+            } else if (shape === 'crown') {
+                ctx.moveTo(35, 45);
+                ctx.lineTo(72, 20);
+                ctx.lineTo(110, 40);
+                ctx.lineTo(148, 20);
+                ctx.lineTo(185, 45);
+                ctx.lineTo(185, 135);
+                ctx.bezierCurveTo(185, 195, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 195, 35, 135);
+                ctx.closePath();
+            } else if (shape === 'samnite') {
+                ctx.moveTo(35, 20);
+                ctx.lineTo(185, 20);
+                ctx.lineTo(185, 140);
+                ctx.lineTo(110, 205);
+                ctx.lineTo(35, 140);
+                ctx.closePath();
+            } else if (shape === 'hexagon') {
+                ctx.moveTo(110, 15);
+                ctx.lineTo(190, 55);
+                ctx.lineTo(190, 165);
+                ctx.lineTo(110, 205);
+                ctx.lineTo(30, 165);
+                ctx.lineTo(30, 55);
+                ctx.closePath();
+            } else if (shape === 'gothic') {
+                ctx.moveTo(35, 20);
+                ctx.bezierCurveTo(70, 35, 100, 25, 110, 40);
+                ctx.bezierCurveTo(120, 25, 150, 35, 185, 20);
+                ctx.lineTo(185, 130);
+                ctx.bezierCurveTo(185, 190, 110, 210, 110, 210);
+                ctx.bezierCurveTo(110, 210, 35, 190, 35, 130);
+                ctx.closePath();
+            } else if (shape === 'oval') {
+                ctx.ellipse(110, 110, 75, 92, 0, 0, Math.PI * 2);
+            } else if (shape === 'shield_crest') {
+                ctx.moveTo(35, 35);
+                ctx.quadraticCurveTo(110, 20, 185, 35);
+                ctx.quadraticCurveTo(195, 110, 175, 155);
+                ctx.quadraticCurveTo(140, 195, 110, 210);
+                ctx.quadraticCurveTo(80, 195, 45, 155);
+                ctx.quadraticCurveTo(25, 110, 35, 35);
+                ctx.closePath();
+            } else if (shape === 'shield_star') {
+                ctx.moveTo(110, 15);
+                ctx.lineTo(190, 75);
+                ctx.lineTo(160, 195);
+                ctx.lineTo(60, 195);
+                ctx.lineTo(30, 75);
+                ctx.closePath();
+            }
+
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = cBorder;
+            ctx.stroke();
+
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.stroke();
+            ctx.restore();
+
+            // 4. Draw High-Fidelity Central Emblem
+            ctx.save();
+            const cx = 110, cy = showAbbr ? 96 : 110;
+            drawIconSymbol(selectedIcon, cx, cy, cIcon, cBorder);
+            ctx.restore();
+
+            // 5. Draw Abbreviation Text Ribbon
+            if (showAbbr) {
+                ctx.save();
+                ctx.shadowColor = "rgba(0,0,0,0.5)";
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetY = 3;
+
+                ctx.fillStyle = cBorder;
+                ctx.fillRect(45, 142, 130, 28);
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(45, 142, 130, 28);
+
+                ctx.fillStyle = "#000000";
+                ctx.font = "800 15px 'Inter', sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(abbrText, 110, 156);
+                ctx.restore();
+            }
+            cachedCustomShieldDataUrl = canvas.toDataURL("image/png");
+        }
+
+        // Vector Icon Drawing Helper for Canvas with FontAwesome 6 Engine & Badging
+        function drawIconSymbol(iconName, cx, cy, fillCol, strokeCol) {
+            ctx.save();
+
+            // Circular backing badge
+            ctx.beginPath();
+            ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(9, 13, 22, 0.55)";
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+            ctx.stroke();
+
+            // FontAwesome Unicode Map
+            const faGlyphs = {
+                ball: '\uf1e3',
+                trophy: '\uf091',
+                crown: '\uf521',
+                bolt: '\uf0e7',
+                fire: '\uf06d',
+                star: '\uf005',
+                eagle: '\uf56b',
+                lion: '\uf6be',
+                anchor: '\uf13d',
+                swords: '\uf717',
+                skull: '\uf54c',
+                shield: '\uf3ed',
+                dragon: '\uf6d5',
+                gem: '\uf3a5',
+                bullseye: '\uf140',
+                rocket: '\uf135',
+                water: '\uf773',
+                boxing: '\uf255'
+            };
+
+            const glyph = faGlyphs[iconName] || '\uf1e3';
+
+            ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetY = 3;
+
+            ctx.font = '900 44px "Font Awesome 6 Free", "FontAwesome"';
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            // Stroke outline
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = strokeCol;
+            ctx.strokeText(glyph, cx, cy);
+
+            // Fill color
+            ctx.fillStyle = fillCol;
+            ctx.fillText(glyph, cx, cy);
+
+            ctx.restore();
+        }
+
+        // Live Banner & Rival Preview Updater
+        function updateBannerPreview() {
+            const userName = inputName.value.trim() || 'Jogador';
+            const selectedTeamId = inputBaseTeam.value;
+            const baseTeam = teamsCache[selectedTeamId] || {};
+            const customTeam = inputCustomTeam.value.trim();
+            const abbr = (inputAbbr.value.trim() || '---').toUpperCase();
+
+            const mainTeamTitle = customTeam || baseTeam.name || 'Time Sem Nome';
+            bannerUserName.textContent = mainTeamTitle;
+            bannerTeamInfo.innerHTML = `<i class="fas fa-user" style="color: var(--cyan);"></i> Treinador: ${userName} (${abbr})`;
+
+            if (useCustomShield) {
+                const shieldData = canvas.toDataURL("image/png");
+                bannerShieldImg.src = shieldData;
+                document.getElementById('canvas-status-label').textContent = `${mainTeamTitle} (${userName})`;
+            } else {
+                bannerShieldImg.src = baseTeam.image || 'default-avatar.png';
+                document.getElementById('canvas-status-label').textContent = `${mainTeamTitle} (${userName}) — Oficial`;
+            }
+
+            updateRivalPreview();
+        }
+
+        function updateRivalPreview() {
+            const currentUid = auth.currentUser ? auth.currentUser.uid : null;
+            const userData = currentUserData || {};
+
+            const rivalConfirmedBlock = document.getElementById('rival-confirmed-block');
+            const rivalPendingBlock = document.getElementById('rival-pending-block');
+            const rivalSelectBlock = document.getElementById('rival-select-block');
+            const btnSendInvite = document.getElementById('btn-send-rival-invite');
+            const rivalVsBadge = document.getElementById('rival-vs-badge');
+
+            let activeRivalUid = null;
+
+            if (userData.rivalId && usersCache[userData.rivalId]) {
+                activeRivalUid = userData.rivalId;
+                const rival = usersCache[activeRivalUid];
+                const rivalBaseTeam = teamsCache[rival.teamId || rival.team] || {};
+                const rivalTeamName = rival.customTeamName || rivalBaseTeam.name || 'Time Rival';
+                
+                if (rivalConfirmedBlock) rivalConfirmedBlock.style.display = 'flex';
+                if (rivalPendingBlock) rivalPendingBlock.style.display = 'none';
+                if (rivalSelectBlock) rivalSelectBlock.style.display = 'none';
+                
+                const confirmedText = document.getElementById('confirmed-rival-text');
+                if (confirmedText) confirmedText.textContent = `Rival oficial: ${rivalTeamName} (${rival.name || ''})`;
+                
+                bannerRivalTag.innerHTML = `<i class="fas fa-swords" style="color: var(--danger);"></i> Rival: ${rivalTeamName} (${rival.name || ''})`;
+                if (rivalVsBadge) { rivalVsBadge.textContent = 'VS'; rivalVsBadge.className = 'vs-badge'; }
+
+            } else if (userData.rivalPendingId && usersCache[userData.rivalPendingId]) {
+                activeRivalUid = userData.rivalPendingId;
+                const rival = usersCache[activeRivalUid];
+                const rivalBaseTeam = teamsCache[rival.teamId || rival.team] || {};
+                const rivalTeamName = rival.customTeamName || rivalBaseTeam.name || 'Time Rival';
+
+                if (rivalConfirmedBlock) rivalConfirmedBlock.style.display = 'none';
+                if (rivalPendingBlock) rivalPendingBlock.style.display = 'flex';
+                if (rivalSelectBlock) rivalSelectBlock.style.display = 'none';
+
+                const pendingText = document.getElementById('pending-rival-text');
+                if (pendingText) pendingText.textContent = `Aguardando resposta de ${rivalTeamName} (${rival.name || ''})`;
+
+                bannerRivalTag.innerHTML = `<i class="fas fa-hourglass-half" style="color: var(--warning);"></i> Convite Enviado (${rivalTeamName})`;
+                if (rivalVsBadge) { rivalVsBadge.textContent = 'PENDENTE'; rivalVsBadge.className = 'vs-badge pending'; }
+
+            } else {
+                if (rivalConfirmedBlock) rivalConfirmedBlock.style.display = 'none';
+                if (rivalPendingBlock) rivalPendingBlock.style.display = 'none';
+                if (rivalSelectBlock) rivalSelectBlock.style.display = 'block';
+
+                activeRivalUid = inputRival.value;
+                if (btnSendInvite) btnSendInvite.style.display = activeRivalUid ? 'inline-flex' : 'none';
+                bannerRivalTag.innerHTML = `<i class="fas fa-fire"></i> Sem Rival Definido`;
+                if (rivalVsBadge) { rivalVsBadge.textContent = 'VS'; rivalVsBadge.className = 'vs-badge'; }
+            }
+
+            if (!activeRivalUid || !usersCache[activeRivalUid]) {
+                rivalPreviewContainer.style.display = 'none';
+                return;
+            }
+
+            const rival = usersCache[activeRivalUid];
+            const rivalBaseTeam = teamsCache[rival.teamId || rival.team] || {};
+            const rivalTeamName = rival.customTeamName || rivalBaseTeam.name || 'Time Rival';
+            const rivalShield = (rival.useCustomShield && rival.customShield) ? rival.customShield : (rivalBaseTeam.image || 'default-avatar.png');
+
+            const myTeamName = inputCustomTeam.value.trim() || teamsCache[inputBaseTeam.value]?.name || 'Seu Time';
+            const myUserName = inputName.value.trim() || 'Você';
+
+            let myShield;
+            if (useCustomShield) {
+                myShield = canvas.toDataURL("image/png");
+            } else {
+                const myBaseTeam = teamsCache[inputBaseTeam.value] || {};
+                myShield = myBaseTeam.image || 'default-avatar.png';
+            }
+
+            myVsName.textContent = `${myTeamName} (${myUserName})`;
+            myVsImg.src = myShield;
+
+            rivalVsName.textContent = `${rivalTeamName} (${rival.name || 'Rival'})`;
+            rivalVsImg.src = rivalShield;
+
+            rivalPreviewContainer.style.display = 'flex';
+        }
+
+        // Rival Action Handlers (Send Invite, Accept, Decline, Cancel, Break)
+        document.getElementById('btn-send-rival-invite')?.addEventListener('click', async () => {
+            const targetUid = inputRival.value;
+            const user = auth.currentUser;
+            if (!user || !targetUid) return;
+
+            const btn = document.getElementById('btn-send-rival-invite');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando...`;
+
+            try {
+                const updates = {};
+                updates[`users/${user.uid}/rivalPendingId`] = targetUid;
+                updates[`rivalRequests/${targetUid}/${user.uid}`] = {
+                    fromUid: user.uid,
+                    timestamp: Date.now()
+                };
+                await database.ref().update(updates);
+                showToast('✉️ Convite de rivalidade enviado com sucesso!');
+            } catch (err) {
+                console.error(err);
+                showToast(`Erro ao enviar convite: ${err.message}`, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Enviar Convite de Rivalidade`;
+            }
+        });
+
+        document.getElementById('btn-cancel-rival-invite')?.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user || !currentUserData?.rivalPendingId) return;
+
+            const targetUid = currentUserData.rivalPendingId;
+            const btn = document.getElementById('btn-cancel-rival-invite');
+            btn.disabled = true;
+
+            try {
+                const updates = {};
+                updates[`users/${user.uid}/rivalPendingId`] = null;
+                updates[`rivalRequests/${targetUid}/${user.uid}`] = null;
+                await database.ref().update(updates);
+                showToast('Convite de rivalidade cancelado.');
+            } catch (err) {
+                console.error(err);
+                showToast(`Erro ao cancelar convite: ${err.message}`, true);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('btn-break-rivalry')?.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user || !currentUserData?.rivalId) return;
+
+            if (!confirm("Tem certeza que deseja desfazer a rivalidade mútua?")) return;
+
+            const rivalUid = currentUserData.rivalId;
+            const btn = document.getElementById('btn-break-rivalry');
+            btn.disabled = true;
+
+            try {
+                const updates = {};
+                updates[`users/${user.uid}/rivalId`] = null;
+                updates[`users/${rivalUid}/rivalId`] = null;
+                await database.ref().update(updates);
+                showToast('Rivalidade desfeita.');
+            } catch (err) {
+                console.error(err);
+                showToast(`Erro ao desfazer rivalidade: ${err.message}`, true);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        async function acceptRivalInvite(senderUid) {
+            const user = auth.currentUser;
+            if (!user || !senderUid) return;
+
+            try {
+                const updates = {};
+                updates[`users/${user.uid}/rivalId`] = senderUid;
+                updates[`users/${user.uid}/rivalPendingId`] = null;
+                updates[`users/${senderUid}/rivalId`] = user.uid;
+                updates[`users/${senderUid}/rivalPendingId`] = null;
+                updates[`rivalRequests/${user.uid}/${senderUid}`] = null;
+                updates[`rivalRequests/${senderUid}/${user.uid}`] = null;
+
+                await database.ref().update(updates);
+                showToast('⚔️ Rivalidade mútua aceita e confirmada com sucesso!');
+            } catch (err) {
+                console.error(err);
+                showToast(`Erro ao aceitar rivalidade: ${err.message}`, true);
+            }
+        }
+
+        async function declineRivalInvite(senderUid) {
+            const user = auth.currentUser;
+            if (!user || !senderUid) return;
+
+            try {
+                const updates = {};
+                updates[`users/${senderUid}/rivalPendingId`] = null;
+                updates[`rivalRequests/${user.uid}/${senderUid}`] = null;
+
+                await database.ref().update(updates);
+                showToast('Convite de rivalidade recusado.');
+            } catch (err) {
+                console.error(err);
+                showToast(`Erro ao recusar: ${err.message}`, true);
+            }
+        }
+
+        function renderIncomingRivalRequests(requestsObj) {
+            const container = document.getElementById('incoming-rival-requests');
+            if (!container) return;
+
+            if (!requestsObj || !Object.keys(requestsObj).length) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            for (let senderUid in requestsObj) {
+                const sender = usersCache[senderUid] || {};
+                const senderBaseTeam = teamsCache[sender.teamId || sender.team] || {};
+                const senderTeamName = sender.customTeamName || senderBaseTeam.name || 'Treinador';
+                const senderName = sender.name || 'Jogador';
+                const senderShield = (sender.useCustomShield && sender.customShield) ? sender.customShield : (senderBaseTeam.image || 'default-avatar.png');
+
+                html += `
+                    <div class="incoming-invite-card">
+                        <div class="incoming-info">
+                            <img src="${senderShield}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--cyan);" onerror="this.src='default-avatar.png'">
+                            <div>
+                                <strong style="color: var(--text-primary); font-size: 0.95rem;">${senderTeamName} (${senderName})</strong>
+                                <p style="font-size: 0.8rem; color: var(--cyan); margin-top: 0.1rem;"><i class="fas fa-swords"></i> Desafiou você para ser o Rival dele na Liga!</p>
+                            </div>
+                        </div>
+                        <div class="incoming-actions">
+                            <button type="button" class="btn-rival-action btn-accept-invite" onclick="acceptRivalInvite('${senderUid}')">
+                                <i class="fas fa-check"></i> Aceitar
+                            </button>
+                            <button type="button" class="btn-rival-action btn-cancel" onclick="declineRivalInvite('${senderUid}')">
+                                <i class="fas fa-times"></i> Recusar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        // Save Profile & Custom Team Action
+        btnSave.addEventListener('click', async () => {
+            const name = inputName.value.trim();
+            const abbr = inputAbbr.value.trim().toUpperCase();
+            const baseTeamId = inputBaseTeam.value;
+            const customTeamName = inputCustomTeam.value.trim();
+            const rivalId = inputRival.value;
+
+            if (!name) {
+                showToast('Informe o seu nome de treinador!', true);
+                inputName.focus();
+                return;
+            }
+            if (!abbr || abbr.length !== 3) {
+                showToast('A sigla deve conter exatamente 3 letras!', true);
+                inputAbbr.focus();
+                return;
+            }
+            if (!baseTeamId) {
+                showToast('Selecione o seu time de coração!', true);
+                return;
+            }
+
+            const user = auth.currentUser;
+            if (!user) {
+                showToast('Usuário não autenticado!', true);
+                return;
+            }
+
+            btnSave.disabled = true;
+            btnSave.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Salvando...`;
+
+            try {
+                let shieldDataUrl = null;
+                if (useCustomShield) {
+                    shieldDataUrl = canvas.toDataURL("image/png");
+                }
+
+                const updates = {
+                    name: name,
+                    abbr: abbr,
+                    team: baseTeamId,
+                    teamId: baseTeamId,
+                    customTeamName: customTeamName || null,
+                    customShield: shieldDataUrl,
+                    useCustomShield: useCustomShield,
+                    shieldConfig: useCustomShield ? {
+                        shape: shieldShape.value,
+                        pattern: shieldPattern.value,
+                        colorPrimary: colorPrimary.value,
+                        colorSecondary: colorSecondary.value,
+                        colorBorder: colorBorder.value,
+                        colorIcon: colorIcon.value,
+                        selectedIcon: selectedIcon,
+                        showAbbr: showAbbrCheckbox.checked
+                    } : null,
+                    updatedAt: Date.now()
+                };
+
+                await database.ref('users/' + user.uid).update(updates);
+                if (user.displayName !== name) {
+                    await user.updateProfile({ displayName: name });
+                }
+
+                showToast('✨ Perfil e Escudo atualizados com sucesso! ✨');
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1200);
+            } catch (err) {
+                console.error(err);
+                showToast(`Erro ao salvar: ${err.message}`, true);
+            } finally {
+                btnSave.disabled = false;
+                btnSave.innerHTML = `<i class="fas fa-save"></i> Salvar Perfil & Equipe`;
+            }
+        });
+
+        // Initialize Screen
+        async function init() {
+            try {
+                await Promise.all([loadTeamsCache(), loadUsersCache()]);
+                const user = auth.currentUser;
+                if (!user) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                currentUserData = usersCache[user.uid] || {};
+                populateRivalOptions(user.uid);
+
+                // Populate user profile form
+                inputName.value = currentUserData.name || user.displayName || '';
+                inputAbbr.value = (currentUserData.abbr || '').toUpperCase();
+                inputCustomTeam.value = currentUserData.customTeamName || '';
+
+                if (currentUserData.rivalId) {
+                    inputRival.value = currentUserData.rivalId;
+                }
+
+                // Restore custom shield mode flag before selectSmartTeam
+                useCustomShield = !!currentUserData.useCustomShield;
+
+                const initialTeamId = currentUserData.teamId || currentUserData.team || Object.keys(teamsCache)[0];
+                if (initialTeamId) {
+                    selectSmartTeam(initialTeamId);
+                }
+
+                // Restore custom shield configuration if present
+                if (currentUserData.shieldConfig) {
+                    const cfg = currentUserData.shieldConfig;
+                    if (cfg.shape) shieldShape.value = cfg.shape;
+                    if (cfg.pattern) shieldPattern.value = cfg.pattern;
+                    if (cfg.colorPrimary) colorPrimary.value = cfg.colorPrimary;
+                    if (cfg.colorSecondary) colorSecondary.value = cfg.colorSecondary;
+                    if (cfg.colorBorder) colorBorder.value = cfg.colorBorder;
+                    if (cfg.colorIcon) colorIcon.value = cfg.colorIcon;
+                    if (cfg.showAbbr !== undefined) showAbbrCheckbox.checked = cfg.showAbbr;
+                    if (cfg.selectedIcon) {
+                        selectedIcon = cfg.selectedIcon;
+                        document.querySelectorAll('.icon-opt').forEach(opt => {
+                            if (opt.dataset.icon === selectedIcon) opt.classList.add('selected');
+                            else opt.classList.remove('selected');
+                        });
+                    }
+                }
+
+                if (currentUserData.customShield) {
+                    cachedCustomShieldDataUrl = currentUserData.customShield;
+                }
+
+                // Restore custom shield mode & canvas
+                if (useCustomShield) {
+                    btnModeCustom.classList.add('active');
+                    btnModeOfficial.classList.remove('active');
+                    customStudioPanel.style.display = 'flex';
+                    document.getElementById('canvas-status-label').textContent = 'Escudo Customizado Salvo';
+
+                    if (cachedCustomShieldDataUrl) {
+                        const savedImg = new Image();
+                        savedImg.src = cachedCustomShieldDataUrl;
+                        savedImg.onload = () => {
+                            if (!useCustomShield) return;
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(savedImg, 0, 0, canvas.width, canvas.height);
+                            updateBannerPreview();
+                        };
+                        savedImg.onerror = () => {
+                            renderCustomShield();
+                            updateBannerPreview();
+                        };
+                    } else {
+                        renderCustomShield();
+                    }
+
+                    // Re-render when web fonts are ready if icon uses FontAwesome
+                    if (document.fonts && document.fonts.ready) {
+                        document.fonts.ready.then(() => {
+                            if (useCustomShield) {
+                                renderCustomShield();
+                                updateBannerPreview();
+                            }
+                        });
+                    }
+                } else {
+                    btnModeOfficial.classList.add('active');
+                    btnModeCustom.classList.remove('active');
+                    customStudioPanel.style.display = 'none';
+                    document.getElementById('canvas-status-label').textContent = 'Escudo Oficial Selecionado';
+                    renderOfficialShield();
+                }
+
+                // Setup Realtime Firebase Listeners for Rival Requests & Profile Changes
+                database.ref('rivalRequests/' + user.uid).on('value', snapshot => {
+                    renderIncomingRivalRequests(snapshot.val());
+                });
+
+                database.ref('users/' + user.uid).on('value', snapshot => {
+                    const freshData = snapshot.val();
+                    if (freshData) {
+                        currentUserData = freshData;
+                        updateRivalPreview();
+                        updateBannerPreview();
+                    }
+                });
+
+                updateBannerPreview();
+
+            } catch (err) {
+                console.error('Init error:', err);
+                showToast('Erro ao carregar dados do perfil', true);
+            } finally {
+                loadingScreen.style.display = 'none';
+            }
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) init();
+            else window.location.href = 'index.html';
+        });
+    </script>
+</body>
+
+</html>

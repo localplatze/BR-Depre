@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -7,7 +8,9 @@
     <link rel="icon" href="./bdd.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -17,13 +20,16 @@
         }
 
         :root {
-            --primary: #10B981; /* Verde Copa/Gramado */
+            --primary: #10B981;
+            /* Verde Copa/Gramado */
             --primary-dark: #059669;
             --primary-glow: rgba(16, 185, 129, 0.3);
-            --cyan: #06B6D4; /* Azul Eletrizante */
+            --cyan: #06B6D4;
+            /* Azul Eletrizante */
             --cyan-glow: rgba(6, 182, 212, 0.3);
             --success: #10B981;
-            --warning: #F59E0B; /* Dourado Copa */
+            --warning: #F59E0B;
+            /* Dourado Copa */
             --warning-glow: rgba(245, 158, 11, 0.3);
             --danger: #EF4444;
             --dark-bg: #090D16;
@@ -55,10 +61,10 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
-                        radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
-                        radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
-                        linear-gradient(rgba(16, 185, 129, 0.01) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(16, 185, 129, 0.01) 1px, transparent 1px);
+                radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+                linear-gradient(rgba(16, 185, 129, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.01) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
             pointer-events: none;
             z-index: 0;
@@ -203,7 +209,7 @@
             object-fit: cover;
             border: 3px solid transparent;
             background: linear-gradient(#111827, #111827) padding-box,
-                        linear-gradient(135deg, #10B981, #06B6D4) border-box;
+                linear-gradient(135deg, #10B981, #06B6D4) border-box;
             box-shadow: var(--shadow-md);
         }
 
@@ -221,7 +227,7 @@
             font-size: 0.75rem;
             color: #000;
             border: 2px solid #111827;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .profile-info {
@@ -388,7 +394,7 @@
             border-radius: 1.25rem;
             padding: 1rem;
             min-width: 90px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .timer-value {
@@ -418,8 +424,16 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; transform: scale(1.01); }
+
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.01);
+            }
         }
 
         /* Quick Actions Grid */
@@ -553,9 +567,23 @@
             text-transform: uppercase;
         }
 
-        .status-active { background: rgba(16, 185, 129, 0.18); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .status-ongoing { background: rgba(6, 182, 212, 0.18); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); }
-        .status-upcoming { background: rgba(148, 163, 184, 0.12); color: #94A3B8; border: 1px solid rgba(148, 163, 184, 0.2); }
+        .status-active {
+            background: rgba(16, 185, 129, 0.18);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-ongoing {
+            background: rgba(6, 182, 212, 0.18);
+            color: #06B6D4;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .status-upcoming {
+            background: rgba(148, 163, 184, 0.12);
+            color: #94A3B8;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
 
         .tournament-body {
             padding: 1.75rem;
@@ -838,7 +866,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Responsive */
@@ -846,36 +876,46 @@
             .header-container {
                 padding: 1rem;
             }
-            .profile-section, .main-content {
+
+            .profile-section,
+            .main-content {
                 padding: 0 1.25rem;
             }
+
             .profile-card {
                 flex-direction: column;
                 text-align: center;
                 gap: 1.5rem;
                 padding: 1.75rem;
             }
+
             .profile-stats {
                 justify-content: center;
             }
+
             .tournaments-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
+
             .countdown-timer {
                 gap: 0.75rem;
             }
+
             .timer-unit {
                 min-width: 70px;
                 padding: 0.75rem;
             }
+
             .timer-value {
                 font-size: 1.85rem;
             }
+
             .quick-actions {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 1rem;
             }
+
             .action-btn {
                 padding: 1.25rem 1rem;
                 font-size: 0.85rem;
@@ -883,496 +923,554 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="loading-screen" id="loading-screen">
-    <div class="loader"></div>
-    <p style="margin-top: 1rem; color: var(--text-secondary);">Carregando Arena...</p>
-</div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <span class="sidebar-logo">⚽ BR Depressão</span>
-        <button class="sidebar-close" id="sidebar-close">×</button>
+    <div class="loading-screen" id="loading-screen">
+        <div class="loader"></div>
+        <p style="margin-top: 1rem; color: var(--text-secondary);">Carregando Arena...</p>
     </div>
-    <nav class="sidebar-nav">
-        <a href="home.html" class="active"><i class="fas fa-home"></i> Início</a>
-        <a href="palpites.html"><i class="fas fa-pencil-alt"></i> Fazer Palpite</a>
-        <a href="historico.html"><i class="fas fa-history"></i> Histórico</a>
-        <a href="superliga.html"><i class="fas fa-trophy"></i> Superliga</a>
-        <a href="supercopa.html"><i class="fas fa-shield-alt"></i> Supercopa</a>
-        <a href="admin.html" id="admin-sidebar-link" style="display: none;"><i class="fas fa-crown"></i> Admin</a>
-    </nav>
-    <div class="sidebar-footer">
-        <button class="logout-btn" id="sidebar-logout"><i class="fas fa-sign-out-alt"></i> Sair</button>
-    </div>
-</div>
-<div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<!-- Header -->
-<header class="site-header">
-    <div class="header-container">
-        <div class="logo-area">
-            <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
-            <span class="logo">🏆 BRASILEIRÃO DA DEPRESSÃO</span>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">⚽ BR Depressão</span>
+            <button class="sidebar-close" id="sidebar-close">×</button>
         </div>
-        <div class="header-actions">
-            <button class="icon-btn" id="admin-header-btn" style="display: none;"><i class="fas fa-crown"></i></button>
-            <button class="icon-btn" id="logout-header-btn"><i class="fas fa-sign-out-alt"></i></button>
+        <nav class="sidebar-nav">
+            <a href="home.html" class="active"><i class="fas fa-home"></i> Início</a>
+            <a href="perfil.html"><i class="fas fa-user-cog"></i> Meu Perfil & Escudo</a>
+            <a href="palpites.html"><i class="fas fa-pencil-alt"></i> Fazer Palpite</a>
+            <a href="historico.html"><i class="fas fa-history"></i> Histórico</a>
+            <a href="superliga.html"><i class="fas fa-trophy"></i> Superliga</a>
+            <a href="supercopa.html"><i class="fas fa-shield-alt"></i> Supercopa</a>
+            <a href="admin.html" id="admin-sidebar-link" style="display: none;"><i class="fas fa-crown"></i> Admin</a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="logout-btn" id="sidebar-logout"><i class="fas fa-sign-out-alt"></i> Sair</button>
         </div>
     </div>
-</header>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<!-- Profile Section -->
-<section class="profile-section">
-    <div class="profile-card">
-        <div class="profile-avatar">
-            <img id="profile-avatar" src="default-avatar.png" alt="Avatar">
-            <div class="avatar-badge"><i class="fas fa-futbol"></i></div>
-        </div>
-        <div class="profile-info">
-            <h1 class="profile-name" id="profile-name">Carregando...</h1>
-            <div class="profile-team">
-                <i class="fas fa-shield-alt"></i>
-                <span id="profile-team">--</span>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <span class="logo">🏆 BRASILEIRÃO DA DEPRESSÃO</span>
             </div>
-            <div class="profile-stats">
-                <div class="stat-badge"><i class="fas fa-trophy"></i> <span id="profile-liga-pos">--º Liga</span></div>
-                <div class="stat-badge"><i class="fas fa-shield-alt"></i> <span id="profile-copa-pos">--º Grupo</span></div>
-                <div class="stat-badge"><i class="fas fa-chart-line"></i> <span id="profile-abbr">---</span></div>
+            <div class="header-actions">
+                <a href="perfil.html" class="icon-btn" title="Editar Perfil"><i class="fas fa-user-cog"></i></a>
+                <button class="icon-btn" id="admin-header-btn" style="display: none;"><i
+                        class="fas fa-crown"></i></button>
+                <button class="icon-btn" id="logout-header-btn"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </div>
-    </div>
-</section>
+    </header>
 
-<main class="main-content">
-    <!-- Próxima Rodada -->
-    <div class="section-header">
-        <div class="section-title"><i class="fas fa-clock"></i> Próxima Rodada</div>
-        <a href="palpites.html" class="section-link">Fazer palpite →</a>
-    </div>
-    <div class="countdown-card" id="next-round-card">
-        <div class="countdown-label" id="round-deadline">Carregando...</div>
-        <div id="countdown-container">
-            <div class="countdown-timer">
-                <div class="timer-unit"><div class="timer-value" id="countdown-days">00</div><div class="timer-label">Dias</div></div>
-                <div class="timer-unit"><div class="timer-value" id="countdown-hours">00</div><div class="timer-label">Horas</div></div>
-                <div class="timer-unit"><div class="timer-value" id="countdown-minutes">00</div><div class="timer-label">Minutos</div></div>
-                <div class="timer-unit"><div class="timer-value" id="countdown-seconds">00</div><div class="timer-label">Segundos</div></div>
+    <!-- Profile Section -->
+    <section class="profile-section">
+        <div class="profile-card" id="profile-card" onclick="window.location.href='perfil.html'" style="cursor: pointer;" title="Clique para editar seu perfil, time, sigla e escudo">
+            <div class="profile-avatar">
+                <img id="profile-avatar" src="default-avatar.png" alt="Avatar">
+                <div class="avatar-badge"><i class="fas fa-pen"></i></div>
+            </div>
+            <div class="profile-info">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+                    <h1 class="profile-name" id="profile-name">Carregando...</h1>
+                    <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--primary); padding: 0.35rem 0.85rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                        <i class="fas fa-user-edit"></i> Editar Perfil
+                    </span>
+                </div>
+                <div class="profile-team">
+                    <i class="fas fa-shield-alt"></i>
+                    <span id="profile-team">--</span>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-badge"><i class="fas fa-trophy"></i> <span id="profile-liga-pos">--º Liga</span></div>
+                    <div class="stat-badge"><i class="fas fa-shield-alt"></i> <span id="profile-copa-pos">--º Grupo</span></div>
+                    <div class="stat-badge"><i class="fas fa-chart-line"></i> <span id="profile-abbr">---</span></div>
+                    <div class="stat-badge" id="profile-rival-badge" style="display: none;"><i class="fas fa-swords" style="color: var(--danger);"></i> <span id="profile-rival-text">Rival: --</span></div>
+                </div>
             </div>
         </div>
-        <div class="expired-message" id="expired-message">⏰ Tempo esgotado! Clique para ver a rodada atual</div>
-    </div>
+    </section>
 
-    <!-- Botões Rápidos - NOVOS BOTÕES SOLICITADOS -->
-    <div class="quick-actions">
-        <a href="historico.html" class="action-btn"><i class="fas fa-clock"></i> Histórico</a>
-        <a href="libertadores.html" class="action-btn"><i class="fas fa-trophy"></i> Libertadores</a>
-        <a href="recopa.html" class="action-btn"><i class="fas fa-star"></i> Recopa</a>
-        <a href="trofeus.html" class="action-btn"><i class="fas fa-medal"></i> Sala de Troféus</a>
-    </div>
-
-    <!-- Torneios Grid -->
-    <div class="tournaments-grid">
-        <!-- Supercopa Card -->
-        <div class="tournament-card" id="supercopa-card">
-            <div class="tournament-header">
-                <div class="tournament-title"><i class="fas fa-shield-alt"></i> Supercopa</div>
-                <span class="status-badge status-upcoming" id="supercopa-status">Carregando</span>
+    <main class="main-content">
+        <!-- Próxima Rodada -->
+        <div class="section-header">
+            <div class="section-title"><i class="fas fa-clock"></i> Próxima Rodada</div>
+            <a href="palpites.html" class="section-link">Fazer palpite →</a>
+        </div>
+        <div class="countdown-card" id="next-round-card">
+            <div class="countdown-label" id="round-deadline">Carregando...</div>
+            <div id="countdown-container">
+                <div class="countdown-timer">
+                    <div class="timer-unit">
+                        <div class="timer-value" id="countdown-days">00</div>
+                        <div class="timer-label">Dias</div>
+                    </div>
+                    <div class="timer-unit">
+                        <div class="timer-value" id="countdown-hours">00</div>
+                        <div class="timer-label">Horas</div>
+                    </div>
+                    <div class="timer-unit">
+                        <div class="timer-value" id="countdown-minutes">00</div>
+                        <div class="timer-label">Minutos</div>
+                    </div>
+                    <div class="timer-unit">
+                        <div class="timer-value" id="countdown-seconds">00</div>
+                        <div class="timer-label">Segundos</div>
+                    </div>
+                </div>
             </div>
-            <div class="tournament-body" id="supercopa-content">
-                <p>Aguardando informações...</p>
-            </div>
+            <div class="expired-message" id="expired-message">⏰ Tempo esgotado! Clique para ver a rodada atual</div>
         </div>
 
-        <!-- Superliga Card -->
-        <div class="tournament-card" id="superliga-card">
-            <div class="tournament-header">
-                <div class="tournament-title"><i class="fas fa-trophy"></i> Superliga</div>
-                <span class="status-badge status-active" id="superliga-status">Em andamento</span>
+        <!-- Botões Rápidos - NOVOS BOTÕES SOLICITADOS -->
+        <div class="quick-actions">
+            <a href="historico.html" class="action-btn"><i class="fas fa-clock"></i> Histórico</a>
+            <a href="libertadores.html" class="action-btn"><i class="fas fa-trophy"></i> Libertadores</a>
+            <a href="recopa.html" class="action-btn"><i class="fas fa-star"></i> Recopa</a>
+            <a href="trofeus.html" class="action-btn"><i class="fas fa-medal"></i> Sala de Troféus</a>
+        </div>
+
+        <!-- Torneios Grid -->
+        <div class="tournaments-grid">
+            <!-- Supercopa Card -->
+            <div class="tournament-card" id="supercopa-card">
+                <div class="tournament-header">
+                    <div class="tournament-title"><i class="fas fa-shield-alt"></i> Supercopa</div>
+                    <span class="status-badge status-upcoming" id="supercopa-status">Carregando</span>
+                </div>
+                <div class="tournament-body" id="supercopa-content">
+                    <p>Aguardando informações...</p>
+                </div>
             </div>
-            <div class="tournament-body">
-                <table class="standings-table">
-                    <thead>
-                        <tr><th>#</th><th>Jogador</th><th>PTS</th><th>+R</th></tr>
-                    </thead>
-                    <tbody id="superliga-table-body">
-                        <tr><td colspan="4">Carregando...</td></tr>
-                    </tbody>
-                </table>
-                <a href="superliga.html" class="view-all-link">Ver classificação completa →</a>
+
+            <!-- Superliga Card -->
+            <div class="tournament-card" id="superliga-card">
+                <div class="tournament-header">
+                    <div class="tournament-title"><i class="fas fa-trophy"></i> Superliga</div>
+                    <span class="status-badge status-active" id="superliga-status">Em andamento</span>
+                </div>
+                <div class="tournament-body">
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Jogador</th>
+                                <th>PTS</th>
+                                <th>+R</th>
+                            </tr>
+                        </thead>
+                        <tbody id="superliga-table-body">
+                            <tr>
+                                <td colspan="4">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="superliga.html" class="view-all-link">Ver classificação completa →</a>
+                </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
-        authDomain: "brdepre.firebaseapp.com",
-        databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
-        projectId: "brdepre",
-        storageBucket: "brdepre.firebasestorage.app",
-        messagingSenderId: "1077826896098",
-        appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
-        measurementId: "G-4JXFEZ8DW6"
-    };
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const database = firebase.database();
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-    let teamsCache = {};
-    let usersCache = {};
-    let countdownInterval;
+        let teamsCache = {};
+        let usersCache = {};
+        let countdownInterval;
 
-    // DOM Elements
-    const loadingScreen = document.getElementById('loading-screen');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebar-overlay');
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebarClose = document.getElementById('sidebar-close');
-    const logoutHeader = document.getElementById('logout-header-btn');
-    const logoutSidebar = document.getElementById('sidebar-logout');
-    const adminHeader = document.getElementById('admin-header-btn');
-    const adminSidebar = document.getElementById('admin-sidebar-link');
+        // DOM Elements
+        const loadingScreen = document.getElementById('loading-screen');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+        const logoutHeader = document.getElementById('logout-header-btn');
+        const logoutSidebar = document.getElementById('sidebar-logout');
+        const adminHeader = document.getElementById('admin-header-btn');
+        const adminSidebar = document.getElementById('admin-sidebar-link');
 
-    // Profile Elements
-    const profileAvatar = document.getElementById('profile-avatar');
-    const profileName = document.getElementById('profile-name');
-    const profileTeam = document.getElementById('profile-team');
-    const profileLigaPos = document.getElementById('profile-liga-pos');
-    const profileCopaPos = document.getElementById('profile-copa-pos');
-    const profileAbbr = document.getElementById('profile-abbr');
+        // Profile Elements
+        const profileAvatar = document.getElementById('profile-avatar');
+        const profileName = document.getElementById('profile-name');
+        const profileTeam = document.getElementById('profile-team');
+        const profileLigaPos = document.getElementById('profile-liga-pos');
+        const profileCopaPos = document.getElementById('profile-copa-pos');
+        const profileAbbr = document.getElementById('profile-abbr');
 
-    // Countdown Elements
-    const roundDeadline = document.getElementById('round-deadline');
-    const countdownContainer = document.getElementById('countdown-container');
-    const expiredMsg = document.getElementById('expired-message');
-    const daysEl = document.getElementById('countdown-days');
-    const hoursEl = document.getElementById('countdown-hours');
-    const minutesEl = document.getElementById('countdown-minutes');
-    const secondsEl = document.getElementById('countdown-seconds');
+        // Countdown Elements
+        const roundDeadline = document.getElementById('round-deadline');
+        const countdownContainer = document.getElementById('countdown-container');
+        const expiredMsg = document.getElementById('expired-message');
+        const daysEl = document.getElementById('countdown-days');
+        const hoursEl = document.getElementById('countdown-hours');
+        const minutesEl = document.getElementById('countdown-minutes');
+        const secondsEl = document.getElementById('countdown-seconds');
 
-    // Tournament Elements
-    const supercopaCard = document.getElementById('supercopa-card');
-    const supercopaStatus = document.getElementById('supercopa-status');
-    const supercopaContent = document.getElementById('supercopa-content');
-    const superligaCard = document.getElementById('superliga-card');
-    const superligaStatus = document.getElementById('superliga-status');
-    const superligaTableBody = document.getElementById('superliga-table-body');
-    const nextRoundCard = document.getElementById('next-round-card');
+        // Tournament Elements
+        const supercopaCard = document.getElementById('supercopa-card');
+        const supercopaStatus = document.getElementById('supercopa-status');
+        const supercopaContent = document.getElementById('supercopa-content');
+        const superligaCard = document.getElementById('superliga-card');
+        const superligaStatus = document.getElementById('superliga-status');
+        const superligaTableBody = document.getElementById('superliga-table-body');
+        const nextRoundCard = document.getElementById('next-round-card');
 
-    // Sidebar Functions
-    function openSidebar() { sidebar.classList.add('active'); sidebarOverlay.classList.add('active'); }
-    function closeSidebar() { sidebar.classList.remove('active'); sidebarOverlay.classList.remove('active'); }
-    menuToggle?.addEventListener('click', openSidebar);
-    sidebarClose?.addEventListener('click', closeSidebar);
-    sidebarOverlay?.addEventListener('click', closeSidebar);
+        // Sidebar Functions
+        function openSidebar() { sidebar.classList.add('active'); sidebarOverlay.classList.add('active'); }
+        function closeSidebar() { sidebar.classList.remove('active'); sidebarOverlay.classList.remove('active'); }
+        menuToggle?.addEventListener('click', openSidebar);
+        sidebarClose?.addEventListener('click', closeSidebar);
+        sidebarOverlay?.addEventListener('click', closeSidebar);
 
-    function handleLogout() {
-        auth.signOut().then(() => {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        });
-    }
-    logoutHeader?.addEventListener('click', handleLogout);
-    logoutSidebar?.addEventListener('click', handleLogout);
+        function handleLogout() {
+            auth.signOut().then(() => {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
+        }
+        logoutHeader?.addEventListener('click', handleLogout);
+        logoutSidebar?.addEventListener('click', handleLogout);
 
-    // Load Data
-    async function loadTeamsCache() {
-        const snapshot = await database.ref('teams').once('value');
-        teamsCache = snapshot.val() || {};
-    }
-
-    async function loadUsersCache() {
-        const snapshot = await database.ref('users').once('value');
-        usersCache = snapshot.val() || {};
-        for (let uid in usersCache) usersCache[uid].id = uid;
-    }
-
-    async function findActiveRound() {
-        const snapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
-        if (!snapshot.exists()) return null;
-        return Object.values(snapshot.val())[0];
-    }
-
-    function calculateMatchPoints(final, pred) {
-        if (!final || !pred) return 0;
-        if (!Number.isFinite(Number(final.homeScore)) || !Number.isFinite(Number(final.awayScore))) return 0;
-        if (!Number.isFinite(Number(pred.homeScore)) || !Number.isFinite(Number(pred.awayScore))) return 0;
-        const finalHome = Number(final.homeScore);
-        const finalAway = Number(final.awayScore);
-        const predHome = Number(pred.homeScore);
-        const predAway = Number(pred.awayScore);
-        if (finalHome === predHome && finalAway === predAway) return 3;
-        const finalWinner = Math.sign(finalHome - finalAway);
-        const predWinner = Math.sign(predHome - predAway);
-        if (finalWinner === predWinner) return 1;
-        if (finalHome === predAway && finalAway === predHome) return -1;
-        return 0;
-    }
-
-    function calculateLiveRoundPoints(roundData) {
-        if (!roundData?.matches) return {};
-        const points = {};
-        Object.values(roundData.matches).forEach(match => {
-            if (match.finalResult && match.predictions) {
-                Object.entries(match.predictions).forEach(([pid, pred]) => {
-                    if (!points[pid]) points[pid] = 0;
-                    points[pid] += calculateMatchPoints(match.finalResult, pred);
-                });
-            }
-        });
-        return points;
-    }
-
-    async function loadUserProfile(userId) {
-        const user = usersCache[userId];
-        if (!user) return;
-        const team = teamsCache[user.teamId] || { name: 'N/A', image: '' };
-        profileName.textContent = user.name || 'Jogador';
-        profileTeam.textContent = `${team.name} (${user.abbr || '---'})`;
-        profileAbbr.textContent = user.abbr || '---';
-        profileAvatar.src = team.image || 'default-avatar.png';
-    }
-
-    async function loadSuperliga(activeRound, livePoints) {
-        const stage = 'abertura';
-        const pointsField = `pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
-        const roundField = `lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
-
-        const standings = Object.values(usersCache)
-            .filter(u => u[pointsField] !== undefined)
-            .map(u => ({
-                ...u,
-                totalPoints: (u[pointsField] || 0) + (activeRound ? (livePoints[u.id] || 0) : 0),
-                roundPoints: activeRound ? (livePoints[u.id] || 0) : (u[roundField] || 0)
-            }))
-            .sort((a, b) => b.totalPoints - a.totalPoints || b.roundPoints - a.roundPoints);
-
-        const currentUser = auth.currentUser;
-        const userPos = standings.findIndex(u => u.id === currentUser?.uid) + 1;
-        if (userPos > 0) profileLigaPos.textContent = `${userPos}º Liga`;
-
-        // Show top 5 or around user
-        let displayStandings = standings;
-        if (standings.length > 5) {
-            const idx = standings.findIndex(u => u.id === currentUser?.uid);
-            if (idx < 2) displayStandings = standings.slice(0, 5);
-            else if (idx > standings.length - 4) displayStandings = standings.slice(-5);
-            else displayStandings = standings.slice(idx - 2, idx + 3);
+        // Load Data
+        async function loadTeamsCache() {
+            const snapshot = await database.ref('teams').once('value');
+            teamsCache = snapshot.val() || {};
         }
 
-        superligaTableBody.innerHTML = displayStandings.map(u => {
-            const team = teamsCache[u.teamId] || {};
-            const pos = standings.findIndex(s => s.id === u.id) + 1;
-            const isCurrent = u.id === currentUser?.uid;
-            return `
+        async function loadUsersCache() {
+            const snapshot = await database.ref('users').once('value');
+            usersCache = snapshot.val() || {};
+            for (let uid in usersCache) usersCache[uid].id = uid;
+        }
+
+        async function findActiveRound() {
+            const snapshot = await database.ref('rounds').orderByChild('status').equalTo(1).limitToFirst(1).once('value');
+            if (!snapshot.exists()) return null;
+            return Object.values(snapshot.val())[0];
+        }
+
+        function calculateMatchPoints(final, pred) {
+            if (!final || !pred) return 0;
+            if (!Number.isFinite(Number(final.homeScore)) || !Number.isFinite(Number(final.awayScore))) return 0;
+            if (!Number.isFinite(Number(pred.homeScore)) || !Number.isFinite(Number(pred.awayScore))) return 0;
+            const finalHome = Number(final.homeScore);
+            const finalAway = Number(final.awayScore);
+            const predHome = Number(pred.homeScore);
+            const predAway = Number(pred.awayScore);
+            if (finalHome === predHome && finalAway === predAway) return 3;
+            const finalWinner = Math.sign(finalHome - finalAway);
+            const predWinner = Math.sign(predHome - predAway);
+            if (finalWinner === predWinner) return 1;
+            if (finalHome === predAway && finalAway === predHome) return -1;
+            return 0;
+        }
+
+        function calculateLiveRoundPoints(roundData) {
+            if (!roundData?.matches) return {};
+            const points = {};
+            Object.values(roundData.matches).forEach(match => {
+                if (match.finalResult && match.predictions) {
+                    Object.entries(match.predictions).forEach(([pid, pred]) => {
+                        if (!points[pid]) points[pid] = 0;
+                        points[pid] += calculateMatchPoints(match.finalResult, pred);
+                    });
+                }
+            });
+            return points;
+        }
+
+        async function loadUserProfile(userId) {
+            const user = usersCache[userId];
+            if (!user) return;
+            const team = teamsCache[user.teamId || user.team] || { name: 'N/A', image: '' };
+            const teamName = user.customTeamName || team.name || 'Time';
+            const avatarUrl = (user.useCustomShield && user.customShield) ? user.customShield : (team.image || 'default-avatar.png');
+            
+            profileName.textContent = teamName;
+            profileTeam.textContent = `Treinador: ${user.name || 'Jogador'} (${user.abbr || '---'})`;
+            profileAbbr.textContent = user.abbr || '---';
+            profileAvatar.src = avatarUrl;
+
+            // Rival badge
+            const rivalBadge = document.getElementById('profile-rival-badge');
+            const rivalText = document.getElementById('profile-rival-text');
+            if (user.rivalId && usersCache[user.rivalId] && rivalBadge && rivalText) {
+                const rival = usersCache[user.rivalId];
+                const rivalTeam = teamsCache[rival.teamId || rival.team] || {};
+                const rivalTeamName = rival.customTeamName || rivalTeam.name || 'Rival';
+                rivalText.textContent = `Rival: ${rivalTeamName} (${rival.name || 'Jogador'})`;
+                rivalBadge.style.display = 'inline-flex';
+            } else if (rivalBadge) {
+                rivalBadge.style.display = 'none';
+            }
+        }
+
+        async function loadSuperliga(activeRound, livePoints) {
+            const stage = 'abertura';
+            const pointsField = `pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
+            const roundField = `lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
+
+            const standings = Object.values(usersCache)
+                .filter(u => u[pointsField] !== undefined)
+                .map(u => ({
+                    ...u,
+                    totalPoints: (u[pointsField] || 0) + (activeRound ? (livePoints[u.id] || 0) : 0),
+                    roundPoints: activeRound ? (livePoints[u.id] || 0) : (u[roundField] || 0)
+                }))
+                .sort((a, b) => b.totalPoints - a.totalPoints || b.roundPoints - a.roundPoints);
+
+            const currentUser = auth.currentUser;
+            const userPos = standings.findIndex(u => u.id === currentUser?.uid) + 1;
+            if (userPos > 0) profileLigaPos.textContent = `${userPos}º Liga`;
+
+            // Show top 5 or around user
+            let displayStandings = standings;
+            if (standings.length > 5) {
+                const idx = standings.findIndex(u => u.id === currentUser?.uid);
+                if (idx < 2) displayStandings = standings.slice(0, 5);
+                else if (idx > standings.length - 4) displayStandings = standings.slice(-5);
+                else displayStandings = standings.slice(idx - 2, idx + 3);
+            }
+
+            superligaTableBody.innerHTML = displayStandings.map(u => {
+                const team = teamsCache[u.teamId || u.team] || {};
+                const playerAvatar = (u.useCustomShield && u.customShield) ? u.customShield : (team.image || 'default-avatar.png');
+                const teamName = u.customTeamName || team.name || 'Time';
+                const displayName = `${teamName} (${u.name || 'Jogador'})`;
+                const pos = standings.findIndex(s => s.id === u.id) + 1;
+                const isCurrent = u.id === currentUser?.uid;
+                return `
                 <tr class="${isCurrent ? 'current-user-row' : ''}">
                     <td>${pos}</td>
-                    <td><div class="player-cell"><img src="${team.image || ''}" class="player-avatar" onerror="this.src='default-avatar.png'"> ${u.name}</div></td>
+                    <td><div class="player-cell"><img src="${playerAvatar}" class="player-avatar" onerror="this.src='default-avatar.png'"> ${displayName}</div></td>
                     <td class="points">${u.totalPoints}</td>
                     <td class="round-points">+${u.roundPoints}</td>
                 </tr>
             `;
-        }).join('');
-    }
-
-    async function loadSupercopa(activeRound, livePoints) {
-        const currentUser = auth.currentUser;
-        const snapshot = await database.ref('tournaments/supercopa').once('value');
-        const data = snapshot.val();
-        
-        if (!data?.groups) {
-            supercopaStatus.textContent = 'Não iniciada';
-            supercopaStatus.className = 'status-badge status-upcoming';
-            supercopaContent.innerHTML = '<p class="supercopa-info">Aguardando início da competição</p>';
-            profileCopaPos.textContent = '--º Grupo';
-            return;
+            }).join('');
         }
 
-        const status = data.groups.status || 0;
-        if (status === 0) {
-            supercopaStatus.textContent = 'Não iniciada';
-            supercopaStatus.className = 'status-badge status-upcoming';
-            supercopaContent.innerHTML = '<p class="supercopa-info">Em breve</p>';
-            profileCopaPos.textContent = '--º Grupo';
-        } else if (status === 2) {
-            supercopaStatus.textContent = 'Finalizada';
-            supercopaStatus.className = 'status-badge status-ongoing';
-            supercopaContent.innerHTML = '<p class="supercopa-info">🏆 Edição encerrada</p>';
-        } else {
-            supercopaStatus.textContent = 'Em andamento';
-            supercopaStatus.className = 'status-badge status-active';
-            
-            const userGroupKey = Object.keys(data.groups).find(key => 
-                Array.isArray(data.groups[key]) && data.groups[key].includes(currentUser?.uid)
-            );
-            
-            if (userGroupKey) {
-                const groupNames = { group1: 'A', group2: 'B', group3: 'C', group4: 'D' };
-                const groupLetter = groupNames[userGroupKey] || userGroupKey.slice(-1);
-                
-                const standings = Object.values(data.groups.standings || {})
-                    .filter(p => data.groups[userGroupKey].includes(p.playerId))
-                    .sort((a, b) => (b.points || 0) - (a.points || 0));
-                const userPos = standings.findIndex(p => p.playerId === currentUser?.uid) + 1;
-                profileCopaPos.textContent = `${userPos}º Grupo ${groupLetter}`;
-                
-                let matchHtml = '<p class="group-position">Participando do Grupo ' + groupLetter + '</p>';
-                
-                const activeRoundData = Object.values(data.groups.rounds || {}).find(r => r.status === 1);
-                if (activeRoundData?.matches) {
-                    const userMatch = Object.values(activeRoundData.matches).find(m => 
-                        m.player1Id === currentUser?.uid || m.player2Id === currentUser?.uid
-                    );
-                    if (userMatch) {
-                        const opponentId = userMatch.player1Id === currentUser?.uid ? userMatch.player2Id : userMatch.player1Id;
-                        const opponent = usersCache[opponentId];
-                        const opponentTeam = teamsCache[opponent?.teamId];
-                        const myScore = activeRound ? (livePoints[currentUser?.uid] || 0) : 0;
-                        const oppScore = activeRound ? (livePoints[opponentId] || 0) : 0;
-                        
-                        matchHtml = `
+        async function loadSupercopa(activeRound, livePoints) {
+            const currentUser = auth.currentUser;
+            const snapshot = await database.ref('tournaments/supercopa').once('value');
+            const data = snapshot.val();
+
+            if (!data?.groups) {
+                supercopaStatus.textContent = 'Não iniciada';
+                supercopaStatus.className = 'status-badge status-upcoming';
+                supercopaContent.innerHTML = '<p class="supercopa-info">Aguardando início da competição</p>';
+                profileCopaPos.textContent = '--º Grupo';
+                return;
+            }
+
+            const status = data.groups.status || 0;
+            if (status === 0) {
+                supercopaStatus.textContent = 'Não iniciada';
+                supercopaStatus.className = 'status-badge status-upcoming';
+                supercopaContent.innerHTML = '<p class="supercopa-info">Em breve</p>';
+                profileCopaPos.textContent = '--º Grupo';
+            } else if (status === 2) {
+                supercopaStatus.textContent = 'Finalizada';
+                supercopaStatus.className = 'status-badge status-ongoing';
+                supercopaContent.innerHTML = '<p class="supercopa-info">🏆 Edição encerrada</p>';
+            } else {
+                supercopaStatus.textContent = 'Em andamento';
+                supercopaStatus.className = 'status-badge status-active';
+
+                const userGroupKey = Object.keys(data.groups).find(key =>
+                    Array.isArray(data.groups[key]) && data.groups[key].includes(currentUser?.uid)
+                );
+
+                if (userGroupKey) {
+                    const groupNames = { group1: 'A', group2: 'B', group3: 'C', group4: 'D' };
+                    const groupLetter = groupNames[userGroupKey] || userGroupKey.slice(-1);
+
+                    const standings = Object.values(data.groups.standings || {})
+                        .filter(p => data.groups[userGroupKey].includes(p.playerId))
+                        .sort((a, b) => (b.points || 0) - (a.points || 0));
+                    const userPos = standings.findIndex(p => p.playerId === currentUser?.uid) + 1;
+                    profileCopaPos.textContent = `${userPos}º Grupo ${groupLetter}`;
+
+                    let matchHtml = '<p class="group-position">Participando do Grupo ' + groupLetter + '</p>';
+
+                    const activeRoundData = Object.values(data.groups.rounds || {}).find(r => r.status === 1);
+                    if (activeRoundData?.matches) {
+                        const userMatch = Object.values(activeRoundData.matches).find(m =>
+                            m.player1Id === currentUser?.uid || m.player2Id === currentUser?.uid
+                        );
+                        if (userMatch) {
+                            const opponentId = userMatch.player1Id === currentUser?.uid ? userMatch.player2Id : userMatch.player1Id;
+                            const opponent = usersCache[opponentId];
+
+                            const me = usersCache[currentUser?.uid] || {};
+                            const myTeam = teamsCache[me.teamId || me.team] || {};
+                            const myTeamName = me.customTeamName || myTeam.name || 'Meu Time';
+                            const myAvatar = (me.useCustomShield && me.customShield) ? me.customShield : (myTeam.image || 'default-avatar.png');
+
+                            const oppTeam = teamsCache[opponent?.teamId || opponent?.team] || {};
+                            const oppTeamName = opponent?.customTeamName || oppTeam.name || 'Adversário';
+                            const oppAvatar = (opponent?.useCustomShield && opponent?.customShield) ? opponent.customShield : (oppTeam.image || 'default-avatar.png');
+
+                            const myScore = activeRound ? (livePoints[currentUser?.uid] || 0) : 0;
+                            const oppScore = activeRound ? (livePoints[opponentId] || 0) : 0;
+
+                            matchHtml = `
                             <div class="next-match">
                                 <div class="match-player">
-                                    <img src="${teamsCache[usersCache[currentUser?.uid]?.teamId]?.image || ''}" onerror="this.src='default-avatar.png'">
-                                    <span>${usersCache[currentUser?.uid]?.name || 'Você'}</span>
+                                    <img src="${myAvatar}" onerror="this.src='default-avatar.png'">
+                                    <span>${myTeamName} (${me.name || 'Você'})</span>
                                 </div>
                                 <div class="match-score">${myScore} x ${oppScore}</div>
                                 <div class="match-player">
-                                    <img src="${opponentTeam?.image || ''}" onerror="this.src='default-avatar.png'">
-                                    <span>${opponent?.name || 'Adversário'}</span>
+                                    <img src="${oppAvatar}" onerror="this.src='default-avatar.png'">
+                                    <span>${oppTeamName} (${opponent?.name || 'Adversário'})</span>
                                 </div>
                             </div>
                         `;
+                        }
                     }
+                    supercopaContent.innerHTML = matchHtml;
+                } else {
+                    profileCopaPos.textContent = '--º Grupo';
+                    supercopaContent.innerHTML = '<p class="supercopa-info">Você não está participando desta edição</p>';
                 }
-                supercopaContent.innerHTML = matchHtml;
-            } else {
-                profileCopaPos.textContent = '--º Grupo';
-                supercopaContent.innerHTML = '<p class="supercopa-info">Você não está participando desta edição</p>';
             }
         }
-    }
 
-    function startCountdown(finishTimestamp) {
-        clearInterval(countdownInterval);
-        const update = () => {
-            const distance = finishTimestamp - Date.now();
-            if (distance < 0) {
-                clearInterval(countdownInterval);
+        function startCountdown(finishTimestamp) {
+            clearInterval(countdownInterval);
+            const update = () => {
+                const distance = finishTimestamp - Date.now();
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    countdownContainer.style.display = 'none';
+                    expiredMsg.style.display = 'block';
+                    return;
+                }
+                countdownContainer.style.display = 'block';
+                expiredMsg.style.display = 'none';
+                daysEl.textContent = String(Math.floor(distance / 86400000)).padStart(2, '0');
+                hoursEl.textContent = String(Math.floor((distance % 86400000) / 3600000)).padStart(2, '0');
+                minutesEl.textContent = String(Math.floor((distance % 3600000) / 60000)).padStart(2, '0');
+                secondsEl.textContent = String(Math.floor((distance % 60000) / 1000)).padStart(2, '0');
+            };
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        function getManausTimestamp(dateString) {
+            if (!dateString) return 0;
+            if (typeof dateString === 'number') return dateString;
+            if (dateString.includes('Z') || dateString.match(/[+-]\d\d:\d\d$/)) {
+                return new Date(dateString).getTime();
+            }
+            return new Date(dateString + '-04:00').getTime();
+        }
+
+        async function loadNextRound() {
+            const round = await findActiveRound();
+            if (round?.finishTimestamp) {
+                const finishTime = getManausTimestamp(round.finishTimestamp);
+                const localDate = new Date(finishTime);
+
+                // Formatar data e hora no horário local
+                const options = {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                };
+
+                const formattedDate = localDate.toLocaleDateString('pt-BR', options);
+                roundDeadline.textContent = `Palpites até ${formattedDate}`;
+
+                // Iniciar contagem regressiva usando o horário convertido
+                startCountdown(finishTime);
+                nextRoundCard.onclick = () => window.location.href = 'palpites.html';
+
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                console.log(`Horário local (${timezone}): ${formattedDate}`);
+
+            } else {
+                roundDeadline.textContent = 'Nenhuma rodada ativa';
                 countdownContainer.style.display = 'none';
                 expiredMsg.style.display = 'block';
-                return;
+                expiredMsg.textContent = 'Nenhuma rodada disponível no momento';
             }
-            countdownContainer.style.display = 'block';
-            expiredMsg.style.display = 'none';
-            daysEl.textContent = String(Math.floor(distance / 86400000)).padStart(2, '0');
-            hoursEl.textContent = String(Math.floor((distance % 86400000) / 3600000)).padStart(2, '0');
-            minutesEl.textContent = String(Math.floor((distance % 3600000) / 60000)).padStart(2, '0');
-            secondsEl.textContent = String(Math.floor((distance % 60000) / 1000)).padStart(2, '0');
-        };
-        update();
-        countdownInterval = setInterval(update, 1000);
-    }
-
-    function getManausTimestamp(dateString) {
-        if (!dateString) return 0;
-        if (typeof dateString === 'number') return dateString;
-        if (dateString.includes('Z') || dateString.match(/[+-]\d\d:\d\d$/)) {
-            return new Date(dateString).getTime();
         }
-        return new Date(dateString + '-04:00').getTime();
-    }
 
-    async function loadNextRound() {
-        const round = await findActiveRound();
-        if (round?.finishTimestamp) {
-            const finishTime = getManausTimestamp(round.finishTimestamp);
-            const localDate = new Date(finishTime);
-            
-            // Formatar data e hora no horário local
-            const options = { 
-                day: '2-digit', 
-                month: '2-digit', 
-                year: 'numeric',
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: false
-            };
-            
-            const formattedDate = localDate.toLocaleDateString('pt-BR', options);
-            roundDeadline.textContent = `Palpites até ${formattedDate}`;
-            
-            // Iniciar contagem regressiva usando o horário convertido
-            startCountdown(finishTime);
-            nextRoundCard.onclick = () => window.location.href = 'palpites.html';
-            
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            console.log(`Horário local (${timezone}): ${formattedDate}`);
-            
-        } else {
-            roundDeadline.textContent = 'Nenhuma rodada ativa';
-            countdownContainer.style.display = 'none';
-            expiredMsg.style.display = 'block';
-            expiredMsg.textContent = 'Nenhuma rodada disponível no momento';
+        async function checkAdminStatus(userId) {
+            const isAdmin = usersCache[userId]?.isAdmin || false;
+            adminHeader.style.display = isAdmin ? 'flex' : 'none';
+            adminSidebar.style.display = isAdmin ? 'block' : 'none';
         }
-    }
 
-    async function checkAdminStatus(userId) {
-        const isAdmin = usersCache[userId]?.isAdmin || false;
-        adminHeader.style.display = isAdmin ? 'flex' : 'none';
-        adminSidebar.style.display = isAdmin ? 'block' : 'none';
-    }
+        async function init() {
+            try {
+                await Promise.all([loadTeamsCache(), loadUsersCache()]);
+                const user = auth.currentUser;
+                if (!user) { window.location.href = 'index.html'; return; }
 
-    async function init() {
-        try {
-            await Promise.all([loadTeamsCache(), loadUsersCache()]);
-            const user = auth.currentUser;
-            if (!user) { window.location.href = 'index.html'; return; }
-            
-            await loadUserProfile(user.uid);
-            await checkAdminStatus(user.uid);
-            
-            const activeRound = await findActiveRound();
-            const livePoints = calculateLiveRoundPoints(activeRound);
-            
-            await Promise.all([
-                loadSuperliga(activeRound, livePoints),
-                loadSupercopa(activeRound, livePoints),
-                loadNextRound()
-            ]);
-            
-            // Set active sidebar link
-            document.querySelectorAll('.sidebar-nav a').forEach(link => {
-                if (link.getAttribute('href') === 'home.html') link.classList.add('active');
-                else link.classList.remove('active');
-            });
-            
-        } catch (err) {
-            console.error('Init error:', err);
-        } finally {
-            loadingScreen.style.display = 'none';
+                await loadUserProfile(user.uid);
+                await checkAdminStatus(user.uid);
+
+                const activeRound = await findActiveRound();
+                const livePoints = calculateLiveRoundPoints(activeRound);
+
+                await Promise.all([
+                    loadSuperliga(activeRound, livePoints),
+                    loadSupercopa(activeRound, livePoints),
+                    loadNextRound()
+                ]);
+
+                // Set active sidebar link
+                document.querySelectorAll('.sidebar-nav a').forEach(link => {
+                    if (link.getAttribute('href') === 'home.html') link.classList.add('active');
+                    else link.classList.remove('active');
+                });
+
+            } catch (err) {
+                console.error('Init error:', err);
+            } finally {
+                loadingScreen.style.display = 'none';
+            }
         }
-    }
 
-    auth.onAuthStateChanged(user => {
-        if (user) init();
-        else window.location.href = 'index.html';
-    });
+        auth.onAuthStateChanged(user => {
+            if (user) init();
+            else window.location.href = 'index.html';
+        });
 
-    // Card click handlers
-    supercopaCard?.addEventListener('click', () => window.location.href = 'supercopa.html');
-    superligaCard?.addEventListener('click', () => window.location.href = 'superliga.html');
-    adminHeader?.addEventListener('click', () => window.location.href = 'admin.html');
-</script>
+        // Card click handlers
+        supercopaCard?.addEventListener('click', () => window.location.href = 'supercopa.html');
+        superligaCard?.addEventListener('click', () => window.location.href = 'superliga.html');
+        adminHeader?.addEventListener('click', () => window.location.href = 'admin.html');
+    </script>
 </body>
+
 </html>

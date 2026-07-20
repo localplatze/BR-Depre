@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Superliga - BR da Depressão</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -31,7 +34,7 @@
             --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
             --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            
+
             /* Zonas de classificação */
             --color-libertadores: #10B981;
             --color-pre-libertadores: #34D399;
@@ -277,6 +280,7 @@
         tr.zone-libertadores td:first-child {
             position: relative;
         }
+
         tr.zone-libertadores td:first-child::before {
             content: '';
             position: absolute;
@@ -287,6 +291,7 @@
             background: var(--color-libertadores);
             border-radius: 0 2px 2px 0;
         }
+
         tr.zone-pre-libertadores td:first-child::before {
             content: '';
             position: absolute;
@@ -297,6 +302,7 @@
             background: var(--color-pre-libertadores);
             border-radius: 0 2px 2px 0;
         }
+
         tr.zone-sula td:first-child::before {
             content: '';
             position: absolute;
@@ -307,6 +313,7 @@
             background: var(--color-sula);
             border-radius: 0 2px 2px 0;
         }
+
         tr.zone-rebaixamento td:first-child::before {
             content: '';
             position: absolute;
@@ -559,30 +566,37 @@
             .app-container {
                 padding: 1rem;
             }
+
             .table-header-controls {
                 flex-direction: column;
                 gap: 0.75rem;
                 align-items: flex-start;
             }
+
             .standings-table th,
             .standings-table td {
                 font-size: 0.75rem;
                 padding: 0.625rem 0.5rem;
             }
+
             .player-avatar {
                 width: 24px;
                 height: 24px;
             }
+
             .final-match-container {
                 flex-direction: column;
                 gap: 1.5rem;
             }
+
             .vs-container {
                 order: 2;
             }
+
             .final-player:first-child {
                 order: 1;
             }
+
             .final-player:last-child {
                 order: 3;
             }
@@ -634,16 +648,20 @@
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Header -->
-        <div class="header">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
             <a href="home.html" class="back-btn">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
             <h1 class="header-title">
                 <i class="fas fa-trophy" style="color: var(--primary);"></i> Superliga
             </h1>
+            <a href="perfil.html" class="back-btn" title="Meu Perfil">
+                <i class="fas fa-user-cog"></i> Perfil
+            </a>
         </div>
 
         <!-- Tabs -->
@@ -658,16 +676,21 @@
             <div class="standings-card">
                 <div class="table-header-controls">
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
-                    <button class="btn-grafico" id="toggle-chart-abertura"><i class="fas fa-chart-line"></i> Ver Gráfico</button>
+                    <button class="btn-grafico" id="toggle-chart-abertura"><i class="fas fa-chart-line"></i> Ver
+                        Gráfico</button>
                 </div>
                 <div id="abertura-table-container">
                     <div class="loading"><i class="fas fa-spinner fa-pulse"></i> Carregando classificação...</div>
                 </div>
                 <div class="legend">
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-libertadores);"></span> Libertadores</span>
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-pre-libertadores);"></span> Pré-Libertadores</span>
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-sula);"></span> Sul-Americana</span>
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-rebaixamento);"></span> Rebaixamento</span>
+                    <span class="legend-item"><span class="legend-color"
+                            style="background: var(--color-libertadores);"></span> Libertadores</span>
+                    <span class="legend-item"><span class="legend-color"
+                            style="background: var(--color-pre-libertadores);"></span> Pré-Libertadores</span>
+                    <span class="legend-item"><span class="legend-color" style="background: var(--color-sula);"></span>
+                        Sul-Americana</span>
+                    <span class="legend-item"><span class="legend-color"
+                            style="background: var(--color-rebaixamento);"></span> Rebaixamento</span>
                 </div>
             </div>
         </div>
@@ -677,16 +700,21 @@
             <div class="standings-card">
                 <div class="table-header-controls">
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
-                    <button class="btn-grafico" id="toggle-chart-clausura"><i class="fas fa-chart-line"></i> Ver Gráfico</button>
+                    <button class="btn-grafico" id="toggle-chart-clausura"><i class="fas fa-chart-line"></i> Ver
+                        Gráfico</button>
                 </div>
                 <div id="clausura-table-container">
                     <div class="loading"><i class="fas fa-spinner fa-pulse"></i> Carregando classificação...</div>
                 </div>
                 <div class="legend">
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-libertadores);"></span> Libertadores</span>
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-pre-libertadores);"></span> Pré-Libertadores</span>
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-sula);"></span> Sul-Americana</span>
-                    <span class="legend-item"><span class="legend-color" style="background: var(--color-rebaixamento);"></span> Rebaixamento</span>
+                    <span class="legend-item"><span class="legend-color"
+                            style="background: var(--color-libertadores);"></span> Libertadores</span>
+                    <span class="legend-item"><span class="legend-color"
+                            style="background: var(--color-pre-libertadores);"></span> Pré-Libertadores</span>
+                    <span class="legend-item"><span class="legend-color" style="background: var(--color-sula);"></span>
+                        Sul-Americana</span>
+                    <span class="legend-item"><span class="legend-color"
+                            style="background: var(--color-rebaixamento);"></span> Rebaixamento</span>
                 </div>
             </div>
         </div>
@@ -858,18 +886,18 @@
 
             const currentUser = auth.currentUser;
             const totalPlayers = standings.length;
-            
+
             // Calcular posições da rodada anterior (lastRoundPoints)
             const pointsField = `pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
             const lastRoundPointsField = `lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
-            
+
             // Criar ranking da rodada anterior baseado nos pontos sem a rodada atual
             const previousRanking = [...standings].sort((a, b) => {
                 const aPrevPoints = (a[pointsField] || 0);
                 const bPrevPoints = (b[pointsField] || 0);
                 return bPrevPoints - aPrevPoints;
             }).map((player, idx) => ({ id: player.id, prevPosition: idx + 1 }));
-            
+
             const prevPositionMap = {};
             previousRanking.forEach(p => { prevPositionMap[p.id] = p.prevPosition; });
 
@@ -898,16 +926,19 @@
 
             standings.forEach((player, idx) => {
                 const position = idx + 1;
-                const team = teamsDataCache[player.teamId] || {};
+                const team = teamsDataCache[player.teamId || player.team] || {};
+                const playerAvatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
+                const teamName = player.customTeamName || team.name || 'Time';
+                const displayName = `${teamName} (${player.name || ''})`;
                 const isCurrentUser = player.id === currentUser?.uid;
                 const zoneClass = getZoneClass(position, totalPlayers);
-                
+
                 // Calcular variação de posição
                 const prevPosition = prevPositionMap[player.id] || position;
                 const positionDiff = prevPosition - position; // positivo = subiu, negativo = desceu
                 let trendIcon = '';
                 let trendText = '';
-                
+
                 if (positionDiff > 0) {
                     trendIcon = '<i class="fas fa-arrow-up" style="color: var(--success);"></i>';
                     trendText = `+${positionDiff}`;
@@ -918,7 +949,7 @@
                     trendIcon = '<i class="fas fa-minus-square" style="color: var(--text-muted);"></i>';
                     trendText = '0';
                 }
-                
+
                 // Adicionar título de grupo quando necessário
                 if (currentGroupIndex < groups.length && position === groups[currentGroupIndex].positions[0]) {
                     html += `<tr class="group-title"><td colspan="5">${groups[currentGroupIndex].title}</td></tr>`;
@@ -930,8 +961,8 @@
                         <td>${position}</td>
                         <td>
                             <div class="player-cell">
-                                <img src="${team.image || ''}" class="player-avatar" onerror="this.src='default-avatar.png'">
-                                <span class="player-name">${player.name}</span>
+                                <img src="${playerAvatar}" class="player-avatar" onerror="this.src='default-avatar.png'">
+                                <span class="player-name">${displayName}</span>
                             </div>
                         </td>
                         <td class="points">${player.totalPoints}</td>
@@ -971,20 +1002,20 @@
 
             const [activeRound, completedRounds] = await Promise.all([findActiveRound(), fetchCompletedRoundsOnce()]);
             const liveRoundPoints = calculateLiveRoundPoints(activeRound);
-            
+
             const pointsField = `pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
             const lastRoundPointsField = `lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
-            
+
             const usersArray = Object.values(usersDataCache).filter(user => user[pointsField] !== undefined);
-            
+
             // Calcular estatísticas completas para cada jogador
             const standings = usersArray.map(user => {
                 let roundPoints = activeRound ? (liveRoundPoints[user.id] || 0) : (user[lastRoundPointsField] || 0);
                 const totalPoints = (user[pointsField] || 0) + (activeRound ? roundPoints : 0);
-                
+
                 // Calcular estatísticas adicionais dos palpites
                 let played = 0, wins = 0, draws = 0, losses = 0, goalsFor = 0, goalsAgainst = 0;
-                
+
                 Object.values(completedRounds).forEach(round => {
                     if (round.matches) {
                         Object.values(round.matches).forEach(match => {
@@ -996,14 +1027,14 @@
                                 if (points === 3) wins++;
                                 else if (points === 1) draws++;
                                 else if (points === 0) losses++;
-                                
+
                                 goalsFor += pred.homeScore + pred.awayScore;
                                 goalsAgainst += final.homeScore + final.awayScore;
                             }
                         });
                     }
                 });
-                
+
                 return {
                     ...user,
                     totalPoints,
@@ -1016,14 +1047,14 @@
                     goalsAgainst
                 };
             }).sort((a, b) => b.totalPoints - a.totalPoints || b.roundPoints - a.roundPoints);
-            
+
             renderTable(standings, `${stage}-table-container`, stage);
         }
 
         async function loadFinalInfo() {
             const loadingEl = document.getElementById('loading-final');
             const matchContainer = document.getElementById('final-match-container');
-            
+
             loadingEl.style.display = 'flex';
             matchContainer.style.display = 'none';
 
@@ -1038,10 +1069,15 @@
             const homeTeam = teamsDataCache[homePlayer?.teamId] || {};
             const awayTeam = teamsDataCache[awayPlayer?.teamId] || {};
 
-            document.querySelector('#final-player-home .logo').src = homeTeam.image || 'default-avatar.png';
-            document.querySelector('#final-player-home .name').textContent = homePlayer?.name || '---';
-            document.querySelector('#final-player-away .logo').src = awayTeam.image || 'default-avatar.png';
-            document.querySelector('#final-player-away .name').textContent = awayPlayer?.name || '---';
+            const homeTeamName = homePlayer?.customTeamName || homeTeam.name || 'Time';
+            const awayTeamName = awayPlayer?.customTeamName || awayTeam.name || 'Time';
+            const homeAvatar = (homePlayer?.useCustomShield && homePlayer?.customShield) ? homePlayer.customShield : (homeTeam.image || 'default-avatar.png');
+            const awayAvatar = (awayPlayer?.useCustomShield && awayPlayer?.customShield) ? awayPlayer.customShield : (awayTeam.image || 'default-avatar.png');
+
+            document.querySelector('#final-player-home .logo').src = homeAvatar;
+            document.querySelector('#final-player-home .name').textContent = homePlayer ? `${homeTeamName} (${homePlayer.name || ''})` : '---';
+            document.querySelector('#final-player-away .logo').src = awayAvatar;
+            document.querySelector('#final-player-away .name').textContent = awayPlayer ? `${awayTeamName} (${awayPlayer.name || ''})` : '---';
 
             const resultEl = document.getElementById('final-result');
             if (finalData.result) {
@@ -1057,23 +1093,26 @@
         async function showPlayerDetails(userId, stage, position) {
             const user = usersDataCache[userId];
             const team = teamsDataCache[user?.teamId] || {};
-            
-            document.getElementById('dialog-player-logo').src = team.image || 'default-avatar.png';
-            document.getElementById('dialog-player-name').textContent = user?.name || 'Jogador';
+
+            const userTeamName = user?.customTeamName || team.name || 'Time';
+            const userAvatar = (user?.useCustomShield && user?.customShield) ? user.customShield : (team.image || 'default-avatar.png');
+
+            document.getElementById('dialog-player-logo').src = userAvatar;
+            document.getElementById('dialog-player-name').textContent = user ? `${userTeamName} (${user.name || ''})` : 'Jogador';
             document.getElementById('dialog-player-team').textContent = team.name || 'Sem time';
             document.getElementById('dialog-player-position').textContent = `#${position}`;
-            
+
             const pointsField = `pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
             const totalPoints = user?.[pointsField] || 0;
             document.getElementById('dialog-player-points').textContent = totalPoints;
-            
+
             const completedRounds = await fetchCompletedRoundsOnce();
             const sortedRounds = Object.values(completedRounds).sort((a, b) => a.finishTimestamp - b.finishTimestamp);
-            
+
             let historyPoints = [];
             let totalAccumulated = 0;
             let bestRound = 0;
-            
+
             sortedRounds.forEach((round, idx) => {
                 let pointsInRound = 0;
                 if (round.matches) {
@@ -1087,17 +1126,17 @@
                 bestRound = Math.max(bestRound, pointsInRound);
                 historyPoints.push({ round: idx + 1, points: pointsInRound });
             });
-            
+
             const avgPoints = historyPoints.length > 0 ? (totalAccumulated / historyPoints.length).toFixed(1) : "0.0";
             document.getElementById('dialog-player-avg').textContent = avgPoints;
             document.getElementById('dialog-player-best').textContent = bestRound;
-            
+
             const last12 = historyPoints.slice(-12);
             const labels = last12.map(h => `R${h.round}`);
             const data = last12.map(h => h.points);
-            
+
             if (playerChartInstance) playerChartInstance.destroy();
-            
+
             Chart.defaults.color = '#94A3B8';
             playerChartInstance = new Chart(document.getElementById('player-points-chart'), {
                 type: 'line',
@@ -1129,25 +1168,25 @@
                     }
                 }
             });
-            
+
             document.getElementById('player-details-dialog').showModal();
         }
 
         async function initializeApp() {
             await Promise.all([loadTeamsDataOnce(), loadUsersDataOnce(), fetchSuperligaDataOnce()]);
-            
+
             const stages = superligaDataCache?.stages;
             let activeStageKey = 'abertura';
-            
+
             if (stages?.clausura?.status === 1) activeStageKey = 'clausura';
             else if (stages?.abertura?.status === 1) activeStageKey = 'abertura';
-            
+
             const finalTab = document.querySelector('.tab[data-stage="final"]');
             if (stages?.abertura?.status === 2 && stages?.clausura?.status === 2) {
                 finalTab.style.display = 'block';
                 activeStageKey = 'final';
             }
-            
+
             document.querySelectorAll('.tab').forEach(tab => {
                 const stage = tab.dataset.stage;
                 const content = document.getElementById(`${stage}-content`);
@@ -1160,10 +1199,10 @@
                     content.style.display = 'none';
                 }
             });
-            
+
             setupEventListeners();
         }
-        
+
         function setupEventListeners() {
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -1175,17 +1214,18 @@
                     loadStageData(stage);
                 });
             });
-            
+
             const closeBtn = document.querySelector('#player-details-dialog .close-btn');
             const dialog = document.getElementById('player-details-dialog');
             closeBtn?.addEventListener('click', () => dialog.close());
             dialog?.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
         }
-        
+
         auth.onAuthStateChanged(user => {
             if (!user) window.location.href = 'index.html';
             else initializeApp();
         });
     </script>
 </body>
+
 </html>
