@@ -180,40 +180,20 @@
 
         async function initializeApp() {
             try {
-                // ETAPA 1: Garante que TODOS os dados essenciais sejam carregados ANTES de qualquer outra coisa.
+                // ETAPA 1: Carrega dados estáticos/iniciais de times e usuários
                 await Promise.all([
                     loadDataOnce('teams').then(data => teamsDataCache = data),
                     loadDataOnce('users').then(data => {
-                        // Adiciona o ID a cada objeto de usuário para facilitar o acesso
                         Object.keys(data).forEach(key => data[key].id = key);
                         usersDataCache = data;
-                    }),
-                    loadDataOnce('tournaments/supercopa').then(data => supercopaDataCache = data),
+                    })
                 ]);
                 
-                // ETAPA 2: Inicia o listener para a rodada da Superliga (para os placares ao vivo)
-                findActiveSuperligaRoundAndListen();
-                
-                // ETAPA 3: Configura os botões e abas
+                // ETAPA 2: Configura eventos de clique das abas
                 setupEventListeners();
                 
-                // ETAPA 4: Lógica para determinar o estágio ativo da Supercopa
-                const { groups, quarterFinals, semiFinals, final, activeStage: savedActiveStage } = supercopaDataCache || {};
-                let activeStage = savedActiveStage || 'groups';
-                if (!savedActiveStage) {
-                    if (final?.status === 1) activeStage = 'final';
-                    else if (semiFinals?.status === 1) activeStage = 'semiFinals';
-                    else if (quarterFinals?.status === 1) activeStage = 'quarterFinals';
-                }
-                
-                // ETAPA 5: Clica programaticamente na aba correta para iniciar a renderização
-                const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage}"]`);
-                if (activeTab) {
-                    activeTab.click();
-                } else {
-                    // Fallback para o primeiro tab se nada for encontrado
-                    document.querySelector('.main-tabs .tab').click();
-                }
+                // ETAPA 3: Inicia listener em tempo real para a Supercopa e Rodada Ativa da Superliga
+                listenToSupercopaAndSuperliga();
 
             } catch (error) {
                 console.error("Erro fatal na inicialização:", error);
@@ -221,17 +201,48 @@
             }
         }
 
-        // --- FUNÇÕES DE DADOS ---
+        // --- FUNÇÕES DE DADOS E LISTENERS EM TEMPO REAL ---
         async function loadDataOnce(path) {
             const snapshot = await database.ref(path).once('value');
             return snapshot.val() || {};
         }
 
-        function findActiveSuperligaRoundAndListen() {
+        let isFirstSupercopaLoad = true;
+
+        function listenToSupercopaAndSuperliga() {
+            // Listener em Tempo Real da Supercopa (reflete imediatamente alterações no Admin)
+            database.ref('tournaments/supercopa').on('value', (snapshot) => {
+                supercopaDataCache = snapshot.val() || {};
+                
+                // Na primeira carga, abre a aba definida pelo 'activeStage' salvo no Admin
+                if (isFirstSupercopaLoad) {
+                    isFirstSupercopaLoad = false;
+                    const { quarterFinals, semiFinals, final, activeStage: savedActiveStage } = supercopaDataCache;
+                    let activeStage = savedActiveStage || 'groups';
+                    if (!savedActiveStage) {
+                        if (final?.status === 1) activeStage = 'final';
+                        else if (semiFinals?.status === 1) activeStage = 'semiFinals';
+                        else if (quarterFinals?.status === 1) activeStage = 'quarterFinals';
+                    }
+                    
+                    const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage}"]`);
+                    if (activeTab) {
+                        ui.mainTabs.forEach(t => t.classList.remove('active'));
+                        activeTab.classList.add('active');
+                    }
+                }
+                
+                // Re-renderiza o estágio atualmente aberto na tela
+                const activeMainTab = document.querySelector('.main-tabs .tab.active');
+                if (activeMainTab) {
+                    loadStage(activeMainTab.dataset.stage);
+                }
+            });
+
+            // Listener em Tempo Real para a Rodada Ativa da Superliga (placares ao vivo)
             database.ref('rounds').orderByChild('status').equalTo(1).on('value', (snapshot) => {
                 activeSuperligaRoundData = snapshot.exists() ? Object.values(snapshot.val())[0] : null;
                 
-                // Re-renderiza o conteúdo visível para atualizar os placares ao vivo
                 const activeMainTab = document.querySelector('.main-tabs .tab.active');
                 if (activeMainTab) {
                     loadStage(activeMainTab.dataset.stage);

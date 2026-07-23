@@ -814,13 +814,49 @@
             return pts;
         }
 
+        let supercopaData = null;
+
         async function fetchData() {
-            const [usersSnap, teamsSnap] = await Promise.all([
+            const [usersSnap, teamsSnap, supercopaSnap] = await Promise.all([
                 database.ref('users').once('value'),
-                database.ref('teams').once('value')
+                database.ref('teams').once('value'),
+                database.ref('tournaments/supercopa').once('value')
             ]);
             allPlayers = usersSnap.val() || {};
             allTeams = teamsSnap.val() || {};
+            supercopaData = supercopaSnap.val() || {};
+        }
+
+        function getSupercopaOpponentId(userId) {
+            if (!supercopaData || !userId) return null;
+            const activeStage = supercopaData.activeStage || 'groups';
+
+            if (activeStage === 'groups') {
+                if (!supercopaData.groups || supercopaData.groups.status !== 1) return null;
+                const activeRoundData = Object.values(supercopaData.groups.rounds || {}).find(r => r.status === 1);
+                if (activeRoundData?.matches) {
+                    const userMatch = Object.values(activeRoundData.matches).find(m =>
+                        m.player1Id === userId || m.player2Id === userId
+                    );
+                    if (userMatch) {
+                        return userMatch.player1Id === userId ? userMatch.player2Id : userMatch.player1Id;
+                    }
+                }
+            } else {
+                const phaseData = supercopaData[activeStage] || {};
+                let userMatch = null;
+                ['matches', 'b', 'c'].forEach(sKey => {
+                    const seriesArray = phaseData[sKey] || [];
+                    const found = seriesArray.find(m => m.homeTeam === userId || m.awayTeam === userId || m.player1Id === userId || m.player2Id === userId);
+                    if (found) userMatch = found;
+                });
+                if (userMatch) {
+                    const p1Id = userMatch.homeTeam || userMatch.player1Id;
+                    const p2Id = userMatch.awayTeam || userMatch.player2Id;
+                    return p1Id === userId ? p2Id : p1Id;
+                }
+            }
+            return null;
         }
 
         function getManausTimestamp(dateString) {
@@ -908,6 +944,8 @@
             }
 
             const roundStarted = isRoundStarted();
+            const opponentId = getSupercopaOpponentId(userId);
+            const opponentUser = opponentId ? allPlayers[opponentId] : null;
 
             matchesContainer.innerHTML = allMatches.map((match, idx) => {
                 const homeTeam = allTeams[match.homeTeam] || { name: '?', image: '' };
@@ -920,6 +958,10 @@
                 const isLocked = isMatchLocked(match);
                 const hasResult = hasFinalResult(match);
                 const userPoints = hasResult && savedPred.homeScore !== undefined ? calculateMatchPoints(match.finalResult, savedPred) : null;
+
+                // Informações do rival/adversário na Supercopa
+                const oppPred = opponentId ? match.predictions?.[opponentId] : null;
+                const oppPoints = hasResult && oppPred && oppPred.homeScore !== undefined ? calculateMatchPoints(match.finalResult, oppPred) : null;
 
                 return `
                     <div class="match-card ${isLocked ? 'locked' : ''} ${isStar ? 'is-star-card' : ''}" data-match-id="${idx}">
@@ -945,15 +987,22 @@
                                 <div class="final-result">
                                     ${match.finalResult.homeScore} : ${match.finalResult.awayScore}
                                 </div>
-                                <div style="margin-top: 0.75rem; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 0.5rem; text-align: center; font-size: 0.85rem;">
-                                    ${savedPred.homeScore !== undefined ? `
-                                        <div><span style="color: var(--text-secondary);">Seu palpite:</span> <strong>${savedPred.homeScore} × ${savedPred.awayScore}</strong> ${isStar ? '<span style="color:#f59e0b; font-size:0.75rem;">⭐ 2x</span>' : ''}</div>
-                                        <div style="margin-top: 0.25rem; font-weight: 700; color: ${userPoints > 0 ? 'var(--success)' : userPoints < 0 ? 'var(--danger)' : 'var(--text-muted)'};">
-                                            Pontuação: ${userPoints > 0 ? '+' : ''}${userPoints} pts
+                                <div style="margin-top: 0.75rem; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 0.5rem; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <div style="text-align: center;">
+                                        <div><span style="color: var(--text-secondary);">Seu palpite:</span> <strong>${savedPred.homeScore !== undefined ? `${savedPred.homeScore} × ${savedPred.awayScore}` : '-'}</strong> ${isStar ? '<span style="color:#f59e0b; font-size:0.75rem;">⭐ 2x</span>' : ''}</div>
+                                        <div style="font-weight: 700; color: ${userPoints > 0 ? 'var(--success)' : userPoints < 0 ? 'var(--danger)' : 'var(--text-muted)'};">
+                                            Pontuação: ${userPoints !== null ? `${userPoints > 0 ? '+' : ''}${userPoints} pts` : '-'}
                                         </div>
-                                    ` : `
-                                        <div style="color: var(--text-muted); font-style: italic;">Sem palpite registrado</div>
-                                    `}
+                                    </div>
+                                    ${opponentUser ? `
+                                        <div style="border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 0.4rem; text-align: center;">
+                                            <div style="font-size: 0.75rem; color: #f59e0b; font-weight: 600;"><i class="fas fa-shield-alt"></i> Adversário na Supercopa (${opponentUser.name})</div>
+                                            <div style="margin-top: 0.2rem;"><span style="color: var(--text-secondary);">Palpite:</span> <strong>${oppPred && oppPred.homeScore !== undefined ? `${oppPred.homeScore} × ${oppPred.awayScore}` : 'Sem palpite'}</strong> ${oppPred?.isStarMatch ? '<span style="color:#f59e0b; font-size:0.75rem;">⭐ 2x</span>' : ''}</div>
+                                            <div style="font-weight: 700; color: ${oppPoints > 0 ? 'var(--success)' : oppPoints < 0 ? 'var(--danger)' : 'var(--text-muted)'};">
+                                                Pontuação: ${oppPoints !== null ? `${oppPoints > 0 ? '+' : ''}${oppPoints} pts` : '-'}
+                                            </div>
+                                        </div>
+                                    ` : ''}
                                 </div>
                             ` : `
                                 <div class="prediction-inputs">
