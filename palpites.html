@@ -796,12 +796,22 @@
 
         function calculateMatchPoints(final, pred) {
             if (!final || final.homeScore === undefined || !pred || pred.homeScore === undefined) return null;
-            if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) return 3;
-            const finalWinner = Math.sign(final.homeScore - final.awayScore);
-            const predWinner = Math.sign(pred.homeScore - pred.awayScore);
-            if (finalWinner === predWinner) return 1;
-            if (final.homeScore === pred.awayScore && final.awayScore === pred.homeScore) return -1;
-            return 0;
+            let pts = 0;
+            if (final.homeScore === pred.homeScore && final.awayScore === pred.awayScore) {
+                pts = 3;
+            } else {
+                const finalWinner = Math.sign(final.homeScore - final.awayScore);
+                const predWinner = Math.sign(pred.homeScore - pred.awayScore);
+                if (finalWinner === predWinner) pts = 1;
+                else if (final.homeScore === pred.awayScore && final.awayScore === pred.homeScore) pts = -1;
+                else pts = 0;
+            }
+
+            if (pred.isStarMatch || pred.isCaptain || pred.star || pred.doublePoints) {
+                pts *= 2;
+            }
+
+            return pts;
         }
 
         async function fetchData() {
@@ -886,11 +896,18 @@
             return now >= deadline;
         }
 
+        function isRoundStarted() {
+            if (!roundFinishTimestamp) return false;
+            return new Date().getTime() >= roundFinishTimestamp;
+        }
+
         function renderMatches(userId) {
             if (!allMatches.length) {
                 matchesContainer.innerHTML = '<div class="loader"><i class="fas fa-info-circle"></i> Nenhum jogo disponível</div>';
                 return;
             }
+
+            const roundStarted = isRoundStarted();
 
             matchesContainer.innerHTML = allMatches.map((match, idx) => {
                 const homeTeam = allTeams[match.homeTeam] || { name: '?', image: '' };
@@ -902,6 +919,7 @@
                 const isStar = unsaved?.isStarMatch !== undefined ? unsaved.isStarMatch : (savedPred.isStarMatch === true);
                 const isLocked = isMatchLocked(match);
                 const hasResult = hasFinalResult(match);
+                const userPoints = hasResult && savedPred.homeScore !== undefined ? calculateMatchPoints(match.finalResult, savedPred) : null;
 
                 return `
                     <div class="match-card ${isLocked ? 'locked' : ''} ${isStar ? 'is-star-card' : ''}" data-match-id="${idx}">
@@ -927,6 +945,16 @@
                                 <div class="final-result">
                                     ${match.finalResult.homeScore} : ${match.finalResult.awayScore}
                                 </div>
+                                <div style="margin-top: 0.75rem; padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 0.5rem; text-align: center; font-size: 0.85rem;">
+                                    ${savedPred.homeScore !== undefined ? `
+                                        <div><span style="color: var(--text-secondary);">Seu palpite:</span> <strong>${savedPred.homeScore} × ${savedPred.awayScore}</strong> ${isStar ? '<span style="color:#f59e0b; font-size:0.75rem;">⭐ 2x</span>' : ''}</div>
+                                        <div style="margin-top: 0.25rem; font-weight: 700; color: ${userPoints > 0 ? 'var(--success)' : userPoints < 0 ? 'var(--danger)' : 'var(--text-muted)'};">
+                                            Pontuação: ${userPoints > 0 ? '+' : ''}${userPoints} pts
+                                        </div>
+                                    ` : `
+                                        <div style="color: var(--text-muted); font-style: italic;">Sem palpite registrado</div>
+                                    `}
+                                </div>
                             ` : `
                                 <div class="prediction-inputs">
                                     <div class="score-control">
@@ -941,12 +969,12 @@
                                         <button class="score-btn inc" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>+</button>
                                     </div>
                                 </div>
-                                <button class="star-match-btn ${isStar ? 'active' : ''}" data-match="${idx}" ${isLocked ? 'disabled' : ''}>
+                                <button class="star-match-btn ${isStar ? 'active' : ''}" data-match="${idx}" ${isLocked || roundStarted ? 'disabled' : ''}>
                                     <i class="${isStar ? 'fas' : 'far'} fa-star"></i> ${isStar ? '⭐ Jogo Estrela (Pontuação Duplicada 2x)' : 'Definir como Jogo Estrela (2x)'}
                                 </button>
                             `}
                         </div>
-                        ${isLocked && !hasResult ? `
+                        ${isLocked ? `
                             <div class="match-footer">
                                 <button class="view-predictions" data-match="${idx}"><i class="fas fa-eye"></i> Ver palpites dos jogadores</button>
                             </div>
