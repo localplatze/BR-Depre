@@ -3956,24 +3956,51 @@
             }
         });
 
+        function calculateUserRoundTotalScore(roundData, userId) {
+            if (!roundData || !userId) return 0;
+            let pts = 0;
+            const matches = roundData.matches || [];
+            matches.forEach(m => {
+                if (m.finalResult && m.predictions && m.predictions[userId]) {
+                    pts += calculateMatchPoints(m.finalResult, m.predictions[userId]);
+                }
+            });
+
+            const starPlayers = roundData.starPlayers || {};
+            const playerGoals = roundData.playerGoals || {};
+            const sp = starPlayers[userId];
+            if (sp && sp.athleteId) {
+                const gInfo = playerGoals[sp.athleteId] || 0;
+                const gCount = typeof gInfo === 'number' ? gInfo : (gInfo.count || 0);
+                pts += gCount;
+            }
+            return pts;
+        }
+
         async function processSupercopaScores(roundId) {
             try {
                 const supercopaRef = database.ref('tournaments/supercopa');
-                const [supercopaSnap, usersSnap] = await Promise.all([
+                const [supercopaSnap, roundsSnap, usersSnap] = await Promise.all([
                     supercopaRef.once('value'),
+                    database.ref('rounds').once('value'),
                     database.ref('users').once('value')
                 ]);
 
-                if (!supercopaSnap.exists() || !usersSnap.exists()) return;
+                if (!supercopaSnap.exists()) return;
 
-                const supercopaData = supercopaSnap.val();
-                const usersData = usersSnap.val();
-                const currentLigaStage = typeof getCurrentLigaStage === 'function' ? getCurrentLigaStage() : 'Abertura';
+                const supercopaData = supercopaSnap.val() || {};
+                const roundsData = roundsSnap.val() || {};
+                const usersData = usersSnap.val() || {};
+
+                // Buscar rodadas do bolão finalizadas (status === 2)
+                const finalizedRounds = Object.entries(roundsData)
+                    .filter(([_, r]) => r.status === 2)
+                    .sort((a, b) => (a[1].finishTimestamp || 0) - (b[1].finishTimestamp || 0));
 
                 const groupsData = supercopaData.groups || {};
-                const roundsData = groupsData.rounds || {};
+                const scRounds = groupsData.rounds || {};
 
-                // Recalcular standings do zero para evitar acúmulo duplo ou perda de dados
+                // Recalcular standings do zero para evitar acúmulo duplo ou erro
                 const standings = {};
                 for (let i = 1; i <= 4; i++) {
                     const groupPlayers = groupsData[`group${i}`] || [];
@@ -3992,21 +4019,22 @@
                 }
 
                 const updates = {};
-                for (const [rKey, rData] of Object.entries(roundsData)) {
-                    // Considera finalizada se rData.status === 2
+                const scRoundEntries = Object.entries(scRounds);
+
+                scRoundEntries.forEach(([rKey, rData], idx) => {
                     const isFinalized = rData.status === 2;
                     const matches = rData.matches || {};
+
+                    // A r-ésima rodada da Supercopa pega a r-ésima rodada finalizada correspondente
+                    const targetRoundData = (isFinalized && finalizedRounds[idx]) ? finalizedRounds[idx][1] : null;
 
                     for (const [mKey, match] of Object.entries(matches)) {
                         const { player1Id, player2Id } = match;
                         if (!player1Id || !player2Id) continue;
 
-                        if (isFinalized) {
-                            const p1 = usersData[player1Id] || {};
-                            const p2 = usersData[player2Id] || {};
-
-                            const p1Points = p1[`lastRoundPointsLiga${currentLigaStage}`] || 0;
-                            const p2Points = p2[`lastRoundPointsLiga${currentLigaStage}`] || 0;
+                        if (isFinalized && targetRoundData) {
+                            const p1Points = calculateUserRoundTotalScore(targetRoundData, player1Id);
+                            const p2Points = calculateUserRoundTotalScore(targetRoundData, player2Id);
 
                             updates[`groups/rounds/${rKey}/matches/${mKey}/result`] = `${p1Points} x ${p2Points}`;
 
@@ -4040,11 +4068,11 @@
                                 }
                             }
                         } else {
-                            // Rodada ativa ou pendente: garante que result seja vazio para permitir placar ao vivo no site
+                            // Rodada ativa ou pendente: garante result vazio para permitir placar ao vivo no site
                             updates[`groups/rounds/${rKey}/matches/${mKey}/result`] = "";
                         }
                     }
-                }
+                });
 
                 for (const [pId, st] of Object.entries(standings)) {
                     updates[`groups/standings/${pId}`] = st;
