@@ -3847,9 +3847,22 @@
             return basePoints;
         }
 
-        function getCurrentSuperligaStage(tournaments) {
-            if (tournaments.includes('Clausura')) return 'Clausura';
-            return 'Clausura'; // Padrão <--- ESSA VAR ESTÁ DEFINIDA MANUALMENTE !!!!!! TODO
+        function getCurrentSuperligaStage(tournaments = [], seqNumber = null) {
+            const tourns = Array.isArray(tournaments) 
+                ? tournaments 
+                : (typeof tournaments === 'string' ? tournaments.split(',') : []);
+            
+            const joined = tourns.map(t => String(t).trim().toLowerCase()).join(' ');
+            
+            if (joined.includes('clausura')) return 'Clausura';
+            if (joined.includes('abertura')) return 'Abertura';
+            
+            if (typeof seqNumber === 'number' && seqNumber > 0 && typeof ABERTURA_CLAUSURA_SPLIT_ROUND === 'number' && ABERTURA_CLAUSURA_SPLIT_ROUND > 0) {
+                if (seqNumber > ABERTURA_CLAUSURA_SPLIT_ROUND) return 'Clausura';
+                return 'Abertura';
+            }
+            
+            return 'Abertura';
         }
 
         // O processamento de pontuação agora é tratado diretamente no submit handler unificado acima.
@@ -4432,12 +4445,30 @@
                     return;
                 }
 
-                if (!roundData.tournaments.includes('superliga')) {
+                const isRoundSuperliga = roundData.tournaments.some(t => String(t).toLowerCase().includes('superliga'));
+                if (!isRoundSuperliga) {
                     console.log(`[processRoundScores] Info: Rodada ${roundId} não pertence à Superliga. Pulando cálculo de pontos da Superliga.`);
                     return;
                 }
 
-                const currentSuperligaStage = getCurrentSuperligaStage(roundData.tournaments);
+                // Carrega todas as rodadas para fazer o recálculo do total do zero
+                const roundsRef = database.ref('rounds');
+                const roundsSnapshot = await roundsRef.once('value');
+                const allRoundsData = roundsSnapshot.val() || {};
+
+                // Ordena rodadas cronologicamente para determinar o número sequencial (seqNumber)
+                const sortedRounds = Object.entries(allRoundsData).map(([key, data]) => ({
+                    key,
+                    data,
+                    finishTimestamp: data.finishTimestamp ? new Date(data.finishTimestamp).getTime() : 0
+                })).sort((a, b) => a.finishTimestamp - b.finishTimestamp);
+
+                sortedRounds.forEach((r, idx) => {
+                    r.seqNumber = idx + 1;
+                });
+
+                const currentRoundObj = sortedRounds.find(r => r.key === roundId);
+                const currentSuperligaStage = getCurrentSuperligaStage(roundData.tournaments, currentRoundObj ? currentRoundObj.seqNumber : null);
                 if (!currentSuperligaStage) {
                     console.error(`[processRoundScores] Erro: Não foi possível determinar o estágio da Superliga (Abertura/Clausura) para a rodada ${roundId}.`);
                     return;
@@ -4452,11 +4483,6 @@
                     return;
                 }
                 const allUsersData = usersSnapshot.val() || {};
-
-                // Carrega todas as rodadas para fazer o recálculo do total do zero
-                const roundsRef = database.ref('rounds');
-                const roundsSnapshot = await roundsRef.once('value');
-                const allRoundsData = roundsSnapshot.val() || {};
 
                 const updates = {}; // Objeto para acumular todas as atualizações do Firebase
                 const previousScores = {};
@@ -4477,11 +4503,12 @@
 
                     console.log(`[processRoundScores] Processando recálculo de pontos para: ${currentUserData.name} (${userId})`);
 
-                    // Varre todas as rodadas do banco de dados para recalcular o total acumulado
-                    for (const roundKey in allRoundsData) {
-                        const rData = allRoundsData[roundKey];
-                        const isSuperliga = rData.tournaments && rData.tournaments.includes('superliga');
-                        const rStage = getCurrentSuperligaStage(rData.tournaments);
+                    // Varre todas as rodadas ordenadas para recalcular o total acumulado do estágio correto
+                    for (const rObj of sortedRounds) {
+                        const roundKey = rObj.key;
+                        const rData = rObj.data;
+                        const isSuperliga = rData.tournaments && rData.tournaments.some(t => String(t).toLowerCase().includes('superliga'));
+                        const rStage = getCurrentSuperligaStage(rData.tournaments, rObj.seqNumber);
                         // Considera se a rodada está finalizada (status === 2) ou se é a própria rodada que está sendo finalizada agora
                         const isFinalized = rData.status === 2 || roundKey === roundId;
 
