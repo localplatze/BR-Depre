@@ -3136,6 +3136,41 @@
             return selected;
         }
 
+        async function fetchEspnGoalEventsForMatches(espnMatches) {
+            const playerGoalsMap = {};
+            for (const { match, leagueCode } of espnMatches) {
+                if (!match.apiFixtureId) continue;
+                const code = leagueCode || match.apiLeagueCode || 'bra.1';
+                try {
+                    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${code}/summary?event=${match.apiFixtureId}`);
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    const keyEvents = data.keyEvents || [];
+
+                    const goalEvents = keyEvents.filter(k =>
+                        k.scoringPlay ||
+                        (k.type?.type || '').toLowerCase().includes('goal') ||
+                        (k.type?.text || '').toLowerCase().includes('goal')
+                    );
+
+                    goalEvents.forEach(g => {
+                        const athlete = g.participants?.[0]?.athlete;
+                        if (athlete && athlete.id) {
+                            const athId = String(athlete.id);
+                            const athName = athlete.displayName || athlete.shortName || 'Jogador';
+                            if (!playerGoalsMap[athId]) {
+                                playerGoalsMap[athId] = { count: 0, athleteName: athName, updatedAt: Date.now() };
+                            }
+                            playerGoalsMap[athId].count += 1;
+                        }
+                    });
+                } catch (err) {
+                    console.warn(`[fetchEspnGoalEvents] Erro ao buscar gols para jogo ${match.apiFixtureId}:`, err);
+                }
+            }
+            return playerGoalsMap;
+        }
+
         async function syncEspnScoresNow() {
             const button = document.getElementById('sync-espn-scores-btn');
             button.disabled = true;
@@ -3250,6 +3285,16 @@
                     if (!foundFixtures.size) {
                         console.warn('Busca ampla ESPN nao encontrou jogos pelos IDs salvos. Codigos consultados:', searchedCodes);
                     }
+                }
+
+                // Sincronizar gols dos atletas para o Artilheiro da Rodada
+                try {
+                    const playerGoals = await fetchEspnGoalEventsForMatches(espnMatches);
+                    if (Object.keys(playerGoals).length > 0) {
+                        updates[`/rounds/${activeRound.key}/playerGoals`] = playerGoals;
+                    }
+                } catch (errGoals) {
+                    console.warn('[syncEspnScoresNow] Erro ao sincronizar gols dos atletas:', errGoals);
                 }
 
                 if (!Object.keys(updates).length) {
@@ -4531,6 +4576,19 @@
                                     }
                                 }
                             });
+
+                            // Bônus do Artilheiro da Rodada (+1 ponto por cada gol marcado pelo jogador de futebol escolhido)
+                            const starPlayer = rData.starPlayers?.[userId];
+                            const playerGoals = rData.playerGoals || {};
+                            if (starPlayer && starPlayer.athleteId) {
+                                const athleteGoalsInfo = playerGoals[starPlayer.athleteId] || 0;
+                                const goalsCount = typeof athleteGoalsInfo === 'number' ? athleteGoalsInfo : (athleteGoalsInfo.count || 0);
+                                if (goalsCount > 0) {
+                                    const bonusPts = goalsCount * 1;
+                                    roundPoints += bonusPts;
+                                    console.log(`     -> Bônus de Artilheiro da Rodada (${starPlayer.athleteName}): ${goalsCount} gol(s) = +${bonusPts} pts para ${userId}`);
+                                }
+                            }
 
                             userTotalPoints += roundPoints;
 

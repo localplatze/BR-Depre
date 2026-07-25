@@ -641,6 +641,75 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
+        /* Star Player (Artilheiro da Rodada) Card */
+        .star-player-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+        }
+        .star-player-header h3 {
+            font-size: 1.1rem;
+            color: #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .star-player-header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        .star-player-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+        .control-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+        .form-control-select {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .form-control-select:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+        .form-control-select option {
+            background: #0F172A;
+            color: var(--text-primary);
+        }
+        .star-player-info-box {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px dashed rgba(245, 158, 11, 0.4);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .container {
@@ -680,6 +749,31 @@
 
         <div id="loader" class="loader"><i class="fas fa-spinner fa-pulse"></i> Carregando jogos...</div>
         <div id="matches-container" class="matches-grid" style="display: none;"></div>
+
+        <!-- Seção: Artilheiro da Rodada -->
+        <div id="star-player-section" class="star-player-card" style="display: none;">
+            <div class="star-player-header">
+                <h3><i class="fas fa-running" style="color: #f59e0b;"></i> Artilheiro da Rodada (+1 pt por gol)</h3>
+                <p>Escolha um jogador de futebol do elenco de um dos times desta rodada. Cada gol marcado por ele soma +1 ponto bônus!</p>
+            </div>
+            <div class="star-player-body">
+                <div class="star-player-controls">
+                    <div class="control-group">
+                        <label><i class="fas fa-shield-alt"></i> Escolha o Time:</label>
+                        <select id="star-team-select" class="form-control-select">
+                            <option value="">Selecione o time...</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label><i class="fas fa-user-ninja"></i> Escolha o Jogador do Elenco:</label>
+                        <select id="star-athlete-select" class="form-control-select" disabled>
+                            <option value="">Selecione o time primeiro...</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="star-player-info" class="star-player-info-box" style="display: none;"></div>
+            </div>
+        </div>
 
         <div class="save-container">
             <button id="save-predictions" class="save-btn" disabled><i class="fas fa-save"></i> Salvar Palpites</button>
@@ -874,6 +968,8 @@
                 Number.isInteger(match.finalResult.awayScore);
         }
 
+        let selectedRoundData = null;
+
         async function loadRound() {
             const roundSnap = await database.ref('rounds').orderByChild('status').equalTo(1).once('value');
             if (!roundSnap.exists()) {
@@ -897,9 +993,140 @@
             });
 
             currentRoundKey = selectedRound.key;
+            selectedRoundData = selectedRound.data || {};
             allMatches = selectedRound.data.matches || [];
             roundFinishTimestamp = selectedRound.finishTimestamp;
             return true;
+        }
+
+        async function setupStarPlayerSection(userId, roundData) {
+            const section = document.getElementById('star-player-section');
+            const teamSelect = document.getElementById('star-team-select');
+            const athleteSelect = document.getElementById('star-athlete-select');
+            const infoBox = document.getElementById('star-player-info');
+
+            if (!section || !teamSelect || !athleteSelect) return;
+            section.style.display = 'block';
+
+            // Mapear times da rodada
+            const roundTeamsMap = new Map();
+            (allMatches || []).forEach(match => {
+                const homeName = allTeams[match.homeTeam]?.name || 'Time Mandante';
+                const awayName = allTeams[match.awayTeam]?.name || 'Time Visitante';
+                const leagueCode = match.apiLeagueCode || 'bra.1';
+
+                if (match.homeTeam && match.apiHomeTeamId) {
+                    roundTeamsMap.set(match.homeTeam, {
+                        id: match.homeTeam,
+                        name: homeName,
+                        espnTeamId: match.apiHomeTeamId,
+                        leagueCode
+                    });
+                }
+                if (match.awayTeam && match.apiAwayTeamId) {
+                    roundTeamsMap.set(match.awayTeam, {
+                        id: match.awayTeam,
+                        name: awayName,
+                        espnTeamId: match.apiAwayTeamId,
+                        leagueCode
+                    });
+                }
+            });
+
+            // Popula dropdown de times
+            teamSelect.innerHTML = '<option value="">Selecione o time...</option>' +
+                Array.from(roundTeamsMap.values())
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(t => `<option value="${t.id}" data-espn="${t.espnTeamId}" data-league="${t.leagueCode}">${t.name}</option>`)
+                    .join('');
+
+            // Verificar se o usuário já tem um Artilheiro salvo nesta rodada
+            const savedStarPlayer = roundData.starPlayers?.[userId];
+            const playerGoals = roundData.playerGoals || {};
+
+            if (savedStarPlayer) {
+                if (savedStarPlayer.teamId) teamSelect.value = savedStarPlayer.teamId;
+                
+                // Carregar elenco do time salvo
+                if (savedStarPlayer.teamId && roundTeamsMap.has(savedStarPlayer.teamId)) {
+                    const teamInfo = roundTeamsMap.get(savedStarPlayer.teamId);
+                    await loadEspnRoster(teamInfo.espnTeamId, teamInfo.leagueCode, savedStarPlayer.athleteId);
+                }
+
+                // Exibir caixa de informações sobre gols
+                const athleteId = savedStarPlayer.athleteId;
+                const goalsInfo = playerGoals[athleteId] || { count: 0 };
+                const goalsCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+
+                infoBox.style.display = 'flex';
+                infoBox.innerHTML = `
+                    <div>
+                        <i class="fas fa-star" style="color: #f59e0b;"></i>
+                        <strong>${savedStarPlayer.athleteName}</strong> (${savedStarPlayer.teamName})
+                    </div>
+                    <div style="font-weight: 700; color: ${goalsCount > 0 ? 'var(--success)' : 'var(--warning)'};">
+                        ⚽ Gols na rodada: ${goalsCount} (+${goalsCount} pts)
+                    </div>
+                `;
+            } else {
+                infoBox.style.display = 'none';
+            }
+
+            // Listener para troca de time
+            teamSelect.onchange = async () => {
+                const teamId = teamSelect.value;
+                if (!teamId || !roundTeamsMap.has(teamId)) {
+                    athleteSelect.innerHTML = '<option value="">Selecione o time primeiro...</option>';
+                    athleteSelect.disabled = true;
+                    return;
+                }
+                const teamInfo = roundTeamsMap.get(teamId);
+                await loadEspnRoster(teamInfo.espnTeamId, teamInfo.leagueCode);
+                updateSaveButton();
+            };
+
+            athleteSelect.onchange = () => {
+                updateSaveButton();
+            };
+        }
+
+        async function loadEspnRoster(espnTeamId, leagueCode, preselectAthleteId = null) {
+            const athleteSelect = document.getElementById('star-athlete-select');
+            if (!athleteSelect) return;
+
+            athleteSelect.disabled = true;
+            athleteSelect.innerHTML = '<option value="">Carregando elenco da ESPN...</option>';
+
+            try {
+                const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${leagueCode || 'bra.1'}/teams/${espnTeamId}?enable=roster`);
+                if (!res.ok) throw new Error('Erro na API ESPN');
+                const data = await res.json();
+                const athletes = data.team?.athletes || [];
+
+                if (athletes.length === 0) {
+                    athleteSelect.innerHTML = '<option value="">Nenhum jogador encontrado no elenco</option>';
+                    return;
+                }
+
+                const sortedAthletes = athletes.sort((a, b) => {
+                    const posA = a.position?.abbreviation || '';
+                    const posB = b.position?.abbreviation || '';
+                    return posA.localeCompare(posB) || a.displayName.localeCompare(b.displayName);
+                });
+
+                athleteSelect.innerHTML = '<option value="">Selecione o jogador...</option>' +
+                    sortedAthletes.map(a => {
+                        const pos = a.position?.abbreviation ? `[${a.position.abbreviation}] ` : '';
+                        const jersey = a.jersey ? ` (#${a.jersey})` : '';
+                        return `<option value="${a.id}" data-name="${a.displayName}">${pos}${a.displayName}${jersey}</option>`;
+                    }).join('');
+
+                athleteSelect.disabled = false;
+                if (preselectAthleteId) athleteSelect.value = preselectAthleteId;
+            } catch (err) {
+                console.error('Erro ao buscar elenco ESPN:', err);
+                athleteSelect.innerHTML = '<option value="">Erro ao carregar elenco da ESPN</option>';
+            }
         }
 
         function startCountdown() {
@@ -1172,6 +1399,22 @@
             statusDialog.showModal();
         }
 
+        function updateSaveButton() {
+            const hasMatchChanges = Object.keys(unsavedPredictions).length > 0;
+            const athleteSelect = document.getElementById('star-athlete-select');
+            const hasStarPlayerSelected = Boolean(athleteSelect && athleteSelect.value);
+            const hasChanges = hasMatchChanges || hasStarPlayerSelected;
+
+            saveBtn.disabled = !hasChanges;
+            if (hasChanges) {
+                saveBtn.classList.add('has-changes');
+                saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Salvar Alterações';
+            } else {
+                saveBtn.classList.remove('has-changes');
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Palpites';
+            }
+        }
+
         async function savePredictions(userId) {
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Salvando...';
@@ -1193,6 +1436,24 @@
                             isStarMatch: isStar === true
                         };
                     }
+                }
+
+                // Salvar Artilheiro da Rodada (Star Player)
+                const teamSelect = document.getElementById('star-team-select');
+                const athleteSelect = document.getElementById('star-athlete-select');
+                if (athleteSelect && athleteSelect.value) {
+                    const selectedOption = athleteSelect.options[athleteSelect.selectedIndex];
+                    const athleteName = selectedOption.dataset.name || selectedOption.text;
+                    const teamId = teamSelect.value;
+                    const teamName = teamSelect.options[teamSelect.selectedIndex]?.text || '';
+
+                    updates[`/rounds/${currentRoundKey}/starPlayers/${userId}`] = {
+                        athleteId: athleteSelect.value,
+                        athleteName: athleteName,
+                        teamId: teamId,
+                        teamName: teamName,
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP
+                    };
                 }
                 
                 if (Object.keys(updates).length > 0) {
@@ -1253,6 +1514,7 @@
             loadDraft();
             startCountdown();
             renderMatches(user.uid);
+            await setupStarPlayerSection(user.uid, selectedRoundData || {});
             updateSaveButton();
             
             loader.style.display = 'none';
