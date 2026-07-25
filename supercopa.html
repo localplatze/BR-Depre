@@ -36,25 +36,45 @@
         /* --- CONTEÚDO DA FASE DE GRUPOS --- */
         .group-tabs-container { display: flex; justify-content: center; margin-bottom: 20px; }
         .group-tab { padding: 8px 16px; font-weight: 500; }
-        .groups-content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        .groups-content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; }
         .section-header { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         
         .standings-list { display: flex; flex-direction: column; gap: 10px; }
         .player-standing-card {
-            display: grid; grid-template-columns: 30px 40px 1fr auto; align-items: center; gap: 15px;
+            display: grid; grid-template-columns: 30px 40px 1fr auto; align-items: center; gap: 12px;
             background: var(--card-bg-color); padding: 12px; border-radius: 8px;
             border-left: 5px solid transparent; transition: background-color 0.2s; animation: slideUp 0.5s ease-out backwards;
         }
         .player-standing-card:hover { background-color: var(--card-bg-light); }
         .player-standing-card .pos { font-weight: 700; color: var(--text-color-light); }
         .player-standing-card .logo { width: 32px; height: 32px; object-fit: contain; }
-        .player-standing-card .name { font-weight: 600; display: flex; align-items: center; flex-wrap: wrap; }
+        .player-standing-card .name { font-weight: 600; display: flex; align-items: center; flex-wrap: wrap; min-width: 0; word-break: break-word; }
         .player-standing-card .points { font-weight: 800; font-size: 1.15rem; color: #fff; margin-left: 4px; }
         .status-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; color: #111; display: flex; align-items: center; gap: 5px; }
 
-        .standing-stats { display: flex; align-items: center; gap: 8px; text-align: right; }
-        .stat-pill { font-size: 0.8rem; color: var(--text-color-light); background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+        .standing-stats { display: flex; align-items: center; gap: 6px; text-align: right; }
+        .stat-pill { font-size: 0.78rem; color: var(--text-color-light); background: rgba(255, 255, 255, 0.05); padding: 3px 6px; border-radius: 6px; white-space: nowrap; }
         .badge-h2h { background: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; }
+
+        @media (max-width: 640px) {
+            .groups-content-grid { grid-template-columns: 1fr; gap: 15px; }
+            .player-standing-card {
+                grid-template-columns: 24px 32px 1fr;
+                gap: 8px 10px;
+                padding: 10px 12px;
+            }
+            .standing-stats {
+                grid-column: 1 / -1;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-top: 4px;
+                padding-top: 6px;
+                border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            }
+            .stat-pill { font-size: 0.75rem; padding: 2px 6px; }
+            .player-standing-card .points { font-size: 1.05rem; margin-left: auto; }
+        }
 
         /* DESTAQUES DE CLASSIFICAÇÃO */
         .status-top-two { border-left: 5px solid #10b981 !important; }
