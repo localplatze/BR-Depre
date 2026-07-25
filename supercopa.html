@@ -53,12 +53,27 @@
         .status-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; color: #111; display: flex; align-items: center; gap: 5px; }
 
         /* DESTAQUES DE CLASSIFICAÇÃO */
+        .status-top-two { border-left: 5px solid #10b981 !important; }
         .status-classified { border-left-color: var(--gold); }
         .status-classified .status-badge { background-color: var(--gold); }
         .status-serie-b { border-left-color: var(--silver); }
         .status-serie-b .status-badge { background-color: var(--silver); }
         .status-serie-c { border-left-color: var(--mud); }
         .status-serie-c .status-badge { background-color: var(--mud); color: #fff; }
+
+        /* SOFASCORE FORM BADGES (Últimos 5 jogos) */
+        .form-container { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+        .form-badge {
+            width: 18px; height: 18px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 800; color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: transform 0.2s ease;
+            user-select: none;
+        }
+        .form-badge:hover { transform: scale(1.25); }
+        .form-badge.win { background-color: #10b981; }  /* V - Vitória (Verde) */
+        .form-badge.loss { background-color: #ef4444; } /* D - Derrota (Vermelho) */
+        .form-badge.draw { background-color: #64748b; } /* X - Empate (Cinza) */
 
         /* --- CONTEÚDO DO MATA-MATA --- */
         .knockout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
@@ -217,12 +232,14 @@
                 // Na primeira carga, abre a aba definida pelo 'activeStage' salvo no Admin
                 if (isFirstSupercopaLoad) {
                     isFirstSupercopaLoad = false;
-                    const { quarterFinals, semiFinals, final, activeStage: savedActiveStage } = supercopaDataCache;
-                    let activeStage = savedActiveStage || 'groups';
-                    if (!savedActiveStage) {
-                        if (final?.status === 1) activeStage = 'final';
+                    const { quarterFinals, semiFinals, final, groups, activeStage: savedActiveStage } = supercopaDataCache;
+                    let activeStage = savedActiveStage;
+                    if (!activeStage) {
+                        if (groups?.status === 1) activeStage = 'groups';
+                        else if (final?.status === 1) activeStage = 'final';
                         else if (semiFinals?.status === 1) activeStage = 'semiFinals';
                         else if (quarterFinals?.status === 1) activeStage = 'quarterFinals';
+                        else activeStage = 'groups';
                     }
                     
                     const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage}"]`);
@@ -281,6 +298,37 @@
             renderKnockoutSeries(stageData?.c, ui.knockoutMatches.c);
         }
 
+        function getPlayerRecentForm(playerId) {
+            const rounds = supercopaDataCache?.groups?.rounds || {};
+            const matches = [];
+
+            const sortedRounds = Object.entries(rounds).sort((a, b) => {
+                const timeA = a[1].timestamp || 0;
+                const timeB = b[1].timestamp || 0;
+                return timeA - timeB;
+            });
+
+            sortedRounds.forEach(([rKey, r]) => {
+                if (!r.matches) return;
+                Object.values(r.matches).forEach(m => {
+                    if ((m.player1Id === playerId || m.player2Id === playerId) && m.result && m.result.includes('x')) {
+                        const parts = m.result.split('x').map(s => parseInt(s.trim()));
+                        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                            const isP1 = m.player1Id === playerId;
+                            const myScore = isP1 ? parts[0] : parts[1];
+                            const oppScore = isP1 ? parts[1] : parts[0];
+
+                            if (myScore > oppScore) matches.push('V');
+                            else if (myScore < oppScore) matches.push('D');
+                            else matches.push('X');
+                        }
+                    }
+                });
+            });
+
+            return matches.slice(-5);
+        }
+
         // --- FUNÇÕES DE RENDERIZAÇÃO DE COMPONENTES ---
         function renderGroupStandings(groupKey) {
             const { standings = {}, status, ...groups } = supercopaDataCache.groups || {};
@@ -304,9 +352,13 @@
                 const position = index + 1;
                 
                 let statusClass = '', statusHtml = '';
+                if (position <= 2) {
+                    statusClass = 'status-top-two';
+                }
+
                 if (status === 2) {
                     if (position <= 2) {
-                        statusClass = 'status-classified';
+                        statusClass = 'status-classified status-top-two';
                         statusHtml = `<div class="status-badge"><i class="fas fa-crown"></i> Série A</div>`;
                     } else if (position <= 4) {
                         statusClass = 'status-serie-b';
@@ -321,6 +373,19 @@
                 const playerAvatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
                 const displayName = (player.customTeamName && player.customTeamName.trim() !== '') ? player.customTeamName.trim() : (player.name || team.name || 'Jogador');
 
+                const formHistory = getPlayerRecentForm(playerData.playerId);
+                let formHtml = '';
+                if (formHistory.length > 0) {
+                    formHtml = `
+                        <div class="form-container" title="Desempenho nos últimos 5 jogos: ${formHistory.join('-')}">
+                            ${formHistory.map(res => {
+                                const cls = res === 'V' ? 'win' : (res === 'D' ? 'loss' : 'draw');
+                                return `<span class="form-badge ${cls}">${res}</span>`;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
                 return `
                     <div class="player-standing-card ${statusClass}" style="animation-delay: ${index * 50}ms">
                         <span class="pos">${position}</span>
@@ -328,8 +393,9 @@
                         <div class="name-container" style="flex-grow: 1;">
                             <div class="name">${displayName}</div>
                             ${statusHtml}
+                            ${formHtml}
                         </div>
-                        <div class="points">${playerData.points || 0}</div>
+                        <div class="points">${playerData.points || 0} pts</div>
                     </div>
                 `;
             }).join('') || `<div class="empty-state">Classificação indisponível.</div>`;

@@ -4425,9 +4425,8 @@
             });
         }
 
-        function getCurrentLigaStage() {
-            // Implemente conforme sua lógica para determinar Abertura/Clausura
-            return 'Clausura'; // Exemplo
+        function getCurrentLigaStage(tournaments = [], seqNumber = null) {
+            return getCurrentSuperligaStage(tournaments, seqNumber);
         }
 
         async function processRoundScores(roundId) {
@@ -4835,6 +4834,7 @@
                                     <th>Jogador / Time</th>
                                     <th>Status no Torneio</th>
                                     <th>Eliminado na Rodada</th>
+                                    <th style="text-align: center;">Alterar Status (Manual)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -4853,8 +4853,18 @@
                         : `<span class="badge badge-success" style="background:#10b981; color:#fff; padding:4px 8px; border-radius:4px;"><i class="fas fa-heart"></i> VIVO</span>`;
 
                     const elimText = elimEntry
-                        ? `Rodada ${elimEntry.roundNumber || '?'} (${elimEntry.score} pts${elimEntry.tieBreakerUsed ? ' - Critério Tabela' : ''})`
+                        ? (elimEntry.isManual
+                            ? 'Manual (Admin)'
+                            : `Rodada ${elimEntry.roundNumber || '?'} (${elimEntry.score} pts${elimEntry.tieBreakerUsed ? ' - Critério Tabela' : ''})`)
                         : '---';
+
+                    const actionBtn = isEliminated
+                        ? `<button type="button" class="btn btn-success btn-sm btn-toggle-restaum" data-uid="${uid}" data-action="revive" data-name="${u.name || teamName}">
+                            <i class="fas fa-heart"></i> Marcar VIVO
+                           </button>`
+                        : `<button type="button" class="btn btn-danger btn-sm btn-toggle-restaum" data-uid="${uid}" data-action="kill" data-name="${u.name || teamName}">
+                            <i class="fas fa-skull"></i> Marcar MORTO
+                           </button>`;
 
                     html += `
                         <tr>
@@ -4862,12 +4872,62 @@
                             <td><strong>${displayName}</strong></td>
                             <td>${statusBadge}</td>
                             <td>${elimText}</td>
+                            <td style="text-align: center;">${actionBtn}</td>
                         </tr>
                     `;
                 });
 
                 html += '</tbody></table></div>';
                 container.innerHTML = html;
+
+                // Listeners para os botões de troca manual de status (Vivo / Morto)
+                container.querySelectorAll('.btn-toggle-restaum').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const uid = btn.dataset.uid;
+                        const action = btn.dataset.action;
+                        const playerName = btn.dataset.name || 'o jogador';
+
+                        if (action === 'kill') {
+                            if (confirm(`Tem certeza que deseja marcar "${playerName}" como MORTO (Eliminado) no Resta Um?`)) {
+                                btn.disabled = true;
+                                try {
+                                    await database.ref(`tournaments/restaUm/eliminations/manual_${uid}`).set({
+                                        eliminatedUserId: uid,
+                                        roundNumber: 'Manual',
+                                        score: 'Manual',
+                                        isManual: true,
+                                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                                    });
+                                    alert(`"${playerName}" agora está marcado como MORTO!`);
+                                    loadRestaUmAdmin();
+                                } catch (err) {
+                                    console.error('Erro ao eliminar participante:', err);
+                                    alert('Erro ao alterar status: ' + err.message);
+                                }
+                            }
+                        } else if (action === 'revive') {
+                            if (confirm(`Tem certeza que deseja REVIVER "${playerName}" (Marcar como VIVO) no Resta Um?`)) {
+                                btn.disabled = true;
+                                try {
+                                    const updates = {};
+                                    Object.entries(eliminations).forEach(([elimKey, e]) => {
+                                        if (e.eliminatedUserId === uid) {
+                                            updates[`tournaments/restaUm/eliminations/${elimKey}`] = null;
+                                        }
+                                    });
+                                    if (Object.keys(updates).length > 0) {
+                                        await database.ref().update(updates);
+                                    }
+                                    alert(`"${playerName}" agora está marcado como VIVO!`);
+                                    loadRestaUmAdmin();
+                                } catch (err) {
+                                    console.error('Erro ao reviver participante:', err);
+                                    alert('Erro ao alterar status: ' + err.message);
+                                }
+                            }
+                        }
+                    });
+                });
             } catch (err) {
                 console.error('Erro ao carregar Resta Um admin:', err);
                 container.innerHTML = '<div class="alert alert-danger">Erro ao carregar dados do Resta Um.</div>';
