@@ -48,9 +48,13 @@
         .player-standing-card:hover { background-color: var(--card-bg-light); }
         .player-standing-card .pos { font-weight: 700; color: var(--text-color-light); }
         .player-standing-card .logo { width: 32px; height: 32px; object-fit: contain; }
-        .player-standing-card .name { font-weight: 600; }
-        .player-standing-card .points { font-weight: 700; font-size: 1.1em; }
+        .player-standing-card .name { font-weight: 600; display: flex; align-items: center; flex-wrap: wrap; }
+        .player-standing-card .points { font-weight: 800; font-size: 1.15rem; color: #fff; margin-left: 4px; }
         .status-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; color: #111; display: flex; align-items: center; gap: 5px; }
+
+        .standing-stats { display: flex; align-items: center; gap: 8px; text-align: right; }
+        .stat-pill { font-size: 0.8rem; color: var(--text-color-light); background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+        .badge-h2h { background: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; }
 
         /* DESTAQUES DE CLASSIFICAÇÃO */
         .status-top-two { border-left: 5px solid #10b981 !important; }
@@ -329,18 +333,65 @@
             return matches.slice(-5);
         }
 
+        function getHeadToHeadWinner(idA, idB) {
+            const rounds = supercopaDataCache?.groups?.rounds || {};
+            for (const r of Object.values(rounds)) {
+                if (!r.matches) continue;
+                for (const m of Object.values(r.matches)) {
+                    if ((m.player1Id === idA && m.player2Id === idB) || (m.player1Id === idB && m.player2Id === idA)) {
+                        if (m.result && m.result.includes('x')) {
+                            const parts = m.result.split('x').map(s => parseInt(s.trim()));
+                            if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                                const isA_P1 = m.player1Id === idA;
+                                const scoreA = isA_P1 ? parts[0] : parts[1];
+                                const scoreB = isA_P1 ? parts[1] : parts[0];
+                                if (scoreA > scoreB) return -1; // A fica na frente de B
+                                if (scoreB > scoreA) return 1;  // B fica na frente de A
+                            }
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+
         // --- FUNÇÕES DE RENDERIZAÇÃO DE COMPONENTES ---
         function renderGroupStandings(groupKey) {
             const { standings = {}, status, ...groups } = supercopaDataCache.groups || {};
             const groupPlayerIds = groups[groupKey] || [];
+
+            const h2hUsedMap = new Set();
             
             const groupStandings = groupPlayerIds
                 .map(id => standings[id])
                 .filter(Boolean)
                 .sort((a, b) => {
+                    const a_pts = a.points || 0;
+                    const b_pts = b.points || 0;
+                    const a_wins = a.wins || 0;
+                    const b_wins = b.wins || 0;
                     const a_gd = (a.goalsFor || 0) - (a.goalsAg || 0);
                     const b_gd = (b.goalsFor || 0) - (b.goalsAg || 0);
-                    return (b.points || 0) - (a.points || 0) || (b.wins || 0) - (a.wins || 0) || b_gd - a_gd || (b.goalsFor || 0) - (a.goalsFor || 0);
+                    const a_gf = a.goalsFor || 0;
+                    const b_gf = b.goalsFor || 0;
+
+                    // 1. Pontos
+                    if (b_pts !== a_pts) return b_pts - a_pts;
+                    // 2. Vitórias
+                    if (b_wins !== a_wins) return b_wins - a_wins;
+                    // 3. Saldo de Gols
+                    if (b_gd !== a_gd) return b_gd - a_gd;
+                    // 4. Gols Pró (Feitos)
+                    if (b_gf !== a_gf) return b_gf - a_gf;
+
+                    // 5. Confronto Direto
+                    const h2h = getHeadToHeadWinner(a.playerId, b.playerId);
+                    if (h2h !== 0) {
+                        h2hUsedMap.add(a.playerId);
+                        h2hUsedMap.add(b.playerId);
+                        return h2h;
+                    }
+                    return 0;
                 });
 
             ui.standingsList.innerHTML = groupStandings.map((playerData, index) => {
@@ -386,16 +437,25 @@
                     `;
                 }
 
+                const gd = (playerData.goalsFor || 0) - (playerData.goalsAg || 0);
+                const usedH2H = h2hUsedMap.has(playerData.playerId);
+                const h2hBadge = usedH2H ? `<span class="badge-h2h" title="Desempate por Confronto Direto"><i class="fas fa-handshake"></i> H2H</span>` : '';
+
                 return `
                     <div class="player-standing-card ${statusClass}" style="animation-delay: ${index * 50}ms">
                         <span class="pos">${position}</span>
                         <img src="${playerAvatar}" alt="${displayName}" class="logo" onerror="this.src='default-avatar.png'">
                         <div class="name-container" style="flex-grow: 1;">
-                            <div class="name">${displayName}</div>
+                            <div class="name">${displayName} ${h2hBadge}</div>
                             ${statusHtml}
                             ${formHtml}
                         </div>
-                        <div class="points">${playerData.points || 0} pts</div>
+                        <div class="standing-stats">
+                            <div class="stat-pill" title="Vitórias"><strong>${playerData.wins || 0}</strong>V</div>
+                            <div class="stat-pill" title="Saldo de Gols">SG: <strong>${gd > 0 ? '+' : ''}${gd}</strong></div>
+                            <div class="stat-pill" title="Gols Pró (Feitos)">GP: <strong>${playerData.goalsFor || 0}</strong></div>
+                            <div class="points">${playerData.points || 0} pts</div>
+                        </div>
                     </div>
                 `;
             }).join('') || `<div class="empty-state">Classificação indisponível.</div>`;
