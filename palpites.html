@@ -1429,27 +1429,52 @@
             // Popula lista de Artilheiros da Rodada escolhidos pelos jogadores
             const starPlayersList = document.getElementById('status-star-players-list');
             if (starPlayersList) {
+                const roundStarted = isRoundStarted();
+                const currentUserId = auth.currentUser?.uid;
                 const starPlayers = selectedRoundData?.starPlayers || {};
                 const playerGoals = selectedRoundData?.playerGoals || {};
 
-                if (Object.keys(starPlayers).length > 0) {
-                    starPlayersList.innerHTML = Object.entries(starPlayers).map(([pid, sp]) => {
-                        const player = allPlayers[pid] || { name: 'Desconhecido' };
-                        const goalsInfo = playerGoals[sp.athleteId] || 0;
-                        const goalsCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
-
-                        return `
+                if (!roundStarted) {
+                    // A rodada AINDA NÃO começou: ocultar os artilheiros dos adversários por segurança
+                    const userSp = currentUserId ? starPlayers[currentUserId] : null;
+                    if (userSp) {
+                        starPlayersList.innerHTML = `
                             <div style="background: rgba(15, 23, 42, 0.6); padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid var(--card-border);">
-                                <div style="font-weight: 600; color: var(--text-primary);">${player.name}</div>
-                                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 2px;">⚽ ${sp.athleteName} (${sp.teamName || ''})</div>
-                                <div style="font-weight: 700; color: ${goalsCount > 0 ? 'var(--success)' : '#f59e0b'}; margin-top: 4px;">
-                                    ${goalsCount} gol(s) = +${goalsCount} pts
-                                </div>
+                                <div style="font-weight: 600; color: var(--text-primary);">Sua Escolha (Você)</div>
+                                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 2px;">⚽ ${userSp.athleteName} (${userSp.teamName || ''})</div>
+                            </div>
+                            <div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 0.85rem; font-style: italic; margin-top: 0.4rem;">
+                                <i class="fas fa-lock" style="color: #f59e0b; margin-right: 4px;"></i> Os Artilheiros da Rodada dos adversários serão revelados assim que a rodada começar.
                             </div>
                         `;
-                    }).join('');
+                    } else {
+                        starPlayersList.innerHTML = `
+                            <div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 0.85rem; font-style: italic;">
+                                <i class="fas fa-lock" style="color: #f59e0b; margin-right: 4px;"></i> Os Artilheiros da Rodada dos adversários serão revelados assim que a rodada começar.
+                            </div>
+                        `;
+                    }
                 } else {
-                    starPlayersList.innerHTML = '<div style="color: var(--text-muted); font-style: italic; grid-column: 1 / -1;">Nenhum jogador escolhido ainda.</div>';
+                    // A rodada JÁ começou: exibe todas as escolhas abertamente
+                    if (Object.keys(starPlayers).length > 0) {
+                        starPlayersList.innerHTML = Object.entries(starPlayers).map(([pid, sp]) => {
+                            const player = allPlayers[pid] || { name: 'Desconhecido' };
+                            const goalsInfo = playerGoals[sp.athleteId] || 0;
+                            const goalsCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+
+                            return `
+                                <div style="background: rgba(15, 23, 42, 0.6); padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid var(--card-border);">
+                                    <div style="font-weight: 600; color: var(--text-primary);">${player.name}</div>
+                                    <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 2px;">⚽ ${sp.athleteName} (${sp.teamName || ''})</div>
+                                    <div style="font-weight: 700; color: ${goalsCount > 0 ? 'var(--success)' : '#f59e0b'}; margin-top: 4px;">
+                                        ${goalsCount} gol(s) = +${goalsCount} pts
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        starPlayersList.innerHTML = '<div style="color: var(--text-muted); font-style: italic; grid-column: 1 / -1;">Nenhum jogador escolhido ainda.</div>';
+                    }
                 }
             }
 
