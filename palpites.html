@@ -760,9 +760,12 @@
                 <div class="star-player-controls">
                     <div class="control-group">
                         <label><i class="fas fa-shield-alt"></i> Escolha o Time:</label>
-                        <select id="star-team-select" class="form-control-select">
-                            <option value="">Selecione o time...</option>
-                        </select>
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <img id="star-team-logo" src="" alt="" style="width: 32px; height: 32px; object-fit: contain; display: none; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));">
+                            <select id="star-team-select" class="form-control-select">
+                                <option value="">Selecione o time...</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="control-group">
                         <label><i class="fas fa-user-ninja"></i> Escolha o Jogador do Elenco:</label>
@@ -792,6 +795,12 @@
                     <thead id="status-header"></thead>
                     <tbody id="status-body"></tbody>
                 </table>
+            </div>
+            <div id="status-star-players-box" style="margin-top: 1.5rem; padding: 1rem; background: rgba(245, 158, 11, 0.08); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 0.75rem;">
+                <h4 style="color: #f59e0b; font-size: 0.95rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-running"></i> Artilheiros da Rodada Escolhidos (+1 pt por gol)
+                </h4>
+                <div id="status-star-players-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; font-size: 0.85rem;"></div>
             </div>
             <div class="legend">
                 <div class="legend-item"><span class="legend-color" style="background: var(--success);"></span> 3 pts (Placar Exato)</div>
@@ -1011,14 +1020,17 @@
             // Mapear times da rodada
             const roundTeamsMap = new Map();
             (allMatches || []).forEach(match => {
-                const homeName = allTeams[match.homeTeam]?.name || 'Time Mandante';
-                const awayName = allTeams[match.awayTeam]?.name || 'Time Visitante';
+                const homeObj = allTeams[match.homeTeam] || {};
+                const awayObj = allTeams[match.awayTeam] || {};
+                const homeName = homeObj.name || 'Time Mandante';
+                const awayName = awayObj.name || 'Time Visitante';
                 const leagueCode = match.apiLeagueCode || 'bra.1';
 
                 if (match.homeTeam && match.apiHomeTeamId) {
                     roundTeamsMap.set(match.homeTeam, {
                         id: match.homeTeam,
                         name: homeName,
+                        logo: homeObj.image || '',
                         espnTeamId: match.apiHomeTeamId,
                         leagueCode
                     });
@@ -1027,17 +1039,32 @@
                     roundTeamsMap.set(match.awayTeam, {
                         id: match.awayTeam,
                         name: awayName,
+                        logo: awayObj.image || '',
                         espnTeamId: match.apiAwayTeamId,
                         leagueCode
                     });
                 }
             });
 
+            const updateTeamLogo = () => {
+                const selectedOpt = teamSelect.options[teamSelect.selectedIndex];
+                const logoUrl = selectedOpt?.dataset.logo;
+                const logoImg = document.getElementById('star-team-logo');
+                if (logoImg) {
+                    if (logoUrl) {
+                        logoImg.src = logoUrl;
+                        logoImg.style.display = 'block';
+                    } else {
+                        logoImg.style.display = 'none';
+                    }
+                }
+            };
+
             // Popula dropdown de times
             teamSelect.innerHTML = '<option value="">Selecione o time...</option>' +
                 Array.from(roundTeamsMap.values())
                     .sort((a, b) => a.name.localeCompare(b.name))
-                    .map(t => `<option value="${t.id}" data-espn="${t.espnTeamId}" data-league="${t.leagueCode}">${t.name}</option>`)
+                    .map(t => `<option value="${t.id}" data-espn="${t.espnTeamId}" data-league="${t.leagueCode}" data-logo="${t.logo}">${t.name}</option>`)
                     .join('');
 
             // Verificar se o usuário já tem um Artilheiro salvo nesta rodada
@@ -1046,6 +1073,7 @@
 
             if (savedStarPlayer) {
                 if (savedStarPlayer.teamId) teamSelect.value = savedStarPlayer.teamId;
+                updateTeamLogo();
                 
                 // Carregar elenco do time salvo
                 if (savedStarPlayer.teamId && roundTeamsMap.has(savedStarPlayer.teamId)) {
@@ -1070,10 +1098,12 @@
                 `;
             } else {
                 infoBox.style.display = 'none';
+                updateTeamLogo();
             }
 
             // Listener para troca de time
             teamSelect.onchange = async () => {
+                updateTeamLogo();
                 const teamId = teamSelect.value;
                 if (!teamId || !roundTeamsMap.has(teamId)) {
                     athleteSelect.innerHTML = '<option value="">Selecione o time primeiro...</option>';
@@ -1396,6 +1426,33 @@
                 return row;
             }).join('');
             
+            // Popula lista de Artilheiros da Rodada escolhidos pelos jogadores
+            const starPlayersList = document.getElementById('status-star-players-list');
+            if (starPlayersList) {
+                const starPlayers = selectedRoundData?.starPlayers || {};
+                const playerGoals = selectedRoundData?.playerGoals || {};
+
+                if (Object.keys(starPlayers).length > 0) {
+                    starPlayersList.innerHTML = Object.entries(starPlayers).map(([pid, sp]) => {
+                        const player = allPlayers[pid] || { name: 'Desconhecido' };
+                        const goalsInfo = playerGoals[sp.athleteId] || 0;
+                        const goalsCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+
+                        return `
+                            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid var(--card-border);">
+                                <div style="font-weight: 600; color: var(--text-primary);">${player.name}</div>
+                                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 2px;">⚽ ${sp.athleteName} (${sp.teamName || ''})</div>
+                                <div style="font-weight: 700; color: ${goalsCount > 0 ? 'var(--success)' : '#f59e0b'}; margin-top: 4px;">
+                                    ${goalsCount} gol(s) = +${goalsCount} pts
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    starPlayersList.innerHTML = '<div style="color: var(--text-muted); font-style: italic; grid-column: 1 / -1;">Nenhum jogador escolhido ainda.</div>';
+                }
+            }
+
             statusDialog.showModal();
         }
 
