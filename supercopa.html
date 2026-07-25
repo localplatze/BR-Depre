@@ -469,9 +469,14 @@
         
         // --- FUNÇÕES AUXILIARES ---
         function calculateLiveRoundPoints(playerId) {
-            if (!activeSuperligaRoundData || !playerId) return usersDataCache[playerId]?.lastRoundPointsLigaAbertura || 0;
+            if (!playerId) return 0;
+            if (!activeSuperligaRoundData) {
+                const u = usersDataCache[playerId] || {};
+                return u.lastRoundPointsLigaClausura ?? u.lastRoundPointsLigaAbertura ?? 0;
+            }
             let points = 0;
-            for (const match of Object.values(activeSuperligaRoundData.matches)) {
+            const matches = activeSuperligaRoundData.matches ? (Array.isArray(activeSuperligaRoundData.matches) ? activeSuperligaRoundData.matches : Object.values(activeSuperligaRoundData.matches)) : [];
+            for (const match of matches) {
                 if (match.finalResult && match.predictions?.[playerId]) {
                     points += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
                 }

@@ -3948,13 +3948,15 @@
 
                 const updates = {};
                 for (const [rKey, rData] of Object.entries(roundsData)) {
-                    // Se a rodada estiver em progresso (1) ou finalizada (2)
-                    if (rData.status === 1 || rData.status === 2 || rKey === roundId) {
-                        const matches = rData.matches || {};
-                        for (const [mKey, match] of Object.entries(matches)) {
-                            const { player1Id, player2Id } = match;
-                            if (!player1Id || !player2Id) continue;
+                    // Considera finalizada se rData.status === 2
+                    const isFinalized = rData.status === 2;
+                    const matches = rData.matches || {};
 
+                    for (const [mKey, match] of Object.entries(matches)) {
+                        const { player1Id, player2Id } = match;
+                        if (!player1Id || !player2Id) continue;
+
+                        if (isFinalized) {
                             const p1 = usersData[player1Id] || {};
                             const p2 = usersData[player2Id] || {};
 
@@ -3992,6 +3994,9 @@
                                     standings[player2Id].losses += 1;
                                 }
                             }
+                        } else {
+                            // Rodada ativa ou pendente: garante que result seja vazio para permitir placar ao vivo no site
+                            updates[`groups/rounds/${rKey}/matches/${mKey}/result`] = "";
                         }
                     }
                 }
