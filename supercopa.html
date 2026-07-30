@@ -431,6 +431,45 @@
             background: rgba(245, 158, 11, 0.08);
             color: #f59e0b;
         }
+        .battle-odds-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .battle-odd-card {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.18);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .battle-odd-card.remote {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.22);
+        }
+        .battle-odd-label {
+            color: var(--text-color-light);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .battle-odd-value {
+            color: #fff;
+            font-size: 1.35rem;
+            font-weight: 900;
+            margin-top: 2px;
+        }
+        .battle-odd-note {
+            color: var(--text-color-light);
+            font-size: 0.72rem;
+            margin-top: 4px;
+        }
+        .math-expected {
+            color: #10b981;
+            font-weight: 800;
+        }
     </style>
 </head>
 <body>
@@ -1225,6 +1264,98 @@
             return { maxDiff1, maxDiff2, neutralized: isIdentical };
         }
 
+        function clamp(value, min, max) {
+            return Math.min(max, Math.max(min, value));
+        }
+
+        function probabilityToOdd(probability) {
+            if (!probability || probability <= 0) return null;
+            return 1 / probability;
+        }
+
+        function formatOdd(value) {
+            const number = Number(value);
+            return Number.isFinite(number) ? number.toFixed(2) : '-';
+        }
+
+        function getSuperligaStageKey() {
+            const tournaments = activeSuperligaRoundData?.tournaments || [];
+            const text = tournaments.join(' ').toLowerCase();
+            if (text.includes('clausura')) return 'Clausura';
+            if (text.includes('abertura')) return 'Abertura';
+            const hasClausura = Object.values(usersDataCache || {}).some(u => Number.isFinite(Number(u.pointsSuperligaClausura)));
+            return hasClausura ? 'Clausura' : 'Abertura';
+        }
+
+        function getPlayerSuperligaPower(playerId) {
+            const user = usersDataCache[playerId] || {};
+            const stage = getSuperligaStageKey();
+            const total = Number(user[`pointsSuperliga${stage}`] || 0);
+            const liveRound = calculateLiveRoundPoints(playerId);
+            const lastRound = Number(user[`lastRoundPointsLiga${stage}`] || 0);
+            const field = `pointsSuperliga${stage}`;
+            const totals = Object.values(usersDataCache || {})
+                .map(u => Number(u[field] || 0))
+                .filter(Number.isFinite);
+            const maxTotal = Math.max(...totals, 1);
+            const totalScore = maxTotal ? total / maxTotal : 0.5;
+            const roundScore = clamp(((liveRound || lastRound) + 2) / 14, 0, 1);
+            return clamp((totalScore * 0.7) + (roundScore * 0.3), 0.12, 0.92);
+        }
+
+        function getRecentFormPower(playerId) {
+            const form = getPlayerRecentForm(playerId);
+            if (!form.length) return 0.5;
+            const score = form.reduce((sum, item) => sum + (item === 'V' ? 1 : item === 'X' ? 0.52 : 0.18), 0) / form.length;
+            return clamp(score, 0.12, 0.9);
+        }
+
+        function getPlayerProjectionFactor(playerId) {
+            return clamp((getPlayerSuperligaPower(playerId) * 0.6) + (getRecentFormPower(playerId) * 0.4), 0.14, 0.9);
+        }
+
+        function getPredictionExpectedValue(pred, playerId) {
+            if (!pred || pred.homeScore === undefined || pred.awayScore === undefined) return 0;
+            const multiplier = pred.isStarMatch || pred.isCaptain || pred.star || pred.doublePoints ? 2 : 1;
+            const factor = getPlayerProjectionFactor(playerId);
+            const outcomePoint = factor * 1 * multiplier;
+            const exactBonus = factor * factor * 2 * multiplier * 0.32;
+            const reverseRisk = (1 - factor) * 0.13 * multiplier;
+            return Math.max(0, outcomePoint + exactBonus - reverseRisk);
+        }
+
+        function getRemoteLabel(neededByPredictions, canStillScore) {
+            if (!neededByPredictions && canStillScore) return 'Pode depender do artilheiro';
+            if (neededByPredictions && canStillScore) return 'Chance remota';
+            if (neededByPredictions) return 'Precisa acertar tudo';
+            return 'Em disputa';
+        }
+
+        function getBattleOddsData(score1, score2, remainingDetails, sp1CanStillScore, sp2CanStillScore, p1Id, p2Id) {
+            const ev1 = remainingDetails.reduce((sum, detail) => sum + detail.ev1, 0);
+            const ev2 = remainingDetails.reduce((sum, detail) => sum + detail.ev2, 0);
+            const striker1 = sp1CanStillScore ? (0.18 + getPlayerProjectionFactor(p1Id) * 0.22) : 0;
+            const striker2 = sp2CanStillScore ? (0.18 + getPlayerProjectionFactor(p2Id) * 0.22) : 0;
+            const projected1 = score1 + ev1 + striker1;
+            const projected2 = score2 + ev2 + striker2;
+            const formEdge = (getPlayerProjectionFactor(p1Id) - getPlayerProjectionFactor(p2Id)) * 0.42;
+            const diff = projected1 - projected2;
+            const probability1 = clamp(0.5 + diff * 0.105 + formEdge, 0.04, 0.96);
+            const probability2 = 1 - probability1;
+            return {
+                ev1,
+                ev2,
+                striker1,
+                striker2,
+                projected1,
+                projected2,
+                probability1,
+                probability2,
+                odd1: probabilityToOdd(probability1),
+                odd2: probabilityToOdd(probability2)
+            };
+        }
+
         function analyzeMatchup(match) {
             const p1Id = match.player1Id || match.homeTeam;
             const p2Id = match.player2Id || match.awayTeam;
@@ -1307,6 +1438,8 @@
                     const awayTeamObj = teamsDataCache[m.awayTeam] || {};
                     const homeTeamName = homeTeamObj.name || m.homeTeamName || m.homeTeam || 'Mandante';
                     const awayTeamName = awayTeamObj.name || m.awayTeamName || m.awayTeam || 'Visitante';
+                    const ev1 = getPredictionExpectedValue(pred1, p1Id);
+                    const ev2 = getPredictionExpectedValue(pred2, p2Id);
 
                     remainingDetails.push({
                         homeTeamName,
@@ -1314,7 +1447,9 @@
                         pred1: pred1 ? `${pred1.homeScore}x${pred1.awayScore}${isStar1 ? ' ⭐' : ''}` : 'Sem palpite',
                         pred2: pred2 ? `${pred2.homeScore}x${pred2.awayScore}${isStar2 ? ' ⭐' : ''}` : 'Sem palpite',
                         isStar1,
-                        isStar2
+                        isStar2,
+                        ev1,
+                        ev2
                     });
                 }
             }
@@ -1372,6 +1507,7 @@
                 sp2Text = `⚽ ${sp2.athleteName || sp2.name} +${goals2} pts${sharedNote}`;
             }
 
+            const battleOdds = getBattleOddsData(score1, score2, remainingDetails, sp1CanStillScore, sp2CanStillScore, p1Id, p2Id);
 
             const totalMax1 = score1 + maxEarnable1;
             const totalMin1 = score1 + minEarnable1;
@@ -1500,8 +1636,8 @@
                 <div class="math-row">
                     <div class="math-match-name">${d.homeTeamName} x ${d.awayTeamName}</div>
                     <div class="math-preds">
-                        <div class="math-pred-pill ${d.isStar1 ? 'star-pill-yes' : ''}"><strong>${name1}:</strong> ${d.pred1}</div>
-                        <div class="math-pred-pill ${d.isStar2 ? 'star-pill-yes' : ''}"><strong>${name2}:</strong> ${d.pred2}</div>
+                        <div class="math-pred-pill ${d.isStar1 ? 'star-pill-yes' : ''}"><strong>${name1}:</strong> ${d.pred1} <span class="math-expected">proj. +${d.ev1.toFixed(2)}</span></div>
+                        <div class="math-pred-pill ${d.isStar2 ? 'star-pill-yes' : ''}"><strong>${name2}:</strong> ${d.pred2} <span class="math-expected">proj. +${d.ev2.toFixed(2)}</span></div>
                     </div>
                 </div>
             `).join('') || '<div class="empty-state">Nenhum jogo restante.</div>';
@@ -1510,6 +1646,21 @@
                 <div class="calculator-modal-body">
                     ${warningsHtml}
                     ${neutralizedNoteHtml}
+                    <div class="battle-odds-grid">
+                        <div class="battle-odd-card ${battleOdds.probability1 < 0.18 ? 'remote' : ''}">
+                            <div class="battle-odd-label">Odd ${name1}</div>
+                            <div class="battle-odd-value">${formatOdd(battleOdds.odd1)}</div>
+                            <div class="battle-odd-note">${Math.round(battleOdds.probability1 * 100)}% - ${getRemoteLabel(maxDiffGain1 < Math.max(0, score2 - score1), sp1CanStillScore)}</div>
+                            <div class="battle-odd-note">Proj.: ${battleOdds.projected1.toFixed(1)} pts${battleOdds.striker1 ? `, art. +${battleOdds.striker1.toFixed(1)}` : ''}</div>
+                        </div>
+                        <div class="battle-odd-card ${battleOdds.probability2 < 0.18 ? 'remote' : ''}">
+                            <div class="battle-odd-label">Odd ${name2}</div>
+                            <div class="battle-odd-value">${formatOdd(battleOdds.odd2)}</div>
+                            <div class="battle-odd-note">${Math.round(battleOdds.probability2 * 100)}% - ${getRemoteLabel(maxDiffGain2 < Math.max(0, score1 - score2), sp2CanStillScore)}</div>
+                            <div class="battle-odd-note">Proj.: ${battleOdds.projected2.toFixed(1)} pts${battleOdds.striker2 ? `, art. +${battleOdds.striker2.toFixed(1)}` : ''}</div>
+                        </div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-color-light); padding: 8px 12px; border-radius: 6px; font-size: 0.78rem; margin-bottom: 12px;"><i class="fas fa-chart-line"></i> Odds internas baseadas em tabela da Superliga, forma recente na Supercopa, pontos restantes e artilheiro ainda em jogo.</div>
                     <div class="math-summary-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                             <span class="math-score-large">${score1} x ${score2}</span>
