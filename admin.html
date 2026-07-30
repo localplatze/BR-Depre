@@ -1218,6 +1218,7 @@
             <div class="tab" data-section="cinturao"><i class="fas fa-hand-fist"></i> Cinturão UFC</div>
             <div class="tab" data-section="teams"><i class="fas fa-users"></i> Times</div>
             <div class="tab" data-section="players"><i class="fas fa-user-cog"></i> Jogadores</div>
+            <div class="tab" data-section="ads"><i class="fas fa-ad"></i> Anúncios & Resenha</div>
         </div>
 
         <div id="rounds-section" class="section active">
@@ -1852,6 +1853,95 @@
             </div>
         </div>
 
+        <div id="ads-section" class="section">
+            <!-- Gerenciamento da Resenha -->
+            <div class="card" style="margin-bottom: 30px;">
+                <div class="card-header">
+                    <h3><i class="fas fa-robot"></i> Resenha da Rodada com IA (DeepSeek)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-row" style="margin-bottom: 20px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Selecione a Rodada</label>
+                            <select id="resenha-round-select" class="form-control">
+                                <option value="">Carregando rodadas...</option>
+                            </select>
+                            <p class="help-text">Escolha uma rodada finalizada para gerar a resenha.</p>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end; max-width: 250px;">
+                            <button id="btn-generate-resenha" class="btn btn-primary" type="button" style="width: 100%; height: 48px;"><i class="fas fa-magic"></i> Gerar via IA</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label>Texto da Resenha</label>
+                        <textarea id="resenha-text" rows="8" class="form-control" placeholder="Escreva a resenha ou gere automaticamente com o botão acima..." style="font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button id="btn-save-resenha" class="btn btn-success" type="button"><i class="fas fa-save"></i> Salvar Resenha</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gerenciamento de Anúncios / Parcerias -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-ad"></i> Gerenciamento de Anúncios & Cupons</h3>
+                    <button id="btn-show-promo-form" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Novo Anúncio</button>
+                </div>
+                <div class="card-body">
+                    <!-- Formulário de Nova Promoção -->
+                    <div id="promo-form-container" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 6px; margin-bottom: 25px;">
+                        <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--dark-color);"><i class="fas fa-plus-circle"></i> Cadastrar Anúncio</h4>
+                        <form id="promo-form">
+                            <input type="hidden" id="promo-id">
+                            <div class="form-row" style="margin-bottom: 15px;">
+                                <div class="form-group">
+                                    <label>Título da Campanha</label>
+                                    <input type="text" id="promo-title" class="form-control" placeholder="Ex: Zé Delivery - Breja com Desconto" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Cupom Promocional (Opcional)</label>
+                                    <input type="text" id="promo-coupon" class="form-control" placeholder="Ex: BRDEPRE10">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label>Descrição/Texto Curto</label>
+                                <textarea id="promo-description" class="form-control" rows="2" placeholder="Ex: Ganhe R$ 10 de desconto na sua primeira compra de cerveja..." required></textarea>
+                            </div>
+                            <div class="form-row" style="margin-bottom: 15px;">
+                                <div class="form-group">
+                                    <label>URL da Imagem do Banner (16:9 ou retangular)</label>
+                                    <input type="url" id="promo-banner-url" class="form-control" placeholder="Ex: https://site.com/imagem.jpg" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>URL de Destino (Link de Afiliado)</label>
+                                    <input type="url" id="promo-target-url" class="form-control" placeholder="Ex: https://ze.delivery/..." required>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" id="promo-active" checked style="width: auto;"> Ativar Campanha (Exibir no site)
+                                </label>
+                            </div>
+                            <div class="action-buttons" style="margin-top: 0; border-top: none; padding-top: 0;">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Campanha</button>
+                                <button type="button" id="btn-cancel-promo" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tabela de Promoções -->
+                    <div id="promotions-list">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Carregando lista de anúncios...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="edit-round-modal" class="edit-modal">
             <div class="edit-modal-content">
                 <div class="edit-modal-header">
@@ -1937,7 +2027,7 @@
         const database = firebase.database();
         const API_FOOTBALL_BASE_URL = 'https://v3.football.api-sports.io';
         const DEEPSEEK_API_BASE_URL = 'https://api.deepseek.com';
-        const DEFAULT_DEEPSEEK_API_KEY = 'sk-78967fb812124f12985215291bc9e1b5';
+        const DEFAULT_DEEPSEEK_API_KEY = 'sk-7c25afb5be6245e782c0abb565efe98d';
 
         // --- CONFIGURAÇÃO DE TURNOS DA SUPERLIGA ---
         // Número da rodada que encerra a Abertura (ex: 19). Se for null, todas pertencem ao turno único/Abertura.
@@ -1976,6 +2066,7 @@
         document.querySelector('.tab[data-section="cinturao"]')?.addEventListener('click', loadCinturaoAdmin);
         document.querySelector('.tab[data-section="teams"]')?.addEventListener('click', loadTeamsList);
         document.querySelector('.tab[data-section="players"]')?.addEventListener('click', loadPlayersList);
+        document.querySelector('.tab[data-section="ads"]')?.addEventListener('click', loadAdsSectionData);
 
         // Navegação entre as subseções da Supercopa (Grupos, Rodadas, Mata-Mata)
         document.querySelectorAll('#supercopa-section .tab[data-subsection]').forEach(tab => {
@@ -2889,7 +2980,12 @@
             const savedKey = localStorage.getItem('apiFootballKey');
             const savedDeepSeekKey = localStorage.getItem('deepSeekApiKey');
             if (savedKey) keyInput.value = savedKey;
-            if (savedDeepSeekKey) {
+            
+            const oldDefaultKey = 'sk-78967fb812124f12985215291bc9e1b5';
+            if (DEFAULT_DEEPSEEK_API_KEY && (savedDeepSeekKey === oldDefaultKey || !savedDeepSeekKey)) {
+                localStorage.setItem('deepSeekApiKey', DEFAULT_DEEPSEEK_API_KEY);
+                deepSeekKeyInput.value = DEFAULT_DEEPSEEK_API_KEY;
+            } else if (savedDeepSeekKey) {
                 deepSeekKeyInput.value = savedDeepSeekKey;
             } else if (DEFAULT_DEEPSEEK_API_KEY) {
                 localStorage.setItem('deepSeekApiKey', DEFAULT_DEEPSEEK_API_KEY);
@@ -5288,6 +5384,369 @@
                 alert('Erro ao salvar: ' + err.message);
             });
         });
+
+        // --- SEÇÃO DE ANÚNCIOS & RESENHAS ---
+        async function loadAdsSectionData() {
+            loadResenhaRoundsList();
+            loadPromotionsList();
+        }
+
+        async function loadResenhaRoundsList() {
+            const select = document.getElementById('resenha-round-select');
+            if (!select) return;
+
+            select.innerHTML = '<option value="">Carregando rodadas...</option>';
+            try {
+                const roundsSnap = await database.ref('rounds').once('value');
+                const roundsData = roundsSnap.val() || {};
+                
+                // Sort chronologically
+                const completedRounds = Object.entries(roundsData)
+                    .map(([key, data]) => ({ key, ...data }))
+                    .filter(r => r.status === 2) // Finalizadas
+                    .sort((a, b) => {
+                        const timeA = a.finishTimestamp ? new Date(a.finishTimestamp).getTime() : 0;
+                        const timeB = b.finishTimestamp ? new Date(b.finishTimestamp).getTime() : 0;
+                        return timeB - timeA; // Descending (latest first)
+                    });
+
+                if (completedRounds.length === 0) {
+                    select.innerHTML = '<option value="">Nenhuma rodada finalizada encontrada</option>';
+                    return;
+                }
+
+                select.innerHTML = '<option value="">Selecione uma rodada...</option>';
+                completedRounds.forEach((round, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = round.key;
+                    opt.textContent = `Rodada ${completedRounds.length - index} (${round.key}) - Finalizada em ${round.finishTimestamp ? round.finishTimestamp.replace('T', ' ') : 'N/A'}`;
+                    select.appendChild(opt);
+                });
+
+                // Auto-load text if a round is selected
+                select.onchange = async () => {
+                    const roundId = select.value;
+                    const resenhaText = document.getElementById('resenha-text');
+                    if (!roundId || !resenhaText) return;
+                    resenhaText.value = 'Buscando resenha no banco...';
+                    const snap = await database.ref('resenhas/' + roundId).once('value');
+                    const data = snap.val();
+                    resenhaText.value = data ? (data.text || '') : '';
+                };
+            } catch (err) {
+                console.error('Erro ao carregar rodadas para resenha:', err);
+                select.innerHTML = '<option value="">Erro ao carregar rodadas</option>';
+            }
+        }
+
+        // Generate Resenha via DeepSeek
+        document.getElementById('btn-generate-resenha')?.addEventListener('click', async () => {
+            const select = document.getElementById('resenha-round-select');
+            const roundId = select ? select.value : '';
+            const resenhaText = document.getElementById('resenha-text');
+
+            if (!roundId) {
+                alert('Selecione uma rodada finalizada primeiro!');
+                return;
+            }
+
+            const deepSeekKeyInput = document.getElementById('deepseek-api-key');
+            const apiKey = (deepSeekKeyInput ? deepSeekKeyInput.value.trim() : '') || localStorage.getItem('deepSeekApiKey') || '';
+            if (!apiKey) {
+                alert('Defina a sua chave API do DeepSeek no campo correspondente (na aba Times -> Importar Jogos ou salve no localStorage).');
+                return;
+            }
+
+            localStorage.setItem('deepSeekApiKey', apiKey);
+
+            resenhaText.value = 'Conectando com o DeepSeek e calculando pontos da rodada... Aguarde.';
+            
+            try {
+                // Fetch round data, users, and teams
+                const [roundSnap, usersSnap, teamsSnap] = await Promise.all([
+                    database.ref('rounds/' + roundId).once('value'),
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value')
+                ]);
+
+                const roundData = roundSnap.val();
+                const usersData = usersSnap.val() || {};
+                const teamsData = teamsSnap.val() || {};
+
+                if (!roundData || !roundData.matches) {
+                    resenhaText.value = 'Erro: Esta rodada não possui partidas.';
+                    return;
+                }
+
+                // Process points of each player for this specific round
+                const matches = Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches);
+                const scores = [];
+
+                Object.entries(usersData).forEach(([uid, user]) => {
+                    let points = 0;
+                    let hasPred = false;
+
+                    matches.forEach(match => {
+                        if (match.finalResult && match.predictions?.[uid]) {
+                            const pred = match.predictions[uid];
+                            if (pred.homeScore !== undefined && pred.awayScore !== undefined) {
+                                hasPred = true;
+                                points += calculateMatchPoints(match.finalResult, pred);
+                            }
+                        }
+                    });
+
+                    // Add star player goals
+                    const starPlayer = roundData.starPlayers?.[uid];
+                    const playerGoals = roundData.playerGoals || {};
+                    if (hasPred && starPlayer?.athleteId) {
+                        const goalsInfo = playerGoals[starPlayer.athleteId] || 0;
+                        const count = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                        points += count;
+                    }
+
+                    if (hasPred) {
+                        const team = teamsData[user.teamId || user.team] || {};
+                        const teamName = user.customTeamName || team.name || 'Sem Time';
+                        scores.push({
+                            name: user.name || 'Jogador',
+                            team: teamName,
+                            points: points
+                        });
+                    }
+                });
+
+                if (scores.length === 0) {
+                    resenhaText.value = 'Nenhum jogador registrou palpites nesta rodada.';
+                    return;
+                }
+
+                // Sort scores descending
+                scores.sort((a, b) => b.points - a.points);
+                const winner = scores[0];
+                const loser = scores[scores.length - 1];
+
+                const prompt = `Você é o "Guru Sarcástico" do BR Depressão, um bolão de futebol de amigos muito competitivos e zoeiros. 
+Escreva uma resenha curta (máximo de 3 parágrafos) sobre a rodada recém-finalizada.
+Aqui está a classificação dos jogadores nessa rodada:
+- Mito da Rodada (1º lugar): ${winner.name} (Time: ${winner.team}) com ${winner.points} pontos.
+- Zicador da Rodada (Último lugar): ${loser.name} (Time: ${loser.team}) com ${loser.points} pontos.
+Outros participantes importantes: ${scores.slice(1, -1).map(s => `${s.name} (${s.points} pts)`).join(', ')}.
+
+Por favor, faça um texto hilário em português. Exalte o Mito (ou diga que foi pura cagada/pacto) e zoando o Zicador fortemente por sua ruindade de palpites. Use gírias e jargões do futebol brasileiro (ex: "zicou", "entregou a paçoca", "profeta do óbvio", "pede música no fantástico").`;
+
+                const res = await fetch('https://api.deepseek.com/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            { role: 'system', content: 'Você é um redator de humor futebolístico esportivo sarcástico e divertido. Responda apenas com o texto da resenha.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.8
+                    })
+                });
+
+                if (!res.ok) {
+                    const errorDetails = await res.text();
+                    throw new Error(`Erro na API do DeepSeek (${res.status}): ${errorDetails}`);
+                }
+
+                const json = await res.json();
+                const text = json.choices[0]?.message?.content || 'Não foi possível gerar a resenha.';
+                resenhaText.value = text;
+
+            } catch (err) {
+                console.error(err);
+                resenhaText.value = `Erro ao gerar resenha: ${err.message}`;
+            }
+        });
+
+        // Save Resenha
+        document.getElementById('btn-save-resenha')?.addEventListener('click', async () => {
+            const select = document.getElementById('resenha-round-select');
+            const roundId = select ? select.value : '';
+            const text = document.getElementById('resenha-text')?.value.trim() || '';
+
+            if (!roundId) {
+                alert('Selecione uma rodada!');
+                return;
+            }
+            if (!text) {
+                alert('O texto da resenha não pode estar vazio!');
+                return;
+            }
+
+            try {
+                const resenhaData = {
+                    roundId: roundId,
+                    text: text,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+
+                await Promise.all([
+                    database.ref('resenhas/' + roundId).set(resenhaData),
+                    database.ref('latestResenha').set(resenhaData)
+                ]);
+
+                alert('Resenha salva com sucesso e definida como o destaque atual!');
+            } catch (err) {
+                console.error('Erro ao salvar resenha:', err);
+                alert('Erro ao salvar resenha: ' + err.message);
+            }
+        });
+
+        // --- GESTÃO DE PROMOÇÕES / ANÚNCIOS ---
+        const promoFormContainer = document.getElementById('promo-form-container');
+        const btnShowPromoForm = document.getElementById('btn-show-promo-form');
+        const btnCancelPromo = document.getElementById('btn-cancel-promo');
+        const promoForm = document.getElementById('promo-form');
+
+        btnShowPromoForm?.addEventListener('click', () => {
+            promoFormContainer.style.display = 'block';
+            promoForm.reset();
+            document.getElementById('promo-id').value = '';
+        });
+
+        btnCancelPromo?.addEventListener('click', () => {
+            promoFormContainer.style.display = 'none';
+        });
+
+        promoForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const promoId = document.getElementById('promo-id').value || `promo_${Date.now()}`;
+            const promoData = {
+                title: document.getElementById('promo-title').value.trim(),
+                coupon: document.getElementById('promo-coupon').value.trim(),
+                description: document.getElementById('promo-description').value.trim(),
+                bannerUrl: document.getElementById('promo-banner-url').value.trim(),
+                targetUrl: document.getElementById('promo-target-url').value.trim(),
+                active: document.getElementById('promo-active').checked,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            try {
+                await database.ref('promotions/' + promoId).set(promoData);
+                alert('Promoção cadastrada com sucesso!');
+                promoFormContainer.style.display = 'none';
+                loadPromotionsList();
+            } catch (err) {
+                console.error('Erro ao salvar promoção:', err);
+                alert('Erro ao salvar promoção: ' + err.message);
+            }
+        });
+
+        async function loadPromotionsList() {
+            const listContainer = document.getElementById('promotions-list');
+            if (!listContainer) return;
+
+            listContainer.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Carregando lista de anúncios...</div>';
+
+            try {
+                const snap = await database.ref('promotions').once('value');
+                const promotions = snap.val() || {};
+                
+                const promoEntries = Object.entries(promotions);
+                if (promoEntries.length === 0) {
+                    listContainer.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Nenhum anúncio ou cupom cadastrado ainda.</div>';
+                    return;
+                }
+
+                let html = `
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Cupom</th>
+                                    <th>Status</th>
+                                    <th>Visualização</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                promoEntries.forEach(([id, promo]) => {
+                    html += `
+                        <tr>
+                            <td><strong>${promo.title}</strong><br><small style="color: #64748b;">${promo.description}</small></td>
+                            <td><code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #0f172a;">${promo.coupon || 'Sem Cupom'}</code></td>
+                            <td>
+                                <span class="badge ${promo.active ? 'badge-success' : 'badge-light'}">
+                                    ${promo.active ? 'Ativo' : 'Inativo'}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="${promo.bannerUrl}" target="_blank" style="font-size: 13px; color: var(--secondary-color); text-decoration: none;">
+                                    <i class="fas fa-image"></i> Ver Imagem
+                                </a>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <button type="button" onclick="editPromo('${id}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button>
+                                    <button type="button" onclick="togglePromoActive('${id}', ${promo.active})" class="btn btn-secondary btn-sm"><i class="fas ${promo.active ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                                    <button type="button" onclick="deletePromo('${id}')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                listContainer.innerHTML = html;
+
+            } catch (err) {
+                console.error('Erro ao carregar lista de promoções:', err);
+                listContainer.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar anúncios.</div>';
+            }
+        }
+
+        // Global functions for inline table buttons
+        window.editPromo = async function(id) {
+            try {
+                const snap = await database.ref('promotions/' + id).once('value');
+                const promo = snap.val();
+                if (!promo) return;
+
+                document.getElementById('promo-id').value = id;
+                document.getElementById('promo-title').value = promo.title;
+                document.getElementById('promo-coupon').value = promo.coupon || '';
+                document.getElementById('promo-description').value = promo.description;
+                document.getElementById('promo-banner-url').value = promo.bannerUrl;
+                document.getElementById('promo-target-url').value = promo.targetUrl;
+                document.getElementById('promo-active').checked = promo.active;
+
+                promoFormContainer.style.display = 'block';
+                promoFormContainer.scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                console.error('Erro ao buscar promoção:', err);
+            }
+        };
+
+        window.togglePromoActive = async function(id, currentActive) {
+            try {
+                await database.ref(`promotions/${id}/active`).set(!currentActive);
+                loadPromotionsList();
+            } catch (err) {
+                console.error('Erro ao alternar status da promoção:', err);
+            }
+        };
+
+        window.deletePromo = async function(id) {
+            if (!confirm('Deseja realmente excluir esta promoção?')) return;
+            try {
+                await database.ref('promotions/' + id).remove();
+                loadPromotionsList();
+            } catch (err) {
+                console.error('Erro ao excluir promoção:', err);
+            }
+        };
     </script>
 </body>
 

@@ -954,6 +954,192 @@
             vertical-align: middle;
             flex-shrink: 0;
         }
+
+        /* Podium Styles */
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 0.85rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            height: 180px;
+        }
+
+        .podium-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 100px;
+            position: relative;
+        }
+
+        .podium-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            object-fit: cover;
+            margin-bottom: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .podium-step.first .podium-avatar {
+            width: 54px;
+            height: 54px;
+            border-color: #F59E0B;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .podium-step.second .podium-avatar {
+            border-color: #94A3B8;
+        }
+
+        .podium-step.third .podium-avatar {
+            border-color: #B45309;
+        }
+
+        .podium-name {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            color: var(--text-primary);
+        }
+
+        .podium-points {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .podium-column {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .podium-step.first .podium-column {
+            height: 80px;
+            background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
+            color: #000;
+        }
+
+        .podium-step.second .podium-column {
+            height: 55px;
+            background: linear-gradient(180deg, #94A3B8 0%, #64748B 100%);
+            color: #000;
+        }
+
+        .podium-step.third .podium-column {
+            height: 35px;
+            background: linear-gradient(180deg, #B45309 0%, #78350F 100%);
+            color: #fff;
+        }
+
+        /* Carousel Styles */
+        .resenha-carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #10B981, #06B6D4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.4;
+        }
+
+        .carousel-slide-content {
+            font-size: 0.92rem;
+            color: #E2E8F0;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .carousel-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .carousel-btn:hover {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
     </style>
 </head>
 
@@ -1031,6 +1217,29 @@
     </section>
 
     <main class="main-content">
+        <!-- Resenha & Cupons Feed Container -->
+        <div id="resenha-feed-container" style="display: none; margin-bottom: 2rem;">
+            <div class="countdown-card" style="padding: 1.5rem; text-align: left; background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.04) 100%); border: 1px solid rgba(16, 185, 129, 0.25);">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(16, 185, 129, 0.15); padding-bottom: 10px; margin-bottom: 15px;">
+                    <div style="font-weight: 800; font-size: 1.15rem; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-newspaper"></i> Resenha da Rodada
+                    </div>
+                    <span id="resenha-date-label" style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">--/--</span>
+                </div>
+                
+                <div class="resenha-carousel" id="resenha-carousel">
+                    <div class="carousel-track" id="carousel-track">
+                        <!-- Slides rendered by JS -->
+                    </div>
+                    <div class="carousel-nav">
+                        <button class="carousel-btn" id="carousel-prev" type="button"><i class="fas fa-chevron-left"></i></button>
+                        <div class="carousel-dots" id="carousel-dots"></div>
+                        <button class="carousel-btn" id="carousel-next" type="button"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Próxima Rodada -->
         <div class="section-header">
             <div class="section-title"><i class="fas fa-clock"></i> Próxima Rodada</div>
@@ -1071,6 +1280,17 @@
 
         <!-- Torneios Grid -->
         <div class="tournaments-grid">
+            <!-- Pódio do Mês Card -->
+            <div class="tournament-card" id="podio-mes-card" style="border-color: rgba(6, 182, 212, 0.4);">
+                <div class="tournament-header" style="background: rgba(6, 182, 212, 0.1);">
+                    <div class="tournament-title" style="color: #06b6d4;"><i class="fas fa-medal" style="color: #06b6d4;"></i> Pódio do Mês</div>
+                    <span class="status-badge" style="background: rgba(6, 182, 212, 0.2); color: #06b6d4;" id="podio-mes-title">--/----</span>
+                </div>
+                <div class="tournament-body" id="podio-mes-content" style="padding: 1.5rem 1rem;">
+                    <p style="text-align: center; color: var(--text-secondary);">Carregando pódio...</p>
+                </div>
+            </div>
+
             <!-- Cinturão BR Depressão Card -->
             <div class="tournament-card" id="cinturao-card" style="border-color: rgba(245, 158, 11, 0.4);">
                 <div class="tournament-header" style="background: rgba(245, 158, 11, 0.1);">
@@ -1682,6 +1902,294 @@
             `;
         }
 
+        async function loadResenhaFeed() {
+            const feedContainer = document.getElementById('resenha-feed-container');
+            const track = document.getElementById('carousel-track');
+            const dateLabel = document.getElementById('resenha-date-label');
+            const dotsContainer = document.getElementById('carousel-dots');
+
+            if (!feedContainer || !track) return;
+
+            try {
+                // 1. Load latest resenha
+                const resenhaSnap = await database.ref('latestResenha').once('value');
+                const resenhaData = resenhaSnap.val();
+
+                if (!resenhaData || !resenhaData.text) return;
+
+                if (resenhaData.timestamp) {
+                    const date = new Date(resenhaData.timestamp);
+                    dateLabel.textContent = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                }
+
+                // 2. Parse text into news slides using Regex
+                const regex = /\*\*(.*?)\*\*([\s\S]*?)(?=\*\*|$)/g;
+                const slides = [];
+                let match;
+                while ((match = regex.exec(resenhaData.text)) !== null) {
+                    const title = match[1].trim();
+                    const content = match[2].trim().replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+                    if (title && content) {
+                        slides.push({ title, content });
+                    }
+                }
+
+                if (slides.length === 0) {
+                    slides.push({
+                        title: "Resenha da Rodada",
+                        content: resenhaData.text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>')
+                    });
+                }
+
+                // 3. Load active promotions and adapt them as final slide
+                const promoSnap = await database.ref('promotions').once('value');
+                const promotions = promoSnap.val() || {};
+                const activePromos = Object.values(promotions).filter(p => p.active);
+
+                if (activePromos.length > 0) {
+                    // Pick a random active promo
+                    const promo = activePromos[Math.floor(Math.random() * activePromos.length)];
+                    
+                    const adHtml = `
+                        <div style="background: rgba(17, 24, 39, 0.75); border: 1.5px solid rgba(16, 185, 129, 0.35); border-radius: 12px; overflow: hidden; margin-top: 5px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
+                            <a href="${promo.targetUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: flex; flex-direction: column; gap: 0;">
+                                <div style="width: 100%; height: 110px; background-image: url('${promo.bannerUrl}'); background-size: cover; background-position: center; border-bottom: 1px solid rgba(16, 185, 129, 0.15);"></div>
+                                <div style="padding: 1rem; display: flex; flex-direction: column; gap: 6px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                                        <h4 style="color: #F8FAFC; margin: 0; font-size: 0.95rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                                            <i class="fas fa-bullhorn" style="color: var(--primary);"></i> ${promo.title}
+                                        </h4>
+                                        ${promo.coupon ? `<span style="background: rgba(16, 185, 129, 0.18); border: 1px dashed #10B981; color: #10B981; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.5px;">CUPOM: ${promo.coupon}</span>` : ''}
+                                    </div>
+                                    <p style="color: #94A3B8; font-size: 0.8rem; margin: 0; line-height: 1.4;">${promo.description}</p>
+                                    <div style="text-align: right; margin-top: 6px; font-size: 0.78rem; font-weight: 700; color: var(--primary); display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px;">
+                                        Aproveitar Oferta <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    `;
+
+                    slides.push({
+                        title: "🔥 Parceria BR-Depre",
+                        content: adHtml,
+                        isAd: true
+                    });
+                }
+
+                // 4. Render track and dots
+                track.innerHTML = slides.map((slide, idx) => {
+                    if (slide.isAd) {
+                        return `
+                            <div class="carousel-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                                <div class="carousel-slide-title">${slide.title}</div>
+                                <div style="margin-top: 5px;">${slide.content}</div>
+                            </div>
+                        `;
+                    }
+                    return `
+                        <div class="carousel-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                            <div class="carousel-slide-title">${slide.title}</div>
+                            <div class="carousel-slide-content">${slide.content}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                if (dotsContainer) {
+                    dotsContainer.innerHTML = slides.map((_, idx) => `
+                        <span class="carousel-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}"></span>
+                    `).join('');
+                }
+
+                // 5. Initialize active slide logic
+                let currentSlide = 0;
+                const totalSlides = slides.length;
+
+                function goToSlide(index) {
+                    if (index < 0) index = totalSlides - 1;
+                    if (index >= totalSlides) index = 0;
+                    
+                    currentSlide = index;
+                    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    
+                    document.querySelectorAll('#carousel-track .carousel-slide').forEach((s, idx) => {
+                        s.classList.toggle('active', idx === currentSlide);
+                    });
+                    document.querySelectorAll('#carousel-dots .carousel-dot').forEach((d, idx) => {
+                        d.classList.toggle('active', idx === currentSlide);
+                    });
+                }
+
+                document.getElementById('carousel-prev')?.replaceWith(document.getElementById('carousel-prev').cloneNode(true));
+                document.getElementById('carousel-next')?.replaceWith(document.getElementById('carousel-next').cloneNode(true));
+
+                document.getElementById('carousel-prev')?.addEventListener('click', () => goToSlide(currentSlide - 1));
+                document.getElementById('carousel-next')?.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+                document.querySelectorAll('#carousel-dots .carousel-dot').forEach(dot => {
+                    dot.addEventListener('click', () => {
+                        const idx = parseInt(dot.dataset.index);
+                        goToSlide(idx);
+                    });
+                });
+
+                feedContainer.style.display = 'block';
+
+            } catch (err) {
+                console.error('Erro ao carregar feed/ads:', err);
+            }
+        }
+
+        async function loadMonthlyPodium() {
+            const container = document.getElementById('podio-mes-content');
+            const titleEl = document.getElementById('podio-mes-title');
+            if (!container) return;
+
+            const now = new Date();
+            const currentMonth = now.getMonth(); // 0-11
+            const currentYear = now.getFullYear();
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            
+            if (titleEl) {
+                titleEl.textContent = `${monthNames[currentMonth]} / ${currentYear}`;
+            }
+
+            try {
+                // Fetch completed rounds and users
+                const [roundsSnap, usersSnap] = await Promise.all([
+                    database.ref('rounds').orderByChild('status').equalTo(2).once('value'),
+                    database.ref('users').once('value')
+                ]);
+
+                const completedRounds = roundsSnap.val() || {};
+                const usersData = usersSnap.val() || {};
+
+                // Filter rounds finished in the current calendar month
+                const monthRounds = Object.entries(completedRounds).filter(([key, round]) => {
+                    if (!round.finishTimestamp) return false;
+                    const date = new Date(round.finishTimestamp);
+                    return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+                });
+
+                if (monthRounds.length === 0) {
+                    container.innerHTML = `<div style="text-align: center; padding: 1.5rem 0; color: var(--text-muted); font-size: 0.85rem;"><i class="fas fa-calendar-times" style="font-size: 1.5rem; margin-bottom: 8px; display: block; color: var(--text-muted);"></i>Nenhuma rodada encerrada em ${monthNames[currentMonth]} ainda.</div>`;
+                    return;
+                }
+
+                // Compute points for each user in these rounds
+                const userMonthlyPoints = {};
+                const userHasPrediction = {};
+
+                monthRounds.forEach(([roundKey, roundData]) => {
+                    const matches = Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches);
+                    
+                    matches.forEach(match => {
+                        if (match.finalResult && match.predictions) {
+                            Object.entries(match.predictions).forEach(([uid, pred]) => {
+                                if (pred.homeScore !== undefined && pred.awayScore !== undefined) {
+                                    if (!userMonthlyPoints[uid]) userMonthlyPoints[uid] = 0;
+                                    userMonthlyPoints[uid] += calculateMatchPoints(match.finalResult, pred);
+                                    userHasPrediction[uid] = true;
+                                }
+                            });
+                        }
+                    });
+
+                    // Add star player goals
+                    const starPlayers = roundData.starPlayers || {};
+                    const playerGoals = roundData.playerGoals || {};
+                    Object.entries(starPlayers).forEach(([uid, sp]) => {
+                        if (!userHasPrediction[uid] || !sp?.athleteId) return;
+                        const goalsInfo = playerGoals[sp.athleteId] || 0;
+                        const gCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                        if (!userMonthlyPoints[uid]) userMonthlyPoints[uid] = 0;
+                        userMonthlyPoints[uid] += gCount;
+                    });
+                });
+
+                // Map to scores list with player info
+                const scoresList = [];
+                Object.entries(usersData).forEach(([uid, user]) => {
+                    // Only display players who generated some points or participated in this month
+                    if (userMonthlyPoints[uid] !== undefined) {
+                        const team = teamsCache[user.teamId || user.team] || {};
+                        const teamName = user.customTeamName || team.name || 'Sem Time';
+                        const avatar = (user.useCustomShield && user.customShield) ? user.customShield : (team.image || 'default-avatar.png');
+                        scoresList.push({
+                            uid,
+                            name: user.name || 'Jogador',
+                            team: teamName,
+                            avatar,
+                            points: userMonthlyPoints[uid]
+                        });
+                    }
+                });
+
+                if (scoresList.length === 0) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); font-size: 0.85rem;">Nenhum palpite válido este mês.</p>`;
+                    return;
+                }
+
+                // Sort descending
+                scoresList.sort((a, b) => b.points - a.points);
+
+                // Build podium HTML for top 3
+                // We want to render 2nd (left), 1st (center), 3rd (right)
+                const first = scoresList[0] || null;
+                const second = scoresList[1] || null;
+                const third = scoresList[2] || null;
+
+                let podiumHtml = `<div class="podium-container">`;
+
+                // 2nd Place
+                if (second) {
+                    podiumHtml += `
+                        <div class="podium-step second" title="${second.team} (${second.name})">
+                            <img src="${second.avatar}" class="podium-avatar" onerror="this.src='default-avatar.png'">
+                            <span class="podium-name">${second.name}</span>
+                            <span class="podium-points">${second.points} pts</span>
+                            <div class="podium-column">2º</div>
+                        </div>
+                    `;
+                } else {
+                    podiumHtml += `<div class="podium-step second" style="visibility: hidden;"></div>`;
+                }
+
+                // 1st Place
+                if (first) {
+                    podiumHtml += `
+                        <div class="podium-step first" title="${first.team} (${first.name})">
+                            <img src="${first.avatar}" class="podium-avatar" onerror="this.src='default-avatar.png'">
+                            <span class="podium-name" style="font-weight: 800; color: #F59E0B;">${first.name}</span>
+                            <span class="podium-points" style="font-size: 0.8rem;">${first.points} pts</span>
+                            <div class="podium-column">1º</div>
+                        </div>
+                    `;
+                }
+
+                // 3rd Place
+                if (third) {
+                    podiumHtml += `
+                        <div class="podium-step third" title="${third.team} (${third.name})">
+                            <img src="${third.avatar}" class="podium-avatar" onerror="this.src='default-avatar.png'">
+                            <span class="podium-name">${third.name}</span>
+                            <span class="podium-points">${third.points} pts</span>
+                            <div class="podium-column">3º</div>
+                        </div>
+                    `;
+                } else {
+                    podiumHtml += `<div class="podium-step third" style="visibility: hidden;"></div>`;
+                }
+
+                podiumHtml += `</div>`;
+                container.innerHTML = podiumHtml;
+
+            } catch (err) {
+                console.error('Erro ao processar pódio mensal:', err);
+                container.innerHTML = `<p style="text-align: center; color: var(--danger); font-size: 0.85rem;">Erro ao carregar o pódio.</p>`;
+            }
+        }
+
         async function init() {
             try {
                 await Promise.all([loadTeamsCache(), loadUsersCache(), loadCinturaoData()]);
@@ -1699,7 +2207,9 @@
                     loadSupercopa(activeRound, livePoints),
                     loadRestaUmHome(),
                     loadCinturaoHome(),
-                    loadNextRound()
+                    loadNextRound(),
+                    loadResenhaFeed(),
+                    loadMonthlyPodium()
                 ]);
 
                 // Set active sidebar link
