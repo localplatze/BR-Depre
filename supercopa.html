@@ -136,7 +136,7 @@
             width: 36px; height: 36px; border: none; border-radius: 50%; cursor: pointer;
             background: var(--card-bg-light); color: var(--text-color); font-size: 1rem;
         }
-        .history-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 20px 20px; }
+        .history-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 20px 20px; max-height: 350px; overflow-y: auto; }
         .history-row {
             display: grid; grid-template-columns: 86px 1fr auto; gap: 12px; align-items: center;
             padding: 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.04);
@@ -178,6 +178,238 @@
             text-transform: uppercase;
             border: 1px solid rgba(255, 255, 255, 0.2);
             vertical-align: middle;
+        }
+
+        /* --- HISTORICO E CHART --- */
+        .recent-form-chart-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .chart-header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+        .chart-info-icon {
+            color: var(--text-color-light);
+            cursor: help;
+            font-size: 0.9rem;
+        }
+        .chart-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-color-light);
+        }
+        .chart-grid {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 0 5px;
+        }
+        .chart-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+        .chart-opp-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .chart-bar-area {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            border-radius: 4px;
+        }
+        .chart-bar-area::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 40px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+        .chart-bar {
+            position: absolute;
+            left: 25%;
+            right: 25%;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        .chart-bar.win {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+        }
+        .chart-bar.loss {
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+        }
+        .chart-bar.draw {
+            background: #9ca3af;
+        }
+        .chart-bar.unplayed {
+            background: rgba(255,255,255,0.08);
+            border: 1px dashed rgba(255,255,255,0.2);
+        }
+        .chart-round-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-color-light);
+        }
+
+        /* --- LIVE BADGE --- */
+        .live-badge {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            font-size: 8px;
+            font-weight: 800;
+            padding: 1px 4px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            letter-spacing: 0.5px;
+            animation: pulse-live 2s infinite;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .live-dot {
+            width: 4px;
+            height: 4px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        @keyframes pulse-live {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        /* --- CALCULADORA DE CONFRONTO --- */
+        .clickable-match-card {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .clickable-match-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary-color);
+            background-color: var(--card-bg-light);
+        }
+        .math-summary-card {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .math-score-large {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+        .math-analysis-text {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        .math-grid-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .math-stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .math-stat-label {
+            font-size: 0.72rem;
+            color: var(--text-color-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .math-stat-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .math-stat-range {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .math-matches-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .math-row {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .math-match-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-color);
+            flex: 1;
+        }
+        .math-preds {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: right;
+        }
+        .math-pred-pill {
+            font-size: 0.75rem;
+            color: var(--text-color-light);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .math-pred-pill.star-pill-yes {
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.08);
+            color: #f59e0b;
         }
     </style>
 </head>
@@ -236,7 +468,18 @@
                 <div id="player-history-title" class="history-modal-title"></div>
                 <button type="button" class="modal-close" aria-label="Fechar"><i class="fas fa-times"></i></button>
             </div>
+            <div id="player-history-chart-container" style="padding: 16px 20px 0;"></div>
             <div id="player-history-list" class="history-list"></div>
+        </div>
+    </div>
+
+    <div id="match-calculator-modal" class="modal-backdrop" aria-hidden="true">
+        <div class="history-modal" role="dialog" aria-modal="true" aria-labelledby="match-calculator-title">
+            <div class="history-modal-header">
+                <div id="match-calculator-title" class="history-modal-title"><i class="fas fa-calculator"></i> Calculadora do Confronto</div>
+                <button type="button" class="modal-close" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="match-calculator-content" style="padding: 20px; max-height: 70vh; overflow-y: auto;"></div>
         </div>
     </div>
 
@@ -544,14 +787,89 @@
             });
         }
 
+        function renderHistoryChart(history) {
+            const diffs = history.map(item => {
+                if (item.myScore === null || item.oppScore === null) return 0;
+                return Math.abs(item.myScore - item.oppScore);
+            });
+            const maxDiff = Math.max(...diffs, 3);
+
+            const columnsHtml = history.map(item => {
+                const opponent = getPlayerDisplayData(item.opponentId);
+                if (item.myScore === null || item.oppScore === null) {
+                    return `
+                        <div class="chart-column">
+                            <img class="chart-opp-logo" src="${opponent.avatar}" title="${opponent.name} (A disputar)" onerror="this.src='default-avatar.png'">
+                            <div class="chart-bar-area">
+                                <div class="chart-bar unplayed" style="top: 38px; height: 4px;" title="A disputar"></div>
+                            </div>
+                            <div class="chart-round-label">R${item.roundNumber}</div>
+                        </div>
+                    `;
+                }
+
+                const diff = item.myScore - item.oppScore;
+                const absDiff = Math.abs(diff);
+                const height = (absDiff / maxDiff) * 35; // max 35px height in either direction
+                
+                let barClass = 'draw';
+                let top = 38.5;
+                let barHeight = 3;
+
+                if (diff > 0) {
+                    barClass = 'win';
+                    top = 40 - height;
+                    barHeight = height;
+                } else if (diff < 0) {
+                    barClass = 'loss';
+                    top = 40;
+                    barHeight = height;
+                }
+
+                const resultText = diff > 0 ? 'Vitória' : (diff < 0 ? 'Derrota' : 'Empate');
+                const tooltip = `Rodada ${item.roundNumber}: ${resultText} (${item.myScore} x ${item.oppScore}) contra ${opponent.name}`;
+
+                return `
+                    <div class="chart-column" title="${tooltip}">
+                        <img class="chart-opp-logo" src="${opponent.avatar}" onerror="this.src='default-avatar.png'">
+                        <div class="chart-bar-area">
+                            <div class="chart-bar ${barClass}" style="top: ${top}px; height: ${barHeight}px;"></div>
+                        </div>
+                        <div class="chart-round-label">R${item.roundNumber}</div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="recent-form-chart-container">
+                    <div class="chart-header">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <span class="chart-title"><i class="fas fa-chart-bar"></i> Forma Recente</span>
+                            <span class="chart-info-icon" title="A altura das barras representa a diferença de gols/pontos no confronto"><i class="fas fa-info-circle"></i></span>
+                        </div>
+                        <span class="chart-subtitle">Passe o mouse sobre as colunas para ver as pontuações</span>
+                    </div>
+                    <div class="chart-grid">
+                        ${columnsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
         function openPlayerHistoryModal(playerId) {
             const modal = document.getElementById('player-history-modal');
             const title = document.getElementById('player-history-title');
             const list = document.getElementById('player-history-list');
+            const chartContainer = document.getElementById('player-history-chart-container');
             const data = getPlayerDisplayData(playerId);
             const history = getPlayerHistory(playerId);
 
             title.innerHTML = `<img src="${data.avatar}" alt="" onerror="this.src='default-avatar.png'"><span>${data.name}</span>`;
+            
+            if (chartContainer) {
+                chartContainer.innerHTML = history.length ? renderHistoryChart(history) : '';
+            }
+
             list.innerHTML = history.length ? history.map(item => {
                 const opponent = getPlayerDisplayData(item.opponentId);
                 const score = item.myScore === null || item.oppScore === null ? 'vs' : `${item.myScore} x ${item.oppScore}${item.live ? ' ao vivo' : ''}`;
@@ -661,6 +979,8 @@
                 const h2hBadge = usedH2H ? `<span class="badge-h2h" title="Desempate por Confronto Direto"><i class="fas fa-handshake"></i> H2H</span>` : '';
 
                 const beltBadge = playerData.playerId === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão"><i class="fas fa-hand-fist"></i> Cinturão</span>' : '';
+                const activeCopaRound = Object.values(supercopaDataCache?.groups?.rounds || {}).find(r => r.status === 1);
+                const liveBadge = activeCopaRound ? '<span class="live-badge" title="Estatísticas com rodada ao vivo"><span class="live-dot"></span> LIVE</span>' : '';
                 return `
                     <div class="player-standing-card ${statusClass}" data-player-id="${playerData.playerId}" style="animation-delay: ${index * 50}ms">
                         <span class="pos">${position}</span>
@@ -671,7 +991,10 @@
                             ${formHtml}
                         </div>
                         <div class="standing-stats">
+                            ${liveBadge}
                             <div class="stat-pill" title="Vitórias"><strong>${playerData.wins || 0}</strong>V</div>
+                            <div class="stat-pill" title="Empates"><strong>${playerData.draws || 0}</strong>E</div>
+                            <div class="stat-pill" title="Derrotas"><strong>${playerData.losses || 0}</strong>D</div>
                             <div class="stat-pill" title="Saldo de Gols">SG: <strong>${gd > 0 ? '+' : ''}${gd}</strong></div>
                             <div class="stat-pill" title="Gols Pró (Feitos)">GP: <strong>${playerData.goalsFor || 0}</strong></div>
                             <div class="points">${playerData.points || 0} pts</div>
@@ -687,7 +1010,10 @@
                 ui.matchesList.innerHTML = `<div class="empty-state">Nenhum jogo da Supercopa ativo.</div>`;
                 return;
             }
-            ui.matchesList.innerHTML = Object.values(activeCopaRound.matches).map(match => renderMatchCard(match, true)).join('');
+            ui.matchesList.innerHTML = Object.entries(activeCopaRound.matches).map(([matchKey, match]) => {
+                match.id = matchKey;
+                return renderMatchCard(match, true);
+            }).join('');
         }
 
         function renderKnockoutSeries(matches, container) {
@@ -695,7 +1021,10 @@
                 container.innerHTML = `<div class="empty-state">Confrontos não definidos.</div>`;
                 return;
             }
-            container.innerHTML = Object.values(matches).map(match => renderMatchCard(match, false)).join('');
+            container.innerHTML = Object.entries(matches).map(([matchKey, match]) => {
+                match.id = matchKey;
+                return renderMatchCard(match, false);
+            }).join('');
         }
         
         function renderMatchCard(match, isGroupStage) {
@@ -704,6 +1033,10 @@
 
             const player1 = p1Id ? usersDataCache[p1Id] : null;
             const player2 = p2Id ? usersDataCache[p2Id] : null;
+            
+            const isClickable = !!(activeSuperligaRoundData && match.id);
+            const clickableClass = isClickable ? 'clickable-match-card' : '';
+            const clickHandler = isClickable ? `onclick="openMatchCalculator('${match.id}', ${isGroupStage})"` : '';
             
             const team1 = player1 ? teamsDataCache[player1.teamId || player1.team] : null;
             const team2 = player2 ? teamsDataCache[player2.teamId || player2.team] : null;
@@ -734,7 +1067,7 @@
             const beltBadge1 = p1Id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão">🥊</span>' : '';
             const beltBadge2 = p2Id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão">🥊</span>' : '';
             return `
-                <div class="match-card">
+                <div class="match-card ${clickableClass}" ${clickHandler}>
                     ${clasicoBadge}
                     <div class="match-player">
                         <img src="${avatar1}" alt="" class="logo" onerror="this.src='default-avatar.png'">
@@ -757,12 +1090,24 @@
                 return u.lastRoundPointsLigaClausura ?? u.lastRoundPointsLigaAbertura ?? 0;
             }
             let points = 0;
+            let hasValidPrediction = false;
             const matches = activeSuperligaRoundData.matches ? (Array.isArray(activeSuperligaRoundData.matches) ? activeSuperligaRoundData.matches : Object.values(activeSuperligaRoundData.matches)) : [];
             for (const match of matches) {
                 if (match.finalResult && match.predictions?.[playerId]) {
+                    hasValidPrediction = true;
                     points += calculateMatchPoints(match.finalResult, match.predictions[playerId]);
                 }
             }
+
+            const starPlayers = activeSuperligaRoundData.starPlayers || {};
+            const playerGoals = activeSuperligaRoundData.playerGoals || {};
+            const sp = starPlayers[playerId];
+            if (hasValidPrediction && sp && sp.athleteId) {
+                const gInfo = playerGoals[sp.athleteId] || 0;
+                const gCount = typeof gInfo === 'number' ? gInfo : (gInfo.count || 0);
+                points += gCount;
+            }
+
             return points;
         }
 
@@ -783,8 +1128,352 @@
             return pts;
         }
 
+        function getPossiblePointsDiffs(m, p1Id, p2Id) {
+            const pred1 = m.predictions?.[p1Id];
+            const pred2 = m.predictions?.[p2Id];
+
+            if (!pred1 && !pred2) return { maxDiff1: 0, maxDiff2: 0, neutralized: true };
+
+            const isStar1 = pred1 ? (pred1.isStarMatch || pred1.isCaptain || pred1.star || pred1.doublePoints) : false;
+            const isStar2 = pred2 ? (pred2.isStarMatch || pred2.isCaptain || pred2.star || pred2.doublePoints) : false;
+
+            if (pred1 && !pred2) {
+                const max1 = isStar1 ? 6 : 3;
+                const min1 = isStar1 ? -2 : -1;
+                return { maxDiff1: max1, maxDiff2: -min1, neutralized: false };
+            }
+            if (!pred1 && pred2) {
+                const max2 = isStar2 ? 6 : 3;
+                const min2 = isStar2 ? -2 : -1;
+                return { maxDiff1: -min2, maxDiff2: max2, neutralized: false };
+            }
+
+            const testScores = [];
+            testScores.push({ homeScore: pred1.homeScore, awayScore: pred1.awayScore });
+            testScores.push({ homeScore: pred2.homeScore, awayScore: pred2.awayScore });
+            testScores.push({ homeScore: pred1.awayScore, awayScore: pred1.homeScore });
+            testScores.push({ homeScore: pred2.awayScore, awayScore: pred2.homeScore });
+            
+            const w1 = Math.sign(pred1.homeScore - pred1.awayScore);
+            const w2 = Math.sign(pred2.homeScore - pred2.awayScore);
+            
+            [w1, w2].forEach(w => {
+                if (w > 0) testScores.push({ homeScore: 10, awayScore: 0 });
+                else if (w < 0) testScores.push({ homeScore: 0, awayScore: 10 });
+                else testScores.push({ homeScore: 5, awayScore: 5 });
+            });
+            testScores.push({ homeScore: 10, awayScore: 10 });
+            testScores.push({ homeScore: 10, awayScore: 0 });
+            testScores.push({ homeScore: 0, awayScore: 10 });
+
+            const pairs = testScores.map(f => {
+                const pts1 = calculateMatchPoints(f, pred1);
+                const pts2 = calculateMatchPoints(f, pred2);
+                return { pts1, pts2 };
+            });
+
+            const diffs1 = pairs.map(p => p.pts1 - p.pts2);
+            const diffs2 = pairs.map(p => p.pts2 - p.pts1);
+
+            const maxDiff1 = Math.max(...diffs1);
+            const maxDiff2 = Math.max(...diffs2);
+
+            const isIdentical = pred1.homeScore === pred2.homeScore && pred1.awayScore === pred2.awayScore && isStar1 === isStar2;
+
+            return { maxDiff1, maxDiff2, neutralized: isIdentical };
+        }
+
+        function analyzeMatchup(match) {
+            const p1Id = match.player1Id || match.homeTeam;
+            const p2Id = match.player2Id || match.awayTeam;
+            
+            const player1 = usersDataCache[p1Id];
+            const player2 = usersDataCache[p2Id];
+            
+            const name1 = player1 ? ((player1.customTeamName && player1.customTeamName.trim() !== '') ? player1.customTeamName.trim() : (player1.name || 'Jogador 1')) : 'A Definir';
+            const name2 = player2 ? ((player2.customTeamName && player2.customTeamName.trim() !== '') ? player2.customTeamName.trim() : (player2.name || 'Jogador 2')) : 'A Definir';
+
+            if (!activeSuperligaRoundData || !p1Id || !p2Id) {
+                return `<div class="empty-state">Confronto indisponível para cálculo.</div>`;
+            }
+
+            const matches = activeSuperligaRoundData.matches ? (Array.isArray(activeSuperligaRoundData.matches) ? activeSuperligaRoundData.matches : Object.values(activeSuperligaRoundData.matches)) : [];
+            
+            let finishedMatchesCount = 0;
+            let remainingMatchesCount = 0;
+            
+            let score1 = 0;
+            let score2 = 0;
+            
+            let maxEarnable1 = 0;
+            let minEarnable1 = 0;
+            let maxEarnable2 = 0;
+            let minEarnable2 = 0;
+            
+            let maxDiffGain1 = 0;
+            let maxDiffGain2 = 0;
+            let identicalMatchesCount = 0;
+            
+            const remainingDetails = [];
+
+            for (const m of matches) {
+                const pred1 = m.predictions?.[p1Id];
+                const pred2 = m.predictions?.[p2Id];
+                
+                if (!pred1 && !pred2) continue;
+
+                const isStar1 = pred1 ? (pred1.isStarMatch || pred1.isCaptain || pred1.star || pred1.doublePoints) : false;
+                const isStar2 = pred2 ? (pred2.isStarMatch || pred2.isCaptain || pred2.star || pred2.doublePoints) : false;
+
+                if (m.finalResult && m.finalResult.homeScore !== undefined) {
+                    finishedMatchesCount++;
+                    const pts1 = pred1 ? calculateMatchPoints(m.finalResult, pred1) : 0;
+                    const pts2 = pred2 ? calculateMatchPoints(m.finalResult, pred2) : 0;
+                    score1 += pts1;
+                    score2 += pts2;
+                } else {
+                    remainingMatchesCount++;
+                    
+                    let max1 = 0;
+                    let min1 = 0;
+                    if (pred1 && pred1.homeScore !== undefined) {
+                        max1 = isStar1 ? 6 : 3;
+                        min1 = isStar1 ? -2 : -1;
+                    }
+
+                    let max2 = 0;
+                    let min2 = 0;
+                    if (pred2 && pred2.homeScore !== undefined) {
+                        max2 = isStar2 ? 6 : 3;
+                        min2 = isStar2 ? -2 : -1;
+                    }
+
+                    maxEarnable1 += max1;
+                    minEarnable1 += min1;
+                    maxEarnable2 += max2;
+                    minEarnable2 += min2;
+
+                    const { maxDiff1, maxDiff2, neutralized } = getPossiblePointsDiffs(m, p1Id, p2Id);
+                    maxDiffGain1 += maxDiff1;
+                    maxDiffGain2 += maxDiff2;
+
+                    if (neutralized) {
+                        identicalMatchesCount++;
+                    }
+
+                    const homeTeamObj = teamsDataCache[m.homeTeam] || {};
+                    const awayTeamObj = teamsDataCache[m.awayTeam] || {};
+                    const homeTeamName = homeTeamObj.name || m.homeTeamName || m.homeTeam || 'Mandante';
+                    const awayTeamName = awayTeamObj.name || m.awayTeamName || m.awayTeam || 'Visitante';
+
+                    remainingDetails.push({
+                        homeTeamName,
+                        awayTeamName,
+                        pred1: pred1 ? `${pred1.homeScore}x${pred1.awayScore}${isStar1 ? ' ⭐' : ''}` : 'Sem palpite',
+                        pred2: pred2 ? `${pred2.homeScore}x${pred2.awayScore}${isStar2 ? ' ⭐' : ''}` : 'Sem palpite',
+                        isStar1,
+                        isStar2
+                    });
+                }
+            }
+
+            // Include current artilheiro goals in score1 and score2
+            const sp1 = activeSuperligaRoundData.starPlayers?.[p1Id];
+            const sp2 = activeSuperligaRoundData.starPlayers?.[p2Id];
+
+            let sp1Text = 'Nenhum';
+            let goals1 = 0;
+            if (sp1) {
+                const goalsInfo = activeSuperligaRoundData.playerGoals?.[sp1.athleteId] || 0;
+                goals1 = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                sp1Text = `⚽ ${sp1.athleteName || sp1.name} (+${goals1} pts)`;
+            }
+
+            let sp2Text = 'Nenhum';
+            let goals2 = 0;
+            if (sp2) {
+                const goalsInfo = activeSuperligaRoundData.playerGoals?.[sp2.athleteId] || 0;
+                goals2 = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                sp2Text = `⚽ ${sp2.athleteName || sp2.name} (+${goals2} pts)`;
+            }
+
+            // Apply to base score
+            score1 += goals1;
+            score2 += goals2;
+
+            const totalMax1 = score1 + maxEarnable1;
+            const totalMin1 = score1 + minEarnable1;
+            const totalMax2 = score2 + maxEarnable2;
+            const totalMin2 = score2 + minEarnable2;
+
+            const maxFinalDiff = (score1 - score2) + maxDiffGain1;
+            const minFinalDiff = (score1 - score2) - maxDiffGain2;
+
+            const hasPredictions1 = matches.some(m => m.predictions?.[p1Id] !== undefined);
+            const hasPredictions2 = matches.some(m => m.predictions?.[p2Id] !== undefined);
+
+            let statusBadgeClass = 'status-upcoming';
+            let statusText = 'Em aberto';
+            let analysisDesc = '';
+
+            if (remainingMatchesCount === 0) {
+                statusBadgeClass = 'status-ongoing';
+                statusText = 'Finalizado';
+                if (score1 > score2) {
+                    analysisDesc = `🏆 <strong>${name1}</strong> venceu o confronto por ${score1} x ${score2}!`;
+                } else if (score2 > score1) {
+                    analysisDesc = `🏆 <strong>${name2}</strong> venceu o confronto por ${score2} x ${score1}!`;
+                } else {
+                    analysisDesc = `⚖️ O confronto terminou empatado em ${score1} x ${score2}!`;
+                }
+            } else {
+                const diff = score1 - score2; // Positive if Player 1 is ahead
+
+                if (diff > 0) {
+                    // Player 1 leading
+                    const maxGain2 = maxDiffGain2;
+                    if (maxGain2 < diff) {
+                        // Player 2 cannot even tie
+                        statusBadgeClass = 'status-ongoing';
+                        statusText = 'Definido';
+                        analysisDesc = `🔒 <strong>${name1}</strong> já está matematicamente vencedor! A vantagem atual é de ${diff} pontos, e ${name2} só consegue tirar no máximo ${maxGain2} pontos nos jogos restantes.`;
+                    } else if (maxGain2 === diff) {
+                        // Player 2 can only tie, cannot win
+                        statusBadgeClass = 'status-ongoing';
+                        statusText = 'Definido';
+                        analysisDesc = `🔒 <strong>${name1}</strong> está matematicamente garantido! O máximo que ${name2} consegue é empatar o confronto se acertar todas as combinações ideais (tirando os ${diff} pontos de diferença).`;
+                    } else {
+                        // Player 2 can win
+                        statusBadgeClass = 'status-active';
+                        statusText = 'Em disputa';
+                        analysisDesc = `📈 <strong>${name1}</strong> está em vantagem por ${diff} ponto(s) (${score1} x ${score2}). <br>Para virar, <strong>${name2}</strong> precisa tirar essa diferença nos jogos restantes (consegue tirar no máximo ${maxGain2} pontos se der tudo certo nos palpites e estrelas).`;
+                    }
+                } else if (diff < 0) {
+                    // Player 2 leading
+                    const diffAbs = Math.abs(diff);
+                    const maxGain1 = maxDiffGain1;
+                    if (maxGain1 < diffAbs) {
+                        // Player 1 cannot even tie
+                        statusBadgeClass = 'status-ongoing';
+                        statusText = 'Definido';
+                        analysisDesc = `🔒 <strong>${name2}</strong> já está matematicamente vencedor! A vantagem atual é de ${diffAbs} pontos, e ${name1} só consegue tirar no máximo ${maxGain1} pontos nos jogos restantes.`;
+                    } else if (maxGain1 === diffAbs) {
+                        // Player 1 can only tie, cannot win
+                        statusBadgeClass = 'status-ongoing';
+                        statusText = 'Definido';
+                        analysisDesc = `🔒 <strong>${name2}</strong> está matematicamente garantido! O máximo que ${name1} consegue é empatar o confronto se acertar todas as combinações ideais (tirando os ${diffAbs} pontos de diferença).`;
+                    } else {
+                        // Player 1 can win
+                        statusBadgeClass = 'status-active';
+                        statusText = 'Em disputa';
+                        analysisDesc = `📈 <strong>${name2}</strong> está em vantagem por ${diffAbs} ponto(s) (${score2} x ${score1}). <br>Para virar, <strong>${name1}</strong> precisa tirar essa diferença nos jogos restantes (consegue tirar no máximo ${maxGain1} pontos se der tudo certo nos palpites e estrelas).`;
+                    }
+                } else {
+                    // Tied
+                    statusBadgeClass = 'status-active';
+                    statusText = 'Em disputa';
+                    analysisDesc = `⚖️ <strong>Confronto empatado em ${score1} x ${score2}!</strong> <br>Qualquer um pode vencer nos jogos restantes. ${name1} pode ganhar até +${maxDiffGain1} pts de vantagem, e ${name2} até +${maxDiffGain2} pts.`;
+                }
+            }
+
+            let warningsHtml = '';
+            if (!hasPredictions1) {
+                warningsHtml += `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 12px; font-weight: 600;"><i class="fas fa-exclamation-triangle"></i> ${name1} não enviou palpites nesta rodada!</div>`;
+            }
+            if (!hasPredictions2) {
+                warningsHtml += `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 12px; font-weight: 600;"><i class="fas fa-exclamation-triangle"></i> ${name2} não enviou palpites nesta rodada!</div>`;
+            }
+
+            let neutralizedNoteHtml = '';
+            if (identicalMatchesCount > 0) {
+                neutralizedNoteHtml = `<div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-color-light); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 12px;"><i class="fas fa-info-circle"></i> <strong>${identicalMatchesCount} jogo(s) neutralizado(s)</strong>: palpites idênticos e mesma estrela (não alteram a diferença).</div>`;
+            }
+
+            const remainingListHtml = remainingDetails.map(d => `
+                <div class="math-row">
+                    <div class="math-match-name">${d.homeTeamName} x ${d.awayTeamName}</div>
+                    <div class="math-preds">
+                        <div class="math-pred-pill ${d.isStar1 ? 'star-pill-yes' : ''}"><strong>${name1}:</strong> ${d.pred1}</div>
+                        <div class="math-pred-pill ${d.isStar2 ? 'star-pill-yes' : ''}"><strong>${name2}:</strong> ${d.pred2}</div>
+                    </div>
+                </div>
+            `).join('') || '<div class="empty-state">Nenhum jogo restante.</div>';
+
+            return `
+                <div class="calculator-modal-body">
+                    ${warningsHtml}
+                    ${neutralizedNoteHtml}
+                    <div class="math-summary-card">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                            <span class="math-score-large">${score1} x ${score2}</span>
+                            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
+                        </div>
+                        <p class="math-analysis-text">${analysisDesc}</p>
+                    </div>
+
+                    <div class="math-grid-stats">
+                        <div class="math-stat-box">
+                            <div class="math-stat-label">Pontos Possíveis</div>
+                            <div class="math-stat-value">${name1}</div>
+                            <div class="math-stat-range">${totalMin1} ~ ${totalMax1} pts</div>
+                            <div style="font-size: 0.72rem; color: var(--text-color-light); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Artilheiro: ${sp1Text.replace('⚽ ', '')}">Artilheiro: <strong>${sp1Text}</strong></div>
+                        </div>
+                        <div class="math-stat-box">
+                            <div class="math-stat-label">Pontos Possíveis</div>
+                            <div class="math-stat-value">${name2}</div>
+                            <div class="math-stat-range">${totalMin2} ~ ${totalMax2} pts</div>
+                            <div style="font-size: 0.72rem; color: var(--text-color-light); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Artilheiro: ${sp2Text.replace('⚽ ', '')}">Artilheiro: <strong>${sp2Text}</strong></div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.9rem; font-weight: 800; color: #fff; margin: 16px 0 10px;"><i class="fas fa-hourglass-half"></i> Jogos Restantes (${remainingMatchesCount})</div>
+                    <div class="math-matches-list">
+                        ${remainingListHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openMatchCalculator(matchId, isGroupStage) {
+            let match = null;
+            if (isGroupStage) {
+                const activeCopaRound = Object.values(supercopaDataCache?.groups?.rounds || {}).find(r => r.status === 1);
+                match = activeCopaRound?.matches?.[matchId];
+            } else {
+                const activeStageKey = ['quarterFinals', 'semiFinals', 'final'].find(key => supercopaDataCache[key]?.status === 1);
+                if (activeStageKey) {
+                    const stageData = supercopaDataCache[activeStageKey];
+                    match = stageData?.matches?.[matchId] || stageData?.b?.[matchId] || stageData?.c?.[matchId];
+                }
+            }
+
+            if (!match) return;
+            match.id = matchId;
+
+            const modal = document.getElementById('match-calculator-modal');
+            const content = document.getElementById('match-calculator-content');
+            if (modal && content) {
+                content.innerHTML = analyzeMatchup(match);
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+        }
+
+        function closeMatchCalculatorModal() {
+            const modal = document.getElementById('match-calculator-modal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        }
+
         // --- CONFIGURAÇÃO DE EVENTOS ---
         function setupEventListeners() {
+            document.querySelector('#match-calculator-modal .modal-close')?.addEventListener('click', closeMatchCalculatorModal);
+            document.getElementById('match-calculator-modal')?.addEventListener('click', (event) => {
+                if (event.target.id === 'match-calculator-modal') closeMatchCalculatorModal();
+            });
+
             ui.mainTabs.forEach(tab => tab.addEventListener('click', () => {
                 ui.mainTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');

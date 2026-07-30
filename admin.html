@@ -4400,7 +4400,8 @@
                             <div class="series-confronts" data-series="${s.key}">
                     `;
 
-                    const existingMatches = phaseData[s.key] || [];
+                    const rawMatches = phaseData[s.key] || [];
+                    const existingMatches = Array.isArray(rawMatches) ? rawMatches : Object.values(rawMatches);
 
                     for (let idx = 0; idx < requiredConfronts; idx++) {
                         const m = existingMatches[idx] || {};
@@ -4520,7 +4521,7 @@
                         updatePayload[s.key] = matchesArray;
                     });
 
-                    database.ref(`tournaments/supercopa/${phaseKey}`).update(updatePayload)
+                    database.ref(`tournaments/supercopa/${phaseKey}`).set(updatePayload)
                         .then(() => alert(`Mata-Mata (${phaseNames[phaseKey]}) salvo com sucesso!`))
                         .catch(err => alert('Erro ao salvar Mata-Mata: ' + err.message));
                 };
