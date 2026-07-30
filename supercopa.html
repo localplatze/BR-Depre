@@ -305,6 +305,26 @@
             50% { opacity: 1; }
             100% { opacity: 0.6; }
         }
+        /* --- GRUPO DO JOGADOR NOS CARDS --- */
+        .match-player-group {
+            font-size: 0.7rem;
+            color: var(--text-color-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+        .match-player-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+        .match-player.away .match-player-info {
+            align-items: flex-end;
+            text-align: right;
+        }
+
         /* --- CALCULADORA DE CONFRONTO --- */
         .clickable-match-card {
             cursor: pointer;
@@ -1027,6 +1047,19 @@
             }).join('');
         }
         
+        function getPlayerGroupLabel(playerId) {
+            if (!supercopaDataCache?.groups) return '';
+            const { standings, status, rounds, ...groups } = supercopaDataCache.groups;
+            for (const [groupKey, playerIds] of Object.entries(groups)) {
+                if (!Array.isArray(playerIds)) continue;
+                if (playerIds.includes(playerId)) {
+                    const labels = { group1: 'Grupo A', group2: 'Grupo B', group3: 'Grupo C', group4: 'Grupo D' };
+                    return labels[groupKey] || `Grupo ${groupKey}`;
+                }
+            }
+            return '';
+        }
+
         function renderMatchCard(match, isGroupStage) {
             const p1Id = isGroupStage ? match.player1Id : match.homeTeam;
             const p2Id = isGroupStage ? match.player2Id : match.awayTeam;
@@ -1066,16 +1099,25 @@
 
             const beltBadge1 = p1Id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão">🥊</span>' : '';
             const beltBadge2 = p2Id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão">🥊</span>' : '';
+            const group1 = getPlayerGroupLabel(p1Id);
+            const group2 = getPlayerGroupLabel(p2Id);
+
             return `
                 <div class="match-card ${clickableClass}" ${clickHandler}>
                     ${clasicoBadge}
                     <div class="match-player">
                         <img src="${avatar1}" alt="" class="logo" onerror="this.src='default-avatar.png'">
-                        <span class="name">${name1}${beltBadge1}</span>
+                        <div class="match-player-info">
+                            <span class="name">${name1}${beltBadge1}</span>
+                            ${group1 ? `<span class="match-player-group">${group1}</span>` : ''}
+                        </div>
                     </div>
                     <div class="match-result">${result}</div>
                     <div class="match-player away">
-                        <span class="name">${name2}${beltBadge2}</span>
+                        <div class="match-player-info">
+                            <span class="name">${name2}${beltBadge2}</span>
+                            ${group2 ? `<span class="match-player-group">${group2}</span>` : ''}
+                        </div>
                         <img src="${avatar2}" alt="" class="logo" onerror="this.src='default-avatar.png'">
                     </div>
                 </div>
@@ -1281,25 +1323,55 @@
             const sp1 = activeSuperligaRoundData.starPlayers?.[p1Id];
             const sp2 = activeSuperligaRoundData.starPlayers?.[p2Id];
 
+            // Helper: check if a team already played this round (has finalResult in any match)
+            function teamAlreadyPlayed(teamId) {
+                if (!teamId) return false;
+                return matches.some(m => (m.homeTeam === teamId || m.awayTeam === teamId) && m.finalResult && m.finalResult.homeScore !== undefined);
+            }
+
             let sp1Text = 'Nenhum';
             let goals1 = 0;
+            let sp1Played = false;
+            let sp1CanStillScore = false;
             if (sp1) {
                 const goalsInfo = activeSuperligaRoundData.playerGoals?.[sp1.athleteId] || 0;
                 goals1 = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
-                sp1Text = `⚽ ${sp1.athleteName || sp1.name} (+${goals1} pts)`;
+                sp1Played = teamAlreadyPlayed(sp1.teamId);
+                sp1CanStillScore = !sp1Played;
+                const playedNote = sp1Played ? ` (✓ já jogou)` : ` (ainda joga)`;
+                sp1Text = `⚽ ${sp1.athleteName || sp1.name} +${goals1} pts${playedNote}`;
             }
 
             let sp2Text = 'Nenhum';
             let goals2 = 0;
+            let sp2Played = false;
+            let sp2CanStillScore = false;
             if (sp2) {
                 const goalsInfo = activeSuperligaRoundData.playerGoals?.[sp2.athleteId] || 0;
                 goals2 = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
-                sp2Text = `⚽ ${sp2.athleteName || sp2.name} (+${goals2} pts)`;
+                sp2Played = teamAlreadyPlayed(sp2.teamId);
+                sp2CanStillScore = !sp2Played;
+                const playedNote = sp2Played ? ` (✓ já jogou)` : ` (ainda joga)`;
+                sp2Text = `⚽ ${sp2.athleteName || sp2.name} +${goals2} pts${playedNote}`;
             }
 
             // Apply to base score
             score1 += goals1;
             score2 += goals2;
+
+            // --- Artilheiro compartilhado: se ambos escolheram o mesmo atleta,
+            //     os gols se neutralizam no diferencial (ambos ganham igual)
+            const sharedStriker = sp1 && sp2 && sp1.athleteId && sp2.athleteId && sp1.athleteId === sp2.athleteId;
+            if (sharedStriker) {
+                // Goals already counted equally in score1/score2, so differential is unaffected.
+                // The striker cannot swing the matchup — zero out the bonus potential for projections.
+                sp1CanStillScore = false;
+                sp2CanStillScore = false;
+                const sharedNote = sp1Played ? ` (✓ já jogou — neutralizado)` : ` (ainda joga — neutralizado)`;
+                sp1Text = `⚽ ${sp1.athleteName || sp1.name} +${goals1} pts${sharedNote}`;
+                sp2Text = `⚽ ${sp2.athleteName || sp2.name} +${goals2} pts${sharedNote}`;
+            }
+
 
             const totalMax1 = score1 + maxEarnable1;
             const totalMin1 = score1 + minEarnable1;
@@ -1316,13 +1388,17 @@
             let statusText = 'Em aberto';
             let analysisDesc = '';
 
+            // Max possible strikers bonus still earnable
+            const maxSpBonus1 = sp1CanStillScore ? 5 : 0; // up to 5 goals theoretically
+            const maxSpBonus2 = sp2CanStillScore ? 5 : 0;
+
             if (remainingMatchesCount === 0) {
                 statusBadgeClass = 'status-ongoing';
                 statusText = 'Finalizado';
                 if (score1 > score2) {
-                    analysisDesc = `🏆 <strong>${name1}</strong> venceu o confronto por ${score1} x ${score2}!`;
+                    analysisDesc = `🏆 <strong>${name1}</strong> venceu! Placar final: ${score1} x ${score2}.`;
                 } else if (score2 > score1) {
-                    analysisDesc = `🏆 <strong>${name2}</strong> venceu o confronto por ${score2} x ${score1}!`;
+                    analysisDesc = `🏆 <strong>${name2}</strong> venceu! Placar final: ${score2} x ${score1}.`;
                 } else {
                     analysisDesc = `⚖️ O confronto terminou empatado em ${score1} x ${score2}!`;
                 }
@@ -1330,49 +1406,80 @@
                 const diff = score1 - score2; // Positive if Player 1 is ahead
 
                 if (diff > 0) {
-                    // Player 1 leading
-                    const maxGain2 = maxDiffGain2;
-                    if (maxGain2 < diff) {
-                        // Player 2 cannot even tie
+                    const maxGain2 = maxDiffGain2 + maxSpBonus2;
+                    const maxGain2NoSp = maxDiffGain2;
+                    if (maxGain2NoSp < diff && !sp2CanStillScore) {
+                        // Definitively won - no more strikers
                         statusBadgeClass = 'status-ongoing';
                         statusText = 'Definido';
-                        analysisDesc = `🔒 <strong>${name1}</strong> já está matematicamente vencedor! A vantagem atual é de ${diff} pontos, e ${name2} só consegue tirar no máximo ${maxGain2} pontos nos jogos restantes.`;
+                        analysisDesc = `🔒 <strong>${name1}</strong> está matematicamente classificado! Vantagem de ${diff} pts e ${name2} não consegue mais tirar essa diferença (máximo de ${maxGain2NoSp} pts possíveis nos jogos restantes).`;
+                    } else if (maxGain2 < diff) {
+                        // Won even counting striker bonus
+                        statusBadgeClass = 'status-ongoing';
+                        statusText = 'Definido';
+                        analysisDesc = `🔒 <strong>${name1}</strong> já ganhou! Mesmo que ${name2} acerte tudo E seu artilheiro marque gols, a vantagem de ${diff} pts não pode ser revertida.`;
+                    } else if (maxGain2NoSp < diff && sp2CanStillScore) {
+                        // Only striker can save
+                        statusBadgeClass = 'status-active';
+                        statusText = 'Quase definido';
+                        const spName = sp2?.athleteName || sp2?.name || 'artilheiro';
+                        analysisDesc = `⚠️ <strong>${name1}</strong> está com vantagem de ${diff} pts. <strong>${name2}</strong> só pode virar se <em>${spName}</em> marcar gols (artilheiro ainda joga). Nos palpites sozinhos, já não consegue mais tirar a diferença.`;
                     } else if (maxGain2 === diff) {
-                        // Player 2 can only tie, cannot win
                         statusBadgeClass = 'status-ongoing';
-                        statusText = 'Definido';
-                        analysisDesc = `🔒 <strong>${name1}</strong> está matematicamente garantido! O máximo que ${name2} consegue é empatar o confronto se acertar todas as combinações ideais (tirando os ${diff} pontos de diferença).`;
+                        statusText = 'Quase definido';
+                        analysisDesc = `🔒 <strong>${name1}</strong> está garantido! O melhor que ${name2} consegue é um empate, acertando absolutamente tudo.`;
                     } else {
-                        // Player 2 can win
                         statusBadgeClass = 'status-active';
                         statusText = 'Em disputa';
-                        analysisDesc = `📈 <strong>${name1}</strong> está em vantagem por ${diff} ponto(s) (${score1} x ${score2}). <br>Para virar, <strong>${name2}</strong> precisa tirar essa diferença nos jogos restantes (consegue tirar no máximo ${maxGain2} pontos se der tudo certo nos palpites e estrelas).`;
+                        const needsSp = maxDiffGain2 < diff;
+                        if (needsSp && sp2CanStillScore) {
+                            const spName = sp2?.athleteName || sp2?.name || 'artilheiro';
+                            analysisDesc = `📈 <strong>${name1}</strong> lidera por ${diff} pts (${score1} x ${score2}). Para virar, <strong>${name2}</strong> precisa acertar os palpites restantes <em>e</em> torcer para que <em>${spName}</em> marque gol.`;
+                        } else {
+                            analysisDesc = `📈 <strong>${name1}</strong> lidera por ${diff} pts (${score1} x ${score2}). <strong>${name2}</strong> ainda pode virar se acertar os palpites restantes (máximo de ${maxDiffGain2} pts de vantagem possíveis).`;
+                        }
                     }
                 } else if (diff < 0) {
-                    // Player 2 leading
                     const diffAbs = Math.abs(diff);
-                    const maxGain1 = maxDiffGain1;
-                    if (maxGain1 < diffAbs) {
-                        // Player 1 cannot even tie
+                    const maxGain1 = maxDiffGain1 + maxSpBonus1;
+                    const maxGain1NoSp = maxDiffGain1;
+                    if (maxGain1NoSp < diffAbs && !sp1CanStillScore) {
                         statusBadgeClass = 'status-ongoing';
                         statusText = 'Definido';
-                        analysisDesc = `🔒 <strong>${name2}</strong> já está matematicamente vencedor! A vantagem atual é de ${diffAbs} pontos, e ${name1} só consegue tirar no máximo ${maxGain1} pontos nos jogos restantes.`;
+                        analysisDesc = `🔒 <strong>${name2}</strong> está matematicamente classificado! Vantagem de ${diffAbs} pts e ${name1} não consegue mais tirar essa diferença (máximo de ${maxGain1NoSp} pts possíveis nos jogos restantes).`;
+                    } else if (maxGain1 < diffAbs) {
+                        statusBadgeClass = 'status-ongoing';
+                        statusText = 'Definido';
+                        analysisDesc = `🔒 <strong>${name2}</strong> já ganhou! Mesmo que ${name1} acerte tudo E seu artilheiro marque gols, a vantagem de ${diffAbs} pts não pode ser revertida.`;
+                    } else if (maxGain1NoSp < diffAbs && sp1CanStillScore) {
+                        statusBadgeClass = 'status-active';
+                        statusText = 'Quase definido';
+                        const spName = sp1?.athleteName || sp1?.name || 'artilheiro';
+                        analysisDesc = `⚠️ <strong>${name2}</strong> está com vantagem de ${diffAbs} pts. <strong>${name1}</strong> só pode virar se <em>${spName}</em> marcar gols (artilheiro ainda joga). Nos palpites sozinhos, já não consegue mais tirar a diferença.`;
                     } else if (maxGain1 === diffAbs) {
-                        // Player 1 can only tie, cannot win
                         statusBadgeClass = 'status-ongoing';
-                        statusText = 'Definido';
-                        analysisDesc = `🔒 <strong>${name2}</strong> está matematicamente garantido! O máximo que ${name1} consegue é empatar o confronto se acertar todas as combinações ideais (tirando os ${diffAbs} pontos de diferença).`;
+                        statusText = 'Quase definido';
+                        analysisDesc = `🔒 <strong>${name2}</strong> está garantido! O melhor que ${name1} consegue é um empate, acertando absolutamente tudo.`;
                     } else {
-                        // Player 1 can win
                         statusBadgeClass = 'status-active';
                         statusText = 'Em disputa';
-                        analysisDesc = `📈 <strong>${name2}</strong> está em vantagem por ${diffAbs} ponto(s) (${score2} x ${score1}). <br>Para virar, <strong>${name1}</strong> precisa tirar essa diferença nos jogos restantes (consegue tirar no máximo ${maxGain1} pontos se der tudo certo nos palpites e estrelas).`;
+                        const needsSp = maxDiffGain1 < diffAbs;
+                        if (needsSp && sp1CanStillScore) {
+                            const spName = sp1?.athleteName || sp1?.name || 'artilheiro';
+                            analysisDesc = `📈 <strong>${name2}</strong> lidera por ${diffAbs} pts (${score2} x ${score1}). Para virar, <strong>${name1}</strong> precisa acertar os palpites restantes <em>e</em> torcer para que <em>${spName}</em> marque gol.`;
+                        } else {
+                            analysisDesc = `📈 <strong>${name2}</strong> lidera por ${diffAbs} pts (${score2} x ${score1}). <strong>${name1}</strong> ainda pode virar se acertar os palpites restantes (máximo de ${maxDiffGain1} pts de vantagem possíveis).`;
+                        }
                     }
                 } else {
                     // Tied
                     statusBadgeClass = 'status-active';
                     statusText = 'Em disputa';
-                    analysisDesc = `⚖️ <strong>Confronto empatado em ${score1} x ${score2}!</strong> <br>Qualquer um pode vencer nos jogos restantes. ${name1} pode ganhar até +${maxDiffGain1} pts de vantagem, e ${name2} até +${maxDiffGain2} pts.`;
+                    if (maxDiffGain1 === 0 && maxDiffGain2 === 0) {
+                        analysisDesc = `⚖️ <strong>Empatados em ${score1} x ${score2}.</strong> Todos os palpites restantes são idênticos — o resultado depende apenas dos artilheiros!`;
+                    } else {
+                        analysisDesc = `⚖️ <strong>Empatados em ${score1} x ${score2}!</strong> ${name1} pode ganhar até +${maxDiffGain1} pts de vantagem e ${name2} até +${maxDiffGain2} pts — quem acertar mais nos jogos restantes vence.`;
+                    }
                 }
             }
 

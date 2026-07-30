@@ -1262,16 +1262,31 @@
         function calculateLiveRoundPoints(roundData) {
             if (!roundData?.matches) return {};
             const points = {};
+            const hasPrediction = {};
             Object.values(roundData.matches).forEach(match => {
                 if (match.finalResult && match.predictions) {
                     Object.entries(match.predictions).forEach(([pid, pred]) => {
                         if (!points[pid]) points[pid] = 0;
                         points[pid] += calculateMatchPoints(match.finalResult, pred);
+                        hasPrediction[pid] = true;
                     });
                 }
             });
+
+            // Add artilheiro (star player) goals
+            const starPlayers = roundData.starPlayers || {};
+            const playerGoals = roundData.playerGoals || {};
+            Object.entries(starPlayers).forEach(([pid, sp]) => {
+                if (!hasPrediction[pid] || !sp?.athleteId) return;
+                const goalsInfo = playerGoals[sp.athleteId] || 0;
+                const gCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                if (!points[pid]) points[pid] = 0;
+                points[pid] += gCount;
+            });
+
             return points;
         }
+
 
         async function loadUserProfile(userId) {
             const user = usersCache[userId];

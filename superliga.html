@@ -902,14 +902,28 @@
         function calculateLiveRoundPoints(roundData) {
             if (!roundData || !roundData.matches) return {};
             const userRoundPoints = {};
+            const userHasPrediction = {};
             Object.values(roundData.matches).forEach(match => {
                 if (match.finalResult && match.predictions) {
                     Object.entries(match.predictions).forEach(([playerId, prediction]) => {
                         if (!userRoundPoints[playerId]) userRoundPoints[playerId] = 0;
                         userRoundPoints[playerId] += calculateMatchPoints(match.finalResult, prediction);
+                        userHasPrediction[playerId] = true;
                     });
                 }
             });
+
+            // Add artilheiro (star player) goals
+            const starPlayers = roundData.starPlayers || {};
+            const playerGoals = roundData.playerGoals || {};
+            Object.entries(starPlayers).forEach(([playerId, sp]) => {
+                if (!userHasPrediction[playerId] || !sp || !sp.athleteId) return;
+                const goalsInfo = playerGoals[sp.athleteId] || 0;
+                const gCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                if (!userRoundPoints[playerId]) userRoundPoints[playerId] = 0;
+                userRoundPoints[playerId] += gCount;
+            });
+
             return userRoundPoints;
         }
 
