@@ -1,0 +1,1056 @@
+================================================================================
+RELATÓRIO DE AUDITORIA: PALPITES E PONTUAÇÕES - RODADAS 21, 22 E 23
+Site: BR Depressão (Superliga)
+Gerado em: 2026-07-30T15:03:50.085Z
+================================================================================
+
+================================================================================
+RODADA 21 (ID: -Oy0iNy_bpCoqw2euEaT)
+Status: Finalizada
+Data Limite: 2026-07-21T18:30
+Torneios: ["superliga","supercopa"]
+================================================================================
+
+--- PARTIDAS DA RODADA ---
+Jogo 1: Atlético vs Bahia [Resultado Final: 1 x 1]
+Jogo 2: UCV vs Santos [Resultado Final: 1 x 4]
+Jogo 3: Ind. Medellín vs Vasco [Resultado Final: 2 x 2]
+Jogo 4: Coritiba vs Palmeiras [Resultado Final: 1 x 3]
+Jogo 5: Chapecoense vs Flamengo [Resultado Final: 0 x 4]
+Jogo 6: Internacional vs Cruzeiro [Resultado Final: 1 x 2]
+Jogo 7: São Paulo vs Athletico [Resultado Final: 1 x 2]
+Jogo 8: Sporting Cristal vs Bragantino [Resultado Final: 0 x 0]
+Jogo 9: Bolívar vs Grêmio [Resultado Final: 3 x 2]
+Jogo 10: Botafogo vs Vitória [Resultado Final: 0 x 0]
+Jogo 11: Corinthians vs Remo [Resultado Final: 3 x 0]
+
+--- DETALHES POR JOGADOR ---
+
+Jogador: Ageu Maia (ID: sSckeCos85f0A8vBKpFZoEpsf392)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 0 x 1 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 3 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 2 | Pontos: 3 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 2 | Pontos: 3 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 5 (Chapecoense vs Flamengo)
+  >> Pontuação Total na Rodada (jogos finalizados): 11 pts
+----------------------------------------------------------------
+
+Jogador: Carlos Freire (ID: R1l9Lv0xjKTkp6tm3HDz6GGBvSr2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 1 x 3 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 0 x 0 | Pontos: 3 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Carlos Koide (ID: 5B4C79itIHNGRle2AGEGzIgnB9c2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 2 | Pontos: 3 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 8 pts
+----------------------------------------------------------------
+
+Jogador: Edson Pires (ID: Xk6rGKdsjmR2YVBV0XPwiUTjXef2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 1 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 2 | Pontos: 3 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 2 x 2 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+
+  >> Jogo Estrela: Jogo 11 (Corinthians vs Remo)
+  >> Pontuação Total na Rodada (jogos finalizados): 10 pts
+----------------------------------------------------------------
+
+Jogador: Elian Monteiro (ID: bslpt4kTc3bmMyTY9zV9lP4402G3)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 2: UCV vs Santos => Palpite: 0 x 1 | Pontos: 1 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 3 x 1 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 0 x 0 | Pontos: 3 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+
+  >> Jogo Estrela: Jogo 11 (Corinthians vs Remo)
+  >> Pontuação Total na Rodada (jogos finalizados): 11 pts
+----------------------------------------------------------------
+
+Jogador: Elian Souza (ID: UTcyR47YFoRubgdTxqPLacyHgZb2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 6 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 1 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 6 (Internacional vs Cruzeiro)
+  >> Pontuação Total na Rodada (jogos finalizados): 13 pts
+----------------------------------------------------------------
+
+Jogador: Fabrício Soares (ID: UPfM6oX6pRaacAEU9HEMHz5s7QP2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 0 x 3 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 1 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 3 x 1 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 4 (Coritiba vs Palmeiras)
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Guilherme Farias (ID: 0xBBw0e8EAcyKF666TdzLoMNbLH3)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 3 | Pontos: 3 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Ian Andrade (ID: FJeAPIYZMiV6Gu66zzouGnsikky1)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 0 x 3 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 4 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Júlio César (ID: shtVwjxDjcdoEVV35Ne637byKBt1)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 2 | Pontos: 3 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 3 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+
+  >> Jogo Estrela: Jogo 11 (Corinthians vs Remo)
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Kauã (ID: tn2APPQk12bHMfOz6D9LIe0xbmB2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 1 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 2 x 2 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 3 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+
+  >> Jogo Estrela: Jogo 11 (Corinthians vs Remo)
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Kleison Miranda (ID: FsiMtTiV3YeazVyIrtGIAvapBu33)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 1 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 5 (Chapecoense vs Flamengo)
+  >> Pontuação Total na Rodada (jogos finalizados): 8 pts
+----------------------------------------------------------------
+
+Jogador: Markson Tavares (ID: X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+
+  >> Jogo Estrela: Jogo 11 (Corinthians vs Remo)
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Mauricio Netto (ID: 5J2njO54TUe6xGirNFN3ZDjVLPM2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 2 | Pontos: 3 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 3 x 1 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 5 (Chapecoense vs Flamengo)
+  >> Pontuação Total na Rodada (jogos finalizados): 12 pts
+----------------------------------------------------------------
+
+Jogador: Sérgio (ID: dUoSYPT294X1XvlHHLi4knKmTUr2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 1 x 3 | Pontos: 1 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 2 | Pontos: 3 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+
+  >> Jogo Estrela: Jogo 11 (Corinthians vs Remo)
+  >> Pontuação Total na Rodada (jogos finalizados): 9 pts
+----------------------------------------------------------------
+
+Jogador: Tarlon Souza (ID: 5jpAJ7q71gdh435BFBRpM5S6NDx2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 0 x 3 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 1 x 0 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 5 (Chapecoense vs Flamengo)
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Thiago Ferreira (ID: UE3VTBGpB4PqEgumNEtmYPJZUtA2)
+----------------------------------------------------------------
+  Jogo 1: Atlético vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 2: UCV vs Santos => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Ind. Medellín vs Vasco => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 4: Coritiba vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 5: Chapecoense vs Flamengo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 6: Internacional vs Cruzeiro => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: São Paulo vs Athletico => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 8: Sporting Cristal vs Bragantino => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 9: Bolívar vs Grêmio => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 10: Botafogo vs Vitória => Palpite: 3 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 11: Corinthians vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 10 (Botafogo vs Vitória)
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+--- RANKING DA RODADA ---
+Pos   | Jogador                   | Pontos     | Jogo Estrela                                  | Palpites
+------+---------------------------+------------+-----------------------------------------------+---------
+1     | Elian Souza               | 13         | Jogo 6 (Internacional vs Cruzeiro)            | 11/11
+2     | Mauricio Netto            | 12         | Jogo 5 (Chapecoense vs Flamengo)              | 11/11
+3     | Ageu Maia                 | 11         | Jogo 5 (Chapecoense vs Flamengo)              | 11/11
+4     | Elian Monteiro            | 11         | Jogo 11 (Corinthians vs Remo)                 | 11/11
+5     | Edson Pires               | 10         | Jogo 11 (Corinthians vs Remo)                 | 11/11
+6     | Sérgio                    | 9          | Jogo 11 (Corinthians vs Remo)                 | 11/11
+7     | Carlos Koide              | 8          | Nenhum                                        | 11/11
+8     | Kleison Miranda           | 8          | Jogo 5 (Chapecoense vs Flamengo)              | 11/11
+9     | Carlos Freire             | 7          | Nenhum                                        | 11/11
+10    | Júlio César               | 7          | Jogo 11 (Corinthians vs Remo)                 | 11/11
+11    | Tarlon Souza              | 7          | Jogo 5 (Chapecoense vs Flamengo)              | 11/11
+12    | Fabrício Soares           | 6          | Jogo 4 (Coritiba vs Palmeiras)                | 11/11
+13    | Guilherme Farias          | 4          | Nenhum                                        | 11/11
+14    | Ian Andrade               | 4          | Nenhum                                        | 11/11
+15    | Kauã                      | 4          | Jogo 11 (Corinthians vs Remo)                 | 11/11
+16    | Markson Tavares           | 4          | Jogo 11 (Corinthians vs Remo)                 | 11/11
+17    | Thiago Ferreira           | 4          | Jogo 10 (Botafogo vs Vitória)                 | 11/11
+
+
+================================================================================
+RODADA 22 (ID: -OyLQKcQ6bCQNHWCiB6Z)
+Status: Finalizada
+Data Limite: 2026-07-25T17:30
+Torneios: ["superliga","supercopa"]
+================================================================================
+
+--- PARTIDAS DA RODADA ---
+Jogo 1: Athletico vs Internacional [Resultado Final: 2 x 0]
+Jogo 2: Santos vs Chapecoense [Resultado Final: 2 x 2]
+Jogo 3: Vasco vs Mirassol [Resultado Final: 1 x 1]
+Jogo 4: Bahia vs Corinthians [Resultado Final: 1 x 1]
+Jogo 5: Cruzeiro vs Botafogo [Resultado Final: 0 x 1]
+Jogo 6: Flamengo vs São Paulo [Resultado Final: 1 x 1]
+Jogo 7: Grêmio vs Fluminense [Resultado Final: 1 x 1]
+Jogo 8: Bragantino vs Coritiba [Resultado Final: 0 x 0]
+Jogo 9: Palmeiras vs Atlético [Resultado Final: 1 x 2]
+Jogo 10: Remo vs Vitória [Resultado Final: 2 x 0]
+
+--- DETALHES POR JOGADOR ---
+
+Jogador: Ageu Maia (ID: sSckeCos85f0A8vBKpFZoEpsf392)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 0 | Pontos: 3 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 2 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 6 (Flamengo vs São Paulo)
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Carlos Freire (ID: R1l9Lv0xjKTkp6tm3HDz6GGBvSr2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 0 | Pontos: 3 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 2 | Pontos: 1 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 8 pts
+----------------------------------------------------------------
+
+Jogador: Carlos Koide (ID: 5B4C79itIHNGRle2AGEGzIgnB9c2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 1 x 0 | Pontos: -1 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 6 (Flamengo vs São Paulo)
+  >> Pontuação Total na Rodada (jogos finalizados): 0 pts
+----------------------------------------------------------------
+
+Jogador: Edson Pires (ID: Xk6rGKdsjmR2YVBV0XPwiUTjXef2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 2 x 2 | Pontos: 1 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 0 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 4 (Bahia vs Corinthians)
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Elian Monteiro (ID: bslpt4kTc3bmMyTY9zV9lP4402G3)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 0 x 0 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 7 (Grêmio vs Fluminense)
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Elian Souza (ID: UTcyR47YFoRubgdTxqPLacyHgZb2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 0 | Pontos: 3 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 10: Remo vs Vitória => Palpite: 0 x 2 | Pontos: -1 pts
+
+  >> Jogo Estrela: Jogo 6 (Flamengo vs São Paulo)
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Fabrício Soares (ID: UPfM6oX6pRaacAEU9HEMHz5s7QP2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 0 | Pontos: 3 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 1 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 2 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 9 (Palmeiras vs Atlético)
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Guilherme Farias (ID: 0xBBw0e8EAcyKF666TdzLoMNbLH3)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 2 x 2 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 2 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 6 (Flamengo vs São Paulo)
+  >> Pontuação Total na Rodada (jogos finalizados): 0 pts
+----------------------------------------------------------------
+
+Jogador: Ian Andrade (ID: FJeAPIYZMiV6Gu66zzouGnsikky1)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 0 | Pontos: 3 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 3 x 3 | Pontos: 1 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 1 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 5 (Cruzeiro vs Botafogo)
+  >> Pontuação Total na Rodada (jogos finalizados): 12 pts
+----------------------------------------------------------------
+
+Jogador: Júlio César (ID: shtVwjxDjcdoEVV35Ne637byKBt1)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 2 x 2 | Pontos: 1 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 1 x 0 | Pontos: -1 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 6 (Flamengo vs São Paulo)
+  >> Pontuação Total na Rodada (jogos finalizados): 2 pts
+----------------------------------------------------------------
+
+Jogador: Kauã (ID: tn2APPQk12bHMfOz6D9LIe0xbmB2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 4 (Bahia vs Corinthians)
+  >> Pontuação Total na Rodada (jogos finalizados): 5 pts
+----------------------------------------------------------------
+
+Jogador: Kleison Miranda (ID: FsiMtTiV3YeazVyIrtGIAvapBu33)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 0 x 2 | Pontos: -1 pts
+
+  >> Jogo Estrela: Jogo 6 (Flamengo vs São Paulo)
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Markson Tavares (ID: X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 2 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 5 (Cruzeiro vs Botafogo)
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Mauricio Netto (ID: 5J2njO54TUe6xGirNFN3ZDjVLPM2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 1 x 0 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 3 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 2 (Santos vs Chapecoense)
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Nadson Guimarães (ID: Rw8O5C6YyoZbXBz3O2UN1UCugAO2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 0 | Pontos: 3 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 0 x 3 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 10 pts
+----------------------------------------------------------------
+
+Jogador: Sérgio (ID: dUoSYPT294X1XvlHHLi4knKmTUr2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 1 x 0 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 0 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 0 x 2 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 4 (Bahia vs Corinthians)
+  >> Pontuação Total na Rodada (jogos finalizados): 2 pts
+----------------------------------------------------------------
+
+Jogador: Tarlon Souza (ID: 5jpAJ7q71gdh435BFBRpM5S6NDx2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 1 x 0 | Pontos: -1 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 3 x 3 | Pontos: 1 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 6 (Flamengo vs São Paulo)
+  >> Pontuação Total na Rodada (jogos finalizados): 1 pts
+----------------------------------------------------------------
+
+Jogador: Thiago Ferreira (ID: UE3VTBGpB4PqEgumNEtmYPJZUtA2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 2 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 0 | Pontos: 1 pts
+
+  >> Jogo Estrela: Jogo 1 (Athletico vs Internacional)
+  >> Pontuação Total na Rodada (jogos finalizados): 8 pts
+----------------------------------------------------------------
+
+Jogador: Yure (ID: 42ke4QdoIPaLoxlmLbW5zQndw9m2)
+----------------------------------------------------------------
+  Jogo 1: Athletico vs Internacional => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 2: Santos vs Chapecoense => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 3: Vasco vs Mirassol => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Bahia vs Corinthians => Palpite: 0 x 2 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 5: Cruzeiro vs Botafogo => Palpite: 0 x 0 | Pontos: 0 pts
+  Jogo 6: Flamengo vs São Paulo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 7: Grêmio vs Fluminense => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 8: Bragantino vs Coritiba => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 9: Palmeiras vs Atlético => Palpite: 2 x 1 | Pontos: -1 pts
+  Jogo 10: Remo vs Vitória => Palpite: 1 x 1 | Pontos: 0 pts
+
+  >> Jogo Estrela: Jogo 4 (Bahia vs Corinthians)
+  >> Pontuação Total na Rodada (jogos finalizados): -1 pts
+----------------------------------------------------------------
+
+--- RANKING DA RODADA ---
+Pos   | Jogador                   | Pontos     | Jogo Estrela                                  | Palpites
+------+---------------------------+------------+-----------------------------------------------+---------
+1     | Ian Andrade               | 12         | Jogo 5 (Cruzeiro vs Botafogo)                 | 10/10
+2     | Nadson Guimarães          | 10         | Nenhum                                        | 10/10
+3     | Carlos Freire             | 8          | Nenhum                                        | 10/10
+4     | Thiago Ferreira           | 8          | Jogo 1 (Athletico vs Internacional)           | 10/10
+5     | Ageu Maia                 | 7          | Jogo 6 (Flamengo vs São Paulo)                | 10/10
+6     | Elian Souza               | 7          | Jogo 6 (Flamengo vs São Paulo)                | 10/10
+7     | Fabrício Soares           | 7          | Jogo 9 (Palmeiras vs Atlético)                | 10/10
+8     | Markson Tavares           | 7          | Jogo 5 (Cruzeiro vs Botafogo)                 | 10/10
+9     | Edson Pires               | 6          | Jogo 4 (Bahia vs Corinthians)                 | 10/10
+10    | Kleison Miranda           | 6          | Jogo 6 (Flamengo vs São Paulo)                | 10/10
+11    | Mauricio Netto            | 6          | Jogo 2 (Santos vs Chapecoense)                | 10/10
+12    | Kauã                      | 5          | Jogo 4 (Bahia vs Corinthians)                 | 10/10
+13    | Elian Monteiro            | 4          | Jogo 7 (Grêmio vs Fluminense)                 | 10/10
+14    | Júlio César               | 2          | Jogo 6 (Flamengo vs São Paulo)                | 10/10
+15    | Sérgio                    | 2          | Jogo 4 (Bahia vs Corinthians)                 | 10/10
+16    | Tarlon Souza              | 1          | Jogo 6 (Flamengo vs São Paulo)                | 10/10
+17    | Carlos Koide              | 0          | Jogo 6 (Flamengo vs São Paulo)                | 10/10
+18    | Guilherme Farias          | 0          | Jogo 6 (Flamengo vs São Paulo)                | 10/10
+19    | Yure                      | -1         | Jogo 4 (Bahia vs Corinthians)                 | 10/10
+
+
+================================================================================
+RODADA 23 (ID: -OyWBqokjpFJUBDdfrKP)
+Status: Em andamento (Status 1)
+Data Limite: 2026-07-28T20:30
+Torneios: ["superliga","supercopa"]
+================================================================================
+
+--- PARTIDAS DA RODADA ---
+Jogo 1: Santos vs UCV [Resultado Final: 4 x 2]
+Jogo 2: Vasco vs Ind. Medellín [Resultado Final: 1 x 0]
+Jogo 3: Internacional vs Flamengo [Resultado Final: 1 x 1]
+Jogo 4: Mirassol vs Remo [Resultado Final: 2 x 1]
+Jogo 5: Fluminense vs Bahia [Resultado Final: 0 x 0]
+Jogo 6: Vitória vs Palmeiras [Resultado Final: 0 x 4]
+Jogo 7: Bragantino vs Sporting Cristal [Sem Resultado]
+Jogo 8: Grêmio vs Bolívar [Sem Resultado]
+Jogo 9: Corinthians vs Athletico [Sem Resultado]
+Jogo 10: Coritiba vs Cruzeiro [Sem Resultado]
+
+--- DETALHES POR JOGADOR ---
+
+Jogador: Ageu Maia (ID: sSckeCos85f0A8vBKpFZoEpsf392)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 1 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 0 x 2 [⭐ Jogo Estrela (2x)] | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 9 (Corinthians vs Athletico)
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Carlos Freire (ID: R1l9Lv0xjKTkp6tm3HDz6GGBvSr2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 3 x 0 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 2 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 4 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 3 pts
+----------------------------------------------------------------
+
+Jogador: Edson Pires (ID: Xk6rGKdsjmR2YVBV0XPwiUTjXef2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 3 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 1 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Elian Monteiro (ID: bslpt4kTc3bmMyTY9zV9lP4402G3)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 1 x 0 | Pontos: 1 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 8 (Grêmio vs Bolívar)
+  >> Pontuação Total na Rodada (jogos finalizados): 3 pts
+----------------------------------------------------------------
+
+Jogador: Elian Souza (ID: UTcyR47YFoRubgdTxqPLacyHgZb2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 3 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 0 x 3 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 1 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 6 (Vitória vs Palmeiras)
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Fabrício Soares (ID: UPfM6oX6pRaacAEU9HEMHz5s7QP2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 3 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 0 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 0 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 1 (Santos vs UCV)
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Guilherme Farias (ID: 0xBBw0e8EAcyKF666TdzLoMNbLH3)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 2 x 2 | Pontos: 0 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 3 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 3 [⭐ Jogo Estrela (2x)] | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 9 (Corinthians vs Athletico)
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Ian Andrade (ID: FJeAPIYZMiV6Gu66zzouGnsikky1)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 3 (Internacional vs Flamengo)
+  >> Pontuação Total na Rodada (jogos finalizados): 3 pts
+----------------------------------------------------------------
+
+Jogador: Júlio César (ID: shtVwjxDjcdoEVV35Ne637byKBt1)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 1 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 2 (Vasco vs Ind. Medellín)
+  >> Pontuação Total na Rodada (jogos finalizados): 7 pts
+----------------------------------------------------------------
+
+Jogador: Kauã (ID: tn2APPQk12bHMfOz6D9LIe0xbmB2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 4 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 0 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 0 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Kleison Miranda (ID: FsiMtTiV3YeazVyIrtGIAvapBu33)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 1 x 0 | Pontos: 3 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 3 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 1 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 8 pts
+----------------------------------------------------------------
+
+Jogador: Markson Tavares (ID: X2vQCJ3S4Ghe186D0dgaU8wQ4Eq2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 1 x 1 | Pontos: 3 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 1 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 8 pts
+----------------------------------------------------------------
+
+Jogador: Mauricio Netto (ID: 5J2njO54TUe6xGirNFN3ZDjVLPM2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 1 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 6 pts
+----------------------------------------------------------------
+
+Jogador: Nadson Guimarães (ID: Rw8O5C6YyoZbXBz3O2UN1UCugAO2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 3 x 1 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 0 x 1 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 0 x 3 [⭐ Jogo Estrela (2x)] | Pontos: 2 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 0 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 0 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 0 x 1 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 6 (Vitória vs Palmeiras)
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Sérgio (ID: dUoSYPT294X1XvlHHLi4knKmTUr2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 1 x 2 | Pontos: 0 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 1 x 1 | Pontos: 1 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 2 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 3 pts
+----------------------------------------------------------------
+
+Jogador: Thiago Ferreira (ID: UE3VTBGpB4PqEgumNEtmYPJZUtA2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 2 x 1 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 2 x 0 [⭐ Jogo Estrela (2x)] | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 2 x 1 | Pontos: 3 pts
+  Jogo 5: Fluminense vs Bahia => Palpite: 2 x 0 | Pontos: 0 pts
+  Jogo 6: Vitória vs Palmeiras => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 2 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 1 x 2 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Jogo 3 (Internacional vs Flamengo)
+  >> Pontuação Total na Rodada (jogos finalizados): 4 pts
+----------------------------------------------------------------
+
+Jogador: Yure (ID: 42ke4QdoIPaLoxlmLbW5zQndw9m2)
+----------------------------------------------------------------
+  Jogo 1: Santos vs UCV => Palpite: 1 x 0 | Pontos: 1 pts
+  Jogo 2: Vasco vs Ind. Medellín => Palpite: 2 x 0 | Pontos: 1 pts
+  Jogo 3: Internacional vs Flamengo => Palpite: 1 x 0 | Pontos: 0 pts
+  Jogo 4: Mirassol vs Remo => Palpite: 1 x 1 | Pontos: 0 pts
+  Jogo 5: Fluminense vs Bahia => Sem palpite (0 pts)
+  Jogo 6: Vitória vs Palmeiras => Palpite: 0 x 2 | Pontos: 1 pts
+  Jogo 7: Bragantino vs Sporting Cristal => Palpite: 1 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 8: Grêmio vs Bolívar => Palpite: 2 x 0 | Pontos: Aguardando resultado da partida
+  Jogo 9: Corinthians vs Athletico => Palpite: 0 x 1 | Pontos: Aguardando resultado da partida
+  Jogo 10: Coritiba vs Cruzeiro => Palpite: 1 x 0 | Pontos: Aguardando resultado da partida
+
+  >> Jogo Estrela: Nenhum
+  >> Pontuação Total na Rodada (jogos finalizados): 3 pts
+----------------------------------------------------------------
+
+--- RANKING DA RODADA ---
+Pos   | Jogador                   | Pontos     | Jogo Estrela                                  | Palpites
+------+---------------------------+------------+-----------------------------------------------+---------
+1     | Kleison Miranda           | 8          | Nenhum                                        | 10/10
+2     | Markson Tavares           | 8          | Nenhum                                        | 10/10
+3     | Júlio César               | 7          | Jogo 2 (Vasco vs Ind. Medellín)               | 10/10
+4     | Ageu Maia                 | 6          | Jogo 9 (Corinthians vs Athletico)             | 10/10
+5     | Edson Pires               | 6          | Nenhum                                        | 10/10
+6     | Elian Souza               | 6          | Jogo 6 (Vitória vs Palmeiras)                 | 10/10
+7     | Fabrício Soares           | 6          | Jogo 1 (Santos vs UCV)                        | 10/10
+8     | Kauã                      | 6          | Nenhum                                        | 10/10
+9     | Mauricio Netto            | 6          | Nenhum                                        | 10/10
+10    | Guilherme Farias          | 4          | Jogo 9 (Corinthians vs Athletico)             | 10/10
+11    | Nadson Guimarães          | 4          | Jogo 6 (Vitória vs Palmeiras)                 | 10/10
+12    | Thiago Ferreira           | 4          | Jogo 3 (Internacional vs Flamengo)            | 10/10
+13    | Carlos Freire             | 3          | Nenhum                                        | 10/10
+14    | Elian Monteiro            | 3          | Jogo 8 (Grêmio vs Bolívar)                    | 10/10
+15    | Ian Andrade               | 3          | Jogo 3 (Internacional vs Flamengo)            | 10/10
+16    | Sérgio                    | 3          | Nenhum                                        | 10/10
+17    | Yure                      | 3          | Nenhum                                        | 9/10
+
+

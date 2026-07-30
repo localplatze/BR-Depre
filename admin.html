@@ -3644,8 +3644,9 @@
                     const timestamp = row.querySelector('.match-timestamp').value;
 
                     if (homeTeamId && awayTeamId) {
+                        const originalMatch = existingMatches.find(m => m && m.homeTeam === homeTeamId && m.awayTeam === awayTeamId) || {};
                         const matchData = {
-                            ...(existingMatches[index] || {}),
+                            ...originalMatch,
                             homeTeam: homeTeamId,
                             awayTeam: awayTeamId,
                             timestamp: timestamp || updatedRoundData.finishTimestamp

@@ -251,6 +251,16 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            min-width: 0;
+        }
+
+        .player-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex: 1;
         }
 
         .player-avatar {
@@ -563,6 +573,13 @@
 
         /* Responsive */
         @media (max-width: 640px) {
+            .player-cell {
+                gap: 0.4rem;
+            }
+            .cinturao-badge {
+                padding: 1px 4px;
+                font-size: 8px;
+            }
             .app-container {
                 padding: 1rem;
             }
@@ -645,6 +662,23 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+        .cinturao-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            vertical-align: middle;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -964,17 +998,18 @@
                     currentGroupIndex++;
                 }
 
+                const beltBadge = player.id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão"><i class="fas fa-hand-fist"></i> Cinturão</span>' : '';
                 html += `
                     <tr class="${zoneClass} ${isCurrentUser ? 'current-user-row' : ''}" data-userid="${player.id}" data-stage="${stage}" data-position="${position}">
                         <td>${position}</td>
                         <td>
                             <div class="player-cell">
                                 <img src="${playerAvatar}" class="player-avatar" onerror="this.src='default-avatar.png'">
-                                <span class="player-name">${displayName}</span>
+                                <span class="player-name">${displayName}</span>${beltBadge}
                             </div>
                         </td>
                         <td class="points">${player.totalPoints}</td>
-                        <td class="round-points">+${player.roundPoints}</td>
+                        <td class="round-points">${player.roundPoints >= 0 ? '+' : ''}${player.roundPoints}</td>
                         <td class="trend-cell">
                             <div class="trend-indicator" title="Posição anterior: ${prevPosition}º">
                                 ${trendIcon} ${trendText}
@@ -1183,8 +1218,15 @@
             document.getElementById('player-details-dialog').showModal();
         }
 
+        let cinturaoChampionId = null;
+        async function loadCinturaoDataOnce() {
+            const snapshot = await database.ref('tournaments/cinturao').once('value');
+            const data = snapshot.val() || {};
+            cinturaoChampionId = data.championId;
+        }
+
         async function initializeApp() {
-            await Promise.all([loadTeamsDataOnce(), loadUsersDataOnce(), fetchSuperligaDataOnce()]);
+            await Promise.all([loadTeamsDataOnce(), loadUsersDataOnce(), fetchSuperligaDataOnce(), loadCinturaoDataOnce()]);
 
             const stages = superligaDataCache?.stages;
             let activeStageKey = 'abertura';

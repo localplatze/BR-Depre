@@ -617,6 +617,15 @@
             align-items: center;
             gap: 0.75rem;
             font-weight: 600;
+            min-width: 0;
+        }
+
+        .player-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex: 1;
         }
 
         .player-avatar {
@@ -873,6 +882,13 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .player-cell {
+                gap: 0.4rem;
+            }
+            .cinturao-badge {
+                padding: 1px 4px;
+                font-size: 8px;
+            }
             .header-container {
                 padding: 1rem;
             }
@@ -920,6 +936,23 @@
                 padding: 1.25rem 1rem;
                 font-size: 0.85rem;
             }
+        }
+        .cinturao-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            vertical-align: middle;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -1178,6 +1211,14 @@
         logoutSidebar?.addEventListener('click', handleLogout);
 
         // Load Data
+        let cinturaoChampionId = null;
+        async function loadCinturaoData() {
+            const snapshot = await database.ref('tournaments/cinturao').once('value');
+            const data = snapshot.val() || {};
+            cinturaoChampionId = data.championId;
+            return data;
+        }
+
         async function loadTeamsCache() {
             const snapshot = await database.ref('teams').once('value');
             teamsCache = snapshot.val() || {};
@@ -1239,7 +1280,11 @@
             const teamName = user.customTeamName || team.name || 'Time';
             const avatarUrl = (user.useCustomShield && user.customShield) ? user.customShield : (team.image || 'default-avatar.png');
             
-            profileName.textContent = teamName;
+            if (userId === cinturaoChampionId) {
+                profileName.innerHTML = `${teamName} <span class="cinturao-badge" title="Detentor do Cinturão"><i class="fas fa-hand-fist"></i> Cinturão</span>`;
+            } else {
+                profileName.textContent = teamName;
+            }
             profileTeam.textContent = `Treinador: ${user.name || 'Jogador'} (${user.abbr || '---'})`;
             profileAbbr.textContent = user.abbr || '---';
             profileAvatar.src = avatarUrl;
@@ -1291,12 +1336,13 @@
                 const displayName = (u.customTeamName && u.customTeamName.trim() !== '') ? u.customTeamName.trim() : (u.name || team.name || 'Jogador');
                 const pos = standings.findIndex(s => s.id === u.id) + 1;
                 const isCurrent = u.id === currentUser?.uid;
+                const beltBadge = u.id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão"><i class="fas fa-hand-fist"></i> Cinturão</span>' : '';
                 return `
                 <tr class="${isCurrent ? 'current-user-row' : ''}">
                     <td>${pos}</td>
-                    <td><div class="player-cell"><img src="${playerAvatar}" class="player-avatar" onerror="this.src='default-avatar.png'"> ${displayName}</div></td>
+                    <td><div class="player-cell"><img src="${playerAvatar}" class="player-avatar" onerror="this.src='default-avatar.png'"> <span class="player-name">${displayName}</span>${beltBadge}</div></td>
                     <td class="points">${u.totalPoints}</td>
-                    <td class="round-points">+${u.roundPoints}</td>
+                    <td class="round-points">${u.roundPoints >= 0 ? '+' : ''}${u.roundPoints}</td>
                 </tr>
             `;
             }).join('');
@@ -1623,7 +1669,7 @@
 
         async function init() {
             try {
-                await Promise.all([loadTeamsCache(), loadUsersCache()]);
+                await Promise.all([loadTeamsCache(), loadUsersCache(), loadCinturaoData()]);
                 const user = auth.currentUser;
                 if (!user) { window.location.href = 'index.html'; return; }
 

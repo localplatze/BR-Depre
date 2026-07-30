@@ -112,7 +112,7 @@
         .match-player.away { justify-content: flex-end; text-align: right; }
         .match-player .logo { width: 40px; height: 40px; }
         .match-player .name { font-weight: 600; }
-        .match-result { font-size: 1.5em; font-weight: 800; color: var(--primary-color); padding: 0 20px; }
+        .match-result { font-size: 1.5em; font-weight: 800; color: var(--primary-color); padding: 0 20px; white-space: nowrap; }
 
         .empty-state { text-align: center; padding: 40px; color: var(--text-color-light); font-style: italic; }
         .player-standing-card { cursor: pointer; }
@@ -146,6 +146,38 @@
         .history-score { font-weight: 800; color: var(--primary-color); white-space: nowrap; }
         @media (max-width: 640px) {
             .history-row { grid-template-columns: 1fr; gap: 4px; }
+            .match-card {
+                padding: 12px 10px;
+            }
+            .match-player {
+                font-size: 0.85rem;
+                gap: 6px;
+            }
+            .match-player .logo {
+                width: 32px;
+                height: 32px;
+            }
+            .match-result {
+                font-size: 1.25rem;
+                padding: 0 10px;
+                white-space: nowrap;
+            }
+        }
+        .cinturao-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -258,6 +290,7 @@
             }
         });
 
+        let cinturaoChampionId = null;
         async function initializeApp() {
             try {
                 // ETAPA 1: Carrega dados estáticos/iniciais de times e usuários
@@ -266,6 +299,9 @@
                     loadDataOnce('users').then(data => {
                         Object.keys(data).forEach(key => data[key].id = key);
                         usersDataCache = data;
+                    }),
+                    loadDataOnce('tournaments/cinturao').then(data => {
+                        cinturaoChampionId = data?.championId || null;
                     })
                 ]);
                 
@@ -582,7 +618,7 @@
                 // Se o jogador não for encontrado no cache, pula a renderização deste card
                 if (!player) return ''; 
                 
-                const team = teamsDataCache[player.teamId] || {};
+                const team = teamsDataCache[player.teamId || player.team] || {};
                 const position = index + 1;
                 
                 let statusClass = '', statusHtml = '';
@@ -624,12 +660,13 @@
                 const usedH2H = h2hUsedMap.has(playerData.playerId);
                 const h2hBadge = usedH2H ? `<span class="badge-h2h" title="Desempate por Confronto Direto"><i class="fas fa-handshake"></i> H2H</span>` : '';
 
+                const beltBadge = playerData.playerId === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão"><i class="fas fa-hand-fist"></i> Cinturão</span>' : '';
                 return `
                     <div class="player-standing-card ${statusClass}" data-player-id="${playerData.playerId}" style="animation-delay: ${index * 50}ms">
                         <span class="pos">${position}</span>
                         <img src="${playerAvatar}" alt="${displayName}" class="logo" onerror="this.src='default-avatar.png'">
                         <div class="name-container" style="flex-grow: 1;">
-                            <div class="name">${displayName} ${h2hBadge}</div>
+                            <div class="name">${displayName} ${h2hBadge}${beltBadge}</div>
                             ${statusHtml}
                             ${formHtml}
                         </div>
@@ -694,16 +731,18 @@
                 </div>
             ` : '';
 
+            const beltBadge1 = p1Id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão">🥊</span>' : '';
+            const beltBadge2 = p2Id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão">🥊</span>' : '';
             return `
                 <div class="match-card">
                     ${clasicoBadge}
                     <div class="match-player">
                         <img src="${avatar1}" alt="" class="logo" onerror="this.src='default-avatar.png'">
-                        <span class="name">${name1}</span>
+                        <span class="name">${name1}${beltBadge1}</span>
                     </div>
                     <div class="match-result">${result}</div>
                     <div class="match-player away">
-                        <span class="name">${name2}</span>
+                        <span class="name">${name2}${beltBadge2}</span>
                         <img src="${avatar2}" alt="" class="logo" onerror="this.src='default-avatar.png'">
                     </div>
                 </div>
