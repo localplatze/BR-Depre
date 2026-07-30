@@ -1314,14 +1314,17 @@
             return clamp((getPlayerSuperligaPower(playerId) * 0.6) + (getRecentFormPower(playerId) * 0.4), 0.14, 0.9);
         }
 
-        function getPredictionExpectedValue(pred, playerId) {
+        function getPredictionExpectedValue(pred) {
             if (!pred || pred.homeScore === undefined || pred.awayScore === undefined) return 0;
             const multiplier = pred.isStarMatch || pred.isCaptain || pred.star || pred.doublePoints ? 2 : 1;
-            const factor = getPlayerProjectionFactor(playerId);
-            const outcomePoint = factor * 1 * multiplier;
-            const exactBonus = factor * factor * 2 * multiplier * 0.32;
-            const reverseRisk = (1 - factor) * 0.13 * multiplier;
-            return Math.max(0, outcomePoint + exactBonus - reverseRisk);
+            const homeScore = Number(pred.homeScore);
+            const awayScore = Number(pred.awayScore);
+            const isDraw = homeScore === awayScore;
+            const totalGoals = homeScore + awayScore;
+            const isCommonScore = totalGoals <= 4 && Math.abs(homeScore - awayScore) <= 2;
+            const outcomeValue = (isDraw ? 0.29 : 0.36) * multiplier;
+            const exactScoreBonus = (isCommonScore ? 0.16 : 0.09) * multiplier;
+            return Math.max(0, outcomeValue + exactScoreBonus);
         }
 
         function getRemoteLabel(neededByPredictions, canStillScore) {
@@ -1338,9 +1341,9 @@
             const striker2 = sp2CanStillScore ? (0.18 + getPlayerProjectionFactor(p2Id) * 0.22) : 0;
             const projected1 = score1 + ev1 + striker1;
             const projected2 = score2 + ev2 + striker2;
-            const formEdge = (getPlayerProjectionFactor(p1Id) - getPlayerProjectionFactor(p2Id)) * 0.42;
             const diff = projected1 - projected2;
-            const probability1 = clamp(0.5 + diff * 0.105 + formEdge, 0.04, 0.96);
+            const formEdge = (getPlayerProjectionFactor(p1Id) - getPlayerProjectionFactor(p2Id)) * 0.08;
+            const probability1 = clamp(0.5 + diff * 0.105 + formEdge, 0.08, 0.92);
             const probability2 = 1 - probability1;
             return {
                 ev1,
@@ -1438,8 +1441,8 @@
                     const awayTeamObj = teamsDataCache[m.awayTeam] || {};
                     const homeTeamName = homeTeamObj.name || m.homeTeamName || m.homeTeam || 'Mandante';
                     const awayTeamName = awayTeamObj.name || m.awayTeamName || m.awayTeam || 'Visitante';
-                    const ev1 = getPredictionExpectedValue(pred1, p1Id);
-                    const ev2 = getPredictionExpectedValue(pred2, p2Id);
+                    const ev1 = getPredictionExpectedValue(pred1);
+                    const ev2 = getPredictionExpectedValue(pred2);
 
                     remainingDetails.push({
                         homeTeamName,
