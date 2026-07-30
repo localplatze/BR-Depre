@@ -1235,7 +1235,7 @@
         async function loadUserProfile(userId) {
             const user = usersCache[userId];
             if (!user) return;
-            const team = teamsCache[user.teamId || user.team] || { name: 'N/A', image: '' };
+            const team = teamsCache[user.teamId || user.team] || { name: 'N/A', image: '' }; //saev
             const teamName = user.customTeamName || team.name || 'Time';
             const avatarUrl = (user.useCustomShield && user.customShield) ? user.customShield : (team.image || 'default-avatar.png');
             
