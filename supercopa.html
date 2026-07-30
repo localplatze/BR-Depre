@@ -115,6 +115,38 @@
         .match-result { font-size: 1.5em; font-weight: 800; color: var(--primary-color); padding: 0 20px; }
 
         .empty-state { text-align: center; padding: 40px; color: var(--text-color-light); font-style: italic; }
+        .player-standing-card { cursor: pointer; }
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.65); padding: 20px;
+        }
+        .modal-backdrop.open { display: flex; }
+        .history-modal {
+            width: min(620px, 100%); max-height: 88vh; overflow: auto;
+            background: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .history-modal-header {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 18px 20px; border-bottom: 1px solid var(--border-color);
+        }
+        .history-modal-title { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.1rem; }
+        .history-modal-title img { width: 36px; height: 36px; object-fit: contain; }
+        .modal-close {
+            width: 36px; height: 36px; border: none; border-radius: 50%; cursor: pointer;
+            background: var(--card-bg-light); color: var(--text-color); font-size: 1rem;
+        }
+        .history-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 20px 20px; }
+        .history-row {
+            display: grid; grid-template-columns: 86px 1fr auto; gap: 12px; align-items: center;
+            padding: 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.04);
+        }
+        .history-round { color: var(--text-color-light); font-size: 0.82rem; font-weight: 700; }
+        .history-match { font-weight: 600; min-width: 0; word-break: break-word; }
+        .history-score { font-weight: 800; color: var(--primary-color); white-space: nowrap; }
+        @media (max-width: 640px) {
+            .history-row { grid-template-columns: 1fr; gap: 4px; }
+        }
     </style>
 </head>
 <body>
@@ -164,6 +196,15 @@
                     <div id="knockout-matches-c"></div>
                 </div>
              </div>
+        </div>
+    </div>
+    <div id="player-history-modal" class="modal-backdrop" aria-hidden="true">
+        <div class="history-modal" role="dialog" aria-modal="true" aria-labelledby="player-history-title">
+            <div class="history-modal-header">
+                <div id="player-history-title" class="history-modal-title"></div>
+                <button type="button" class="modal-close" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="player-history-list" class="history-list"></div>
         </div>
     </div>
 
@@ -376,14 +417,136 @@
         }
 
         // --- FUNÇÕES DE RENDERIZAÇÃO DE COMPONENTES ---
+        function getPlayerDisplayData(playerId) {
+            const player = usersDataCache[playerId] || {};
+            const team = teamsDataCache[player.teamId || player.team] || {};
+            const name = (player.customTeamName && player.customTeamName.trim() !== '') ? player.customTeamName.trim() : (player.name || team.name || 'Jogador');
+            const avatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
+            return { player, team, name, avatar };
+        }
+
+        function parseScore(result) {
+            if (!result || !result.includes('x')) return null;
+            const parts = result.split('x').map(s => parseInt(s.trim(), 10));
+            return parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]) ? parts : null;
+        }
+
+        function getSortedSupercopaRounds() {
+            const rounds = supercopaDataCache?.groups?.rounds || {};
+            return Object.entries(rounds).sort((a, b) => {
+                const timeA = a[1].timestamp || 0;
+                const timeB = b[1].timestamp || 0;
+                if (timeA !== timeB) return timeA - timeB;
+                const numA = parseInt(String(a[0]).match(/\d+/)?.[0] || '', 10);
+                const numB = parseInt(String(b[0]).match(/\d+/)?.[0] || '', 10);
+                if (!isNaN(numA) && !isNaN(numB) && numA !== numB) return numA - numB;
+                return String(a[0]).localeCompare(String(b[0]));
+            });
+        }
+
+        function applyResultToStanding(standings, player1Id, player2Id, p1Points, p2Points) {
+            if (standings[player1Id]) {
+                standings[player1Id].games += 1;
+                standings[player1Id].goalsFor += p1Points;
+                standings[player1Id].goalsAg += p2Points;
+                if (p1Points > p2Points) { standings[player1Id].points += 3; standings[player1Id].wins += 1; }
+                else if (p1Points === p2Points) { standings[player1Id].points += 1; standings[player1Id].draws += 1; }
+                else standings[player1Id].losses += 1;
+            }
+            if (standings[player2Id]) {
+                standings[player2Id].games += 1;
+                standings[player2Id].goalsFor += p2Points;
+                standings[player2Id].goalsAg += p1Points;
+                if (p2Points > p1Points) { standings[player2Id].points += 3; standings[player2Id].wins += 1; }
+                else if (p2Points === p1Points) { standings[player2Id].points += 1; standings[player2Id].draws += 1; }
+                else standings[player2Id].losses += 1;
+            }
+        }
+
+        function getLiveGroupStandings(groupPlayerIds) {
+            const saved = supercopaDataCache?.groups?.standings || {};
+            const liveStandings = {};
+            groupPlayerIds.forEach(id => {
+                liveStandings[id] = saved[id] ? { ...saved[id] } : {
+                    playerId: id, games: 0, points: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAg: 0
+                };
+            });
+
+            const activeCopaRound = Object.values(supercopaDataCache?.groups?.rounds || {}).find(r => r.status === 1);
+            if (!activeCopaRound?.matches || !activeSuperligaRoundData) return liveStandings;
+
+            Object.values(activeCopaRound.matches).forEach(match => {
+                const { player1Id, player2Id } = match;
+                if (!liveStandings[player1Id] && !liveStandings[player2Id]) return;
+                applyResultToStanding(liveStandings, player1Id, player2Id, calculateLiveRoundPoints(player1Id), calculateLiveRoundPoints(player2Id));
+            });
+            return liveStandings;
+        }
+
+        function getPlayerHistory(playerId) {
+            return getSortedSupercopaRounds().flatMap(([roundKey, roundData], index) => {
+                const matches = roundData.matches ? Object.values(roundData.matches) : [];
+                return matches
+                    .filter(match => match.player1Id === playerId || match.player2Id === playerId)
+                    .map(match => {
+                        const isP1 = match.player1Id === playerId;
+                        const opponentId = isP1 ? match.player2Id : match.player1Id;
+                        const score = parseScore(match.result);
+                        let myScore = null;
+                        let oppScore = null;
+                        let live = false;
+                        if (score) {
+                            myScore = isP1 ? score[0] : score[1];
+                            oppScore = isP1 ? score[1] : score[0];
+                        } else if (roundData.status === 1 && activeSuperligaRoundData) {
+                            myScore = calculateLiveRoundPoints(playerId);
+                            oppScore = calculateLiveRoundPoints(opponentId);
+                            live = true;
+                        }
+                        return { roundNumber: index + 1, opponentId, myScore, oppScore, live };
+                    });
+            });
+        }
+
+        function openPlayerHistoryModal(playerId) {
+            const modal = document.getElementById('player-history-modal');
+            const title = document.getElementById('player-history-title');
+            const list = document.getElementById('player-history-list');
+            const data = getPlayerDisplayData(playerId);
+            const history = getPlayerHistory(playerId);
+
+            title.innerHTML = `<img src="${data.avatar}" alt="" onerror="this.src='default-avatar.png'"><span>${data.name}</span>`;
+            list.innerHTML = history.length ? history.map(item => {
+                const opponent = getPlayerDisplayData(item.opponentId);
+                const score = item.myScore === null || item.oppScore === null ? 'vs' : `${item.myScore} x ${item.oppScore}${item.live ? ' ao vivo' : ''}`;
+                return `
+                    <div class="history-row">
+                        <div class="history-round">Rodada ${item.roundNumber}</div>
+                        <div class="history-match">${data.name} x ${opponent.name}</div>
+                        <div class="history-score">${score}</div>
+                    </div>
+                `;
+            }).join('') : '<div class="empty-state">Nenhum histórico encontrado nesta fase de grupos.</div>';
+
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closePlayerHistoryModal() {
+            const modal = document.getElementById('player-history-modal');
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
         function renderGroupStandings(groupKey) {
             const { standings = {}, status, ...groups } = supercopaDataCache.groups || {};
             const groupPlayerIds = groups[groupKey] || [];
+            const displayStandings = getLiveGroupStandings(groupPlayerIds);
 
             const h2hUsedMap = new Set();
             
             const groupStandings = groupPlayerIds
-                .map(id => standings[id])
+                .map(id => displayStandings[id])
                 .filter(Boolean)
                 .sort((a, b) => {
                     const a_pts = a.points || 0;
@@ -462,7 +625,7 @@
                 const h2hBadge = usedH2H ? `<span class="badge-h2h" title="Desempate por Confronto Direto"><i class="fas fa-handshake"></i> H2H</span>` : '';
 
                 return `
-                    <div class="player-standing-card ${statusClass}" style="animation-delay: ${index * 50}ms">
+                    <div class="player-standing-card ${statusClass}" data-player-id="${playerData.playerId}" style="animation-delay: ${index * 50}ms">
                         <span class="pos">${position}</span>
                         <img src="${playerAvatar}" alt="${displayName}" class="logo" onerror="this.src='default-avatar.png'">
                         <div class="name-container" style="flex-grow: 1;">
@@ -594,6 +757,19 @@
                 tab.classList.add('active');
                 loadGroupData(tab.dataset.group);
             }));
+
+            ui.standingsList.addEventListener('click', (event) => {
+                const card = event.target.closest('.player-standing-card');
+                if (card?.dataset.playerId) openPlayerHistoryModal(card.dataset.playerId);
+            });
+
+            document.querySelector('#player-history-modal .modal-close')?.addEventListener('click', closePlayerHistoryModal);
+            document.getElementById('player-history-modal')?.addEventListener('click', (event) => {
+                if (event.target.id === 'player-history-modal') closePlayerHistoryModal();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') closePlayerHistoryModal();
+            });
         }
     </script>
 </body>

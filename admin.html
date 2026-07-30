@@ -1578,6 +1578,8 @@
                             style="margin-bottom: 15px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                             <button id="create-supercopa-round" class="btn btn-primary"><i class="fas fa-plus"></i>
                                 Criar Nova Rodada do Grupo</button>
+                            <button id="btn-recalculate-supercopa" class="btn btn-secondary"><i
+                                    class="fas fa-sync-alt"></i> Recalcular Pontuação da Supercopa</button>
                             <button id="btn-clear-supercopa-rounds" class="btn btn-danger"><i
                                     class="fas fa-trash-alt"></i> Limpar Histórico de Rodadas da Supercopa</button>
                         </div>
@@ -2024,6 +2026,18 @@
             document.getElementById('supercopa-round-form').style.display = 'none';
         });
 
+        document.getElementById('btn-recalculate-supercopa')?.addEventListener('click', async () => {
+            if (!confirm('Recalcular toda a pontuação da fase de grupos da Supercopa a partir da Rodada 21 da Superliga?')) return;
+            try {
+                await processSupercopaScores();
+                loadSupercopaRounds();
+                alert('Pontuação da Supercopa recalculada com sucesso!');
+            } catch (error) {
+                console.error('Erro ao recalcular pontuação da Supercopa:', error);
+                alert('Erro ao recalcular a pontuação da Supercopa.');
+            }
+        });
+
         // Botão para adicionar confronto na rodada da Supercopa
         document.getElementById('add-supercopa-match')?.addEventListener('click', () => {
             const container = document.getElementById('supercopa-matches-container');
@@ -2046,12 +2060,14 @@
             document.querySelectorAll('#supercopa-matches-container .match-card').forEach((matchDiv) => {
                 const player1 = matchDiv.querySelector('.supercopa-player1').value;
                 const player2 = matchDiv.querySelector('.supercopa-player2').value;
+                const manualResult = matchDiv.querySelector('.supercopa-manual-result')?.value.trim() || '';
 
                 if (player1 && player2) {
                     matches[`m${matchIndex}`] = {
                         player1Id: player1,
                         player2Id: player2,
-                        result: matchDiv.dataset.currentResult || ""
+                        result: manualResult || matchDiv.dataset.currentResult || "",
+                        manualResult
                     };
                     matchIndex++;
                 }
@@ -3959,22 +3975,31 @@
         function calculateUserRoundTotalScore(roundData, userId) {
             if (!roundData || !userId) return 0;
             let pts = 0;
+            let hasValidPrediction = false;
             const matches = roundData.matches || [];
             matches.forEach(m => {
-                if (m.finalResult && m.predictions && m.predictions[userId]) {
-                    pts += calculateMatchPoints(m.finalResult, m.predictions[userId]);
+                const prediction = m.predictions?.[userId];
+                if (m.finalResult && prediction && Number.isFinite(Number(prediction.homeScore)) && Number.isFinite(Number(prediction.awayScore))) {
+                    hasValidPrediction = true;
+                    pts += calculateMatchPoints(m.finalResult, prediction);
                 }
             });
 
             const starPlayers = roundData.starPlayers || {};
             const playerGoals = roundData.playerGoals || {};
             const sp = starPlayers[userId];
-            if (sp && sp.athleteId) {
+            if (hasValidPrediction && sp && sp.athleteId) {
                 const gInfo = playerGoals[sp.athleteId] || 0;
                 const gCount = typeof gInfo === 'number' ? gInfo : (gInfo.count || 0);
                 pts += gCount;
             }
             return pts;
+        }
+
+        function parseSupercopaResult(result) {
+            if (!result || !String(result).includes('x')) return null;
+            const parts = String(result).split('x').map(part => parseInt(part.trim(), 10));
+            return parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1]) ? parts : null;
         }
 
         async function processSupercopaScores(roundId) {
@@ -3992,10 +4017,21 @@
                 const roundsData = roundsSnap.val() || {};
                 const usersData = usersSnap.val() || {};
 
-                // Buscar rodadas do bolão finalizadas (status === 2)
-                const finalizedRounds = Object.entries(roundsData)
-                    .filter(([_, r]) => r.status === 2)
-                    .sort((a, b) => (a[1].finishTimestamp || 0) - (b[1].finishTimestamp || 0));
+                // A primeira rodada da fase de grupos da Supercopa corresponde à Rodada 21 da Superliga.
+                const supercopaStartRound = (typeof ABERTURA_CLAUSURA_SPLIT_ROUND === 'number' && ABERTURA_CLAUSURA_SPLIT_ROUND > 0)
+                    ? ABERTURA_CLAUSURA_SPLIT_ROUND + 1
+                    : 21;
+
+                const superligaRounds = Object.entries(roundsData)
+                    .map(([key, data]) => ({ key, ...data }))
+                    .sort((a, b) => {
+                        const timeA = a.finishTimestamp ? new Date(a.finishTimestamp).getTime() : 0;
+                        const timeB = b.finishTimestamp ? new Date(b.finishTimestamp).getTime() : 0;
+                        return timeA - timeB;
+                    })
+                    .map((data, index) => ({ ...data, seqNumber: index + 1 }));
+
+                const supercopaBaseRounds = superligaRounds.filter(r => r.seqNumber >= supercopaStartRound);
 
                 const groupsData = supercopaData.groups || {};
                 const scRounds = groupsData.rounds || {};
@@ -4019,22 +4055,33 @@
                 }
 
                 const updates = {};
-                const scRoundEntries = Object.entries(scRounds);
+                const scRoundEntries = Object.entries(scRounds).sort((a, b) => {
+                    const timeA = a[1].timestamp || 0;
+                    const timeB = b[1].timestamp || 0;
+                    if (timeA !== timeB) return timeA - timeB;
+
+                    const numA = parseInt(String(a[0]).match(/\d+/)?.[0] || '', 10);
+                    const numB = parseInt(String(b[0]).match(/\d+/)?.[0] || '', 10);
+                    if (!isNaN(numA) && !isNaN(numB) && numA !== numB) return numA - numB;
+                    return String(a[0]).localeCompare(String(b[0]));
+                });
 
                 scRoundEntries.forEach(([rKey, rData], idx) => {
                     const isFinalized = rData.status === 2;
                     const matches = rData.matches || {};
 
-                    // A r-ésima rodada da Supercopa pega a r-ésima rodada finalizada correspondente
-                    const targetRoundData = (isFinalized && finalizedRounds[idx]) ? finalizedRounds[idx][1] : null;
+                    // A r-ésima rodada da Supercopa usa a r-ésima rodada da Superliga a partir da Rodada 21.
+                    const targetRoundData = supercopaBaseRounds[idx] || null;
 
                     for (const [mKey, match] of Object.entries(matches)) {
                         const { player1Id, player2Id } = match;
                         if (!player1Id || !player2Id) continue;
 
-                        if (isFinalized && targetRoundData) {
-                            const p1Points = calculateUserRoundTotalScore(targetRoundData, player1Id);
-                            const p2Points = calculateUserRoundTotalScore(targetRoundData, player2Id);
+                        const manualScore = parseSupercopaResult(match.manualResult);
+
+                        if (isFinalized && (manualScore || (targetRoundData && targetRoundData.status === 2))) {
+                            const p1Points = manualScore ? manualScore[0] : calculateUserRoundTotalScore(targetRoundData, player1Id);
+                            const p2Points = manualScore ? manualScore[1] : calculateUserRoundTotalScore(targetRoundData, player2Id);
 
                             updates[`groups/rounds/${rKey}/matches/${mKey}/result`] = `${p1Points} x ${p2Points}`;
 
@@ -4067,21 +4114,20 @@
                                     standings[player2Id].losses += 1;
                                 }
                             }
-                        } else {
+                        } else if (rData.status !== 2) {
                             // Rodada ativa ou pendente: garante result vazio para permitir placar ao vivo no site
                             updates[`groups/rounds/${rKey}/matches/${mKey}/result`] = "";
                         }
                     }
                 });
 
-                for (const [pId, st] of Object.entries(standings)) {
-                    updates[`groups/standings/${pId}`] = st;
-                }
+                updates['groups/standings'] = standings;
 
                 await supercopaRef.update(updates);
                 console.log('[processSupercopaScores] Classificação da Supercopa recalculada com sucesso.');
             } catch (err) {
                 console.error('[processSupercopaScores] Erro:', err);
+                throw err;
             }
         }
 
@@ -4215,7 +4261,7 @@
                 container.innerHTML = '';
 
                 Object.entries(roundData.matches || {}).forEach(([mKey, match]) => {
-                    addSupercopaMatchRow(container, match.player1Id, match.player2Id, match.result);
+                    addSupercopaMatchRow(container, match.player1Id, match.player2Id, match.result, match.manualResult || '');
                 });
 
                 document.getElementById('supercopa-round-form').style.display = 'block';
@@ -4234,14 +4280,14 @@
             }
         }
 
-        function addSupercopaMatchRow(container, p1Id = '', p2Id = '', currentResult = '') {
+        function addSupercopaMatchRow(container, p1Id = '', p2Id = '', currentResult = '', manualResult = '') {
             const matchDiv = document.createElement('div');
             matchDiv.className = 'match-card';
             matchDiv.style.cssText = 'padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; margin-bottom: 8px;';
             matchDiv.dataset.currentResult = currentResult;
 
             matchDiv.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 160px auto; gap: 12px; align-items: center;">
                     <div class="form-group" style="margin-bottom:0;">
                         <label style="font-size:12px; font-weight:700;">Jogador 1 (Casa)</label>
                         <select class="supercopa-player1 form-control"></select>
@@ -4249,6 +4295,10 @@
                     <div class="form-group" style="margin-bottom:0;">
                         <label style="font-size:12px; font-weight:700;">Jogador 2 (Visitante)</label>
                         <select class="supercopa-player2 form-control"></select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label style="font-size:12px; font-weight:700;">Placar manual</label>
+                        <input type="text" class="supercopa-manual-result form-control" placeholder="ex: 6 x 0" value="${manualResult || ''}">
                     </div>
                     <button type="button" class="btn btn-danger remove-supercopa-match" style="align-self: end; height: 38px;"><i class="fas fa-trash"></i></button>
                 </div>
@@ -4591,6 +4641,7 @@
 
                         if (isSuperliga && rStage === currentSuperligaStage && isFinalized) {
                             let roundPoints = 0;
+                            let hasValidPrediction = false;
                             const matches = rData.matches ? (Array.isArray(rData.matches) ? rData.matches : Object.values(rData.matches)) : [];
 
                             matches.forEach(match => {
@@ -4598,6 +4649,7 @@
                                     if (match.predictions && match.predictions[userId]) {
                                         const userPrediction = match.predictions[userId];
                                         if (userPrediction && userPrediction.homeScore !== null && userPrediction.awayScore !== null) {
+                                            hasValidPrediction = true;
                                             const pointsForMatch = calculateMatchPoints(match.finalResult, userPrediction);
                                             roundPoints += pointsForMatch;
                                         }
@@ -4608,7 +4660,7 @@
                             // Bônus do Artilheiro da Rodada (+1 ponto por cada gol marcado pelo jogador de futebol escolhido)
                             const starPlayer = rData.starPlayers?.[userId];
                             const playerGoals = rData.playerGoals || {};
-                            if (starPlayer && starPlayer.athleteId) {
+                            if (hasValidPrediction && starPlayer && starPlayer.athleteId) {
                                 const athleteGoalsInfo = playerGoals[starPlayer.athleteId] || 0;
                                 const goalsCount = typeof athleteGoalsInfo === 'number' ? athleteGoalsInfo : (athleteGoalsInfo.count || 0);
                                 if (goalsCount > 0) {

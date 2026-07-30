@@ -1299,11 +1299,7 @@
                     const awayVal = awayInput.value;
                     const isStar = unsavedPredictions[matchId]?.isStarMatch ?? (allMatches[matchId]?.predictions?.[userId]?.isStarMatch === true);
                     
-                    if (homeVal.trim() !== '' || awayVal.trim() !== '') {
-                        unsavedPredictions[matchId] = { homeScore: homeVal, awayScore: awayVal, isStarMatch: isStar };
-                    } else {
-                        delete unsavedPredictions[matchId];
-                    }
+                    unsavedPredictions[matchId] = { homeScore: homeVal, awayScore: awayVal, isStarMatch: isStar };
                     saveDraft();
                     updateSaveButton();
                 });
@@ -1515,8 +1511,11 @@
                         updates[`/rounds/${currentRoundKey}/matches/${idx}/predictions/${userId}`] = {
                             homeScore: parseInt(homeVal),
                             awayScore: parseInt(awayVal),
-                            isStarMatch: isStar === true
+                            isStarMatch: isStar === true,
+                            updatedAt: firebase.database.ServerValue.TIMESTAMP
                         };
+                    } else if (unsaved) {
+                        updates[`/rounds/${currentRoundKey}/matches/${idx}/predictions/${userId}`] = null;
                     }
                 }
 
