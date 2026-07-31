@@ -4222,9 +4222,151 @@
 
                 await supercopaRef.update(updates);
                 console.log('[processSupercopaScores] Classificação da Supercopa recalculada com sucesso.');
+
+                // Gera projeções matemáticas da Supercopa via IA após atualizar os placares
+                try {
+                    await generateSupercopaIaPredictions();
+                } catch (iaErr) {
+                    console.error('Erro ao gerar predições da Supercopa via IA:', iaErr);
+                }
             } catch (err) {
                 console.error('[processSupercopaScores] Erro:', err);
                 throw err;
+            }
+        }
+
+        async function generateSupercopaIaPredictions() {
+            console.log('[generateSupercopaIaPredictions] Iniciando geração de projeções da Supercopa via IA...');
+            const deepSeekKeyInput = document.getElementById('deepseek-api-key');
+            const apiKey = (deepSeekKeyInput ? deepSeekKeyInput.value.trim() : '') || localStorage.getItem('deepSeekApiKey') || DEFAULT_DEEPSEEK_API_KEY || '';
+            if (!apiKey) {
+                console.warn('[generateSupercopaIaPredictions] API Key do DeepSeek não definida. Pulando predições.');
+                return;
+            }
+
+            try {
+                const [usersSnap, teamsSnap, supercopaSnap] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value'),
+                    database.ref('tournaments/supercopa').once('value')
+                ]);
+
+                const usersData = usersSnap.val() || {};
+                const teamsData = teamsSnap.val() || {};
+                const supercopaData = supercopaSnap.val() || {};
+
+                const groupsData = supercopaData.groups || {};
+                const standings = groupsData.standings || {};
+                const rounds = groupsData.rounds || {};
+
+                // Se a fase de grupos já terminou ou ainda não começou, pulamos
+                if (groupsData.status !== 1) {
+                    console.log('[generateSupercopaIaPredictions] A fase de grupos não está ativa (status !== 1). Pulando predições.');
+                    return;
+                }
+
+                // Construir o relatório de classificação atual para cada grupo
+                let groupReport = '';
+                const groupNames = { group1: 'Grupo A', group2: 'Grupo B', group3: 'Grupo C', group4: 'Grupo D' };
+
+                for (let i = 1; i <= 4; i++) {
+                    const groupKey = `group${i}`;
+                    const groupName = groupNames[groupKey];
+                    const playerIds = groupsData[groupKey] || [];
+                    
+                    const groupPlayers = playerIds.map(id => {
+                        const stand = standings[id] || { playerId: id, games: 0, points: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAg: 0 };
+                        const user = usersData[id] || {};
+                        const team = teamsData[user.teamId || user.team] || {};
+                        const teamName = user.customTeamName || team.name || 'Sem Time';
+                        return {
+                            id,
+                            name: user.name || 'Jogador',
+                            team: teamName,
+                            ...stand,
+                            gd: (stand.goalsFor || 0) - (stand.goalsAg || 0)
+                        };
+                    }).sort((a, b) => {
+                        if (b.points !== a.points) return b.points - a.points;
+                        if (b.wins !== a.wins) return b.wins - a.wins;
+                        if (b.gd !== a.gd) return b.gd - a.gd;
+                        return b.goalsFor - a.goalsFor;
+                    });
+
+                    groupReport += `\n--- ${groupName} ---\n`;
+                    groupPlayers.forEach((p, idx) => {
+                        groupReport += `${idx + 1}º) ${p.name} (${p.team}): ${p.points} pts, ${p.games} jogos, ${p.wins}V, ${p.draws}E, ${p.losses}D, SG: ${p.gd > 0 ? '+' : ''}${p.gd}, GP: ${p.goalsFor}\n`;
+                    });
+                }
+
+                // Detalhar os confrontos restantes
+                let remainingMatchesReport = '\nJogos Restantes da Fase de Grupos:\n';
+                let hasRemaining = false;
+                Object.entries(rounds).forEach(([rKey, rData]) => {
+                    const isFinalized = rData.status === 2;
+                    if (!isFinalized) {
+                        remainingMatchesReport += `Rodada ${rKey} (Status: ${rData.status === 1 ? 'Em Andamento' : 'Pendente'}):\n`;
+                        const matches = rData.matches || {};
+                        Object.entries(matches).forEach(([mKey, match]) => {
+                            const p1 = usersData[match.player1Id]?.name || 'Ninguém';
+                            const p2 = usersData[match.player2Id]?.name || 'Ninguém';
+                            remainingMatchesReport += `  - ${p1} x ${p2}\n`;
+                            hasRemaining = true;
+                        });
+                    }
+                });
+
+                if (!hasRemaining) {
+                    remainingMatchesReport += 'Nenhum jogo restante.\n';
+                }
+
+                const prompt = `Você é um analista estatístico sério e inteligente de futebol para o BR Depressão (um bolão de amigos).
+Analise a situação de classificação da Supercopa (Fase de Grupos) e escreva uma projeção de quem tem mais chances de se classificar para o mata-mata (Série A e Série B) e quem corre risco de eliminação (Série C / Limbo).
+
+Lembre-se das regras:
+- Os 2 primeiros colocados de cada grupo se classificam para o mata-mata da Série A.
+- O 3º e o 4º colocados se classificam para o mata-mata da Série B.
+- Há 4 grupos (A, B, C, D) de 4 jogadores cada.
+
+Aqui está o relatório atual dos grupos:
+${groupReport}
+${remainingMatchesReport}
+
+Escreva uma análise concisa de 2 a 3 parágrafos curtos. Seja realista, analise as probabilidades matemáticas, os pontos restantes em disputa, quem já está garantido e quem está no "bico da chaleira" ou precisa de um milagre. Mencione o nome de alguns participantes de destaque e suas chances. Use um tom de análise esportiva profissional de TV, mas mantendo a leveza do bolão de amigos (um tom sério e preciso, sem o humor agressivo da resenha).`;
+
+                const res = await fetch('https://api.deepseek.com/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            { role: 'system', content: 'Você é um analista esportivo de futebol que faz projeções estatísticas realistas e sérias. Escreva em português brasileiro.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.5
+                    })
+                });
+
+                if (!res.ok) {
+                    const errorDetails = await res.text();
+                    throw new Error(`Erro na API do DeepSeek (${res.status}): ${errorDetails}`);
+                }
+
+                const json = await res.json();
+                const text = json.choices[0]?.message?.content || 'Não foi possível gerar as projeções.';
+
+                await database.ref('tournaments/supercopa/iaPredictions').set({
+                    text: text,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                console.log('[generateSupercopaIaPredictions] Projeções salvas com sucesso no Firebase.');
+
+            } catch (err) {
+                console.error('[generateSupercopaIaPredictions] Erro ao gerar projeções via IA:', err);
             }
         }
 
@@ -5451,7 +5593,7 @@
             }
 
             const deepSeekKeyInput = document.getElementById('deepseek-api-key');
-            const apiKey = (deepSeekKeyInput ? deepSeekKeyInput.value.trim() : '') || localStorage.getItem('deepSeekApiKey') || '';
+            const apiKey = (deepSeekKeyInput ? deepSeekKeyInput.value.trim() : '') || localStorage.getItem('deepSeekApiKey') || DEFAULT_DEEPSEEK_API_KEY || '';
             if (!apiKey) {
                 alert('Defina a sua chave API do DeepSeek no campo correspondente (na aba Times -> Importar Jogos ou salve no localStorage).');
                 return;
@@ -5462,16 +5604,22 @@
             resenhaText.value = 'Conectando com o DeepSeek e calculando pontos da rodada... Aguarde.';
             
             try {
-                // Fetch round data, users, and teams
-                const [roundSnap, usersSnap, teamsSnap] = await Promise.all([
+                // Fetch round data, users, teams, and tournament states
+                const [roundSnap, usersSnap, teamsSnap, cinturaoSnap, restaUmSnap, supercopaSnap] = await Promise.all([
                     database.ref('rounds/' + roundId).once('value'),
                     database.ref('users').once('value'),
-                    database.ref('teams').once('value')
+                    database.ref('teams').once('value'),
+                    database.ref('tournaments/cinturao').once('value'),
+                    database.ref('tournaments/restaUm').once('value'),
+                    database.ref('tournaments/supercopa').once('value')
                 ]);
 
                 const roundData = roundSnap.val();
                 const usersData = usersSnap.val() || {};
                 const teamsData = teamsSnap.val() || {};
+                const cinturaoVal = cinturaoSnap.val() || {};
+                const restaVal = restaUmSnap.val() || {};
+                const supercopaVal = supercopaSnap.val() || {};
 
                 if (!roundData || !roundData.matches) {
                     resenhaText.value = 'Erro: Esta rodada não possui partidas.';
@@ -5526,14 +5674,53 @@
                 const winner = scores[0];
                 const loser = scores[scores.length - 1];
 
-                const prompt = `Você é o "Guru Sarcástico" do BR Depressão, um bolão de futebol de amigos muito competitivos e zoeiros. 
-Escreva uma resenha curta (máximo de 3 parágrafos) sobre a rodada recém-finalizada.
-Aqui está a classificação dos jogadores nessa rodada:
+                // Cinturão Info
+                const champName = usersData[cinturaoVal.championId]?.name || 'Ninguém';
+                const challName = usersData[cinturaoVal.challengerId]?.name || 'Ninguém';
+                const defenses = cinturaoVal.defenses || 0;
+                const curMatch = cinturaoVal.currentMatch || {};
+                const cinturaoResult = (curMatch.champScore !== undefined && curMatch.challengerScore !== undefined && curMatch.status > 0)
+                    ? `${curMatch.champScore} x ${curMatch.challengerScore}`
+                    : 'Pendente';
+                const cinturaoStatus = `Campeão do Cinturão: ${champName} (com ${defenses} defesas). Desafiante desta rodada: ${challName}. Placar do confronto direto na rodada: ${cinturaoResult}.`;
+
+                // Resta Um Info
+                const elims = restaVal.eliminations || {};
+                const pList = restaVal.participants || Object.keys(usersData);
+                const eliminatedIds = new Set(Object.values(elims).map(e => e.eliminatedUserId));
+                const survivors = pList.filter(uid => !eliminatedIds.has(uid)).map(uid => usersData[uid]?.name || uid);
+                const recentlyEliminated = elims[roundId] ? (usersData[elims[roundId].eliminatedUserId]?.name || 'Ninguém') : 'Ninguém';
+                const restaUmStatus = `Participantes sobreviventes ativos no Resta Um: ${survivors.join(', ')}. Eliminado da rodada: ${recentlyEliminated}.`;
+
+                const prompt = `Você é um comentarista de futebol sarcástico do BR Depressão, um bolão de futebol de amigos muito competitivos e zoeiros.
+Escreva a resenha para a rodada ${roundId}.
+Aqui está a classificação dos jogadores nessa rodada da Superliga:
 - Mito da Rodada (1º lugar): ${winner.name} (Time: ${winner.team}) com ${winner.points} pontos.
 - Zicador da Rodada (Último lugar): ${loser.name} (Time: ${loser.team}) com ${loser.points} pontos.
-Outros participantes importantes: ${scores.slice(1, -1).map(s => `${s.name} (${s.points} pts)`).join(', ')}.
+Outros participantes importantes da rodada: ${scores.slice(1, -1).map(s => `${s.name} (${s.points} pts)`).join(', ')}.
 
-Por favor, faça um texto hilário em português. Exalte o Mito (ou diga que foi pura cagada/pacto) e zoando o Zicador fortemente por sua ruindade de palpites. Use gírias e jargões do futebol brasileiro (ex: "zicou", "entregou a paçoca", "profeta do óbvio", "pede música no fantástico").`;
+Contexto do Torneio Cinturão (UFC do Bolão):
+${cinturaoStatus}
+
+Contexto do Resta Um (Sobrevivência):
+${restaUmStatus}
+
+Por favor, faça um texto hilário, zoeiro, ácido e provocativo em português brasileiro. Exalte o Mito com zoeira (ou diga que foi pura cagada/pacto) e destrua o Zicador com piadinhas ácidas (pode usar humor mais picante e piadinhas levemente pesadas do círculo de amigos do bolão, zoando a ruindade deles). Faça piadas sobre a luta pelo Cinturão e quem sobrou ou rodou no Resta Um.
+
+IMPORTANTE FORMATO:
+Escreva o texto estruturado exatamente usando as tags abaixo para delimitar cada notícia/slide (NÃO use asteriscos nos títulos dos slides, mantenha a tag exatamente no formato [SLIDE: Titulo]):
+
+[SLIDE: Mito da Rodada: Nome]
+Texto sobre a vitória do mito.
+
+[SLIDE: Zicador da Rodada: Nome]
+Texto descascando o zicador.
+
+[SLIDE: UFC BR-Depre: Cinturão]
+Texto sobre a disputa de cinturão.
+
+[SLIDE: Resta Um: A Eliminação]
+Texto sobre quem rodou e quem continua vivo.`;
 
                 const res = await fetch('https://api.deepseek.com/chat/completions', {
                     method: 'POST',
@@ -5544,7 +5731,7 @@ Por favor, faça um texto hilário em português. Exalte o Mito (ou diga que foi
                     body: JSON.stringify({
                         model: 'deepseek-chat',
                         messages: [
-                            { role: 'system', content: 'Você é um redator de humor futebolístico esportivo sarcástico e divertido. Responda apenas com o texto da resenha.' },
+                            { role: 'system', content: 'Você é um redator de humor futebolístico esportivo sarcástico, ácido e divertido. Responda apenas com o texto da resenha formatado com os blocos [SLIDE: ...].' },
                             { role: 'user', content: prompt }
                         ],
                         temperature: 0.8
