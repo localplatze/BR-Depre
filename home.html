@@ -1922,18 +1922,32 @@
                     dateLabel.textContent = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
                 }
 
-                // 2. Parse text into news slides using [SLIDE: Title] tags
+                // 2. Parse text into news slides (Hybrid parser: supports both [SLIDE: Title] and legacy **Title** formats)
                 const slides = [];
-                const parts = resenhaData.text.split(/\[SLIDE:\s*/i);
-                for (let i = 1; i < parts.length; i++) {
-                    const subParts = parts[i].split(/\]/);
-                    if (subParts.length >= 2) {
-                        const title = subParts[0].trim();
-                        const rawContent = subParts.slice(1).join(']').trim();
-                        const content = rawContent
-                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                            .replace(/\n\n/g, '<br><br>')
-                            .replace(/\n/g, '<br>');
+                
+                if (resenhaData.text.includes('[SLIDE:')) {
+                    const parts = resenhaData.text.split(/\[SLIDE:\s*/i);
+                    for (let i = 1; i < parts.length; i++) {
+                        const subParts = parts[i].split(/\]/);
+                        if (subParts.length >= 2) {
+                            const title = subParts[0].trim();
+                            const rawContent = subParts.slice(1).join(']').trim();
+                            const content = rawContent
+                                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                .replace(/\n\n/g, '<br><br>')
+                                .replace(/\n/g, '<br>');
+                            if (title && content) {
+                                slides.push({ title, content });
+                            }
+                        }
+                    }
+                } else {
+                    // Legacy parser using **Title**
+                    const regex = /\*\*(.*?)\*\*([\s\S]*?)(?=\*\*|$)/g;
+                    let match;
+                    while ((match = regex.exec(resenhaData.text)) !== null) {
+                        const title = match[1].trim();
+                        const content = match[2].trim().replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
                         if (title && content) {
                             slides.push({ title, content });
                         }
