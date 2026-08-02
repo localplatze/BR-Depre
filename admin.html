@@ -1874,12 +1874,82 @@
                     </div>
                     
                     <div class="form-group" style="margin-bottom: 20px;">
+                        <label>Prompt pre-processado da Resenha</label>
+                        <textarea id="resenha-prompt" rows="8" class="form-control" placeholder="Clique em gerar prompt da resenha para montar o contexto completo..." style="font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px;">
+                        <button id="btn-generate-resenha-prompt" class="btn btn-secondary" type="button"><i class="fas fa-file-lines"></i> Gerar prompt da resenha</button>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
                         <label>Texto da Resenha</label>
                         <textarea id="resenha-text" rows="8" class="form-control" placeholder="Escreva a resenha ou gere automaticamente com o botão acima..." style="font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
                     </div>
                     
                     <div style="display: flex; justify-content: flex-end; gap: 10px;">
                         <button id="btn-save-resenha" class="btn btn-success" type="button"><i class="fas fa-save"></i> Salvar Resenha</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 30px;">
+                <div class="card-header">
+                    <h3><i class="fas fa-shield-alt"></i> Analise da Supercopa</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>Prompt pre-processado</label>
+                        <textarea id="supercopa-analysis-prompt" rows="10" class="form-control" placeholder="Clique em gerar prompt para montar o contexto completo da Supercopa..." style="font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
+                        <p class="help-text">Cole este prompt em uma IA externa. Ela deve responder usando blocos [SLIDE: Titulo].</p>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px;">
+                        <button id="btn-generate-supercopa-prompt" class="btn btn-secondary" type="button"><i class="fas fa-file-lines"></i> Gerar prompt</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>Retorno aprovado para aparecer na Supercopa</label>
+                        <textarea id="supercopa-analysis-response" rows="8" class="form-control" placeholder="[SLIDE: Panorama geral]
+Texto do primeiro slide...
+
+[SLIDE: Grupo A]
+Texto do segundo slide..." style="font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button id="btn-save-supercopa-analysis" class="btn btn-success" type="button"><i class="fas fa-save"></i> Publicar na Supercopa</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 30px;">
+                <div class="card-header">
+                    <h3><i class="fas fa-calculator"></i> Analises dos Confrontos da Supercopa</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>Prompt dos confrontos</label>
+                        <textarea id="supercopa-matchups-prompt" rows="10" class="form-control" placeholder="Clique em gerar prompt para montar os dados dos confrontos ativos..." style="font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
+                        <p class="help-text">A IA deve responder em blocos [CONFRONTO: id-ou-times] com campos [PLACAR_PROVAVEL], [ODDS], [CHANCE_VITORIA] e [ANALISE].</p>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px;">
+                        <button id="btn-generate-supercopa-matchups-prompt" class="btn btn-secondary" type="button"><i class="fas fa-file-lines"></i> Gerar prompt dos confrontos</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>Retorno aprovado dos confrontos</label>
+                        <textarea id="supercopa-matchups-response" rows="10" class="form-control" placeholder="[CONFRONTO: round1-match1]
+[PLACAR_PROVAVEL]
+Time A 7 x 5 Time B
+
+[ODDS]
+Time A: 1.80, 56%
+Time B: 2.20, 44%
+
+[CHANCE_VITORIA]
+...
+
+[ANALISE]
+..." style="font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button id="btn-save-supercopa-matchups-analysis" class="btn btn-success" type="button"><i class="fas fa-save"></i> Publicar an?lises dos confrontos</button>
                     </div>
                 </div>
             </div>
@@ -4223,151 +4293,322 @@
                 await supercopaRef.update(updates);
                 console.log('[processSupercopaScores] Classificação da Supercopa recalculada com sucesso.');
 
-                // Gera projeções matemáticas da Supercopa via IA após atualizar os placares
-                try {
-                    await generateSupercopaIaPredictions();
-                } catch (iaErr) {
-                    console.error('Erro ao gerar predições da Supercopa via IA:', iaErr);
-                }
             } catch (err) {
                 console.error('[processSupercopaScores] Erro:', err);
                 throw err;
             }
         }
 
-        async function generateSupercopaIaPredictions() {
-            console.log('[generateSupercopaIaPredictions] Iniciando geração de projeções da Supercopa via IA...');
-            const deepSeekKeyInput = document.getElementById('deepseek-api-key');
-            const apiKey = (deepSeekKeyInput ? deepSeekKeyInput.value.trim() : '') || localStorage.getItem('deepSeekApiKey') || DEFAULT_DEEPSEEK_API_KEY || '';
-            if (!apiKey) {
-                console.warn('[generateSupercopaIaPredictions] API Key do DeepSeek não definida. Pulando predições.');
-                return;
+        async function buildSupercopaAnalysisPrompt() {
+            const [usersSnap, teamsSnap, supercopaSnap] = await Promise.all([
+                database.ref('users').once('value'),
+                database.ref('teams').once('value'),
+                database.ref('tournaments/supercopa').once('value')
+            ]);
+
+            const usersData = usersSnap.val() || {};
+            const teamsData = teamsSnap.val() || {};
+            const supercopaData = supercopaSnap.val() || {};
+            const groupsData = supercopaData.groups || {};
+            const standings = groupsData.standings || {};
+            const rounds = groupsData.rounds || {};
+            const groupNames = { group1: 'Grupo A', group2: 'Grupo B', group3: 'Grupo C', group4: 'Grupo D' };
+            const groupByPlayer = {};
+            const allPlayers = [];
+
+            for (let i = 1; i <= 4; i++) {
+                const groupKey = `group${i}`;
+                (groupsData[groupKey] || []).forEach(playerId => {
+                    groupByPlayer[playerId] = groupKey;
+                    allPlayers.push(playerId);
+                });
             }
 
-            try {
-                const [usersSnap, teamsSnap, supercopaSnap] = await Promise.all([
-                    database.ref('users').once('value'),
-                    database.ref('teams').once('value'),
-                    database.ref('tournaments/supercopa').once('value')
-                ]);
+            const numRounds = Math.max(allPlayers.length - 1, 0);
+            const roundEntries = Object.entries(rounds).sort((a, b) => {
+                const timeA = a[1].timestamp || 0;
+                const timeB = b[1].timestamp || 0;
+                if (timeA !== timeB) return timeA - timeB;
+                const numA = parseInt(String(a[0]).match(/\d+/)?.[0] || '', 10);
+                const numB = parseInt(String(b[0]).match(/\d+/)?.[0] || '', 10);
+                if (!isNaN(numA) && !isNaN(numB) && numA !== numB) return numA - numB;
+                return String(a[0]).localeCompare(String(b[0]));
+            });
 
-                const usersData = usersSnap.val() || {};
-                const teamsData = teamsSnap.val() || {};
-                const supercopaData = supercopaSnap.val() || {};
+            const finalizedRounds = roundEntries.filter(([, round]) => round.status === 2).length;
+            const activeRound = roundEntries.find(([, round]) => round.status === 1);
+            const currentRoundNumber = Math.min(finalizedRounds + (activeRound ? 1 : 0), numRounds || roundEntries.length);
+            const phaseRatio = numRounds ? currentRoundNumber / numRounds : 0;
+            const phaseLabel = phaseRatio < 0.35 ? 'reta inicial' : phaseRatio < 0.72 ? 'meio da fase de grupos' : 'reta final';
 
-                const groupsData = supercopaData.groups || {};
-                const standings = groupsData.standings || {};
-                const rounds = groupsData.rounds || {};
-
-                // Se a fase de grupos já terminou ou ainda não começou, pulamos
-                if (groupsData.status !== 1) {
-                    console.log('[generateSupercopaIaPredictions] A fase de grupos não está ativa (status !== 1). Pulando predições.');
-                    return;
-                }
-
-                // Construir o relatório de classificação atual para cada grupo
-                let groupReport = '';
-                const groupNames = { group1: 'Grupo A', group2: 'Grupo B', group3: 'Grupo C', group4: 'Grupo D' };
-
-                for (let i = 1; i <= 4; i++) {
-                    const groupKey = `group${i}`;
-                    const groupName = groupNames[groupKey];
-                    const playerIds = groupsData[groupKey] || [];
-                    
-                    const groupPlayers = playerIds.map(id => {
-                        const stand = standings[id] || { playerId: id, games: 0, points: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAg: 0 };
-                        const user = usersData[id] || {};
-                        const team = teamsData[user.teamId || user.team] || {};
-                        const teamName = user.customTeamName || team.name || 'Sem Time';
-                        return {
-                            id,
-                            name: user.name || 'Jogador',
-                            team: teamName,
-                            ...stand,
-                            gd: (stand.goalsFor || 0) - (stand.goalsAg || 0)
-                        };
-                    }).sort((a, b) => {
-                        if (b.points !== a.points) return b.points - a.points;
-                        if (b.wins !== a.wins) return b.wins - a.wins;
-                        if (b.gd !== a.gd) return b.gd - a.gd;
-                        return b.goalsFor - a.goalsFor;
-                    });
-
-                    groupReport += `\n--- ${groupName} ---\n`;
-                    groupPlayers.forEach((p, idx) => {
-                        groupReport += `${idx + 1}º) ${p.name} (${p.team}): ${p.points} pts, ${p.games} jogos, ${p.wins}V, ${p.draws}E, ${p.losses}D, SG: ${p.gd > 0 ? '+' : ''}${p.gd}, GP: ${p.goalsFor}\n`;
-                    });
-                }
-
-                // Detalhar os confrontos restantes
-                let remainingMatchesReport = '\nJogos Restantes da Fase de Grupos:\n';
-                let hasRemaining = false;
-                Object.entries(rounds).forEach(([rKey, rData]) => {
-                    const isFinalized = rData.status === 2;
-                    if (!isFinalized) {
-                        remainingMatchesReport += `Rodada ${rKey} (Status: ${rData.status === 1 ? 'Em Andamento' : 'Pendente'}):\n`;
-                        const matches = rData.matches || {};
-                        Object.entries(matches).forEach(([mKey, match]) => {
-                            const p1 = usersData[match.player1Id]?.name || 'Ninguém';
-                            const p2 = usersData[match.player2Id]?.name || 'Ninguém';
-                            remainingMatchesReport += `  - ${p1} x ${p2}\n`;
-                            hasRemaining = true;
-                        });
-                    }
-                });
-
-                if (!hasRemaining) {
-                    remainingMatchesReport += 'Nenhum jogo restante.\n';
-                }
-
-                const prompt = `Você é um analista estatístico sério e inteligente de futebol para o BR Depressão (um bolão de amigos).
-Analise a situação de classificação da Supercopa (Fase de Grupos) e escreva uma projeção de quem tem mais chances de se classificar para o mata-mata (Série A e Série B) e quem corre risco de eliminação (Série C / Limbo).
-
-Lembre-se das regras:
-- Os 2 primeiros colocados de cada grupo se classificam para o mata-mata da Série A.
-- O 3º e o 4º colocados se classificam para o mata-mata da Série B.
-- Há 4 grupos (A, B, C, D) de 4 jogadores cada.
-
-Aqui está o relatório atual dos grupos:
-${groupReport}
-${remainingMatchesReport}
-
-Escreva uma análise concisa de 2 a 3 parágrafos curtos. Seja realista, analise as probabilidades matemáticas, os pontos restantes em disputa, quem já está garantido e quem está no "bico da chaleira" ou precisa de um milagre. Mencione o nome de alguns participantes de destaque e suas chances. Use um tom de análise esportiva profissional de TV, mas mantendo a leveza do bolão de amigos (um tom sério e preciso, sem o humor agressivo da resenha).`;
-
-                const res = await fetch('https://api.deepseek.com/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: 'deepseek-chat',
-                        messages: [
-                            { role: 'system', content: 'Você é um analista esportivo de futebol que faz projeções estatísticas realistas e sérias. Escreva em português brasileiro.' },
-                            { role: 'user', content: prompt }
-                        ],
-                        temperature: 0.5
-                    })
-                });
-
-                if (!res.ok) {
-                    const errorDetails = await res.text();
-                    throw new Error(`Erro na API do DeepSeek (${res.status}): ${errorDetails}`);
-                }
-
-                const json = await res.json();
-                const text = json.choices[0]?.message?.content || 'Não foi possível gerar as projeções.';
-
-                await database.ref('tournaments/supercopa/iaPredictions').set({
-                    text: text,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-
-                console.log('[generateSupercopaIaPredictions] Projeções salvas com sucesso no Firebase.');
-
-            } catch (err) {
-                console.error('[generateSupercopaIaPredictions] Erro ao gerar projeções via IA:', err);
+            function getPlayerName(playerId) {
+                return usersData[playerId]?.name || 'Jogador';
             }
+
+            function getTeamName(playerId) {
+                const user = usersData[playerId] || {};
+                const team = teamsData[user.teamId || user.team] || {};
+                return user.customTeamName || team.name || 'Sem Time';
+            }
+
+            function getStanding(playerId) {
+                const base = standings[playerId] || {};
+                return {
+                    playerId,
+                    name: getPlayerName(playerId),
+                    team: getTeamName(playerId),
+                    group: groupNames[groupByPlayer[playerId]] || 'Sem grupo',
+                    points: Number(base.points || 0),
+                    games: Number(base.games || 0),
+                    wins: Number(base.wins || 0),
+                    draws: Number(base.draws || 0),
+                    losses: Number(base.losses || 0),
+                    goalsFor: Number(base.goalsFor || 0),
+                    goalsAg: Number(base.goalsAg || 0),
+                    gd: Number(base.goalsFor || 0) - Number(base.goalsAg || 0),
+                    maxPossiblePoints: Number(base.points || 0) + Math.max(numRounds - Number(base.games || 0), 0) * 3
+                };
+            }
+
+            function sortStandings(players) {
+                return players.map(getStanding).sort((a, b) => {
+                    if (b.points !== a.points) return b.points - a.points;
+                    if (b.wins !== a.wins) return b.wins - a.wins;
+                    if (b.gd !== a.gd) return b.gd - a.gd;
+                    return b.goalsFor - a.goalsFor;
+                });
+            }
+
+            function formatTable(groupKey) {
+                return sortStandings(groupsData[groupKey] || []).map((p, index) => (
+                    `${index + 1}. ${p.name} (${p.team}) - ${p.points} pts, ${p.games}J, ${p.wins}V/${p.draws}E/${p.losses}D, SG ${p.gd >= 0 ? '+' : ''}${p.gd}, GP ${p.goalsFor}, teto ${p.maxPossiblePoints} pts`
+                )).join('\n');
+            }
+
+            function formatMatches(roundData) {
+                return Object.entries(roundData?.matches || {}).map(([matchKey, match]) => {
+                    const p1 = getStanding(match.player1Id);
+                    const p2 = getStanding(match.player2Id);
+                    const direct = groupByPlayer[match.player1Id] && groupByPlayer[match.player1Id] === groupByPlayer[match.player2Id];
+                    const result = match.result || match.manualResult || 'sem resultado';
+                    return `${matchKey}: ${p1.name} (${p1.group}, ${p1.points} pts) x ${p2.name} (${p2.group}, ${p2.points} pts) - ${direct ? 'confronto direto de grupo' : 'duelo cruzado'} - status/placar: ${result}`;
+                }).join('\n') || 'Nenhum jogo listado.';
+            }
+
+            function formatHistory() {
+                const lines = [];
+                roundEntries.forEach(([roundKey, round]) => {
+                    Object.values(round.matches || {}).forEach(match => {
+                        if (!match.result || !String(match.result).includes('x')) return;
+                        lines.push(`${roundKey}: ${getPlayerName(match.player1Id)} ${match.result} ${getPlayerName(match.player2Id)}`);
+                    });
+                });
+                return lines.join('\n') || 'Ainda sem historico de confrontos finalizados.';
+            }
+
+            const activeRoundText = activeRound
+                ? `Rodada em andamento: ${activeRound[0]}\n${formatMatches(activeRound[1])}`
+                : 'Nenhuma rodada marcada como em andamento agora.';
+
+            return `Voce e um analista esportivo do BR Depressao, um bolao de amigos. Gere uma analise da Supercopa para aparecer no site em formato de carrossel.
+
+CONTEXTO DA COMPETICAO
+- A fase de grupos tem ${allPlayers.length} jogadores.
+- Numero de rodadas da fase de grupos: num_rounds = num_jogadores - 1 = ${numRounds}.
+- O formato e todos contra todos, estilo Paulistao: jogadores enfrentam adversarios de qualquer grupo, mas a classificacao e analisada por grupo.
+- Os 2 primeiros de cada grupo vao para a Serie A; 3o e 4o seguem para a Serie B.
+- Momento atual da fase: ${phaseLabel} (${finalizedRounds} rodadas finalizadas de ${numRounds}; rodada atual estimada ${currentRoundNumber}).
+- Se houver rodada em andamento, considere o peso dos confrontos ativos, a tabela de cada grupo, se o jogo e confronto direto no grupo ou duelo cruzado, e o historico da Supercopa.
+
+FORMATO OBRIGATORIO DA RESPOSTA
+Responda somente com slides usando exatamente este padrao:
+[SLIDE: Titulo curto]
+Texto do slide em 1 ou 2 paragrafos curtos.
+
+Regras do formato:
+- Use entre 4 e 7 slides.
+- O primeiro slide deve ser um panorama geral.
+- Depois, faca slides por grupo ou por blocos de grupos quando fizer sentido.
+- Nao use markdown, listas com bullets, tabelas, HTML, JSON ou numeracao fora das tags [SLIDE: ...].
+- Nao invente pontuacoes, nomes ou resultados.
+- Explique se o grupo esta embolado, abrindo vantagem, em reta inicial/meio/reta final, ou ficando definido.
+- Destaque lideres, zona de Serie A, perseguidores, risco de queda para Serie B e contas matematicas simples quando forem relevantes.
+
+DADOS DA SUPERCOPA
+Status dos grupos: ${groupsData.status ?? 'nao informado'}
+
+${Object.keys(groupNames).map(groupKey => `${groupNames[groupKey]}\n${formatTable(groupKey)}`).join('\n\n')}
+
+RODADA EM ANDAMENTO / ATIVA
+${activeRoundText}
+
+HISTORICO DE CONFRONTOS FINALIZADOS NA SUPERCOPA
+${formatHistory()}`;
+        }
+
+
+        function normalizeAnalysisKey(value) {
+            return String(value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/gi, '-')
+                .replace(/^-+|-+$/g, '')
+                .toLowerCase();
+        }
+
+        async function buildSupercopaMatchupsPrompt() {
+            const [usersSnap, teamsSnap, supercopaSnap, roundsSnap] = await Promise.all([
+                database.ref('users').once('value'),
+                database.ref('teams').once('value'),
+                database.ref('tournaments/supercopa').once('value'),
+                database.ref('rounds').once('value')
+            ]);
+
+            const usersData = usersSnap.val() || {};
+            const teamsData = teamsSnap.val() || {};
+            const supercopaData = supercopaSnap.val() || {};
+            const roundsData = roundsSnap.val() || {};
+            const groupsData = supercopaData.groups || {};
+            const scRounds = groupsData.rounds || {};
+            const activeEntry = Object.entries(scRounds).find(([, round]) => round.status === 1);
+            if (!activeEntry) throw new Error('Nenhuma rodada da Supercopa esta em andamento.');
+
+            const sortedScEntries = Object.entries(scRounds).sort((a, b) => {
+                const timeA = a[1].timestamp || 0;
+                const timeB = b[1].timestamp || 0;
+                if (timeA !== timeB) return timeA - timeB;
+                return String(a[0]).localeCompare(String(b[0]));
+            });
+            const activeIndex = sortedScEntries.findIndex(([key]) => key === activeEntry[0]);
+            const supercopaStartRound = (typeof ABERTURA_CLAUSURA_SPLIT_ROUND === 'number' && ABERTURA_CLAUSURA_SPLIT_ROUND > 0)
+                ? ABERTURA_CLAUSURA_SPLIT_ROUND + 1
+                : 21;
+            const superligaRounds = Object.entries(roundsData)
+                .map(([key, data]) => ({ key, ...data }))
+                .sort((a, b) => {
+                    const timeA = a.finishTimestamp ? new Date(a.finishTimestamp).getTime() : 0;
+                    const timeB = b.finishTimestamp ? new Date(b.finishTimestamp).getTime() : 0;
+                    return timeA - timeB;
+                })
+                .map((data, index) => ({ ...data, seqNumber: index + 1 }));
+            const targetRoundData = superligaRounds.filter(r => r.seqNumber >= supercopaStartRound)[activeIndex] || null;
+            const baseMatches = targetRoundData?.matches ? (Array.isArray(targetRoundData.matches) ? targetRoundData.matches : Object.values(targetRoundData.matches)) : [];
+
+            function getName(playerId) {
+                const user = usersData[playerId] || {};
+                return user.customTeamName || user.name || playerId || 'Jogador';
+            }
+
+            function getStarText(roundData, playerId) {
+                const sp = roundData?.starPlayers?.[playerId];
+                if (!sp) return 'sem artilheiro';
+                const goalsInfo = roundData?.playerGoals?.[sp.athleteId] || 0;
+                const count = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                const roundMatches = roundData?.matches ? (Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches)) : [];
+                const teamId = sp.teamId || sp.team || sp.teamKey || '';
+                let playStatus = 'status do time nao identificado na rodada';
+
+                if (roundData?.status === 0) {
+                    playStatus = 'rodada ainda nao comecou';
+                } else if (teamId) {
+                    const teamMatches = roundMatches.filter(match => match.homeTeam === teamId || match.awayTeam === teamId);
+                    const hasFinished = teamMatches.some(match => match.finalResult && match.finalResult.homeScore !== undefined && match.finalResult.awayScore !== undefined);
+                    const hasPending = teamMatches.some(match => !match.finalResult || match.finalResult.homeScore === undefined || match.finalResult.awayScore === undefined);
+                    if (hasFinished) playStatus = 'time ja jogou na rodada';
+                    else if (hasPending && roundData?.status === 1) playStatus = 'time ainda joga nesta rodada';
+                    else if (hasPending) playStatus = 'time tem jogo pendente nesta rodada';
+                }
+
+                return `${sp.athleteName || sp.name || 'artilheiro'} (${sp.teamName || sp.teamId || 'time nao informado'}): ${count} gol(s), ${playStatus}`;
+            }
+
+            function getCurrentScore(roundData, playerId) {
+                return roundData ? calculateUserRoundTotalScore(roundData, playerId) : 0;
+            }
+
+            function getRemainingLines(roundData, p1Id, p2Id) {
+                if (!roundData) return 'Rodada base da Superliga nao encontrada.';
+                return baseMatches.map((match) => {
+                    const pred1 = match.predictions?.[p1Id];
+                    const pred2 = match.predictions?.[p2Id];
+                    const home = teamsData[match.homeTeam]?.name || match.homeTeamName || match.homeTeam || 'Mandante';
+                    const away = teamsData[match.awayTeam]?.name || match.awayTeamName || match.awayTeam || 'Visitante';
+                    const result = match.finalResult ? `${match.finalResult.homeScore}x${match.finalResult.awayScore}` : 'pendente';
+                    const p1Pts = match.finalResult && pred1 ? calculateMatchPoints(match.finalResult, pred1) : 0;
+                    const p2Pts = match.finalResult && pred2 ? calculateMatchPoints(match.finalResult, pred2) : 0;
+                    const star1 = pred1 && (pred1.isStarMatch || pred1.isCaptain || pred1.star || pred1.doublePoints) ? ' estrela' : '';
+                    const star2 = pred2 && (pred2.isStarMatch || pred2.isCaptain || pred2.star || pred2.doublePoints) ? ' estrela' : '';
+                    return `${home} x ${away}: resultado ${result}; ${getName(p1Id)} ${pred1 ? `${pred1.homeScore}x${pred1.awayScore}${star1}, ${p1Pts} pts` : 'sem palpite'}; ${getName(p2Id)} ${pred2 ? `${pred2.homeScore}x${pred2.awayScore}${star2}, ${p2Pts} pts` : 'sem palpite'}`;
+                }).join('\n') || 'Nenhum jogo base listado.';
+            }
+
+            const matchupBlocks = Object.entries(activeEntry[1].matches || {}).map(([matchKey, match]) => {
+                const p1Id = match.player1Id;
+                const p2Id = match.player2Id;
+                const matchId = match.id || matchKey;
+                const p1Name = getName(p1Id);
+                const p2Name = getName(p2Id);
+                const pairKey = normalizeAnalysisKey(`${p1Name} x ${p2Name}`);
+                const score1 = getCurrentScore(targetRoundData, p1Id);
+                const score2 = getCurrentScore(targetRoundData, p2Id);
+                return `CONFRONTO_ID: ${matchId}\nTIMES_KEY: ${pairKey}\nTIMES: ${p1Name} x ${p2Name}\nPLACAR_ATUAL: ${score1} x ${score2}\nARTILHEIRO_${p1Name}: ${getStarText(targetRoundData, p1Id)}\nARTILHEIRO_${p2Name}: ${getStarText(targetRoundData, p2Id)}\nJOGOS_DA_RODADA_BASE:\n${getRemainingLines(targetRoundData, p1Id, p2Id)}`;
+            }).join('\n\n---\n\n');
+
+            return `Voce e um analista esportivo do BR Depressao. Gere analises individuais dos confrontos ativos da Supercopa.
+
+FORMATO OBRIGATORIO
+Para cada confronto, responda exatamente assim:
+[CONFRONTO: use o CONFRONTO_ID ou TIMES_KEY informado]
+[PLACAR_PROVAVEL]
+Uma linha curta com placar provavel em pontos. Exemplo: Jogador A 4 x 3 Jogador B.
+
+[ODDS]
+Uma linha para cada jogador, sem juntar tudo em uma frase:
+Jogador A: odd decimal, chance percentual, motivo curto.
+Jogador B: odd decimal, chance percentual, motivo curto.
+
+[CHANCE_VITORIA]
+Uma frase curta dizendo quem tem vantagem e por que, terminando com uma destas leituras claras: DEFINIDO, DEPENDE_DO_ARTILHEIRO, PODE_EMPATE ou EM_DISPUTA.
+
+[ANALISE]
+2 ou 3 paragrafos curtos, separados por linha em branco, explicando jogos restantes, palpites decisivos, rodada estrela, artilheiro, viradas possiveis e riscos.
+
+REGRAS
+- Nao invente nomes, placares, gols ou odds.
+- Se as odds forem estimadas, diga de forma coerente com o placar atual, palpites restantes e artilheiro.
+- Regras de pontuacao da Superliga/Supercopa: placar exato vale +3 pts; acertar somente o vencedor ou o empate, errando o placar exato, vale +1 pt; placar exatamente invertido vale -1 pt; erro comum que nao seja placar invertido vale 0 pt.
+- Partida estrela nao duplica odd nem chance: ela duplica somente a pontuacao daquela partida para aquele jogador (+3 vira +6, +1 vira +2, -1 vira -2). Ela nao duplica gols nem pontos do artilheiro.
+- Cada gol do artilheiro escolhido soma +1 pt separado da partida estrela. O bonus do artilheiro nunca e dobrado pela estrela.
+- Quando os dois jogadores apostaram exatamente o mesmo placar em um jogo, esse jogo tende a nao separar o confronto; so muda diferenca se apenas um deles marcou a partida como estrela, se houver pontuacao negativa/invertida afetada pela estrela, ou por artilheiro em paralelo.
+- Ao projetar placar provavel e odds, considere o impacto real dos palpites restantes: palpites iguais reduzem volatilidade; palpites opostos ou diferentes abrem margem de virada; estrela aumenta pontos possiveis da partida, mas nao deve ser tratada como "odd dobrada".
+- Use o status do artilheiro: se o time ja jogou, os gols ja estao consolidados; se ainda joga, ele pode alterar a virada e as odds; se a rodada nao comecou, trate como potencial aberto.
+- Antes de escrever a analise, avalie matematicamente a disputa: se os jogos restantes e artilheiros nao permitem virada/empate, marque como DEFINIDO; se a unica chance real depende dos gols do artilheiro ainda pendente, marque como DEPENDE_DO_ARTILHEIRO; se o empate ainda e plausivel, marque como PODE_EMPATE; se ambos ainda conseguem vencer por palpites ou artilheiro, marque como EM_DISPUTA.
+- Na [ANALISE], explique explicitamente se o confronto ja terminou matematicamente, se alguem ainda esta no pareo, se a virada passa pelo artilheiro ou se resta apenas administrar a vantagem.
+- Evite texto unico comprido. Escreva com quebras naturais: odds uma por linha e analise em paragrafos curtos para o site renderizar em cards.
+- Nao explique as regras como manual, a menos que seja essencial para justificar uma virada. Prefira aplicar a regra ao caso concreto.
+- Mantenha os campos regexaveis exatamente com as tags acima.
+- Use o CONFRONTO_ID quando possivel; se preferir times, use exatamente o TIMES_KEY.
+
+RODADA SUPERCOPA: ${activeEntry[0]}
+RODADA BASE SUPERLIGA: ${targetRoundData?.key || 'nao encontrada'}
+
+DADOS DOS CONFRONTOS
+${matchupBlocks}`;
+        }
+
+        function parseSupercopaMatchupAnalyses(text) {
+            const source = String(text || '').trim();
+            const regex = /\[CONFRONTO:\s*([^\]]+)\]([\s\S]*?)(?=\n\s*\[CONFRONTO:\s*[^\]]+\]|\s*$)/gi;
+            const analyses = {};
+            let match;
+            while ((match = regex.exec(source)) !== null) {
+                const rawKey = (match[1] || '').trim();
+                const body = (match[2] || '').trim();
+                if (!rawKey || !body) continue;
+                analyses[rawKey] = { text: body, updatedAt: firebase.database.ServerValue.TIMESTAMP };
+                analyses[normalizeAnalysisKey(rawKey)] = { text: body, updatedAt: firebase.database.ServerValue.TIMESTAMP };
+            }
+            return analyses;
         }
 
         // --- SUB-ABA 1: CARREGAR E SALVAR GRUPOS ---
@@ -5581,6 +5822,163 @@ Escreva uma análise concisa de 2 a 3 parágrafos curtos. Seja realista, analise
             }
         }
 
+        async function buildResenhaPrompt() {
+            const select = document.getElementById('resenha-round-select');
+            const roundId = select ? select.value : '';
+            if (!roundId) throw new Error('Selecione uma rodada finalizada primeiro.');
+
+            const [roundSnap, usersSnap, teamsSnap, cinturaoSnap, restaUmSnap, supercopaSnap] = await Promise.all([
+                database.ref('rounds/' + roundId).once('value'),
+                database.ref('users').once('value'),
+                database.ref('teams').once('value'),
+                database.ref('tournaments/cinturao').once('value'),
+                database.ref('tournaments/restaUm').once('value'),
+                database.ref('tournaments/supercopa').once('value')
+            ]);
+
+            const roundData = roundSnap.val();
+            const usersData = usersSnap.val() || {};
+            const teamsData = teamsSnap.val() || {};
+            const cinturaoVal = cinturaoSnap.val() || {};
+            const restaVal = restaUmSnap.val() || {};
+            const supercopaVal = supercopaSnap.val() || {};
+            if (!roundData || !roundData.matches) throw new Error('Rodada sem partidas.');
+
+            const matches = Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches);
+            const scores = [];
+            const userMatchDetails = {};
+
+            Object.entries(usersData).forEach(([uid, user]) => {
+                let points = 0;
+                let hasPred = false;
+                const details = [];
+                matches.forEach(match => {
+                    const pred = match.predictions?.[uid];
+                    if (!pred || pred.homeScore === undefined || pred.awayScore === undefined) return;
+                    hasPred = true;
+                    let pts = 0;
+                    if (match.finalResult) {
+                        pts = calculateMatchPoints(match.finalResult, pred);
+                        points += pts;
+                    }
+                    const home = teamsData[match.homeTeam]?.name || match.homeTeamName || match.homeTeam || 'Mandante';
+                    const away = teamsData[match.awayTeam]?.name || match.awayTeamName || match.awayTeam || 'Visitante';
+                    const result = match.finalResult ? `${match.finalResult.homeScore}x${match.finalResult.awayScore}` : 'pendente';
+                    details.push(`${home} x ${away}: palpite ${pred.homeScore}x${pred.awayScore}${pred.isStarMatch || pred.isCaptain || pred.star || pred.doublePoints ? ' (estrela)' : ''}, resultado ${result}, pontos ${pts}`);
+                });
+
+                const starPlayer = roundData.starPlayers?.[uid];
+                const playerGoals = roundData.playerGoals || {};
+                let strikerText = 'sem artilheiro';
+                if (hasPred && starPlayer?.athleteId) {
+                    const goalsInfo = playerGoals[starPlayer.athleteId] || 0;
+                    const count = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                    points += count;
+                    strikerText = `${starPlayer.athleteName || starPlayer.name || 'artilheiro'}: ${count} gol(s)`;
+                }
+
+                if (hasPred) {
+                    const team = teamsData[user.teamId || user.team] || {};
+                    scores.push({ uid, name: user.name || 'Jogador', team: user.customTeamName || team.name || 'Sem Time', points, strikerText });
+                    userMatchDetails[uid] = details;
+                }
+            });
+
+            scores.sort((a, b) => b.points - a.points);
+            const finishedMatches = matches.filter(match => match.finalResult).length;
+            const pendingMatches = matches.length - finishedMatches;
+            const winner = scores[0];
+            const loser = scores[scores.length - 1];
+
+            const matchLines = matches.map(match => {
+                const home = teamsData[match.homeTeam]?.name || match.homeTeamName || match.homeTeam || 'Mandante';
+                const away = teamsData[match.awayTeam]?.name || match.awayTeamName || match.awayTeam || 'Visitante';
+                const result = match.finalResult ? `${match.finalResult.homeScore}x${match.finalResult.awayScore}` : 'pendente';
+                const preds = Object.values(match.predictions || {}).filter(p => p && p.homeScore !== undefined).length;
+                let homeWin = 0, draw = 0, awayWin = 0;
+                Object.values(match.predictions || {}).forEach(pred => {
+                    if (!pred || pred.homeScore === undefined || pred.awayScore === undefined) return;
+                    if (Number(pred.homeScore) > Number(pred.awayScore)) homeWin++;
+                    else if (Number(pred.homeScore) < Number(pred.awayScore)) awayWin++;
+                    else draw++;
+                });
+                const zebra = match.finalResult && preds
+                    ? `consenso: ${homeWin} mandante, ${draw} empate, ${awayWin} visitante`
+                    : `palpites registrados: ${preds}`;
+                return `${home} ${result} ${away} (${zebra})`;
+            }).join('\n');
+
+            const rankingLines = scores.map((s, idx) => `${idx + 1}. ${s.name} (${s.team}) - ${s.points} pts; artilheiro: ${s.strikerText}`).join('\n');
+            const topDetails = scores.slice(0, 3).map(s => `${s.name}:\n${(userMatchDetails[s.uid] || []).join('\n')}`).join('\n\n');
+            const bottomDetails = scores.slice(-3).map(s => `${s.name}:\n${(userMatchDetails[s.uid] || []).join('\n')}`).join('\n\n');
+
+            const champName = usersData[cinturaoVal.championId]?.name || 'Ninguem';
+            const challName = usersData[cinturaoVal.challengerId]?.name || 'Ninguem';
+            const curMatch = cinturaoVal.currentMatch || {};
+            const cinturaoResult = curMatch.champScore !== undefined && curMatch.challengerScore !== undefined ? `${curMatch.champScore}x${curMatch.challengerScore}` : 'pendente';
+            const elims = restaVal.eliminations || {};
+            const eliminated = elims[roundId] ? usersData[elims[roundId].eliminatedUserId]?.name || 'Ninguem' : 'ninguem registrado';
+            const survivors = (restaVal.participants || Object.keys(usersData)).filter(uid => !new Set(Object.values(elims).map(e => e.eliminatedUserId)).has(uid)).map(uid => usersData[uid]?.name || uid).join(', ');
+            const scStandings = supercopaVal.groups?.standings || {};
+            const scSummary = Object.entries(scStandings).map(([uid, st]) => `${usersData[uid]?.name || uid}: ${st.points || 0} pts, ${st.games || 0}J`).join('; ') || 'sem tabela consolidada';
+
+            return `Voce e um redator esportivo sarcastico do BR Depressao, um bolao de futebol entre amigos. Gere a resenha da rodada em formato de carrossel para o site.
+
+FORMATO OBRIGATORIO
+Responda somente com blocos:
+[SLIDE: Titulo curto]
+Texto do slide em 1 ou 2 paragrafos.
+
+Use entre 5 e 8 slides. Inclua: panorama da rodada, Mito da Rodada, Zicador da Rodada, destaques positivos/negativos, zebras ou jogos obvios errados, Cinturao, Resta Um e um resumo curto da Supercopa quando fizer sentido. Nao invente dados.
+
+TOM E HUMOR
+- Escreva com mais humor de mesa de bar, provocacao entre amigos e ironia esportiva, mas sem ofensa pesada.
+- Use o time escolhido de cada jogador quando aparecer no ranking (Cruzeiro, Flamengo, Corinthians etc.) para fazer piadas curtas e personalizadas.
+- Se souber de noticias recentes, memes ou fases publicas dos clubes, pode usar como tempero leve, por exemplo crise, divida, oba-oba, tecnico pressionado ou torcida iludida. Se nao tiver certeza, prefira piadas genericas sobre o clube e nao invente noticia especifica.
+- Nao transforme todos os slides em piada do mesmo tipo: varie entre zoeira, elogio desconfiado, drama exagerado e comentario esportivo.
+- Preserve os dados do bolao como verdade principal; o humor deve explicar os numeros, nao substituir os numeros.
+
+CONTEXTO GERAL
+Rodada: ${roundId}
+Status da rodada: ${roundData.status === 2 ? 'finalizada' : roundData.status === 1 ? 'em andamento' : 'pendente'}
+Partidas finalizadas: ${finishedMatches}/${matches.length}; pendentes: ${pendingMatches}
+Mito da rodada: ${winner ? `${winner.name} com ${winner.points} pts` : 'indefinido'}
+Zicador da rodada: ${loser ? `${loser.name} com ${loser.points} pts` : 'indefinido'}
+
+JOGOS E TENDENCIAS DOS PALPITES
+${matchLines}
+
+RANKING DA RODADA
+${rankingLines}
+
+DETALHES DOS MELHORES
+${topDetails}
+
+DETALHES DOS PIORES
+${bottomDetails}
+
+CINTURAO
+Campeao: ${champName}. Desafiante: ${challName}. Placar do confronto: ${cinturaoResult}. Defesas: ${cinturaoVal.defenses || 0}.
+
+RESTA UM
+Eliminado da rodada: ${eliminated}. Sobreviventes: ${survivors || 'nao informado'}.
+
+SUPERCOPA RESUMIDA
+${scSummary}`;
+        }
+
+        document.getElementById('btn-generate-resenha-prompt')?.addEventListener('click', async () => {
+            const promptEl = document.getElementById('resenha-prompt');
+            if (!promptEl) return;
+            promptEl.value = 'Montando prompt da resenha...';
+            try {
+                promptEl.value = await buildResenhaPrompt();
+            } catch (err) {
+                console.error('Erro ao gerar prompt da resenha:', err);
+                promptEl.value = `Erro ao gerar prompt da resenha: ${err.message}`;
+            }
+        });
+
         // Generate Resenha via DeepSeek
         document.getElementById('btn-generate-resenha')?.addEventListener('click', async () => {
             const select = document.getElementById('resenha-round-select');
@@ -5784,6 +6182,83 @@ Texto sobre quem rodou e quem continua vivo.`;
             } catch (err) {
                 console.error('Erro ao salvar resenha:', err);
                 alert('Erro ao salvar resenha: ' + err.message);
+            }
+        });
+
+
+        document.getElementById('btn-generate-supercopa-prompt')?.addEventListener('click', async () => {
+            const promptEl = document.getElementById('supercopa-analysis-prompt');
+            if (!promptEl) return;
+            promptEl.value = 'Montando prompt com os dados da Supercopa...';
+
+            try {
+                promptEl.value = await buildSupercopaAnalysisPrompt();
+            } catch (err) {
+                console.error('Erro ao gerar prompt da Supercopa:', err);
+                promptEl.value = `Erro ao gerar prompt da Supercopa: ${err.message}`;
+            }
+        });
+
+        document.getElementById('btn-save-supercopa-analysis')?.addEventListener('click', async () => {
+            const responseEl = document.getElementById('supercopa-analysis-response');
+            const text = responseEl?.value.trim() || '';
+
+            if (!text) {
+                alert('Cole o retorno aprovado antes de publicar na Supercopa.');
+                return;
+            }
+            if (!/\[SLIDE:\s*[^\]]+\][\s\S]+/i.test(text)) {
+                alert('O retorno precisa ter pelo menos um bloco no formato [SLIDE: Titulo].');
+                return;
+            }
+
+            try {
+                await database.ref('tournaments/supercopa/iaPredictions').set({
+                    text,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    source: 'manual-external-ai'
+                });
+                alert('Analise publicada na Supercopa com sucesso!');
+            } catch (err) {
+                console.error('Erro ao publicar analise da Supercopa:', err);
+                alert('Erro ao publicar analise da Supercopa: ' + err.message);
+            }
+        });
+
+
+        document.getElementById('btn-generate-supercopa-matchups-prompt')?.addEventListener('click', async () => {
+            const promptEl = document.getElementById('supercopa-matchups-prompt');
+            if (!promptEl) return;
+            promptEl.value = 'Montando prompt dos confrontos ativos da Supercopa...';
+
+            try {
+                promptEl.value = await buildSupercopaMatchupsPrompt();
+            } catch (err) {
+                console.error('Erro ao gerar prompt dos confrontos:', err);
+                promptEl.value = `Erro ao gerar prompt dos confrontos: ${err.message}`;
+            }
+        });
+
+        document.getElementById('btn-save-supercopa-matchups-analysis')?.addEventListener('click', async () => {
+            const responseEl = document.getElementById('supercopa-matchups-response');
+            const text = responseEl?.value.trim() || '';
+            if (!text) {
+                alert('Cole o retorno aprovado dos confrontos antes de publicar.');
+                return;
+            }
+
+            const analyses = parseSupercopaMatchupAnalyses(text);
+            if (!Object.keys(analyses).length) {
+                alert('Nenhum bloco [CONFRONTO: ...] valido encontrado.');
+                return;
+            }
+
+            try {
+                await database.ref('tournaments/supercopa/matchAnalyses').update(analyses);
+                alert(`${Object.keys(analyses).length} chave(s) de analise publicadas para os confrontos.`);
+            } catch (err) {
+                console.error('Erro ao publicar analises dos confrontos:', err);
+                alert('Erro ao publicar analises dos confrontos: ' + err.message);
             }
         });
 

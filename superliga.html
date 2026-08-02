@@ -640,14 +640,16 @@
 
         .standings-table th:nth-child(3),
         .standings-table th:nth-child(4),
-        .standings-table th:nth-child(5) {
+        .standings-table th:nth-child(5),
+        .standings-table th:nth-child(6) {
             text-align: center;
             width: 50px;
         }
 
         .standings-table td:nth-child(3),
         .standings-table td:nth-child(4),
-        .standings-table td:nth-child(5) {
+        .standings-table td:nth-child(5),
+        .standings-table td:nth-child(6) {
             text-align: center;
         }
 
@@ -942,14 +944,10 @@
             const currentUser = auth.currentUser;
             const totalPlayers = standings.length;
 
-            // Calcular posições da rodada anterior (lastRoundPoints)
-            const pointsField = `pointsSuperliga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
-            const lastRoundPointsField = `lastRoundPointsLiga${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
-
-            // Criar ranking da rodada anterior baseado nos pontos sem a rodada atual
+            // Criar ranking anterior descontando a pontuacao da ultima rodada finalizada.
             const previousRanking = [...standings].sort((a, b) => {
-                const aPrevPoints = (a[pointsField] || 0);
-                const bPrevPoints = (b[pointsField] || 0);
+                const aPrevPoints = (a.totalPoints || 0) - (a.lastRoundPoints || 0);
+                const bPrevPoints = (b.totalPoints || 0) - (b.lastRoundPoints || 0);
                 return bPrevPoints - aPrevPoints;
             }).map((player, idx) => ({ id: player.id, prevPosition: idx + 1 }));
 
@@ -972,6 +970,7 @@
                             <th>P</th>
                             <th>R</th>
                             <th>U</th>
+                            <th>-</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1008,7 +1007,7 @@
 
                 // Adicionar título de grupo quando necessário
                 if (currentGroupIndex < groups.length && position === groups[currentGroupIndex].positions[0]) {
-                    html += `<tr class="group-title"><td colspan="5">${groups[currentGroupIndex].title}</td></tr>`;
+                    html += `<tr class="group-title"><td colspan="6">${groups[currentGroupIndex].title}</td></tr>`;
                     currentGroupIndex++;
                 }
 
@@ -1024,6 +1023,7 @@
                         </td>
                         <td class="points">${player.totalPoints}</td>
                         <td class="round-points">${player.roundPoints >= 0 ? '+' : ''}${player.roundPoints}</td>
+                        <td class="round-points">${player.lastRoundPoints >= 0 ? '+' : ''}${player.lastRoundPoints}</td>
                         <td class="trend-cell">
                             <div class="trend-indicator" title="Posição anterior: ${prevPosition}º">
                                 ${trendIcon} ${trendText}
@@ -1071,7 +1071,8 @@
 
             // Calcular estatísticas completas para cada jogador
             const standings = usersArray.map(user => {
-                let roundPoints = activeRound ? (liveRoundPoints[user.id] || 0) : (user[lastRoundPointsField] || 0);
+                const lastRoundPoints = user[lastRoundPointsField] || 0;
+                let roundPoints = activeRound ? (liveRoundPoints[user.id] || 0) : lastRoundPoints;
                 const totalPoints = (user[pointsField] || 0) + (activeRound ? roundPoints : 0);
 
                 // Calcular estatísticas adicionais dos palpites
@@ -1100,6 +1101,7 @@
                     ...user,
                     totalPoints,
                     roundPoints,
+                    lastRoundPoints,
                     played,
                     wins,
                     draws,

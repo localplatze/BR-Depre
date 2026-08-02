@@ -430,6 +430,7 @@
         <!-- Abas Principais -->
         <div class="main-tabs">
             <button id="tab-rounds" class="tab-btn active"><i class="fas fa-calendar-alt"></i> Por Rodada</button>
+            <button id="tab-player-round" class="tab-btn"><i class="fas fa-user-clock"></i> Jogador/Rodada</button>
             <button id="tab-comparison" class="tab-btn"><i class="fas fa-swords"></i> Comparativo (P1 vs P2)</button>
             <button id="tab-stats" class="tab-btn"><i class="fas fa-pie-chart"></i> Stats & Gráficos</button>
         </div>
@@ -445,6 +446,23 @@
             </div>
 
             <div id="matches-container" class="matches-grid"></div>
+        </div>
+
+        <!-- Conteudo extra: Palpites de um jogador em uma rodada -->
+        <div id="content-player-round" class="tab-content" style="display: none;">
+            <div class="comparison-panel">
+                <div class="selectors-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-user" style="color: #3B82F6;"></i> Jogador:</label>
+                        <select id="player-round-user-select" class="form-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt" style="color: #F59E0B;"></i> Rodada:</label>
+                        <select id="player-round-round-select" class="form-select"></select>
+                    </div>
+                </div>
+                <div id="player-round-predictions" class="matches-grid"></div>
+            </div>
         </div>
 
         <!-- Conteúdo 2: Comparativo Directo -->
@@ -561,7 +579,10 @@
             roundsScrollContainer: document.querySelector('.rounds-scroll-container'),
             p1Select: document.getElementById('p1-select'),
             p2Select: document.getElementById('p2-select'),
-            statsPlayerSelect: document.getElementById('stats-player-select')
+            statsPlayerSelect: document.getElementById('stats-player-select'),
+            playerRoundUserSelect: document.getElementById('player-round-user-select'),
+            playerRoundRoundSelect: document.getElementById('player-round-round-select'),
+            playerRoundPredictions: document.getElementById('player-round-predictions')
         };
 
         auth.onAuthStateChanged((user) => {
@@ -757,6 +778,13 @@
             ui.p1Select.innerHTML = optionsHtml;
             ui.p2Select.innerHTML = optionsHtml;
             ui.statsPlayerSelect.innerHTML = '<option value="all">Geral (Todos os Palpiteiros)</option>' + optionsHtml;
+            if (ui.playerRoundUserSelect) ui.playerRoundUserSelect.innerHTML = optionsHtml;
+            if (ui.playerRoundRoundSelect) {
+                ui.playerRoundRoundSelect.innerHTML = allCompletedRounds.map((round, index) =>
+                    `<option value="${round.id}">Rodada ${index + 1}</option>`
+                ).join('');
+                if (allCompletedRounds.length) ui.playerRoundRoundSelect.value = allCompletedRounds[allCompletedRounds.length - 1].id;
+            }
 
             if (userEntries.length > 1) {
                 ui.p2Select.selectedIndex = 1;
@@ -765,9 +793,64 @@
             ui.p1Select.onchange = updateComparison;
             ui.p2Select.onchange = updateComparison;
             ui.statsPlayerSelect.onchange = updateGeneralStats;
+            if (ui.playerRoundUserSelect) ui.playerRoundUserSelect.onchange = updatePlayerRoundPredictions;
+            if (ui.playerRoundRoundSelect) ui.playerRoundRoundSelect.onchange = updatePlayerRoundPredictions;
 
             updateComparison();
             updateGeneralStats();
+            updatePlayerRoundPredictions();
+        }
+
+        function updatePlayerRoundPredictions() {
+            if (!ui.playerRoundUserSelect || !ui.playerRoundRoundSelect || !ui.playerRoundPredictions) return;
+            const userId = ui.playerRoundUserSelect.value;
+            const roundId = ui.playerRoundRoundSelect.value;
+            const roundData = allCompletedRounds.find(r => r.id === roundId);
+            const user = usersCache[userId] || {};
+
+            if (!roundData || !userId) {
+                ui.playerRoundPredictions.innerHTML = '<p class="empty-state">Selecione um jogador e uma rodada.</p>';
+                return;
+            }
+
+            const matches = Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches || {});
+            const playerItems = matches.map(match => {
+                const pred = match.predictions?.[userId];
+                const homeTeam = teamsCache[match.homeTeam]?.name || match.homeTeamName || match.homeTeam || 'Mandante';
+                const awayTeam = teamsCache[match.awayTeam]?.name || match.awayTeamName || match.awayTeam || 'Visitante';
+                const result = match.finalResult ? `${match.finalResult.homeScore} x ${match.finalResult.awayScore}` : '-';
+                const points = pred ? calculateMatchPoints(match.finalResult, pred) : null;
+                const starTag = pred && (pred.isStarMatch || pred.isCaptain || pred.star || pred.doublePoints)
+                    ? '<span style="color:#f59e0b; font-size:12px; font-weight:bold; margin-left:4px;">⭐ 2x</span>'
+                    : '';
+
+                return `
+                    <div class="match-card">
+                        <div class="match-teams">
+                            <div class="team"><span class="team-name">${homeTeam}</span></div>
+                            <div class="match-result">${result}</div>
+                            <div class="team"><span class="team-name">${awayTeam}</span></div>
+                        </div>
+                        <div class="match-footer" style="justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                            <span><strong>${user.name || 'Jogador'}:</strong> ${pred ? `${pred.homeScore} x ${pred.awayScore}${starTag}` : 'Sem palpite'}</span>
+                            <span style="font-weight: 800; color: ${points > 0 ? 'var(--success)' : points < 0 ? 'var(--danger)' : 'var(--text-muted)'};">
+                                ${points !== null ? `${points > 0 ? '+' : ''}${points} pts` : '-'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const starPlayer = roundData.starPlayers?.[userId];
+            const goalsInfo = starPlayer ? (roundData.playerGoals?.[starPlayer.athleteId] || 0) : 0;
+            const goalsCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+            const starHtml = starPlayer ? `
+                <div style="grid-column: 1 / -1; background: var(--card-bg); padding: 1rem; border-radius: 1rem; border: 1px dashed rgba(245, 158, 11, 0.4);">
+                    <strong style="color:#f59e0b;">Artilheiro:</strong> ${starPlayer.athleteName || starPlayer.name || 'Atleta'} (${starPlayer.teamName || ''}) - ${goalsCount} gol(s), +${goalsCount} pts
+                </div>
+            ` : '';
+
+            ui.playerRoundPredictions.innerHTML = starHtml + (playerItems || '<p class="empty-state">Nenhum jogo encontrado para esta rodada.</p>');
         }
 
         function updateComparison() {
@@ -985,34 +1068,49 @@
 
         function setupTabsAndEventListeners() {
             const btnRounds = document.getElementById('tab-rounds');
+            const btnPlayerRound = document.getElementById('tab-player-round');
             const btnComp = document.getElementById('tab-comparison');
             const btnStats = document.getElementById('tab-stats');
 
             const contentRounds = document.getElementById('content-rounds');
+            const contentPlayerRound = document.getElementById('content-player-round');
             const contentComp = document.getElementById('content-comparison');
             const contentStats = document.getElementById('content-stats');
 
             btnRounds.onclick = () => {
-                [btnRounds, btnComp, btnStats].forEach(b => b.classList.remove('active'));
+                [btnRounds, btnPlayerRound, btnComp, btnStats].forEach(b => b.classList.remove('active'));
                 btnRounds.classList.add('active');
                 contentRounds.style.display = 'block';
+                contentPlayerRound.style.display = 'none';
                 contentComp.style.display = 'none';
                 contentStats.style.display = 'none';
             };
 
+            btnPlayerRound.onclick = () => {
+                [btnRounds, btnPlayerRound, btnComp, btnStats].forEach(b => b.classList.remove('active'));
+                btnPlayerRound.classList.add('active');
+                contentRounds.style.display = 'none';
+                contentPlayerRound.style.display = 'block';
+                contentComp.style.display = 'none';
+                contentStats.style.display = 'none';
+                updatePlayerRoundPredictions();
+            };
+
             btnComp.onclick = () => {
-                [btnRounds, btnComp, btnStats].forEach(b => b.classList.remove('active'));
+                [btnRounds, btnPlayerRound, btnComp, btnStats].forEach(b => b.classList.remove('active'));
                 btnComp.classList.add('active');
                 contentRounds.style.display = 'none';
+                contentPlayerRound.style.display = 'none';
                 contentComp.style.display = 'block';
                 contentStats.style.display = 'none';
                 updateComparison();
             };
 
             btnStats.onclick = () => {
-                [btnRounds, btnComp, btnStats].forEach(b => b.classList.remove('active'));
+                [btnRounds, btnPlayerRound, btnComp, btnStats].forEach(b => b.classList.remove('active'));
                 btnStats.classList.add('active');
                 contentRounds.style.display = 'none';
+                contentPlayerRound.style.display = 'none';
                 contentComp.style.display = 'none';
                 contentStats.style.display = 'block';
                 updateGeneralStats();
