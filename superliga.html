@@ -190,6 +190,35 @@
             color: var(--primary);
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-race {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fbbf24;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .btn-race:hover {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: #f59e0b;
+            color: #fde68a;
+        }
+
         /* Tabela */
         .standings-table {
             width: 100%;
@@ -446,6 +475,216 @@
             padding: 1.5rem;
         }
 
+        .race-dialog {
+            width: min(96vw, 1180px);
+            max-width: 1180px;
+        }
+
+        .race-stage-badge {
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            background: rgba(59, 130, 246, 0.14);
+            color: var(--text-primary);
+            border-radius: 999px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .race-track {
+            position: relative;
+            min-height: 360px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 1.25rem;
+            background:
+                linear-gradient(180deg, rgba(125, 211, 252, 0.14), rgba(15, 23, 42, 0.02) 38%),
+                linear-gradient(180deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.94) 64%),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 80px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .race-track-inner {
+            position: relative;
+            min-width: 100%;
+            height: 360px;
+        }
+
+        .race-track-inner::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 120px;
+            background:
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0 4px, transparent 4px 34px),
+                linear-gradient(180deg, #347c36, #19551f);
+            border-top: 3px solid rgba(255, 255, 255, 0.45);
+        }
+
+        .race-start-line {
+            position: absolute;
+            top: 72px;
+            bottom: 120px;
+            left: 54px;
+            width: 14px;
+            background: repeating-linear-gradient(180deg, #f8fafc 0 14px, #0f172a 14px 28px);
+            opacity: 0.9;
+            z-index: 2;
+        }
+
+        .race-mud-zone {
+            position: absolute;
+            top: 72px;
+            bottom: 120px;
+            right: 0;
+            left: auto;
+            background:
+                repeating-linear-gradient(110deg, rgba(191, 219, 254, 0.28) 0 2px, transparent 2px 22px),
+                radial-gradient(circle at 28% 75%, rgba(120, 53, 15, 0.42), transparent 30%),
+                radial-gradient(circle at 62% 38%, rgba(92, 38, 8, 0.34), transparent 26%),
+                linear-gradient(90deg, rgba(120, 53, 15, 0.08), rgba(51, 65, 85, 0.42));
+            border-left: 1px dashed rgba(251, 191, 36, 0.35);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .race-runner {
+            position: absolute;
+            left: 64px;
+            top: 116px;
+            width: 112px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.22rem;
+            z-index: 4;
+        }
+
+        .race-track.is-camera-running .race-horse {
+            animation: gallop 0.42s ease-in-out infinite alternate;
+        }
+
+        .race-horse-row {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 48px;
+        }
+
+        .race-horse {
+            font-size: 2.15rem;
+            line-height: 1;
+            filter: drop-shadow(0 3px 7px rgba(15, 23, 42, 0.45));
+        }
+
+        .race-avatar {
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: rgba(15, 23, 42, 0.94);
+            border: 2px solid rgba(255, 255, 255, 0.72);
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .race-runner-name {
+            max-width: 112px;
+            color: #fff;
+            font-size: 0.66rem;
+            font-weight: 900;
+            line-height: 1.05;
+            text-align: center;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .race-score-board {
+            margin-top: 0.12rem;
+            min-width: 42px;
+            border-radius: 0.4rem 0.4rem 0.12rem 0.12rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: #0f172a;
+            padding: 0.18rem 0.28rem;
+            text-align: center;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.26);
+        }
+
+        .race-score-board strong {
+            display: block;
+            font-size: 1rem;
+            line-height: 0.95;
+        }
+
+        .race-score-board span {
+            display: block;
+            font-size: 0.48rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            opacity: 0.72;
+        }
+
+        .race-runner.is-relegation .race-avatar,
+        .race-runner.is-relegation .race-horse {
+            filter: saturate(0.78) brightness(0.84);
+        }
+
+        .race-runner.is-relegation .race-score-board {
+            background: rgba(120, 53, 15, 0.94);
+            color: #f8fafc;
+        }
+
+        .race-lantern {
+            display: none;
+            position: absolute;
+            right: 22px;
+            bottom: 8px;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .race-runner.is-last .race-lantern {
+            display: inline;
+        }
+
+        .race-scale {
+            position: absolute;
+            left: 64px;
+            right: 72px;
+            bottom: 10px;
+            height: 22px;
+            color: rgba(226, 232, 240, 0.76);
+            font-size: 0.68rem;
+            font-weight: 800;
+            z-index: 3;
+        }
+
+        .race-scale span {
+            position: absolute;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .race-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
         .player-summary {
             display: flex;
             align-items: center;
@@ -590,6 +829,15 @@
                 align-items: flex-start;
             }
 
+            .header-actions {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .race-dialog {
+                width: 98vw;
+            }
+
             .standings-table th,
             .standings-table td {
                 font-size: 0.75rem;
@@ -712,8 +960,11 @@
             <div class="standings-card">
                 <div class="table-header-controls">
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
-                    <button class="btn-grafico" id="toggle-chart-abertura"><i class="fas fa-chart-line"></i> Ver
-                        Gráfico</button>
+                    <div class="header-actions">
+                        <button class="btn-race" data-race-stage="abertura"><i class="fas fa-horse"></i> Corridinha</button>
+                        <button class="btn-grafico" id="toggle-chart-abertura"><i class="fas fa-chart-line"></i> Ver
+                            Gráfico</button>
+                    </div>
                 </div>
                 <div id="abertura-table-container">
                     <div class="loading"><i class="fas fa-spinner fa-pulse"></i> Carregando classificação...</div>
@@ -736,8 +987,11 @@
             <div class="standings-card">
                 <div class="table-header-controls">
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
-                    <button class="btn-grafico" id="toggle-chart-clausura"><i class="fas fa-chart-line"></i> Ver
-                        Gráfico</button>
+                    <div class="header-actions">
+                        <button class="btn-race" data-race-stage="clausura"><i class="fas fa-horse"></i> Corridinha</button>
+                        <button class="btn-grafico" id="toggle-chart-clausura"><i class="fas fa-chart-line"></i> Ver
+                            Gráfico</button>
+                    </div>
                 </div>
                 <div id="clausura-table-container">
                     <div class="loading"><i class="fas fa-spinner fa-pulse"></i> Carregando classificação...</div>
@@ -818,6 +1072,27 @@
         </div>
     </dialog>
 
+    <dialog id="horse-race-dialog" class="race-dialog">
+        <div class="dialog-header">
+            <h3><i class="fas fa-horse"></i> Corridinha da Depressão</h3>
+            <button class="close-btn" aria-label="Fechar">×</button>
+        </div>
+        <div class="dialog-body">
+            <div class="race-stage-badge" id="race-stage-label" hidden>Abertura</div>
+            <div class="race-track" id="race-track">
+                <div class="race-track-inner" id="race-track-inner">
+                    <div class="race-start-line"></div>
+                    <div class="race-mud-zone"></div>
+                    <div id="race-items"></div>
+                    <div class="race-scale" id="race-scale"></div>
+                </div>
+            </div>
+            <div class="race-actions">
+                <button class="btn-race" id="rerun-race-btn"><i class="fas fa-rotate-right"></i> Correr de novo</button>
+            </div>
+        </div>
+    </dialog>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -843,6 +1118,7 @@
         let completedRoundsCache = null;
         let playerChartInstance = null;
         let currentStage = 'abertura';
+        let standingsByStage = { abertura: [], clausura: [] };
 
         async function loadTeamsDataOnce() {
             if (teamsDataCache) return;
@@ -935,6 +1211,157 @@
             if (position <= 12) return 'zone-sula';
             if (position > totalPlayers - 4) return 'zone-rebaixamento';
             return '';
+        }
+
+        function getStageLabel(stage) {
+            return stage === 'clausura' ? 'Clausura' : 'Abertura';
+        }
+
+        function renderHorseRace(stage) {
+            const raceDialog = document.getElementById('horse-race-dialog');
+            const raceTrack = document.getElementById('race-track');
+            const raceTrackInner = document.getElementById('race-track-inner');
+            const raceMudZone = raceTrackInner.querySelector('.race-mud-zone');
+            const raceItems = document.getElementById('race-items');
+            const raceScale = document.getElementById('race-scale');
+            const raceStageLabel = document.getElementById('race-stage-label');
+            const standings = standingsByStage[stage] || [];
+
+            if (raceStageLabel) raceStageLabel.textContent = getStageLabel(stage);
+            raceDialog.dataset.stage = stage;
+
+            if (!standings.length) {
+                raceItems.innerHTML = '<div class="loading" style="height: 320px;"><i class="fas fa-flag-checkered"></i> Carregue a tabela antes de largar a corrida.</div>';
+                raceScale.innerHTML = '';
+                return;
+            }
+
+            const pointsList = standings.map(player => Math.max(0, Number(player.totalPoints || 0)));
+            const maxPoints = Math.max(...pointsList, 1);
+            const minPoints = Math.min(...pointsList, 0);
+            const pointRange = Math.max(maxPoints - minPoints, 1);
+            const tieCounts = pointsList.reduce((acc, points) => {
+                acc[points] = (acc[points] || 0) + 1;
+                return acc;
+            }, {});
+            const maxTieCount = Math.max(...Object.values(tieCounts), 1);
+            const runnerGap = 62;
+            const pointGap = Math.max(76, (maxTieCount * runnerGap) + 24);
+            const leftPad = 64;
+            const rightPad = 160;
+            const viewportWidth = raceTrack.clientWidth || 0;
+            const trackWidth = Math.max(viewportWidth + 320, leftPad + (pointRange * pointGap) + (maxTieCount * runnerGap) + rightPad);
+            const lineTop = 112;
+            const lastSafePosition = Math.max(standings.length - 4, 0);
+            const usedTies = {};
+            const runnerPositions = [];
+
+            raceTrackInner.style.width = `${trackWidth}px`;
+            raceItems.innerHTML = standings.map((player, index) => {
+                const team = teamsDataCache[player.teamId || player.team] || {};
+                const playerAvatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
+                const displayName = (player.customTeamName && player.customTeamName.trim() !== '')
+                    ? player.customTeamName.trim()
+                    : (player.name || team.name || 'Jogador');
+                const points = Math.max(0, Number(player.totalPoints || 0));
+                const tieIndex = usedTies[points] || 0;
+                usedTies[points] = tieIndex + 1;
+                const tieOffset = tieIndex * runnerGap;
+                const distanceFromLeader = maxPoints - points;
+                const x = leftPad + (distanceFromLeader * pointGap) + tieOffset;
+                const relegationClass = index + 1 > lastSafePosition ? 'is-relegation' : '';
+                const lastClass = index + 1 === standings.length ? 'is-last' : '';
+                runnerPositions[index] = x;
+
+                return `
+                    <div class="race-runner ${relegationClass} ${lastClass}" style="left: ${x}px; top: ${lineTop}px;">
+                        <div class="race-horse-row">
+                            <img src="${playerAvatar}" class="race-avatar" alt="${displayName}" onerror="this.src='default-avatar.png'">
+                            <span class="race-horse">🐎</span>
+                            <span class="race-lantern">🏮</span>
+                        </div>
+                        <div class="race-score-board"><strong>${points}</strong><span>pts</span></div>
+                        <div class="race-runner-name">${displayName}</div>
+                    </div>
+                `;
+            }).join('');
+
+            const firstRelegationX = runnerPositions[lastSafePosition] ?? (trackWidth * 0.76);
+            if (raceMudZone) {
+                raceMudZone.style.left = `${Math.max(leftPad, firstRelegationX - 24)}px`;
+            }
+
+            const scaleValues = [maxPoints, Math.round(maxPoints - (pointRange * 0.25)), Math.round(maxPoints - (pointRange * 0.5)), Math.round(maxPoints - (pointRange * 0.75)), minPoints];
+            raceScale.innerHTML = scaleValues.map(value => {
+                const clampedValue = Math.max(minPoints, Math.min(maxPoints, value));
+                const x = leftPad + ((maxPoints - clampedValue) * pointGap);
+                return `<span style="left: ${x}px;">${clampedValue} pts</span>`;
+            }).join('');
+
+            animateRaceCamera(raceTrack, runnerPositions[0] || leftPad, runnerPositions[runnerPositions.length - 1] || leftPad);
+        }
+
+        function animateRaceCamera(raceTrack, leaderX, lastRunnerX) {
+            const maxScroll = Math.max(raceTrack.scrollWidth - raceTrack.clientWidth, 0);
+            const startScroll = Math.min(maxScroll, Math.max(0, leaderX + 180));
+            const finalScroll = Math.min(maxScroll, Math.max(0, lastRunnerX - raceTrack.clientWidth + 260));
+            const revealDuration = 1400;
+            const tourDuration = Math.max(2600, Math.min(7600, Math.max(finalScroll, 1) * 7));
+            const startTime = performance.now();
+            const runId = String(startTime);
+
+            raceTrack.dataset.cameraRun = runId;
+            raceTrack.classList.add('is-camera-running');
+            raceTrack.scrollLeft = startScroll;
+
+            function revealLeader(now) {
+                if (raceTrack.dataset.cameraRun !== runId) return;
+
+                const progress = Math.min((now - startTime) / revealDuration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                raceTrack.scrollLeft = startScroll * (1 - eased);
+
+                if (progress < 1) {
+                    requestAnimationFrame(revealLeader);
+                    return;
+                }
+
+                window.setTimeout(() => {
+                    if (raceTrack.dataset.cameraRun !== runId) return;
+                    const tourStart = performance.now();
+
+                    function tourTrack(nowTour) {
+                        if (raceTrack.dataset.cameraRun !== runId) return;
+
+                        const tourProgress = Math.min((nowTour - tourStart) / tourDuration, 1);
+                        const tourEased = tourProgress < 0.5
+                            ? 2 * tourProgress * tourProgress
+                            : 1 - Math.pow(-2 * tourProgress + 2, 2) / 2;
+                        raceTrack.scrollLeft = finalScroll * tourEased;
+
+                        if (tourProgress < 1) {
+                            requestAnimationFrame(tourTrack);
+                            return;
+                        }
+
+                        raceTrack.classList.remove('is-camera-running');
+                    }
+
+                    requestAnimationFrame(tourTrack);
+                }, 550);
+            }
+
+            if (maxScroll <= 0) {
+                raceTrack.classList.remove('is-camera-running');
+                return;
+            }
+
+            requestAnimationFrame(revealLeader);
+        }
+
+        function openHorseRace(stage) {
+            renderHorseRace(stage);
+            document.getElementById('horse-race-dialog').showModal();
         }
 
         function renderTable(standings, containerId, stage) {
@@ -1048,6 +1475,7 @@
         }
 
         async function loadStageData(stage) {
+            currentStage = stage;
             if (stage === 'final') {
                 await loadFinalInfo();
                 return;
@@ -1111,6 +1539,7 @@
                 };
             }).sort((a, b) => b.totalPoints - a.totalPoints || b.roundPoints - a.roundPoints);
 
+            standingsByStage[stage] = standings;
             renderTable(standings, `${stage}-table-container`, stage);
         }
 
@@ -1288,6 +1717,19 @@
             const dialog = document.getElementById('player-details-dialog');
             closeBtn?.addEventListener('click', () => dialog.close());
             dialog?.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+
+            document.querySelectorAll('.btn-race[data-race-stage]').forEach(button => {
+                button.addEventListener('click', () => openHorseRace(button.dataset.raceStage));
+            });
+
+            const raceDialog = document.getElementById('horse-race-dialog');
+            const raceCloseBtn = raceDialog?.querySelector('.close-btn');
+            raceCloseBtn?.addEventListener('click', () => raceDialog.close());
+            raceDialog?.addEventListener('click', (e) => { if (e.target === raceDialog) raceDialog.close(); });
+
+            document.getElementById('rerun-race-btn')?.addEventListener('click', () => {
+                renderHorseRace(raceDialog?.dataset.stage || currentStage);
+            });
         }
 
         auth.onAuthStateChanged(user => {

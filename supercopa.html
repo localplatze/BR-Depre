@@ -609,9 +609,16 @@
                     <div id="standings-list" class="standings-list"></div>
                 </div>
                  <div id="matches-container">
-                    <h2 class="section-header"><i class="fas fa-futbol"></i> Jogos da Rodada Ativa</h2>
-                    <div id="matches-list" class="standings-list"></div>
-                </div>
+                     <div class="matches-header-nav" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
+                         <h2 class="section-header" style="margin: 0;"><i class="fas fa-futbol"></i> Jogos</h2>
+                         <div class="round-nav-controls" style="display: flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); padding: 4px 8px; border-radius: 8px;">
+                             <button id="btn-prev-round" class="nav-btn" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.color='#94a3b8'; this.style.background='transparent'"><i class="fas fa-chevron-left"></i></button>
+                             <span id="current-round-display" style="font-weight: 700; font-size: 0.9rem; min-width: 90px; text-align: center; color: #f8fafc;">Rodada --</span>
+                             <button id="btn-next-round" class="nav-btn" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.color='#94a3b8'; this.style.background='transparent'"><i class="fas fa-chevron-right"></i></button>
+                         </div>
+                     </div>
+                     <div id="matches-list" class="standings-list"></div>
+                 </div>
             </div>
         </div>
 
@@ -679,6 +686,7 @@
         let usersDataCache = null;
         let supercopaDataCache = null;
         let activeSuperligaRoundData = null;
+        let selectedGroupRoundKey = null;
 
         // --- MAPEAMENTO DA UI ---
         const ui = {
@@ -1246,14 +1254,64 @@
         }
 
         function renderGroupMatches() {
-            const activeCopaRound = Object.values(supercopaDataCache.groups.rounds || {}).find(r => r.status === 1);
-            if (!activeCopaRound || !activeCopaRound.matches) {
-                ui.matchesList.innerHTML = `<div class="empty-state">Nenhum jogo da Supercopa ativo.</div>`;
+            const sortedRounds = getSortedSupercopaRounds();
+            if (!sortedRounds.length) {
+                ui.matchesList.innerHTML = `<div class="empty-state">Nenhuma rodada da Supercopa disponível.</div>`;
                 return;
             }
-            ui.matchesList.innerHTML = Object.entries(activeCopaRound.matches).map(([matchKey, match]) => {
+
+            // Se não houver rodada selecionada, escolhe a ativa (status = 1) ou a última concluída, ou a primeira
+            if (!selectedGroupRoundKey) {
+                const active = sortedRounds.find(([key, r]) => r.status === 1);
+                if (active) {
+                    selectedGroupRoundKey = active[0];
+                } else {
+                    const lastCompleted = [...sortedRounds].reverse().find(([key, r]) => r.status === 2);
+                    selectedGroupRoundKey = lastCompleted ? lastCompleted[0] : sortedRounds[0][0];
+                }
+            }
+
+            const currentRoundEntry = sortedRounds.find(([key]) => key === selectedGroupRoundKey);
+            if (!currentRoundEntry) {
+                ui.matchesList.innerHTML = `<div class="empty-state">Rodada não encontrada.</div>`;
+                return;
+            }
+
+            const [roundKey, roundData] = currentRoundEntry;
+            const roundIndex = sortedRounds.indexOf(currentRoundEntry);
+
+            // Atualiza exibição do número da rodada
+            const roundDisplay = document.getElementById('current-round-display');
+            if (roundDisplay) {
+                const statusMap = { 0: 'Não Iniciada', 1: 'Em Progresso', 2: 'Finalizada' };
+                const statusText = statusMap[roundData.status] || '';
+                const seqNum = roundIndex + 1;
+                roundDisplay.textContent = `Rodada ${seqNum}`;
+                roundDisplay.title = `${statusText} (${roundKey})`;
+            }
+
+            // Atualiza botões prev/next
+            const btnPrev = document.getElementById('btn-prev-round');
+            const btnNext = document.getElementById('btn-next-round');
+            if (btnPrev) {
+                btnPrev.disabled = roundIndex === 0;
+                btnPrev.style.opacity = roundIndex === 0 ? '0.3' : '1';
+                btnPrev.style.cursor = roundIndex === 0 ? 'default' : 'pointer';
+            }
+            if (btnNext) {
+                btnNext.disabled = roundIndex === sortedRounds.length - 1;
+                btnNext.style.opacity = roundIndex === sortedRounds.length - 1 ? '0.3' : '1';
+                btnNext.style.cursor = roundIndex === sortedRounds.length - 1 ? 'default' : 'pointer';
+            }
+
+            if (!roundData || !roundData.matches) {
+                ui.matchesList.innerHTML = `<div class="empty-state">Nenhum jogo nesta rodada.</div>`;
+                return;
+            }
+
+            ui.matchesList.innerHTML = Object.entries(roundData.matches).map(([matchKey, match]) => {
                 match.id = matchKey;
-                return renderMatchCard(match, true);
+                return renderMatchCard(match, true, roundData.status === 1);
             }).join('');
         }
 
@@ -1264,7 +1322,7 @@
             }
             container.innerHTML = Object.entries(matches).map(([matchKey, match]) => {
                 match.id = matchKey;
-                return renderMatchCard(match, false);
+                return renderMatchCard(match, false, true);
             }).join('');
         }
         
@@ -1281,14 +1339,14 @@
             return '';
         }
 
-        function renderMatchCard(match, isGroupStage) {
+        function renderMatchCard(match, isGroupStage, isRoundActive = true) {
             const p1Id = isGroupStage ? match.player1Id : match.homeTeam;
             const p2Id = isGroupStage ? match.player2Id : match.awayTeam;
 
             const player1 = p1Id ? usersDataCache[p1Id] : null;
             const player2 = p2Id ? usersDataCache[p2Id] : null;
             
-            const isClickable = !!(activeSuperligaRoundData && match.id);
+            const isClickable = !!(activeSuperligaRoundData && match.id && isRoundActive);
             const clickableClass = isClickable ? 'clickable-match-card' : '';
             const clickHandler = isClickable ? `onclick="openMatchCalculator('${match.id}', ${isGroupStage})"` : '';
             
@@ -2003,6 +2061,24 @@
             document.querySelector('#match-calculator-modal .modal-close')?.addEventListener('click', closeMatchCalculatorModal);
             document.getElementById('match-calculator-modal')?.addEventListener('click', (event) => {
                 if (event.target.id === 'match-calculator-modal') closeMatchCalculatorModal();
+            });
+
+            document.getElementById('btn-prev-round')?.addEventListener('click', () => {
+                const sorted = getSortedSupercopaRounds();
+                const currentIndex = sorted.findIndex(([key]) => key === selectedGroupRoundKey);
+                if (currentIndex > 0) {
+                    selectedGroupRoundKey = sorted[currentIndex - 1][0];
+                    renderGroupMatches();
+                }
+            });
+
+            document.getElementById('btn-next-round')?.addEventListener('click', () => {
+                const sorted = getSortedSupercopaRounds();
+                const currentIndex = sorted.findIndex(([key]) => key === selectedGroupRoundKey);
+                if (currentIndex !== -1 && currentIndex < sorted.length - 1) {
+                    selectedGroupRoundKey = sorted[currentIndex + 1][0];
+                    renderGroupMatches();
+                }
             });
 
             ui.mainTabs.forEach(tab => tab.addEventListener('click', () => {

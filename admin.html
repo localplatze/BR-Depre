@@ -4413,12 +4413,12 @@ Time B: 2.20, 44%
             return `Voce e um analista esportivo do BR Depressao, um bolao de amigos. Gere uma analise da Supercopa para aparecer no site em formato de carrossel.
 
 CONTEXTO DA COMPETICAO
-- A fase de grupos tem ${allPlayers.length} jogadores.
-- Numero de rodadas da fase de grupos: num_rounds = num_jogadores - 1 = ${numRounds}.
-- O formato e todos contra todos, estilo Paulistao: jogadores enfrentam adversarios de qualquer grupo, mas a classificacao e analisada por grupo.
-- Os 2 primeiros de cada grupo vao para a Serie A; 3o e 4o seguem para a Serie B.
+- A fase de grupos tem ${allPlayers.length} jogadores divididos em 4 grupos (Grupo A, B, C e D) de 4 jogadores cada.
+- Numero de rodadas da fase de grupos: num_rounds = ${numRounds}.
+- O formato e de duelos cruzados (jogadores enfrentam adversarios de qualquer grupo), mas a classificacao e feita estritamente dentro de cada grupo (tabelas separadas). Nao existe tabela geral.
+- Os 2 primeiros de cada grupo vao para a Serie A; o 3o e o 4o vao para a Serie B do mata-mata.
 - Momento atual da fase: ${phaseLabel} (${finalizedRounds} rodadas finalizadas de ${numRounds}; rodada atual estimada ${currentRoundNumber}).
-- Se houver rodada em andamento, considere o peso dos confrontos ativos, a tabela de cada grupo, se o jogo e confronto direto no grupo ou duelo cruzado, e o historico da Supercopa.
+- Se houver rodada em andamento, considere o peso dos confrontos ativos, a tabela interna de cada grupo, se o jogo e confronto direto no grupo ou duelo cruzado, e o historico da Supercopa.
 
 FORMATO OBRIGATORIO DA RESPOSTA
 Responda somente com slides usando exatamente este padrao:
@@ -4427,12 +4427,12 @@ Texto do slide em 1 ou 2 paragrafos curtos.
 
 Regras do formato:
 - Use entre 4 e 7 slides.
-- O primeiro slide deve ser um panorama geral.
-- Depois, faca slides por grupo ou por blocos de grupos quando fizer sentido.
+- O primeiro slide deve ser um panorama geral da rodada/competicao.
+- Os slides seguintes devem analisar obrigatoriamente a disputa e a classificacao grupo a grupo (Grupo A, Grupo B, Grupo C e Grupo D) individualmente, destacando as lutas por vagas na Serie A e posicoes em cada um deles.
 - Nao use markdown, listas com bullets, tabelas, HTML, JSON ou numeracao fora das tags [SLIDE: ...].
 - Nao invente pontuacoes, nomes ou resultados.
-- Explique se o grupo esta embolado, abrindo vantagem, em reta inicial/meio/reta final, ou ficando definido.
-- Destaque lideres, zona de Serie A, perseguidores, risco de queda para Serie B e contas matematicas simples quando forem relevantes.
+- Explique se cada grupo esta embolado, abrindo vantagem, em reta inicial/meio/reta final, ou ficando definido.
+- Destaque lideres, zona de Serie A (G2), perseguidores e contas matematicas simples para a classificacao interna de cada grupo.
 
 DADOS DA SUPERCOPA
 Status dos grupos: ${groupsData.status ?? 'nao informado'}
