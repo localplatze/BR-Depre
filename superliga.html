@@ -153,6 +153,13 @@
             backdrop-filter: blur(10px);
         }
 
+        #abertura-table-container,
+        #clausura-table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .table-header-controls {
             display: flex;
             justify-content: space-between;
@@ -311,57 +318,140 @@
         }
 
         .current-user-row {
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
-            border-left: 3px solid var(--primary);
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), transparent);
+            border-left: 4px solid var(--primary);
         }
 
-        /* Zonas de Classificação - Barra lateral colorida */
-        tr.zone-libertadores td:first-child {
-            position: relative;
+
+
+        /* Badges de Posição (SofaScore style) */
+        .position-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+        }
+        
+        tr.zone-libertadores .position-badge {
+            background-color: var(--color-libertadores);
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+        }
+        tr.zone-pre-libertadores .position-badge {
+            background-color: var(--color-pre-libertadores);
+            box-shadow: 0 2px 6px rgba(52, 211, 153, 0.4);
+            color: #0f172a;
+        }
+        tr.zone-sula .position-badge {
+            background-color: var(--color-sula);
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+        }
+        tr.zone-rebaixamento .position-badge {
+            background-color: var(--color-rebaixamento);
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+        }
+        .position-badge.default {
+            color: var(--text-secondary);
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
-        tr.zone-libertadores td:first-child::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--color-libertadores);
-            border-radius: 0 2px 2px 0;
+        /* Toggle de Visualização */
+        .view-toggle-group {
+            display: inline-flex;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px;
+            border-radius: 2rem;
+            border: 1px solid var(--card-border);
+            margin-right: 0.5rem;
+            vertical-align: middle;
         }
 
-        tr.zone-pre-libertadores td:first-child::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--color-pre-libertadores);
-            border-radius: 0 2px 2px 0;
+        .btn-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        tr.zone-sula td:first-child::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--color-sula);
-            border-radius: 0 2px 2px 0;
+        .btn-toggle.active {
+            background: var(--primary);
+            color: white;
         }
 
-        tr.zone-rebaixamento td:first-child::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--color-rebaixamento);
-            border-radius: 0 2px 2px 0;
+        /* Alternância de Colunas */
+        .standings-table.view-compact .col-stats {
+            display: none;
+        }
+        
+        .standings-table.view-stats .col-compact {
+            display: none;
+        }
+
+        /* Badges de Medalha de Rodada (Apenas Ouro) */
+        .medal-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-left: 6px;
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            background: rgba(253, 224, 71, 0.12);
+            border: 1px solid rgba(253, 224, 71, 0.35);
+            color: #fde047;
+            padding: 1px 4px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Ocultar nome e encolher coluna de Jogador na visualização de estatísticas */
+        .standings-table.view-stats .player-name {
+            display: none;
+        }
+
+        .standings-table.view-stats .col-player {
+            width: 80px !important;
+            min-width: 80px !important;
+            text-align: center;
+        }
+
+        /* Badges da Forma das Últimas 5 Rodadas (SofaScore style) */
+        .form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .form-badge {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .form-badge.win {
+            background-color: var(--success);
+            box-shadow: 0 0 6px var(--success);
+        }
+        
+        .form-badge.loss {
+            background-color: var(--danger);
+            box-shadow: 0 0 6px var(--danger);
+        }
+        
+        .form-badge.draw {
+            background-color: var(--primary);
+            box-shadow: 0 0 6px var(--primary);
         }
 
         /* Grupos de Classificação */
@@ -539,18 +629,34 @@
 
         .race-mud-zone {
             position: absolute;
-            top: 72px;
-            bottom: 120px;
+            bottom: 0;
+            height: 120px;
             right: 0;
             left: auto;
             background:
-                repeating-linear-gradient(110deg, rgba(191, 219, 254, 0.28) 0 2px, transparent 2px 22px),
-                radial-gradient(circle at 28% 75%, rgba(120, 53, 15, 0.42), transparent 30%),
-                radial-gradient(circle at 62% 38%, rgba(92, 38, 8, 0.34), transparent 26%),
-                linear-gradient(90deg, rgba(120, 53, 15, 0.08), rgba(51, 65, 85, 0.42));
-            border-left: 1px dashed rgba(251, 191, 36, 0.35);
+                linear-gradient(90deg, rgba(120, 53, 15, 0.5) 0%, rgba(88, 47, 14, 0.85) 30%, rgba(43, 20, 3, 0.98) 70%, rgba(15, 7, 2, 1) 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><circle cx="15" cy="25" r="4" fill="rgba(69,26,3,0.6)"/><circle cx="45" cy="45" r="6" fill="rgba(69,26,3,0.8)"/><circle cx="35" cy="15" r="3" fill="rgba(120,53,4,0.5)"/></svg>');
+            border-top: 3px solid rgba(120, 53, 15, 0.5);
+            box-shadow: inset 20px 0 30px rgba(0,0,0,0.8);
             pointer-events: none;
             z-index: 1;
+            transition: left 0.4s ease;
+        }
+
+        /* Rain overlay texture */
+        .race-track::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="120" viewBox="0 0 80 120"><line x1="30" y1="10" x2="20" y2="50" stroke="rgba(156, 163, 175, 0.18)" stroke-width="1"/><line x1="70" y1="40" x2="60" y2="80" stroke="rgba(156, 163, 175, 0.12)" stroke-width="1"/><line x1="15" y1="70" x2="5" y2="110" stroke="rgba(156, 163, 175, 0.15)" stroke-width="1"/></svg>');
+            animation: rain-anim 0.6s linear infinite;
+            pointer-events: none;
+            z-index: 8;
+        }
+        
+        @keyframes rain-anim {
+            0% { background-position: 0px 0px; }
+            100% { background-position: -80px 240px; }
         }
 
         .race-runner {
@@ -563,10 +669,7 @@
             align-items: center;
             gap: 0.22rem;
             z-index: 4;
-        }
-
-        .race-track.is-camera-running .race-horse {
-            animation: gallop 0.42s ease-in-out infinite alternate;
+            transition: top 0.4s ease, left 0.4s ease;
         }
 
         .race-horse-row {
@@ -578,25 +681,98 @@
             height: 48px;
         }
 
-        .race-horse {
-            font-size: 2.15rem;
-            line-height: 1;
-            filter: drop-shadow(0 3px 7px rgba(15, 23, 42, 0.45));
+        /* Cavalos mais brabos com SVG personalizado e animação de galope */
+        .styled-horse {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 38px;
+        }
+
+        .wild-stallion-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            filter: drop-shadow(0 3px 5px rgba(15, 23, 42, 0.7));
+        }
+
+        .race-track.is-camera-running .styled-horse {
+            animation: horse-gallop 0.38s infinite ease-in-out alternate;
+        }
+
+        .horse-color-0 { color: #18181b; filter: drop-shadow(0 0 2px rgba(255,255,255,0.5)); } /* Dark Knight (Black) */
+        .horse-color-1 { color: #dc2626; filter: drop-shadow(0 0 2px rgba(239,68,68,0.4)); } /* Red Fury (Crimson) */
+        .horse-color-2 { color: #2563eb; filter: drop-shadow(0 0 2px rgba(59,130,246,0.4)); } /* Blue Thunder (Cobalt Blue) */
+        .horse-color-3 { color: #d97706; filter: drop-shadow(0 0 2px rgba(245,158,11,0.4)); } /* Golden Sun (Amber) */
+        .horse-color-4 { color: #16a34a; filter: drop-shadow(0 0 2px rgba(34,197,94,0.4)); } /* Green Poison (Emerald) */
+
+        /* Efeito de poeira/lama atrás do cavalo */
+        .dust-trail {
+            position: absolute;
+            left: -10px;
+            bottom: 4px;
+            width: 12px;
+            height: 4px;
+            background: rgba(120, 53, 15, 0.3);
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .race-track.is-camera-running .dust-trail {
+            opacity: 1;
+            animation: dust-kick 0.38s infinite linear;
+        }
+
+        .race-runner.is-relegation .dust-trail {
+            background: rgba(67, 20, 3, 0.6); /* lama mais escura na zona de rebaixamento */
+        }
+
+        @keyframes dust-kick {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+            100% { transform: scale(2.2) translate(-12px, -4px); opacity: 0; }
+        }
+
+        @keyframes horse-gallop {
+            0% { transform: translateY(0) rotate(-4deg); }
+            50% { transform: translateY(-3px) scaleY(0.95); }
+            100% { transform: translateY(-5px) rotate(4deg); }
         }
 
         .race-avatar {
             position: absolute;
-            top: -4px;
-            left: 50%;
-            width: 30px;
-            height: 30px;
+            top: -2px;
+            left: 55%;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             object-fit: cover;
             background: rgba(15, 23, 42, 0.94);
-            border: 2px solid rgba(255, 255, 255, 0.72);
-            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
             transform: translateX(-50%);
             z-index: 2;
+        }
+
+        /* Coroa do Líder flutuando */
+        .race-crown {
+            position: absolute;
+            top: -22px;
+            left: 55%;
+            transform: translateX(-50%);
+            font-size: 1.15rem;
+            color: #fde047;
+            filter: drop-shadow(0 0 5px rgba(253, 224, 71, 0.8));
+            animation: crown-float 1s infinite ease-in-out alternate;
+            z-index: 10;
+        }
+
+        @keyframes crown-float {
+            0% { transform: translate(-50%, 0) rotate(-4deg); }
+            100% { transform: translate(-50%, -4px) rotate(4deg); }
         }
 
         .race-runner-name {
@@ -639,8 +815,8 @@
         }
 
         .race-runner.is-relegation .race-avatar,
-        .race-runner.is-relegation .race-horse {
-            filter: saturate(0.78) brightness(0.84);
+        .race-runner.is-relegation .styled-horse {
+            filter: saturate(0.7) brightness(0.8);
         }
 
         .race-runner.is-relegation .race-score-board {
@@ -648,17 +824,20 @@
             color: #f8fafc;
         }
 
+        /* Lanterna oscilante para o lanterna da liga */
         .race-lantern {
-            display: none;
             position: absolute;
-            right: 22px;
-            bottom: 8px;
-            font-size: 1rem;
-            line-height: 1;
+            right: 12px;
+            top: -12px;
+            font-size: 1.15rem;
+            filter: drop-shadow(0 0 5px #ef4444);
+            animation: lantern-swing 0.8s infinite ease-in-out alternate-reverse;
+            z-index: 10;
         }
 
-        .race-runner.is-last .race-lantern {
-            display: inline;
+        @keyframes lantern-swing {
+            0% { transform: rotate(-12deg); }
+            100% { transform: rotate(12deg); }
         }
 
         .race-scale {
@@ -820,33 +999,108 @@
                 font-size: 8px;
             }
             .app-container {
-                padding: 1rem;
+                padding: 0.75rem;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            .header {
+                margin-bottom: 1rem;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            .header-title {
+                font-size: 1.35rem !important;
+                gap: 0.4rem;
+            }
+
+            .back-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+                margin-bottom: 0;
+            }
+
+            .tabs {
+                gap: 0.25rem;
+                padding: 0.25rem;
+                margin-bottom: 1rem;
+            }
+
+            .tab {
+                padding: 0.5rem 0.2rem;
+                font-size: 0.75rem;
             }
 
             .table-header-controls {
                 flex-direction: column;
                 gap: 0.75rem;
                 align-items: flex-start;
+                padding: 1rem;
             }
 
             .header-actions {
-                align-items: flex-start;
-                flex-direction: column;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                width: 100%;
+                align-items: center;
             }
 
             .race-dialog {
                 width: 98vw;
             }
 
+            /* Estilização responsiva da tabela para evitar rolagem no modo compacto */
             .standings-table th,
             .standings-table td {
-                font-size: 0.75rem;
-                padding: 0.625rem 0.5rem;
+                font-size: 0.72rem;
+                padding: 0.5rem 0.3rem;
+            }
+
+            /* Ocultar a coluna Forma no celular para reduzir peso visual */
+            .standings-table th:last-child,
+            .standings-table td:last-child {
+                display: none;
             }
 
             .player-avatar {
-                width: 24px;
-                height: 24px;
+                width: 22px;
+                height: 22px;
+            }
+
+            .player-name {
+                font-size: 0.75rem;
+            }
+
+            /* Ajustar larguras das colunas numéricas fixadas à direita */
+            .col-pos {
+                width: 36px !important;
+                min-width: 36px !important;
+                padding-left: 0.4rem !important;
+                padding-right: 0.1rem !important;
+            }
+            .col-player {
+                min-width: 140px !important;
+            }
+            .col-stats {
+                width: 34px !important;
+                min-width: 34px !important;
+                text-align: center;
+            }
+            .col-compact {
+                width: 42px !important;
+                min-width: 42px !important;
+                text-align: center;
+            }
+            .col-pts {
+                width: 52px !important;
+                min-width: 52px !important;
+                text-align: right;
+            }
+            .col-forma {
+                display: none !important;
             }
 
             .final-match-container {
@@ -886,24 +1140,36 @@
             font-size: 0.7rem;
         }
 
-        .standings-table th:nth-child(3),
-        .standings-table th:nth-child(4),
-        .standings-table th:nth-child(5),
-        .standings-table th:nth-child(6) {
-            text-align: center;
-            width: 50px;
+        /* Configuração de Larguras Fixas de Colunas (SofaScore / FlashScore Style) */
+        .standings-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
         }
 
-        .standings-table td:nth-child(3),
-        .standings-table td:nth-child(4),
-        .standings-table td:nth-child(5),
-        .standings-table td:nth-child(6) {
-            text-align: center;
+        .standings-table th, .standings-table td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .standings-table td:last-child {
-            padding-right: 1.5rem;
+        /* Padrão de largura para telas grandes */
+        /* Padrão de largura para telas grandes */
+        .col-pos { 
+            width: 48px; 
+            text-align: center; 
+            padding-left: 0.75rem !important;
+            padding-right: 0.25rem !important;
         }
+        .col-player { 
+            text-align: left; 
+            width: auto;
+            min-width: 180px; 
+        }
+        .col-stats { width: 42px; text-align: center; }
+        .col-compact { width: 55px; text-align: center; }
+        .col-pts { width: 65px; text-align: right; font-weight: 700; }
+        .col-forma { width: 110px; text-align: center; }
 
         .group-title td {
             padding: 1rem 1.5rem 0.5rem 1.5rem;
@@ -912,23 +1178,48 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
+            overflow: visible;
+            white-space: normal;
         }
-        .cinturao-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 6px;
+
+        /* Wrapper do Escudo do Jogador com Destaque do Cinturão */
+        .player-avatar-wrapper {
+            position: relative;
             display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
-            text-transform: uppercase;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            vertical-align: middle;
             flex-shrink: 0;
+            border-radius: 50%;
+        }
+        
+        .player-avatar-wrapper.has-cinturao .player-avatar {
+            border: 2px solid #f59e0b !important;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.8), inset 0 0 6px rgba(245, 158, 11, 0.5);
+            animation: gold-glow 2s infinite alternate;
+        }
+
+        .avatar-cinturao-mini {
+            position: absolute;
+            bottom: -3px;
+            right: -3px;
+            font-size: 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: 1.5px solid #1e293b;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            z-index: 5;
+        }
+
+        @keyframes gold-glow {
+            from {
+                box-shadow: 0 0 4px rgba(245, 158, 11, 0.5);
+            }
+            to {
+                box-shadow: 0 0 12px rgba(245, 158, 11, 1);
+            }
         }
     </style>
 </head>
@@ -961,6 +1252,10 @@
                 <div class="table-header-controls">
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
                     <div class="header-actions">
+                        <div class="view-toggle-group">
+                            <button class="btn-toggle active" data-view="compact" onclick="setTableView('compact')">Resumo</button>
+                            <button class="btn-toggle" data-view="stats" onclick="setTableView('stats')">Estatísticas</button>
+                        </div>
                         <button class="btn-race" data-race-stage="abertura"><i class="fas fa-horse"></i> Corridinha</button>
                         <button class="btn-grafico" id="toggle-chart-abertura"><i class="fas fa-chart-line"></i> Ver
                             Gráfico</button>
@@ -988,6 +1283,10 @@
                 <div class="table-header-controls">
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
                     <div class="header-actions">
+                        <div class="view-toggle-group">
+                            <button class="btn-toggle active" data-view="compact" onclick="setTableView('compact')">Resumo</button>
+                            <button class="btn-toggle" data-view="stats" onclick="setTableView('stats')">Estatísticas</button>
+                        </div>
                         <button class="btn-race" data-race-stage="clausura"><i class="fas fa-horse"></i> Corridinha</button>
                         <button class="btn-grafico" id="toggle-chart-clausura"><i class="fas fa-chart-line"></i> Ver
                             Gráfico</button>
@@ -1217,6 +1516,22 @@
             return stage === 'clausura' ? 'Clausura' : 'Abertura';
         }
 
+        let currentTableView = 'compact';
+        function setTableView(view) {
+            currentTableView = view;
+            document.querySelectorAll('.btn-toggle').forEach(btn => {
+                if (btn.dataset.view === view) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            document.querySelectorAll('.standings-table').forEach(table => {
+                table.classList.remove('view-compact', 'view-stats');
+                table.classList.add(`view-${view}`);
+            });
+        }
+
         function renderHorseRace(stage) {
             const raceDialog = document.getElementById('horse-race-dialog');
             const raceTrack = document.getElementById('race-track');
@@ -1245,17 +1560,17 @@
                 return acc;
             }, {});
             const maxTieCount = Math.max(...Object.values(tieCounts), 1);
-            const runnerGap = 62;
+            const runnerGap = 34;
             const pointGap = Math.max(76, (maxTieCount * runnerGap) + 24);
             const leftPad = 64;
             const rightPad = 160;
             const viewportWidth = raceTrack.clientWidth || 0;
             const trackWidth = Math.max(viewportWidth + 320, leftPad + (pointRange * pointGap) + (maxTieCount * runnerGap) + rightPad);
-            const lineTop = 112;
+            const lineTop = 180;
             const lastSafePosition = Math.max(standings.length - 4, 0);
             const usedTies = {};
             const runnerPositions = [];
-
+  
             raceTrackInner.style.width = `${trackWidth}px`;
             raceItems.innerHTML = standings.map((player, index) => {
                 const team = teamsDataCache[player.teamId || player.team] || {};
@@ -1266,19 +1581,61 @@
                 const points = Math.max(0, Number(player.totalPoints || 0));
                 const tieIndex = usedTies[points] || 0;
                 usedTies[points] = tieIndex + 1;
+                
+                // Distribuir verticalmente em pistas (lanes) alternadas e manter aproximação horizontal sem sobreposição
                 const tieOffset = tieIndex * runnerGap;
+                const lanes = [0, -18, 18, -34, 34];
+                const laneOffset = lanes[tieIndex % lanes.length];
+                const runnerTop = lineTop + laneOffset;
+ 
                 const distanceFromLeader = maxPoints - points;
                 const x = leftPad + (distanceFromLeader * pointGap) + tieOffset;
                 const relegationClass = index + 1 > lastSafePosition ? 'is-relegation' : '';
                 const lastClass = index + 1 === standings.length ? 'is-last' : '';
                 runnerPositions[index] = x;
+  
+                // Escurecer e esmaecer os corredores à medida que se aproximam do lanterna
+                const positionFactor = index / Math.max(standings.length - 1, 1);
+                const brightness = Math.max(0.42, 1 - (positionFactor * 0.58));
+                const saturation = Math.max(0.45, 1 - (positionFactor * 0.5));
+                const mudFilter = `filter: brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)});`;
 
+                const isLeader = index === 0;
+                const crownHtml = isLeader ? '<i class="fas fa-crown race-crown"></i>' : '';
+                const horseHtml = `
+                    <div class="styled-horse horse-color-${index % 5}">
+                        <svg viewBox="0 0 100 60" class="wild-stallion-svg" fill="currentColor">
+                            <!-- Corpo -->
+                            <ellipse cx="45" cy="30" rx="20" ry="9" />
+                            <!-- Pescoco & Cabeca -->
+                            <path d="M 58,25 C 65,22 72,15 75,10 C 77,8 79,8 77,11 C 75,14 74,17 78,16 C 81,15 83,18 78,21 C 72,25 65,28 58,29 Z" />
+                            <!-- Orelhas -->
+                            <path d="M 74,10 L 76,4 L 77,9 Z" />
+                            <!-- Perna Dianteira 1 (estendida para frente) -->
+                            <path d="M 60,32 L 72,44 L 78,43 L 64,32 Z" />
+                            <!-- Perna Dianteira 2 (dobrada para tras) -->
+                            <path d="M 56,32 L 62,40 L 59,48 L 54,32 Z" />
+                            <!-- Perna Traseira 1 (estendida para tras) -->
+                            <path d="M 28,31 Q 15,38 8,46 L 12,47 Q 20,39 32,32 Z" />
+                            <!-- Perna Traseira 2 (dobrada para baixo) -->
+                            <path d="M 32,32 L 28,42 L 31,48 L 36,32 Z" />
+                            <!-- Rabo (voando ao vento) -->
+                            <path d="M 27,27 C 20,24 12,23 5,26 C 10,28 18,29 25,30 Z" opacity="0.85" />
+                            <!-- Crina -->
+                            <path d="M 62,20 C 58,15 54,12 50,15 C 54,16 58,18 60,22 Z" opacity="0.8" />
+                        </svg>
+                        <div class="dust-trail"></div>
+                    </div>
+                `;
+                const lanternHtml = lastClass ? '<span class="race-lantern"><i class="fas fa-fire text-danger animate-pulse"></i></span>' : '';
+ 
                 return `
-                    <div class="race-runner ${relegationClass} ${lastClass}" style="left: ${x}px; top: ${lineTop}px;">
+                    <div class="race-runner ${relegationClass} ${lastClass}" style="left: ${x}px; top: ${runnerTop}px; ${mudFilter}">
                         <div class="race-horse-row">
+                            ${crownHtml}
                             <img src="${playerAvatar}" class="race-avatar" alt="${displayName}" onerror="this.src='default-avatar.png'">
-                            <span class="race-horse">🐎</span>
-                            <span class="race-lantern">🏮</span>
+                            ${horseHtml}
+                            ${lanternHtml}
                         </div>
                         <div class="race-score-board"><strong>${points}</strong><span>pts</span></div>
                         <div class="race-runner-name">${displayName}</div>
@@ -1364,22 +1721,12 @@
             document.getElementById('horse-race-dialog').showModal();
         }
 
-        function renderTable(standings, containerId, stage) {
+        function renderTable(standings, containerId, stage, prevPositionMap) {
             const container = document.getElementById(containerId);
             if (!container) return;
 
             const currentUser = auth.currentUser;
             const totalPlayers = standings.length;
-
-            // Criar ranking anterior descontando a pontuacao da ultima rodada finalizada.
-            const previousRanking = [...standings].sort((a, b) => {
-                const aPrevPoints = (a.totalPoints || 0) - (a.lastRoundPoints || 0);
-                const bPrevPoints = (b.totalPoints || 0) - (b.lastRoundPoints || 0);
-                return bPrevPoints - aPrevPoints;
-            }).map((player, idx) => ({ id: player.id, prevPosition: idx + 1 }));
-
-            const prevPositionMap = {};
-            previousRanking.forEach(p => { prevPositionMap[p.id] = p.prevPosition; });
 
             const groups = [
                 { title: '🏆 Taça Libertadores', positions: [1, 2, 3, 4], zone: 'zone-libertadores' },
@@ -1389,15 +1736,21 @@
             ];
 
             let html = `
-                <table class="standings-table">
+                <table class="standings-table view-${currentTableView}">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Jogador</th>
-                            <th>P</th>
-                            <th>R</th>
-                            <th>U</th>
-                            <th>-</th>
+                            <th class="col-pos">#</th>
+                            <th class="col-player">Jogador</th>
+                            <th class="col-stats" title="Jogos Palpitados">J</th>
+                            <th class="col-stats" title="Placares Exatos (3 pts)">PE</th>
+                            <th class="col-stats" title="Resultado Apenas (1 pt)">RA</th>
+                            <th class="col-stats" title="Erros (0 ou -1 pt)">ER</th>
+                            <th class="col-pts">Pts</th>
+                            <th class="col-compact" title="Pontos na Rodada Vigente">R</th>
+                            <th class="col-compact" title="Pontos na Última Rodada">U</th>
+                            <th class="col-compact" title="Variação de Posição">Var</th>
+                            <th class="col-stats" title="Gols do Artilheiro">GA</th>
+                            <th class="col-forma" title="Forma Recente (Últimas 5 Rodadas)">Forma</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1428,32 +1781,49 @@
                     trendIcon = '<i class="fas fa-arrow-down" style="color: var(--danger);"></i>';
                     trendText = `${positionDiff}`;
                 } else {
-                    trendIcon = '<i class="fas fa-minus-square" style="color: var(--text-muted);"></i>';
+                    trendIcon = '<i class="fas fa-minus" style="color: var(--text-muted);"></i>';
                     trendText = '0';
                 }
 
                 // Adicionar título de grupo quando necessário
                 if (currentGroupIndex < groups.length && position === groups[currentGroupIndex].positions[0]) {
-                    html += `<tr class="group-title"><td colspan="6">${groups[currentGroupIndex].title}</td></tr>`;
+                    html += `<tr class="group-title"><td colspan="12">${groups[currentGroupIndex].title}</td></tr>`;
                     currentGroupIndex++;
                 }
 
-                const beltBadge = player.id === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão"><i class="fas fa-hand-fist"></i> Cinturão</span>' : '';
+                const isCinturao = player.id === cinturaoChampionId;
+                const avatarHtml = `
+                    <div class="player-avatar-wrapper ${isCinturao ? 'has-cinturao' : ''}">
+                        <img src="${playerAvatar}" class="player-avatar" onerror="this.src='default-avatar.png'">
+                        ${isCinturao ? '<span class="avatar-cinturao-mini" title="Detentor do Cinturão">🥊</span>' : ''}
+                    </div>
+                `;
                 html += `
                     <tr class="${zoneClass} ${isCurrentUser ? 'current-user-row' : ''}" data-userid="${player.id}" data-stage="${stage}" data-position="${position}">
-                        <td>${position}</td>
-                        <td>
+                        <td class="col-pos"><span class="position-badge ${zoneClass ? '' : 'default'}">${position}</span></td>
+                        <td class="col-player">
                             <div class="player-cell">
-                                <img src="${playerAvatar}" class="player-avatar" onerror="this.src='default-avatar.png'">
-                                <span class="player-name">${displayName}</span>${beltBadge}
+                                ${avatarHtml}
+                                <span class="player-name name-compact">${displayName}</span>
+                                <span class="col-stats">${player.medalsHtml || ''}</span>
                             </div>
                         </td>
-                        <td class="points">${player.totalPoints}</td>
-                        <td class="round-points">${player.roundPoints >= 0 ? '+' : ''}${player.roundPoints}</td>
-                        <td class="round-points">${player.lastRoundPoints >= 0 ? '+' : ''}${player.lastRoundPoints}</td>
-                        <td class="trend-cell">
+                        <td class="col-stats">${player.played}</td>
+                        <td class="col-stats" style="color: var(--success); font-weight: 600;">${player.wins}</td>
+                        <td class="col-stats" style="color: var(--warning); font-weight: 600;">${player.draws}</td>
+                        <td class="col-stats" style="color: var(--text-muted);">${player.losses}</td>
+                        <td class="col-pts points">${player.totalPoints}</td>
+                        <td class="round-points col-compact">${player.roundPoints >= 0 ? '+' : ''}${player.roundPoints}</td>
+                        <td class="round-points col-compact">${player.lastRoundPoints >= 0 ? '+' : ''}${player.lastRoundPoints}</td>
+                        <td class="trend-cell col-compact">
                             <div class="trend-indicator" title="Posição anterior: ${prevPosition}º">
                                 ${trendIcon} ${trendText}
+                            </div>
+                        </td>
+                        <td class="col-stats" style="font-weight: 500;">${player.starPlayerPoints}</td>
+                        <td class="col-forma">
+                            <div class="form-container">
+                                ${player.formHtml || ''}
                             </div>
                         </td>
                     </tr>
@@ -1466,7 +1836,7 @@
             // Adicionar event listeners
             container.querySelectorAll('tr[data-userid]').forEach(row => {
                 row.addEventListener('click', (e) => {
-                    if (e.target.tagName === 'IMG') return;
+                    if (e.target.tagName === 'IMG' || e.target.closest('.view-toggle-group') || e.target.tagName === 'BUTTON') return;
                     const userId = row.dataset.userid;
                     const position = row.dataset.position;
                     showPlayerDetails(userId, stage, position);
@@ -1497,16 +1867,85 @@
                 return user[pointsField] !== undefined || user.playingAbertura !== false || user.playingClausura !== false;
             });
 
-            // Calcular estatísticas completas para cada jogador
+            // Ordenar rodadas concluídas por timestamp
+            const sortedRounds = Object.values(completedRounds).sort((a, b) => (a.finishTimestamp || 0) - (b.finishTimestamp || 0));
+
+            // Configurar limite do split entre Abertura e Clausura
+            const ABERTURA_CLAUSURA_SPLIT_ROUND = 20;
+
+            // Filtrar apenas as rodadas pertencentes ao turno (abertura ou clausura) selecionado
+            const stageRounds = sortedRounds.filter((round, idx) => {
+                const seq = idx + 1;
+                if (stage === 'abertura') return seq <= ABERTURA_CLAUSURA_SPLIT_ROUND;
+                if (stage === 'clausura') return seq > ABERTURA_CLAUSURA_SPLIT_ROUND;
+                return true;
+            });
+
+            // Verificar se a rodada ativa pertence ao turno atual
+            const isActiveRoundInStage = activeRound && (() => {
+                const activeSeq = sortedRounds.length + 1;
+                if (stage === 'abertura') return activeSeq <= ABERTURA_CLAUSURA_SPLIT_ROUND;
+                if (stage === 'clausura') return activeSeq > ABERTURA_CLAUSURA_SPLIT_ROUND;
+                return true;
+            })();
+
+            // Mapa para armazenar pontuações de cada jogador por rodada: roundPointsMap[userId][roundId] = pontos
+            const roundPointsMap = {};
+            const roundAverages = {};
+            
+            usersArray.forEach(user => {
+                roundPointsMap[user.id] = {};
+            });
+
+            stageRounds.forEach(round => {
+                const roundId = round.id || round.num || Object.keys(completedRounds).find(key => completedRounds[key] === round);
+                const liveRoundPointsForRound = calculateLiveRoundPoints(round);
+                let totalRoundPoints = 0;
+                let playerCount = 0;
+
+                usersArray.forEach(user => {
+                    const pts = liveRoundPointsForRound[user.id] || 0;
+                    roundPointsMap[user.id][roundId] = pts;
+                    totalRoundPoints += pts;
+                    playerCount++;
+                });
+
+                roundAverages[roundId] = playerCount > 0 ? (totalRoundPoints / playerCount) : 0;
+            });
+
+            // Calcular medalhas de rodada (apenas ouro / 1º colocado no turno)
+            const goldMedalsCount = {};
+
+            usersArray.forEach(user => {
+                goldMedalsCount[user.id] = 0;
+            });
+
+            stageRounds.forEach(round => {
+                const roundId = round.id || round.num || Object.keys(completedRounds).find(key => completedRounds[key] === round);
+                const roundScores = usersArray.map(user => ({
+                    id: user.id,
+                    score: roundPointsMap[user.id][roundId] || 0
+                })).sort((a, b) => b.score - a.score);
+
+                if (roundScores.length > 0) {
+                    const maxScore = roundScores[0].score;
+                    if (maxScore > 0) {
+                        const goldWinners = roundScores.filter(s => s.score === maxScore);
+                        goldWinners.forEach(w => goldMedalsCount[w.id]++);
+                    }
+                }
+            });
+
+            // Mapear dados e computar pontuação e estatísticas dos jogadores
             const standings = usersArray.map(user => {
                 const lastRoundPoints = user[lastRoundPointsField] || 0;
-                let roundPoints = activeRound ? (liveRoundPoints[user.id] || 0) : lastRoundPoints;
-                const totalPoints = (user[pointsField] || 0) + (activeRound ? roundPoints : 0);
+                let roundPoints = isActiveRoundInStage ? (liveRoundPoints[user.id] || 0) : lastRoundPoints;
+                const totalPoints = (user[pointsField] || 0) + (isActiveRoundInStage ? roundPoints : 0);
 
-                // Calcular estatísticas adicionais dos palpites
+                // Estatísticas de palpites exatos, parciais e erros (somente do turno atual)
                 let played = 0, wins = 0, draws = 0, losses = 0, goalsFor = 0, goalsAgainst = 0;
 
-                Object.values(completedRounds).forEach(round => {
+                stageRounds.forEach(round => {
                     if (round.matches) {
                         Object.values(round.matches).forEach(match => {
                             if (match.predictions?.[user.id] && match.finalResult) {
@@ -1516,7 +1955,7 @@
                                 const points = calculateMatchPoints(final, pred);
                                 if (points === 3) wins++;
                                 else if (points === 1) draws++;
-                                else if (points === 0) losses++;
+                                else losses++;
 
                                 goalsFor += pred.homeScore + pred.awayScore;
                                 goalsAgainst += final.homeScore + final.awayScore;
@@ -1524,6 +1963,53 @@
                         });
                     }
                 });
+
+                // Calcular GA (Gols do Artilheiro) no turno atual
+                let starPlayerPoints = 0;
+                stageRounds.forEach(round => {
+                    const sp = round.starPlayers?.[user.id];
+                    if (sp && sp.athleteId) {
+                        const goalsInfo = round.playerGoals?.[sp.athleteId] || 0;
+                        const gCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                        starPlayerPoints += gCount;
+                    }
+                });
+                
+                if (isActiveRoundInStage) {
+                    const sp = activeRound.starPlayers?.[user.id];
+                    if (sp && sp.athleteId) {
+                        const goalsInfo = activeRound.playerGoals?.[sp.athleteId] || 0;
+                        const gCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                        starPlayerPoints += gCount;
+                    }
+                }
+
+                // Calcular Forma das últimas 5 rodadas com base no desvio da média da rodada
+                const last5Rounds = stageRounds.slice(-5);
+                let formHtml = '';
+                last5Rounds.forEach(round => {
+                    const roundId = round.id || round.num || Object.keys(completedRounds).find(key => completedRounds[key] === round);
+                    const score = roundPointsMap[user.id][roundId] || 0;
+                    const avg = roundAverages[roundId] || 0;
+
+                    let cls = 'draw';
+                    let tooltipText = `Rodada ${roundId}: ${score} pts (Média: ${avg.toFixed(1)})`;
+                    
+                    if (score > avg * 1.15) {
+                        cls = 'win';
+                    } else if (score < avg * 0.85) {
+                        cls = 'loss';
+                    }
+
+                    formHtml += `<span class="form-badge ${cls}" title="${tooltipText}"></span>`;
+                });
+
+                // Formatar medalhas de ouro ganhas
+                const goldCount = goldMedalsCount[user.id] || 0;
+                let medalsHtml = '';
+                if (goldCount > 0) {
+                    medalsHtml = `<span class="medal-badge" title="${goldCount} rodada(s) vencida(s) como 1º colocado">🥇${goldCount > 1 ? `x${goldCount}` : ''}</span>`;
+                }
 
                 return {
                     ...user,
@@ -1535,12 +2021,49 @@
                     draws,
                     losses,
                     goalsFor,
-                    goalsAgainst
+                    goalsAgainst,
+                    starPlayerPoints,
+                    formHtml,
+                    medalsHtml
                 };
-            }).sort((a, b) => b.totalPoints - a.totalPoints || b.roundPoints - a.roundPoints);
+            });
+
+            // 1. Calcular a pontuação prévia de cada jogador para construir o mapeamento de posições anteriores
+            const usersWithPrevPoints = usersArray.map(user => {
+                const lastRoundPoints = user[lastRoundPointsField] || 0;
+                const dbPoints = user[pointsField] || 0;
+                const prevPoints = isActiveRoundInStage ? dbPoints : (dbPoints - lastRoundPoints);
+                return { id: user.id, prevPoints };
+            });
+
+            // Ordenar de forma decrescente pelos pontos prévios para obter o ranking anterior
+            usersWithPrevPoints.sort((a, b) => b.prevPoints - a.prevPoints);
+
+            const prevPositionMap = {};
+            usersWithPrevPoints.forEach((item, index) => {
+                prevPositionMap[item.id] = index + 1;
+            });
+
+            // 2. Ordenar o standings principal conforme as regras oficiais de desempate:
+            // 1º Criterio: Pontos totais do turno (totalPoints)
+            // 2º Criterio: Pontuação na rodada vigente (isActiveRoundInStage) ou na última encerrada (lastRoundPoints)
+            // 3º Criterio: Posição na rodada anterior (prevPositionMap)
+            standings.sort((a, b) => {
+                if (b.totalPoints !== a.totalPoints) {
+                    return b.totalPoints - a.totalPoints;
+                }
+                const aRound = isActiveRoundInStage ? a.roundPoints : a.lastRoundPoints;
+                const bRound = isActiveRoundInStage ? b.roundPoints : b.lastRoundPoints;
+                if (bRound !== aRound) {
+                    return bRound - aRound;
+                }
+                const aPrevPos = prevPositionMap[a.id] || 999;
+                const bPrevPos = prevPositionMap[b.id] || 999;
+                return aPrevPos - bPrevPos;
+            });
 
             standingsByStage[stage] = standings;
-            renderTable(standings, `${stage}-table-container`, stage);
+            renderTable(standings, `${stage}-table-container`, stage, prevPositionMap);
         }
 
         async function loadFinalInfo() {
