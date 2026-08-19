@@ -532,6 +532,90 @@
             border-color: rgba(6, 182, 212, 0.3);
         }
 
+        .coming-soon-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coming-soon-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 45%);
+            pointer-events: none;
+        }
+
+        .coming-soon-card .tournament-body {
+            position: relative;
+        }
+
+        .future-card-copy {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .future-card-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .f1-preview {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            padding: 1rem 1.1rem;
+            border-radius: 1.1rem;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.16), rgba(245, 158, 11, 0.08));
+            border: 1px solid rgba(239, 68, 68, 0.22);
+        }
+
+        .f1-preview-car {
+            font-size: 2.2rem;
+            line-height: 1;
+            filter: drop-shadow(0 8px 16px rgba(239, 68, 68, 0.28));
+        }
+
+        .f1-preview-copy strong {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .f1-preview-copy span {
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+        }
+
+        .trophy-gallery-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+        }
+
+        .trophy-gallery-preview span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 62px;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            font-size: 1.6rem;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
         .tournament-header {
             padding: 1.5rem;
             background: rgba(9, 13, 22, 0.45);
@@ -1280,50 +1364,6 @@
 
         <!-- Torneios Grid -->
         <div class="tournaments-grid">
-            <!-- Pódio do Mês Card -->
-            <div class="tournament-card" id="podio-mes-card" style="border-color: rgba(6, 182, 212, 0.4);">
-                <div class="tournament-header" style="background: rgba(6, 182, 212, 0.1);">
-                    <div class="tournament-title" style="color: #06b6d4;"><i class="fas fa-medal" style="color: #06b6d4;"></i> Pódio do Mês</div>
-                    <span class="status-badge" style="background: rgba(6, 182, 212, 0.2); color: #06b6d4;" id="podio-mes-title">--/----</span>
-                </div>
-                <div class="tournament-body" id="podio-mes-content" style="padding: 1.5rem 1rem;">
-                    <p style="text-align: center; color: var(--text-secondary);">Carregando pódio...</p>
-                </div>
-            </div>
-
-            <!-- Cinturão BR Depressão Card -->
-            <div class="tournament-card" id="cinturao-card" style="border-color: rgba(245, 158, 11, 0.4);">
-                <div class="tournament-header" style="background: rgba(245, 158, 11, 0.1);">
-                    <div class="tournament-title" style="color: #f59e0b;"><i class="fas fa-hand-fist" style="color: #f59e0b;"></i> Cinturão BR Depressão</div>
-                    <span class="status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" id="cinturao-defenses-badge">0 Defesas</span>
-                </div>
-                <div class="tournament-body" id="cinturao-content">
-                    <p>Carregando detentor do cinturão...</p>
-                </div>
-            </div>
-
-            <!-- Resta Um Card -->
-            <div class="tournament-card" id="restaum-card" onclick="window.location.href='resta-um.html'">
-                <div class="tournament-header">
-                    <div class="tournament-title" style="color: #ef4444;"><i class="fas fa-skull-crossbones" style="color: #ef4444;"></i> Torneio Resta Um</div>
-                    <span class="status-badge status-active" id="restaum-status">VIVO</span>
-                </div>
-                <div class="tournament-body" id="restaum-content">
-                    <p>Carregando status do Resta Um...</p>
-                </div>
-            </div>
-
-            <!-- Supercopa Card -->
-            <div class="tournament-card" id="supercopa-card">
-                <div class="tournament-header">
-                    <div class="tournament-title"><i class="fas fa-shield-alt"></i> Supercopa</div>
-                    <span class="status-badge status-upcoming" id="supercopa-status">Carregando</span>
-                </div>
-                <div class="tournament-body" id="supercopa-content">
-                    <p>Aguardando informações...</p>
-                </div>
-            </div>
-
             <!-- Superliga Card -->
             <div class="tournament-card" id="superliga-card">
                 <div class="tournament-header">
@@ -1347,6 +1387,90 @@
                         </tbody>
                     </table>
                     <a href="superliga.html" class="view-all-link">Ver classificação completa →</a>
+                </div>
+            </div>
+
+            <!-- Supercopa Card -->
+            <div class="tournament-card" id="supercopa-card">
+                <div class="tournament-header">
+                    <div class="tournament-title"><i class="fas fa-shield-alt"></i> Supercopa</div>
+                    <span class="status-badge status-upcoming" id="supercopa-status">Carregando</span>
+                </div>
+                <div class="tournament-body" id="supercopa-content">
+                    <p>Aguardando informações...</p>
+                </div>
+            </div>
+
+            <!-- Fórmula Deprê Card -->
+            <div class="tournament-card coming-soon-card" id="formula-depre-card" onclick="window.location.href='formula-depre.html'" style="border-color: rgba(239, 68, 68, 0.35);">
+                <div class="tournament-header" style="background: linear-gradient(90deg, rgba(239, 68, 68, 0.14), rgba(245, 158, 11, 0.08));">
+                    <div class="tournament-title" style="color: #fca5a5;"><i class="fas fa-flag-checkered" style="color: #ef4444;"></i> Fórmula Deprê</div>
+                    <span class="status-badge" style="background: rgba(239, 68, 68, 0.16); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.26);">Abrir</span>
+                </div>
+                <div class="tournament-body">
+                    <p class="future-card-copy">A Superliga virou grid: cada rodada finalizada distribui pontos no formato da Fórmula 1, com tabela corrida e clima de campeonato.</p>
+                    <div class="f1-preview">
+                        <div class="f1-preview-copy">
+                            <strong>Pole, ritmo e classificação</strong>
+                            <span>Veja quem está pontuando melhor no campeonato em estilo F1.</span>
+                        </div>
+                        <div class="f1-preview-car">🏎️</div>
+                    </div>
+                    <div class="future-card-highlight" style="background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <i class="fas fa-bolt"></i> Classificação baseada na Superliga
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pódio do Mês Card -->
+            <div class="tournament-card" id="podio-mes-card" style="border-color: rgba(6, 182, 212, 0.4);">
+                <div class="tournament-header" style="background: rgba(6, 182, 212, 0.1);">
+                    <div class="tournament-title" style="color: #06b6d4;"><i class="fas fa-medal" style="color: #06b6d4;"></i> Pódio do Mês</div>
+                    <span class="status-badge" style="background: rgba(6, 182, 212, 0.2); color: #06b6d4;" id="podio-mes-title">--/----</span>
+                </div>
+                <div class="tournament-body" id="podio-mes-content" style="padding: 1.5rem 1rem;">
+                    <p style="text-align: center; color: var(--text-secondary);">Carregando pódio...</p>
+                </div>
+            </div>
+
+            <!-- Resta Um Card -->
+            <div class="tournament-card" id="restaum-card" onclick="window.location.href='resta-um.html'">
+                <div class="tournament-header">
+                    <div class="tournament-title" style="color: #ef4444;"><i class="fas fa-skull-crossbones" style="color: #ef4444;"></i> Torneio Resta Um</div>
+                    <span class="status-badge status-active" id="restaum-status">VIVO</span>
+                </div>
+                <div class="tournament-body" id="restaum-content">
+                    <p>Carregando status do Resta Um...</p>
+                </div>
+            </div>
+
+            <!-- Cinturão BR Depressão Card -->
+            <div class="tournament-card" id="cinturao-card" style="border-color: rgba(245, 158, 11, 0.4);">
+                <div class="tournament-header" style="background: rgba(245, 158, 11, 0.1);">
+                    <div class="tournament-title" style="color: #f59e0b;"><i class="fas fa-hand-fist" style="color: #f59e0b;"></i> Cinturão BR Depressão</div>
+                    <span class="status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" id="cinturao-defenses-badge">0 Defesas</span>
+                </div>
+                <div class="tournament-body" id="cinturao-content">
+                    <p>Carregando detentor do cinturão...</p>
+                </div>
+            </div>
+
+            <!-- Galeria de Troféus Card -->
+            <div class="tournament-card coming-soon-card" id="galeria-trofeus-card" onclick="window.location.href='trofeus.html'" style="border-color: rgba(250, 204, 21, 0.3);">
+                <div class="tournament-header" style="background: linear-gradient(90deg, rgba(250, 204, 21, 0.12), rgba(245, 158, 11, 0.08));">
+                    <div class="tournament-title" style="color: #fcd34d;"><i class="fas fa-trophy" style="color: #fbbf24;"></i> Galeria de Troféus</div>
+                    <span class="status-badge" style="background: rgba(250, 204, 21, 0.16); color: #fcd34d; border: 1px solid rgba(250, 204, 21, 0.2);">Entrar</span>
+                </div>
+                <div class="tournament-body">
+                    <p class="future-card-copy">Um espaço para reunir títulos, conquistas marcantes e a estante oficial da bagunça organizada do BR Depre.</p>
+                    <div class="trophy-gallery-preview">
+                        <span>🏆</span>
+                        <span>🥇</span>
+                        <span>👑</span>
+                    </div>
+                    <div class="future-card-highlight" style="background: rgba(250, 204, 21, 0.12); color: #fde68a; border: 1px solid rgba(250, 204, 21, 0.16);">
+                        <i class="fas fa-vault"></i> Sala de glórias da liga
+                    </div>
                 </div>
             </div>
         </div>

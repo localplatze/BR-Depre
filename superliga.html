@@ -412,16 +412,7 @@
             flex-shrink: 0;
         }
 
-        /* Ocultar nome e encolher coluna de Jogador na visualização de estatísticas */
-        .standings-table.view-stats .player-name {
-            display: none;
-        }
 
-        .standings-table.view-stats .col-player {
-            width: 80px !important;
-            min-width: 80px !important;
-            text-align: center;
-        }
 
         /* Badges da Forma das Últimas 5 Rodadas (SofaScore style) */
         .form-container {
@@ -1119,6 +1110,17 @@
             .final-player:last-child {
                 order: 3;
             }
+
+            /* Ocultar nome e encolher coluna de Jogador na visualização de estatísticas apenas no celular */
+            .standings-table.view-stats .player-name {
+                display: none;
+            }
+
+            .standings-table.view-stats .col-player {
+                width: 80px !important;
+                min-width: 80px !important;
+                text-align: center;
+            }
         }
 
         /* Adicione ao style existente */
@@ -1140,16 +1142,16 @@
             font-size: 0.7rem;
         }
 
-        /* Configuração de Larguras Fixas de Colunas (SofaScore / FlashScore Style) */
+        /* Desktop: deixar a tabela ocupar toda a largura útil sem cortar colunas */
         .standings-table {
             width: 100%;
-            table-layout: fixed;
+            min-width: 100%;
+            table-layout: auto;
             border-collapse: collapse;
         }
 
-        .standings-table th, .standings-table td {
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .standings-table th,
+        .standings-table td {
             white-space: nowrap;
         }
 
@@ -1168,7 +1170,7 @@
         }
         .col-stats { width: 42px; text-align: center; }
         .col-compact { width: 55px; text-align: center; }
-        .col-pts { width: 65px; text-align: right; font-weight: 700; }
+        .col-pts { width: 65px; text-align: right; font-weight: 700; color: var(--primary); }
         .col-forma { width: 110px; text-align: center; }
 
         .group-title td {

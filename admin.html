@@ -1201,6 +1201,88 @@
         .subsection.active {
             display: block;
         }
+
+        .trophy-admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .trophy-admin-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+            overflow: hidden;
+        }
+
+        .trophy-admin-card .card-header {
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            color: #fff;
+            padding: 16px 18px;
+        }
+
+        .trophy-admin-card .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trophy-admin-card .card-body {
+            padding: 18px;
+        }
+
+        .inline-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .trophy-admin-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .trophy-admin-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            background: #fff;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .trophy-admin-item strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+
+        .trophy-admin-item small {
+            color: #64748b;
+            display: block;
+            line-height: 1.45;
+        }
+
+        .trophy-admin-item-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .trophy-preview-thumb {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
     </style>
 </head>
 
@@ -1218,6 +1300,8 @@
             <div class="tab" data-section="cinturao"><i class="fas fa-hand-fist"></i> Cinturão UFC</div>
             <div class="tab" data-section="teams"><i class="fas fa-users"></i> Times</div>
             <div class="tab" data-section="players"><i class="fas fa-user-cog"></i> Jogadores</div>
+            <div class="tab" data-section="formula"><i class="fas fa-flag-checkered"></i> Fórmula Deprê</div>
+            <div class="tab" data-section="trophies"><i class="fas fa-trophy"></i> Sala de Troféus</div>
             <div class="tab" data-section="ads"><i class="fas fa-ad"></i> Anúncios & Resenha</div>
         </div>
 
@@ -2012,6 +2096,139 @@ Time B: 2.20, 44%
             </div>
         </div>
 
+        <div id="trophies-section" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-trophy"></i> Gerenciamento da Sala de Troféus</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" style="margin-bottom: 20px;">
+                        <i class="fas fa-info-circle"></i> Cadastre os tipos de troféu, monte a estante principal e mantenha o memorial dos jogadores póstumos.
+                    </div>
+
+                    <div class="trophy-admin-grid">
+                        <div class="trophy-admin-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-layer-group"></i> Tipos de Troféu</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="trophy-type-form">
+                                    <input type="hidden" id="trophy-type-id">
+                                    <div class="form-group" style="margin-bottom: 14px;">
+                                        <label>Nome do tipo</label>
+                                        <input type="text" id="trophy-type-name" class="form-control" placeholder="Ex: Superliga">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Importância</label>
+                                        <input type="number" id="trophy-type-importance" class="form-control" placeholder="Ex: 100">
+                                    </div>
+                                    <div class="inline-actions">
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar tipo</button>
+                                        <button type="button" id="cancel-trophy-type-edit" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+                                        <button type="button" id="seed-trophy-types" class="btn btn-success"><i class="fas fa-wand-magic-sparkles"></i> Tipos padrão</button>
+                                    </div>
+                                </form>
+                                <div id="trophy-types-list" class="trophy-admin-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="trophy-admin-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-medal"></i> Troféus da Estante</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="trophy-item-form">
+                                    <input type="hidden" id="trophy-item-id">
+                                    <div class="form-group" style="margin-bottom: 14px;">
+                                        <label>Título</label>
+                                        <input type="text" id="trophy-item-title" class="form-control" placeholder="Ex: Campeão da Superliga">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 14px;">
+                                        <label>Tipo</label>
+                                        <select id="trophy-item-type" class="form-control"></select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 14px;">
+                                        <label>Jogador vencedor</label>
+                                        <select id="trophy-item-winner-user" class="form-control">
+                                            <option value="">Selecione um jogador</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 14px;">
+                                        <label>Ou inserir nome manualmente</label>
+                                        <input type="text" id="trophy-item-winner-manual" class="form-control" placeholder="Ex: Depay FC">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Ano</label>
+                                        <input type="number" id="trophy-item-year" class="form-control" placeholder="Ex: 2026">
+                                    </div>
+                                    <div class="inline-actions">
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar troféu</button>
+                                        <button type="button" id="cancel-trophy-item-edit" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+                                    </div>
+                                </form>
+                                <div id="trophy-items-list" class="trophy-admin-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="trophy-admin-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-star"></i> Jogadores Póstumos</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="memorial-form">
+                                    <input type="hidden" id="memorial-id">
+                                    <div class="form-group" style="margin-bottom: 14px;">
+                                        <label>Nome</label>
+                                        <input type="text" id="memorial-name" class="form-control" placeholder="Nome do jogador">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Link da imagem</label>
+                                        <input type="url" id="memorial-image-url" class="form-control" placeholder="https://...">
+                                    </div>
+                                    <div class="inline-actions">
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar jogador</button>
+                                        <button type="button" id="cancel-memorial-edit" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+                                    </div>
+                                </form>
+                                <div id="memorial-list" class="trophy-admin-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="formula-section" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-flag-checkered"></i> Fórmula Deprê</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" style="margin-bottom: 20px;">
+                        <i class="fas fa-info-circle"></i> Recalcula a classificação da Fórmula Deprê usando as rodadas finalizadas da Superliga da temporada atual e a pontuação padrão da Fórmula 1.
+                    </div>
+                    <div class="form-row" style="margin-bottom: 18px;">
+                        <div class="form-group" style="max-width: 320px;">
+                            <label>Considerar na Fórmula Deprê</label>
+                            <select id="formula-depre-stage-filter" class="form-control">
+                                <option value="clausura">Só Clausura</option>
+                                <option value="abertura">Só Abertura</option>
+                                <option value="all">Temporada inteira</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:18px;">
+                        <button type="button" id="btn-calculate-formula-depre" class="btn btn-primary"><i class="fas fa-bolt"></i> Calcular temporada</button>
+                        <a href="formula-depre.html" class="btn btn-secondary"><i class="fas fa-arrow-up-right-from-square"></i> Abrir página pública</a>
+                    </div>
+                    <div id="formula-depre-summary" class="alert alert-info">
+                        <i class="fas fa-flag-checkered"></i> Nenhum cálculo executado ainda.
+                    </div>
+                    <div id="formula-depre-admin-table"></div>
+                </div>
+            </div>
+        </div>
+
         <div id="edit-round-modal" class="edit-modal">
             <div class="edit-modal-content">
                 <div class="edit-modal-header">
@@ -2095,6 +2312,17 @@ Time B: 2.20, 44%
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
+        const DEFAULT_TROPHY_TYPES = [
+            { id: 'superliga', name: 'Superliga', importance: 100 },
+            { id: 'supercopa', name: 'Supercopa', importance: 90 },
+            { id: 'recopa', name: 'Recopa', importance: 80 },
+            { id: 'libertadores', name: 'Libertadores', importance: 80 },
+            { id: 'formula_depre', name: 'Fórmula Deprê', importance: 70 },
+            { id: 'resta_um', name: 'Resta Um', importance: 70 },
+            { id: 'cinturoes', name: 'Qtd de Cinturões', importance: 70 },
+            { id: 'serie_b', name: 'Série B', importance: 60 },
+            { id: 'serie_c', name: 'Série C', importance: 50 }
+        ];
         const API_FOOTBALL_BASE_URL = 'https://v3.football.api-sports.io';
         const DEEPSEEK_API_BASE_URL = 'https://api.deepseek.com';
         const DEFAULT_DEEPSEEK_API_KEY = 'sk-7c25afb5be6245e782c0abb565efe98d';
@@ -2136,6 +2364,8 @@ Time B: 2.20, 44%
         document.querySelector('.tab[data-section="cinturao"]')?.addEventListener('click', loadCinturaoAdmin);
         document.querySelector('.tab[data-section="teams"]')?.addEventListener('click', loadTeamsList);
         document.querySelector('.tab[data-section="players"]')?.addEventListener('click', loadPlayersList);
+        document.querySelector('.tab[data-section="formula"]')?.addEventListener('click', loadFormulaDepreAdmin);
+        document.querySelector('.tab[data-section="trophies"]')?.addEventListener('click', loadTrophiesAdminData);
         document.querySelector('.tab[data-section="ads"]')?.addEventListener('click', loadAdsSectionData);
 
         // Navegação entre as subseções da Supercopa (Grupos, Rodadas, Mata-Mata)
@@ -2264,6 +2494,566 @@ Time B: 2.20, 44%
                     tab.classList.add('active');
                 }
             });
+        });
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function resetTrophyTypeForm() {
+            document.getElementById('trophy-type-form')?.reset();
+            document.getElementById('trophy-type-id').value = '';
+        }
+
+        function resetTrophyItemForm() {
+            document.getElementById('trophy-item-form')?.reset();
+            document.getElementById('trophy-item-id').value = '';
+        }
+
+        function resetMemorialForm() {
+            document.getElementById('memorial-form')?.reset();
+            document.getElementById('memorial-id').value = '';
+        }
+
+        async function ensureDefaultTrophyTypes() {
+            const typesRef = database.ref('hallOfFame/types');
+            const snap = await typesRef.once('value');
+            if (snap.exists()) return;
+
+            const payload = {};
+            DEFAULT_TROPHY_TYPES.forEach(type => {
+                payload[type.id] = {
+                    name: type.name,
+                    importance: type.importance,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                };
+            });
+            await typesRef.set(payload);
+        }
+
+        function renderTrophyTypesList(typesMap) {
+            const container = document.getElementById('trophy-types-list');
+            const types = Object.entries(typesMap || {})
+                .map(([id, item]) => ({ id, ...item }))
+                .sort((a, b) => Number(b.importance || 0) - Number(a.importance || 0));
+
+            if (!types.length) {
+                container.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Nenhum tipo cadastrado.</div>';
+                return;
+            }
+
+            container.innerHTML = types.map(type => `
+                <div class="trophy-admin-item">
+                    <div>
+                        <strong>${escapeHtml(type.name)}</strong>
+                        <small>Importância: ${escapeHtml(type.importance ?? 0)}</small>
+                    </div>
+                    <div class="trophy-admin-item-actions">
+                        <button type="button" class="btn btn-secondary btn-sm btn-edit-trophy-type" data-id="${escapeHtml(type.id)}"><i class="fas fa-pen"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm btn-delete-trophy-type" data-id="${escapeHtml(type.id)}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateTrophyTypeSelect(typesMap) {
+            const select = document.getElementById('trophy-item-type');
+            const types = Object.entries(typesMap || {})
+                .map(([id, item]) => ({ id, ...item }))
+                .sort((a, b) => Number(b.importance || 0) - Number(a.importance || 0));
+
+            select.innerHTML = '<option value="">Selecione um tipo</option>' + types.map(type => `
+                <option value="${escapeHtml(type.id)}">${escapeHtml(type.name)}</option>
+            `).join('');
+        }
+
+        function populateTrophyWinnerSelect(usersMap) {
+            const select = document.getElementById('trophy-item-winner-user');
+            const users = Object.entries(usersMap || {})
+                .map(([id, item]) => ({ id, ...item }))
+                .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'));
+
+            select.innerHTML = '<option value="">Selecione um jogador</option>' + users.map(user => `
+                <option value="${escapeHtml(user.id)}">${escapeHtml(user.name || user.email || user.id)}</option>
+            `).join('');
+        }
+
+        function renderTrophyItemsList(itemsMap, typesMap) {
+            const container = document.getElementById('trophy-items-list');
+            const items = Object.entries(itemsMap || {})
+                .map(([id, item]) => ({
+                    id,
+                    ...item,
+                    typeName: typesMap?.[item.typeId]?.name || 'Tipo removido',
+                    winnerName: item.winnerName || 'Sem vencedor informado'
+                }))
+                .sort((a, b) => Number(b.year || 0) - Number(a.year || 0) || String(a.title || '').localeCompare(String(b.title || ''), 'pt-BR'));
+
+            if (!items.length) {
+                container.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Nenhum troféu cadastrado.</div>';
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="trophy-admin-item">
+                    <div>
+                        <strong>${escapeHtml(item.title)}</strong>
+                        <small>${escapeHtml(item.typeName)} · ${escapeHtml(item.year || 'Sem ano')}</small>
+                        <small>Vencedor: ${escapeHtml(item.winnerName)}</small>
+                    </div>
+                    <div class="trophy-admin-item-actions">
+                        <button type="button" class="btn btn-secondary btn-sm btn-edit-trophy-item" data-id="${escapeHtml(item.id)}"><i class="fas fa-pen"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm btn-delete-trophy-item" data-id="${escapeHtml(item.id)}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMemorialList(memorialMap) {
+            const container = document.getElementById('memorial-list');
+            const memorial = Object.entries(memorialMap || {})
+                .map(([id, item]) => ({ id, ...item }))
+                .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'));
+
+            if (!memorial.length) {
+                container.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Nenhum jogador póstumo cadastrado.</div>';
+                return;
+            }
+
+            container.innerHTML = memorial.map(item => `
+                <div class="trophy-admin-item">
+                    <div style="display:flex; gap:12px; align-items:flex-start;">
+                        <img src="${escapeHtml(item.imageUrl || '')}" alt="${escapeHtml(item.name || 'Jogador')}" class="trophy-preview-thumb" onerror="this.src='bdd.png'">
+                        <div>
+                            <strong>${escapeHtml(item.name)}</strong>
+                            <small>${escapeHtml(item.imageUrl || 'Sem imagem')}</small>
+                        </div>
+                    </div>
+                    <div class="trophy-admin-item-actions">
+                        <button type="button" class="btn btn-secondary btn-sm btn-edit-memorial-item" data-id="${escapeHtml(item.id)}"><i class="fas fa-pen"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm btn-delete-memorial-item" data-id="${escapeHtml(item.id)}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadTrophiesAdminData() {
+            const [typesSnap, itemsSnap, memorialSnap, usersSnap] = await Promise.all([
+                database.ref('hallOfFame/types').once('value'),
+                database.ref('hallOfFame/items').once('value'),
+                database.ref('hallOfFame/memorial').once('value'),
+                database.ref('users').once('value')
+            ]);
+
+            const types = typesSnap.val() || {};
+            const items = itemsSnap.val() || {};
+            const memorial = memorialSnap.val() || {};
+            const users = usersSnap.val() || {};
+
+            renderTrophyTypesList(types);
+            populateTrophyTypeSelect(types);
+            populateTrophyWinnerSelect(users);
+            renderTrophyItemsList(items, types);
+            renderMemorialList(memorial);
+        }
+
+        document.getElementById('seed-trophy-types')?.addEventListener('click', async () => {
+            try {
+                await ensureDefaultTrophyTypes();
+                await loadTrophiesAdminData();
+                alert('Tipos padrão cadastrados com sucesso!');
+            } catch (err) {
+                alert('Erro ao criar tipos padrão: ' + err.message);
+            }
+        });
+
+        document.getElementById('cancel-trophy-type-edit')?.addEventListener('click', resetTrophyTypeForm);
+        document.getElementById('cancel-trophy-item-edit')?.addEventListener('click', resetTrophyItemForm);
+        document.getElementById('cancel-memorial-edit')?.addEventListener('click', resetMemorialForm);
+
+        document.getElementById('trophy-type-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('trophy-type-id').value.trim();
+            const name = document.getElementById('trophy-type-name').value.trim();
+            const importance = Number(document.getElementById('trophy-type-importance').value || 0);
+            if (!name) return alert('Informe o nome do tipo.');
+
+            const typeId = id || name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+            await database.ref('hallOfFame/types/' + typeId).set({
+                name,
+                importance,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            resetTrophyTypeForm();
+            await loadTrophiesAdminData();
+            alert('Tipo salvo com sucesso!');
+        });
+
+        document.getElementById('trophy-item-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('trophy-item-id').value.trim();
+            const title = document.getElementById('trophy-item-title').value.trim();
+            const typeId = document.getElementById('trophy-item-type').value;
+            const winnerUserId = document.getElementById('trophy-item-winner-user').value;
+            const winnerManual = document.getElementById('trophy-item-winner-manual').value.trim();
+            const year = Number(document.getElementById('trophy-item-year').value || 0);
+            if (!title || !typeId || !year) return alert('Preencha título, tipo e ano do troféu.');
+            if (!winnerUserId && !winnerManual) return alert('Selecione um jogador vencedor ou informe o nome manualmente.');
+
+            let winnerName = winnerManual;
+            if (winnerUserId) {
+                const userSnap = await database.ref('users/' + winnerUserId).once('value');
+                const userData = userSnap.val() || {};
+                winnerName = winnerManual || userData.name || userData.email || winnerUserId;
+            }
+
+            const ref = id ? database.ref('hallOfFame/items/' + id) : database.ref('hallOfFame/items').push();
+            await ref.set({
+                title,
+                typeId,
+                winnerUserId: winnerUserId || '',
+                winnerName,
+                year,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            resetTrophyItemForm();
+            await loadTrophiesAdminData();
+            alert('Troféu salvo com sucesso!');
+        });
+
+        document.getElementById('memorial-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('memorial-id').value.trim();
+            const name = document.getElementById('memorial-name').value.trim();
+            const imageUrl = document.getElementById('memorial-image-url').value.trim();
+            if (!name || !imageUrl) return alert('Preencha nome e link da imagem.');
+
+            const ref = id ? database.ref('hallOfFame/memorial/' + id) : database.ref('hallOfFame/memorial').push();
+            await ref.set({
+                name,
+                imageUrl,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            resetMemorialForm();
+            await loadTrophiesAdminData();
+            alert('Jogador póstumo salvo com sucesso!');
+        });
+
+        document.getElementById('trophy-types-list')?.addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.btn-edit-trophy-type');
+            const deleteBtn = e.target.closest('.btn-delete-trophy-type');
+            if (editBtn) {
+                const snap = await database.ref('hallOfFame/types/' + editBtn.dataset.id).once('value');
+                const data = snap.val() || {};
+                document.getElementById('trophy-type-id').value = editBtn.dataset.id;
+                document.getElementById('trophy-type-name').value = data.name || '';
+                document.getElementById('trophy-type-importance').value = data.importance ?? '';
+                return;
+            }
+            if (deleteBtn) {
+                const itemSnap = await database.ref('hallOfFame/items').orderByChild('typeId').equalTo(deleteBtn.dataset.id).once('value');
+                if (itemSnap.exists()) return alert('Esse tipo está em uso por troféus cadastrados. Remova os troféus antes.');
+                if (!confirm('Deseja excluir este tipo de troféu?')) return;
+                await database.ref('hallOfFame/types/' + deleteBtn.dataset.id).remove();
+                await loadTrophiesAdminData();
+                resetTrophyTypeForm();
+                alert('Tipo removido com sucesso!');
+            }
+        });
+
+        document.getElementById('trophy-items-list')?.addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.btn-edit-trophy-item');
+            const deleteBtn = e.target.closest('.btn-delete-trophy-item');
+            if (editBtn) {
+                const snap = await database.ref('hallOfFame/items/' + editBtn.dataset.id).once('value');
+                const data = snap.val() || {};
+                document.getElementById('trophy-item-id').value = editBtn.dataset.id;
+                document.getElementById('trophy-item-title').value = data.title || '';
+                document.getElementById('trophy-item-type').value = data.typeId || '';
+                document.getElementById('trophy-item-winner-user').value = data.winnerUserId || '';
+                document.getElementById('trophy-item-winner-manual').value = data.winnerName || '';
+                document.getElementById('trophy-item-year').value = data.year ?? '';
+                return;
+            }
+            if (deleteBtn) {
+                if (!confirm('Deseja excluir este troféu?')) return;
+                await database.ref('hallOfFame/items/' + deleteBtn.dataset.id).remove();
+                await loadTrophiesAdminData();
+                resetTrophyItemForm();
+                alert('Troféu removido com sucesso!');
+            }
+        });
+
+        document.getElementById('memorial-list')?.addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.btn-edit-memorial-item');
+            const deleteBtn = e.target.closest('.btn-delete-memorial-item');
+            if (editBtn) {
+                const snap = await database.ref('hallOfFame/memorial/' + editBtn.dataset.id).once('value');
+                const data = snap.val() || {};
+                document.getElementById('memorial-id').value = editBtn.dataset.id;
+                document.getElementById('memorial-name').value = data.name || '';
+                document.getElementById('memorial-image-url').value = data.imageUrl || '';
+                return;
+            }
+            if (deleteBtn) {
+                if (!confirm('Deseja excluir este jogador póstumo?')) return;
+                await database.ref('hallOfFame/memorial/' + deleteBtn.dataset.id).remove();
+                await loadTrophiesAdminData();
+                resetMemorialForm();
+                alert('Jogador póstumo removido com sucesso!');
+            }
+        });
+
+        const FORMULA_DEPRE_POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+
+        function getFormulaPointsForRank(rank) {
+            return FORMULA_DEPRE_POINTS[rank - 1] || 0;
+        }
+
+        function getFormulaStageLabel(seqNumber) {
+            if (typeof seqNumber === 'number' && seqNumber > 0 && typeof ABERTURA_CLAUSURA_SPLIT_ROUND === 'number' && ABERTURA_CLAUSURA_SPLIT_ROUND > 0) {
+                return seqNumber > ABERTURA_CLAUSURA_SPLIT_ROUND ? 'Clausura' : 'Abertura';
+            }
+            return 'Temporada';
+        }
+
+        function formulaRoundMatchesFilter(mode, roundNumber) {
+            if (mode === 'abertura') return roundNumber <= ABERTURA_CLAUSURA_SPLIT_ROUND;
+            if (mode === 'clausura') return roundNumber > ABERTURA_CLAUSURA_SPLIT_ROUND;
+            return true;
+        }
+
+        function buildFormulaRoundRanking(scoreEntries) {
+            const sorted = [...scoreEntries].sort((a, b) => b.roundScore - a.roundScore || String(a.displayName).localeCompare(String(b.displayName), 'pt-BR'));
+            const ranked = [];
+            let currentRank = 1;
+            let index = 0;
+
+            while (index < sorted.length) {
+                const currentScore = sorted[index].roundScore;
+                const tieGroup = [];
+                while (index < sorted.length && sorted[index].roundScore === currentScore) {
+                    tieGroup.push(sorted[index]);
+                    index += 1;
+                }
+
+                tieGroup.forEach(entry => {
+                    ranked.push({
+                        ...entry,
+                        rank: currentRank,
+                        formulaPoints: getFormulaPointsForRank(currentRank)
+                    });
+                });
+
+                currentRank += tieGroup.length;
+            }
+
+            return ranked;
+        }
+
+        function renderFormulaDepreAdminResult(payload, usersMap = {}, teamsMap = {}) {
+            const summaryEl = document.getElementById('formula-depre-summary');
+            const tableEl = document.getElementById('formula-depre-admin-table');
+            if (!payload || !payload.standings) {
+                summaryEl.innerHTML = '<i class="fas fa-flag-checkered"></i> Nenhum cálculo executado ainda.';
+                tableEl.innerHTML = '';
+                return;
+            }
+
+            const roundsProcessed = Object.values(payload.rounds || {});
+            const standings = Object.values(payload.standings || {}).sort((a, b) => b.totalFormulaPoints - a.totalFormulaPoints || b.wins - a.wins || String(a.displayName).localeCompare(String(b.displayName), 'pt-BR'));
+
+            const modeLabel = payload.stageFilterLabel || 'Temporada inteira';
+            summaryEl.innerHTML = `<i class="fas fa-bolt"></i> ${roundsProcessed.length} rodada(s) processada(s) em ${new Date(payload.updatedAt || Date.now()).toLocaleString('pt-BR')} · Recorte: ${modeLabel}.`;
+
+            if (!standings.length) {
+                tableEl.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Nenhum resultado disponível para exibir.</div>';
+                return;
+            }
+
+            let html = '<div class="table-responsive"><table><thead><tr><th>#</th><th>Jogador</th><th>F1 PTS</th><th>Vitórias</th><th>Pódios</th><th>Melhor rodada</th></tr></thead><tbody>';
+            standings.forEach((entry, idx) => {
+                const user = usersMap[entry.userId] || {};
+                const team = teamsMap[user.teamId || user.team] || {};
+                const label = entry.displayName || user.name || entry.userId;
+                html += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${escapeHtml(label)}</td>
+                        <td><strong>${entry.totalFormulaPoints || 0}</strong></td>
+                        <td>${entry.wins || 0}</td>
+                        <td>${entry.podiums || 0}</td>
+                        <td>${escapeHtml(entry.bestRoundLabel || '-')}</td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table></div>';
+            tableEl.innerHTML = html;
+        }
+
+        async function calculateFormulaDepreSeason() {
+            const stageFilter = document.getElementById('formula-depre-stage-filter')?.value || 'clausura';
+            const stageFilterLabel = stageFilter === 'abertura' ? 'Só Abertura' : (stageFilter === 'clausura' ? 'Só Clausura' : 'Temporada inteira');
+            const [roundsSnap, usersSnap, teamsSnap] = await Promise.all([
+                database.ref('rounds').once('value'),
+                database.ref('users').once('value'),
+                database.ref('teams').once('value')
+            ]);
+
+            const roundsData = roundsSnap.val() || {};
+            const usersData = usersSnap.val() || {};
+            const teamsData = teamsSnap.val() || {};
+
+            const superligaRounds = Object.entries(roundsData)
+                .map(([id, round]) => ({ id, ...round }))
+                .filter(round => round.status === 2 && Array.isArray(round.tournaments) && round.tournaments.some(item => String(item).toLowerCase().includes('superliga')))
+                .sort((a, b) => {
+                    const timeA = typeof a.finishTimestamp === 'number' ? a.finishTimestamp : 0;
+                    const timeB = typeof b.finishTimestamp === 'number' ? b.finishTimestamp : 0;
+                    return timeA - timeB;
+                })
+                .map((round, index) => ({
+                    ...round,
+                    formulaRoundNumber: index + 1
+                }))
+                .filter(round => formulaRoundMatchesFilter(stageFilter, round.formulaRoundNumber));
+
+            const standings = {};
+            const roundsPayload = {};
+
+            superligaRounds.forEach(round => {
+                const scoreEntries = Object.entries(usersData)
+                    .filter(([, user]) => user.playingFormulaDepre !== false)
+                    .map(([userId, user]) => {
+                    const team = teamsData[user.teamId || user.team] || {};
+                    const displayName = (user.customTeamName && user.customTeamName.trim() !== '')
+                        ? user.customTeamName.trim()
+                        : (user.name || team.name || userId);
+                    let roundScore = 0;
+
+                    Object.values(round.matches || {}).forEach(match => {
+                        const pred = match.predictions?.[userId];
+                        if (match.finalResult && pred) {
+                            roundScore += calculateMatchPoints(match.finalResult, pred);
+                        }
+                    });
+
+                    const starPlayers = round.starPlayers || {};
+                    const playerGoals = round.playerGoals || {};
+                    const sp = starPlayers[userId];
+                    if (sp && sp.athleteId) {
+                        const goalsInfo = playerGoals[sp.athleteId] || 0;
+                        const goalCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
+                        roundScore += goalCount;
+                    }
+
+                    return {
+                        userId,
+                        displayName,
+                        roundScore
+                    };
+                });
+
+                const ranked = buildFormulaRoundRanking(scoreEntries);
+                roundsPayload[round.id] = {
+                    roundId: round.id,
+                    roundNumber: round.formulaRoundNumber,
+                    stage: getFormulaStageLabel(round.formulaRoundNumber),
+                    label: `R${round.formulaRoundNumber} · ${getFormulaStageLabel(round.formulaRoundNumber)}`,
+                    results: ranked.reduce((acc, entry) => {
+                        acc[entry.userId] = {
+                            displayName: entry.displayName,
+                            rank: entry.rank,
+                            formulaPoints: entry.formulaPoints,
+                            roundScore: entry.roundScore
+                        };
+                        return acc;
+                    }, {})
+                };
+
+                ranked.forEach(entry => {
+                    if (!standings[entry.userId]) {
+                        standings[entry.userId] = {
+                            userId: entry.userId,
+                            displayName: entry.displayName,
+                            totalFormulaPoints: 0,
+                            wins: 0,
+                            podiums: 0,
+                            bestRank: Infinity,
+                            bestRoundScore: -Infinity,
+                            bestRoundLabel: ''
+                        };
+                    }
+
+                    standings[entry.userId].totalFormulaPoints += entry.formulaPoints;
+                    if (entry.rank === 1) standings[entry.userId].wins += 1;
+                    if (entry.rank <= 3) standings[entry.userId].podiums += 1;
+                    if (
+                        entry.roundScore > standings[entry.userId].bestRoundScore ||
+                        (entry.roundScore === standings[entry.userId].bestRoundScore && entry.rank < standings[entry.userId].bestRank)
+                    ) {
+                        standings[entry.userId].bestRoundScore = entry.roundScore;
+                        standings[entry.userId].bestRank = entry.rank;
+                        standings[entry.userId].bestRoundLabel = `R${round.formulaRoundNumber} (${entry.roundScore} pts)`;
+                    }
+                });
+            });
+
+            const payload = {
+                seasonYear: 2026,
+                sourceTournament: 'superliga',
+                stageFilter,
+                stageFilterLabel,
+                pointsSystem: FORMULA_DEPRE_POINTS,
+                roundsProcessed: superligaRounds.length,
+                rounds: roundsPayload,
+                standings,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            await database.ref('tournaments/formulaDepre').set(payload);
+
+            const savedPayload = {
+                ...payload,
+                updatedAt: Date.now()
+            };
+            renderFormulaDepreAdminResult(savedPayload, usersData, teamsData);
+            return savedPayload;
+        }
+
+        async function loadFormulaDepreAdmin() {
+            const [formulaSnap, usersSnap, teamsSnap] = await Promise.all([
+                database.ref('tournaments/formulaDepre').once('value'),
+                database.ref('users').once('value'),
+                database.ref('teams').once('value')
+            ]);
+
+            const payload = formulaSnap.val() || {};
+            const select = document.getElementById('formula-depre-stage-filter');
+            if (select) select.value = payload.stageFilter || 'clausura';
+            renderFormulaDepreAdminResult(payload, usersSnap.val() || {}, teamsSnap.val() || {});
+        }
+
+        document.getElementById('btn-calculate-formula-depre')?.addEventListener('click', async () => {
+            const btn = document.getElementById('btn-calculate-formula-depre');
+            const oldHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculando...';
+            try {
+                const result = await calculateFormulaDepreSeason();
+                alert(`Fórmula Deprê recalculada com sucesso! ${result.roundsProcessed} rodada(s) da Superliga foram processadas.`);
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao calcular a Fórmula Deprê: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = oldHtml;
+            }
         });
 
         // Create Round Functionality
@@ -4426,13 +5216,19 @@ Responda somente com slides usando exatamente este padrao:
 Texto do slide em 1 ou 2 paragrafos curtos.
 
 Regras do formato:
-- Use entre 4 e 7 slides.
-- O primeiro slide deve ser um panorama geral da rodada/competicao.
-- Os slides seguintes devem analisar obrigatoriamente a disputa e a classificacao grupo a grupo (Grupo A, Grupo B, Grupo C e Grupo D) individualmente, destacando as lutas por vagas na Serie A e posicoes em cada um deles.
+- Use exatamente 5 slides.
+- Slide 1 obrigatoriamente: panorama geral da fase e da rodada.
+- Slide 2 obrigatoriamente: analise apenas do Grupo A.
+- Slide 3 obrigatoriamente: analise apenas do Grupo B.
+- Slide 4 obrigatoriamente: analise apenas do Grupo C.
+- Slide 5 obrigatoriamente: analise apenas do Grupo D.
+- Cada slide de grupo deve falar somente daquele grupo. Nao misture tabelas, liderancas ou disputas de outros grupos no mesmo slide.
+- Nao crie slide de tabela geral porque ela nao existe na Supercopa.
 - Nao use markdown, listas com bullets, tabelas, HTML, JSON ou numeracao fora das tags [SLIDE: ...].
 - Nao invente pontuacoes, nomes ou resultados.
 - Explique se cada grupo esta embolado, abrindo vantagem, em reta inicial/meio/reta final, ou ficando definido.
 - Destaque lideres, zona de Serie A (G2), perseguidores e contas matematicas simples para a classificacao interna de cada grupo.
+- Use titulos claros como Panorama Geral, Grupo A, Grupo B, Grupo C e Grupo D.
 
 DADOS DA SUPERCOPA
 Status dos grupos: ${groupsData.status ?? 'nao informado'}
@@ -5256,6 +6052,7 @@ ${matchupBlocks}`;
                                     <th>Jogador / Treinador</th>
                                     <th style="text-align: center;">Superliga Abertura</th>
                                     <th style="text-align: center;">Superliga Clausura</th>
+                                    <th style="text-align: center;">Fórmula Deprê</th>
                                     <th style="text-align: center;">Notificações E-mail</th>
                                     <th style="text-align: center;">Ações</th>
                                 </tr>
@@ -5271,6 +6068,7 @@ ${matchupBlocks}`;
                     const avatar = (u.useCustomShield && u.customShield) ? u.customShield : (team.image || 'default-avatar.png');
                     const isAbertura = u.playingAbertura !== false;
                     const isClausura = u.playingClausura !== false;
+                    const isFormulaDepre = u.playingFormulaDepre !== false;
                     const isEmailActive = u.receiveEmails !== false;
 
                     html += `
@@ -5294,6 +6092,12 @@ ${matchupBlocks}`;
                                 <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
                                     <input type="checkbox" class="chk-clausura" data-uid="${uid}" ${isClausura ? 'checked' : ''}>
                                     <span class="badge ${isClausura ? 'badge-success' : 'badge-light'} status-clausura-lbl">${isClausura ? 'Jogando' : 'Fora'}</span>
+                                </label>
+                            </td>
+                            <td style="text-align: center;">
+                                <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                                    <input type="checkbox" class="chk-formula-depre" data-uid="${uid}" ${isFormulaDepre ? 'checked' : ''}>
+                                    <span class="badge ${isFormulaDepre ? 'badge-success' : 'badge-light'} status-formula-depre-lbl">${isFormulaDepre ? 'Corre' : 'Fora'}</span>
                                 </label>
                             </td>
                             <td style="text-align: center;">
@@ -5344,6 +6148,16 @@ ${matchupBlocks}`;
                     });
                 });
 
+                playersList.querySelectorAll('.chk-formula-depre').forEach(chk => {
+                    chk.addEventListener('change', () => {
+                        const lbl = chk.parentNode.querySelector('.status-formula-depre-lbl');
+                        if (lbl) {
+                            lbl.textContent = chk.checked ? 'Corre' : 'Fora';
+                            lbl.className = `badge ${chk.checked ? 'badge-success' : 'badge-light'} status-formula-depre-lbl`;
+                        }
+                    });
+                });
+
                 playersList.querySelectorAll('.btn-toggle-email').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const isCurrentlyActive = btn.dataset.active === 'true';
@@ -5363,6 +6177,7 @@ ${matchupBlocks}`;
                         const row = btn.closest('tr');
                         const chkAbertura = row.querySelector('.chk-abertura').checked;
                         const chkClausura = row.querySelector('.chk-clausura').checked;
+                        const chkFormulaDepre = row.querySelector('.chk-formula-depre').checked;
                         const btnEmail = row.querySelector('.btn-toggle-email');
                         const isEmailActive = btnEmail.dataset.active === 'true';
 
@@ -5373,6 +6188,7 @@ ${matchupBlocks}`;
                             await database.ref('users/' + uid).update({
                                 playingAbertura: chkAbertura,
                                 playingClausura: chkClausura,
+                                playingFormulaDepre: chkFormulaDepre,
                                 receiveEmails: isEmailActive
                             });
                             alert('Configurações do jogador salvas com sucesso!');
@@ -5827,13 +6643,15 @@ ${matchupBlocks}`;
             const roundId = select ? select.value : '';
             if (!roundId) throw new Error('Selecione uma rodada finalizada primeiro.');
 
-            const [roundSnap, usersSnap, teamsSnap, cinturaoSnap, restaUmSnap, supercopaSnap] = await Promise.all([
+            const [roundSnap, usersSnap, teamsSnap, cinturaoSnap, restaUmSnap, supercopaSnap, hallSnap, formulaSnap] = await Promise.all([
                 database.ref('rounds/' + roundId).once('value'),
                 database.ref('users').once('value'),
                 database.ref('teams').once('value'),
                 database.ref('tournaments/cinturao').once('value'),
                 database.ref('tournaments/restaUm').once('value'),
-                database.ref('tournaments/supercopa').once('value')
+                database.ref('tournaments/supercopa').once('value'),
+                database.ref('hallOfFame').once('value'),
+                database.ref('tournaments/formulaDepre').once('value')
             ]);
 
             const roundData = roundSnap.val();
@@ -5842,6 +6660,8 @@ ${matchupBlocks}`;
             const cinturaoVal = cinturaoSnap.val() || {};
             const restaVal = restaUmSnap.val() || {};
             const supercopaVal = supercopaSnap.val() || {};
+            const hallVal = hallSnap.val() || {};
+            const formulaVal = formulaSnap.val() || {};
             if (!roundData || !roundData.matches) throw new Error('Rodada sem partidas.');
 
             const matches = Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches);
@@ -5921,6 +6741,27 @@ ${matchupBlocks}`;
             const survivors = (restaVal.participants || Object.keys(usersData)).filter(uid => !new Set(Object.values(elims).map(e => e.eliminatedUserId)).has(uid)).map(uid => usersData[uid]?.name || uid).join(', ');
             const scStandings = supercopaVal.groups?.standings || {};
             const scSummary = Object.entries(scStandings).map(([uid, st]) => `${usersData[uid]?.name || uid}: ${st.points || 0} pts, ${st.games || 0}J`).join('; ') || 'sem tabela consolidada';
+            const trophyItems = Object.values(hallVal.items || {});
+            const trophyRace = Object.entries(usersData)
+                .map(([uid, user]) => {
+                    const totalTrophies = trophyItems.filter(item => item.winnerUserId === uid).length;
+                    const majorTrophies = trophyItems.filter(item => item.winnerUserId === uid && ['superliga', 'supercopa', 'recopa', 'libertadores'].includes(item.typeId)).length;
+                    const formulaStanding = formulaVal.standings?.[uid];
+                    const formulaStatus = formulaStanding
+                        ? `${formulaStanding.totalFormulaPoints || 0} pts na Formula Depre`
+                        : 'sem destaque atual na Formula Depre';
+                    const beltStatus = uid === cinturaoVal.championId
+                        ? `detentor atual do Cinturao com ${cinturaoVal.defenses || 0} defesas`
+                        : 'sem cinturao em posse';
+                    return {
+                        totalTrophies,
+                        line: `${user.name || uid}: ${totalTrophies} trofeus cadastrados, ${majorTrophies} de primeira prateleira, ${beltStatus}, ${formulaStatus}`
+                    };
+                })
+                .sort((a, b) => b.totalTrophies - a.totalTrophies || a.line.localeCompare(b.line, 'pt-BR'))
+                .slice(0, 10)
+                .map(item => item.line)
+                .join('\n') || 'Sem historico consolidado de trofeus.';
 
             return `Voce e um redator esportivo sarcastico do BR Depressao, um bolao de futebol entre amigos. Gere a resenha da rodada em formato de carrossel para o site.
 
@@ -5934,9 +6775,11 @@ Use entre 5 e 8 slides. Inclua: panorama da rodada, Mito da Rodada, Zicador da R
 TOM E HUMOR
 - Escreva com mais humor de mesa de bar, provocacao entre amigos e ironia esportiva, mas sem ofensa pesada.
 - Use o time escolhido de cada jogador quando aparecer no ranking (Cruzeiro, Flamengo, Corinthians etc.) para fazer piadas curtas e personalizadas.
-- Se souber de noticias recentes, memes ou fases publicas dos clubes, pode usar como tempero leve, por exemplo crise, divida, oba-oba, tecnico pressionado ou torcida iludida. Se nao tiver certeza, prefira piadas genericas sobre o clube e nao invente noticia especifica.
+- Considere que voce pode conhecer noticias publicas recentes dos clubes reais ate 19/08/2026. Pode usar isso como tempero leve, por exemplo crise, divida, oba-oba, tecnico pressionado, meme recente, contratacao, pressao da torcida ou fase do tecnico. Se nao tiver certeza, prefira comentario generico e nao invente noticia especifica.
 - Nao transforme todos os slides em piada do mesmo tipo: varie entre zoeira, elogio desconfiado, drama exagerado e comentario esportivo.
 - Preserve os dados do bolao como verdade principal; o humor deve explicar os numeros, nao substituir os numeros.
+- Considere o historico competitivo dos jogadores quando isso enriquecer a narrativa: legado, jejum, freguesia, jogador cascudo, surpresa improvavel, chance de entrar na estante ou manter fama de pipocar.
+- Se a rodada mexer em corrida por trofeu novo, defesa de cinturao, sobrevivencia no Resta Um, afirmacao na Formula Depre ou moral para a Supercopa, deixe isso explicito nos slides.
 
 CONTEXTO GERAL
 Rodada: ${roundId}
@@ -5964,7 +6807,10 @@ RESTA UM
 Eliminado da rodada: ${eliminated}. Sobreviventes: ${survivors || 'nao informado'}.
 
 SUPERCOPA RESUMIDA
-${scSummary}`;
+${scSummary}
+
+HISTORICO, LEGADO E CORRIDA POR TROFEUS
+${trophyRace}`;
         }
 
         document.getElementById('btn-generate-resenha-prompt')?.addEventListener('click', async () => {
@@ -6003,13 +6849,15 @@ ${scSummary}`;
             
             try {
                 // Fetch round data, users, teams, and tournament states
-                const [roundSnap, usersSnap, teamsSnap, cinturaoSnap, restaUmSnap, supercopaSnap] = await Promise.all([
+                const [roundSnap, usersSnap, teamsSnap, cinturaoSnap, restaUmSnap, supercopaSnap, hallSnap, formulaSnap] = await Promise.all([
                     database.ref('rounds/' + roundId).once('value'),
                     database.ref('users').once('value'),
                     database.ref('teams').once('value'),
                     database.ref('tournaments/cinturao').once('value'),
                     database.ref('tournaments/restaUm').once('value'),
-                    database.ref('tournaments/supercopa').once('value')
+                    database.ref('tournaments/supercopa').once('value'),
+                    database.ref('hallOfFame').once('value'),
+                    database.ref('tournaments/formulaDepre').once('value')
                 ]);
 
                 const roundData = roundSnap.val();
@@ -6018,6 +6866,8 @@ ${scSummary}`;
                 const cinturaoVal = cinturaoSnap.val() || {};
                 const restaVal = restaUmSnap.val() || {};
                 const supercopaVal = supercopaSnap.val() || {};
+                const hallVal = hallSnap.val() || {};
+                const formulaVal = formulaSnap.val() || {};
 
                 if (!roundData || !roundData.matches) {
                     resenhaText.value = 'Erro: Esta rodada não possui partidas.';
@@ -6089,6 +6939,27 @@ ${scSummary}`;
                 const survivors = pList.filter(uid => !eliminatedIds.has(uid)).map(uid => usersData[uid]?.name || uid);
                 const recentlyEliminated = elims[roundId] ? (usersData[elims[roundId].eliminatedUserId]?.name || 'Ninguém') : 'Ninguém';
                 const restaUmStatus = `Participantes sobreviventes ativos no Resta Um: ${survivors.join(', ')}. Eliminado da rodada: ${recentlyEliminated}.`;
+                const trophyItems = Object.values(hallVal.items || {});
+                const trophyRace = Object.entries(usersData)
+                    .map(([uid, user]) => {
+                        const totalTrophies = trophyItems.filter(item => item.winnerUserId === uid).length;
+                        const majorTrophies = trophyItems.filter(item => item.winnerUserId === uid && ['superliga', 'supercopa', 'recopa', 'libertadores'].includes(item.typeId)).length;
+                        const formulaStanding = formulaVal.standings?.[uid];
+                        const formulaStatus = formulaStanding
+                            ? `${formulaStanding.totalFormulaPoints || 0} pts na Fórmula Deprê`
+                            : 'sem grande campanha atual na Fórmula Deprê';
+                        const beltStatus = uid === cinturaoVal.championId
+                            ? `detentor atual do Cinturão com ${cinturaoVal.defenses || 0} defesas`
+                            : 'sem Cinturão em posse';
+                        return {
+                            totalTrophies,
+                            line: `${user.name || uid}: ${totalTrophies} troféus cadastrados, ${majorTrophies} grandes, ${beltStatus}, ${formulaStatus}`
+                        };
+                    })
+                    .sort((a, b) => b.totalTrophies - a.totalTrophies || a.line.localeCompare(b.line, 'pt-BR'))
+                    .slice(0, 10)
+                    .map(item => item.line)
+                    .join('\n');
 
                 const prompt = `Você é um comentarista de futebol sarcástico do BR Depressão, um bolão de futebol de amigos muito competitivos e zoeiros.
 Escreva a resenha para a rodada ${roundId}.
@@ -6103,22 +6974,21 @@ ${cinturaoStatus}
 Contexto do Resta Um (Sobrevivência):
 ${restaUmStatus}
 
-Por favor, faça um texto hilário, zoeiro, ácido e provocativo em português brasileiro. Exalte o Mito com zoeira (ou diga que foi pura cagada/pacto) e destrua o Zicador com piadinhas ácidas (pode usar humor mais picante e piadinhas levemente pesadas do círculo de amigos do bolão, zoando a ruindade deles). Faça piadas sobre a luta pelo Cinturão e quem sobrou ou rodou no Resta Um.
+Histórico, legado e corrida por troféus:
+${trophyRace || 'Sem histórico consolidado de troféus.'}
+
+Por favor, faça um texto hilário, zoeiro, ácido e provocativo em português brasileiro. Exalte o Mito com zoeira (ou diga que foi pura cagada/pacto) e destrua o Zicador com piadinhas ácidas. Faça piadas sobre a luta pelo Cinturão e quem sobrou ou rodou no Resta Um.
+Considere o histórico competitivo dos jogadores, quem está brigando por troféu novo, quem está defendendo legado, quem vive seca de título e quem pode estar montando temporada marcante.
+Considere também que você pode conhecer notícias públicas recentes dos clubes reais até 19/08/2026. Use isso só como tempero leve e apenas quando fizer sentido; se não tiver certeza, prefira comentário genérico e não invente notícia específica.
+Varie o tom entre zoeira, elogio desconfiado, drama exagerado e leitura esportiva. Preserve os dados do bolão como verdade principal.
 
 IMPORTANTE FORMATO:
 Escreva o texto estruturado exatamente usando as tags abaixo para delimitar cada notícia/slide (NÃO use asteriscos nos títulos dos slides, mantenha a tag exatamente no formato [SLIDE: Titulo]):
 
-[SLIDE: Mito da Rodada: Nome]
-Texto sobre a vitória do mito.
+[SLIDE: Titulo]
+Texto do slide.
 
-[SLIDE: Zicador da Rodada: Nome]
-Texto descascando o zicador.
-
-[SLIDE: UFC BR-Depre: Cinturão]
-Texto sobre a disputa de cinturão.
-
-[SLIDE: Resta Um: A Eliminação]
-Texto sobre quem rodou e quem continua vivo.`;
+Use entre 5 e 8 slides. Inclua quando fizer sentido: panorama da rodada, Mito da Rodada, Zicador da Rodada, zebra ou obviedade quebrada, Cinturão, Resta Um, pressão por troféus e um toque curto de Supercopa/Fórmula Deprê. Não invente dados.`;
 
                 const res = await fetch('https://api.deepseek.com/chat/completions', {
                     method: 'POST',
@@ -6129,7 +6999,7 @@ Texto sobre quem rodou e quem continua vivo.`;
                     body: JSON.stringify({
                         model: 'deepseek-chat',
                         messages: [
-                            { role: 'system', content: 'Você é um redator de humor futebolístico esportivo sarcástico, ácido e divertido. Responda apenas com o texto da resenha formatado com os blocos [SLIDE: ...].' },
+                            { role: 'system', content: 'Você é um redator de humor futebolístico esportivo sarcástico, ácido e divertido. Responda apenas com o texto da resenha formatado com os blocos [SLIDE: ...], sem markdown adicional e sem inventar fatos específicos incertos.' },
                             { role: 'user', content: prompt }
                         ],
                         temperature: 0.8

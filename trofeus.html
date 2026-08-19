@@ -2,10 +2,638 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=404.html">
-    <title>Redirecionando...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Galeria de Troféus · BR Depre</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07111f;
+            --card: rgba(15, 23, 42, 0.78);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --gold: #fbbf24;
+            --cyan: #22d3ee;
+            --shadow: 0 20px 50px rgba(2, 6, 23, 0.38);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(34, 211, 238, 0.1), transparent 28%),
+                radial-gradient(circle at top right, rgba(251, 191, 36, 0.14), transparent 26%),
+                linear-gradient(180deg, #07111f 0%, #0a1322 46%, #060b14 100%);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 36px 36px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.55), transparent 88%);
+        }
+
+        .page-shell {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 28px 24px 64px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .back-link,
+        .admin-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            padding: 0.8rem 1rem;
+            border-radius: 999px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .back-link:hover,
+        .admin-link:hover {
+            transform: translateY(-2px);
+            border-color: rgba(251, 191, 36, 0.32);
+            background: rgba(251, 191, 36, 0.08);
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(251, 191, 36, 0.16);
+            border-radius: 32px;
+            padding: 34px;
+            background:
+                radial-gradient(circle at top, rgba(251, 191, 36, 0.12), transparent 32%),
+                linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.7));
+            box-shadow: var(--shadow);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.55rem 0.95rem;
+            border-radius: 999px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.16);
+            color: #fde68a;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.9fr);
+            gap: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 4vw, 4.5rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #fff, #fde68a 55%, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            max-width: 720px;
+            color: var(--muted);
+            font-size: 1.02rem;
+            line-height: 1.75;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.85rem;
+            margin-top: 1.6rem;
+        }
+
+        .hero-stat {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1rem;
+        }
+
+        .hero-stat strong {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 0.2rem;
+        }
+
+        .hero-stat span {
+            color: var(--muted);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+        }
+
+        .crown-showcase {
+            min-height: 100%;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background:
+                linear-gradient(180deg, rgba(251, 191, 36, 0.08), rgba(15, 23, 42, 0.18)),
+                rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 1.8rem;
+            text-align: center;
+        }
+
+        .crown-icon {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 24px rgba(251, 191, 36, 0.34));
+        }
+
+        .crown-showcase strong {
+            font-size: 1.15rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .crown-showcase span {
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .section { margin-top: 34px; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .trophy-groups {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .trophy-group,
+        .memorial-card,
+        .loading,
+        .error {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .trophy-group-header {
+            padding: 1.25rem 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.08), rgba(255,255,255,0.01));
+            border-bottom: 1px solid var(--border);
+        }
+
+        .trophy-group-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .trophy-group-title i { color: var(--gold); }
+
+        .group-rank {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #fde68a;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.16);
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+        }
+
+        .trophy-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            padding: 1.3rem;
+        }
+
+        .trophy-card,
+        .empty-card {
+            min-height: 200px;
+            border-radius: 24px;
+            padding: 1.25rem;
+        }
+
+        .trophy-card {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+                linear-gradient(160deg, rgba(251, 191, 36, 0.05), transparent 60%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .trophy-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(251, 191, 36, 0.12);
+            color: var(--gold);
+            font-size: 1.55rem;
+            margin-bottom: 1rem;
+        }
+
+        .trophy-year {
+            display: inline-flex;
+            padding: 0.35rem 0.65rem;
+            border-radius: 999px;
+            background: rgba(34, 211, 238, 0.12);
+            border: 1px solid rgba(34, 211, 238, 0.16);
+            color: #a5f3fc;
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.9rem;
+        }
+
+        .trophy-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 0.7rem;
+        }
+
+        .trophy-winner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-bottom: 0.75rem;
+            color: #fde68a;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .winner-shield {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .trophy-meta,
+        .empty-card,
+        .loading,
+        .error {
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .empty-card {
+            border: 1px dashed rgba(255,255,255,0.12);
+            text-align: center;
+        }
+
+        .memorial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .memorial-card { overflow: hidden; }
+
+        .memorial-card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            display: block;
+            background: #0f172a;
+        }
+
+        .memorial-body { padding: 1.15rem; }
+
+        .memorial-body strong {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .memorial-body span { color: var(--muted); font-size: 0.88rem; }
+
+        .loading,
+        .error { padding: 1.4rem; }
+
+        .error {
+            color: #fecaca;
+            border-color: rgba(248, 113, 113, 0.2);
+        }
+
+        @media (max-width: 960px) {
+            .hero-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 720px) {
+            .page-shell { padding: 18px 14px 48px; }
+            .hero { padding: 22px 18px; border-radius: 24px; }
+            .hero-stats { grid-template-columns: 1fr; }
+            .section-header { align-items: start; flex-direction: column; }
+            .trophy-list,
+            .memorial-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <script>window.location.href = "404.html";</script>
+    <div class="page-shell">
+        <div class="topbar">
+            <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Voltar para a Arena</a>
+            <a href="admin.html" class="admin-link"><i class="fas fa-sliders"></i> Gerenciar Sala de Troféus</a>
+        </div>
+
+        <section class="hero">
+            <div class="hero-badge"><i class="fas fa-vault"></i> Museu Oficial do BR Depre</div>
+            <div class="hero-grid">
+                <div>
+                    <h1>Galeria de <span>Troféus</span></h1>
+                    <p>O cofre das glórias da liga: títulos maiores, campanhas marcantes, taças paralelas e lembranças que moldaram a história do BR Depre. Tudo organizado por peso e legado.</p>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <strong id="stats-types">0</strong>
+                            <span>Tipos de conquista</span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong id="stats-items">0</strong>
+                            <span>Troféus cadastrados</span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong id="stats-memorial">0</strong>
+                            <span>Jogadores póstumos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="crown-showcase">
+                    <div class="crown-icon">🏆</div>
+                    <strong>Hierarquia de prestígio</strong>
+                    <span>Superliga no topo, copas logo abaixo e as demais façanhas compondo a estante mais caótica e bonita da casa.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title"><i class="fas fa-trophy"></i> Estante Principal</div>
+                    <div class="section-subtitle">Agrupado por tipo e relevância histórica.</div>
+                </div>
+            </div>
+            <div id="trophy-groups" class="trophy-groups">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando a galeria...</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title"><i class="fas fa-star"></i> Jogadores Póstumos</div>
+                    <div class="section-subtitle">Espaço reservado para memória e homenagem.</div>
+                </div>
+            </div>
+            <div id="memorial-grid" class="memorial-grid">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando memorial...</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const DEFAULT_TROPHY_TYPES = [
+            { id: 'superliga', name: 'Superliga', importance: 100 },
+            { id: 'supercopa', name: 'Supercopa', importance: 90 },
+            { id: 'recopa', name: 'Recopa', importance: 80 },
+            { id: 'libertadores', name: 'Libertadores', importance: 80 },
+            { id: 'formula_depre', name: 'Fórmula Deprê', importance: 70 },
+            { id: 'resta_um', name: 'Resta Um', importance: 70 },
+            { id: 'cinturoes', name: 'Qtd de Cinturões', importance: 70 },
+            { id: 'serie_b', name: 'Série B', importance: 60 },
+            { id: 'serie_c', name: 'Série C', importance: 50 }
+        ];
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getTypeIcon(typeName = '') {
+            const normalized = typeName.toLowerCase();
+            if (normalized.includes('superliga')) return 'fa-crown';
+            if (normalized.includes('supercopa')) return 'fa-shield-halved';
+            if (normalized.includes('recopa')) return 'fa-star';
+            if (normalized.includes('libertadores')) return 'fa-globe';
+            if (normalized.includes('fórmula') || normalized.includes('formula')) return 'fa-flag-checkered';
+            if (normalized.includes('resta')) return 'fa-skull-crossbones';
+            if (normalized.includes('cintur')) return 'fa-hand-fist';
+            if (normalized.includes('série b') || normalized.includes('serie b')) return 'fa-medal';
+            if (normalized.includes('série c') || normalized.includes('serie c')) return 'fa-award';
+            return 'fa-trophy';
+        }
+
+        function getRankLabel(importance) {
+            if (importance >= 100) return 'Elite máxima';
+            if (importance >= 90) return 'Primeira prateleira';
+            if (importance >= 80) return 'Taças internacionais';
+            if (importance >= 70) return 'Conquistas especiais';
+            return 'Arquivo histórico';
+        }
+
+        function renderTrophyGroups(typesMap, itemsMap, usersMap, teamsMap) {
+            const container = document.getElementById('trophy-groups');
+            const allTypes = Object.values(typesMap);
+            const items = Object.entries(itemsMap).map(([id, item]) => {
+                const user = usersMap?.[item.winnerUserId] || {};
+                const team = teamsMap?.[user.teamId || user.team] || {};
+                const shield = (user.useCustomShield && user.customShield) ? user.customShield : (team.image || '');
+                return { id, ...item, winnerShield: shield };
+            });
+
+            const groupsHtml = allTypes
+                .sort((a, b) => Number(b.importance || 0) - Number(a.importance || 0) || String(a.name).localeCompare(String(b.name), 'pt-BR'))
+                .map(type => {
+                    const groupItems = items
+                        .filter(item => item.typeId === type.id)
+                        .sort((a, b) => Number(b.year || 0) - Number(a.year || 0) || String(a.title || '').localeCompare(String(b.title || ''), 'pt-BR'));
+
+                    const cardsHtml = groupItems.length
+                        ? groupItems.map(item => `
+                            <article class="trophy-card">
+                                <div class="trophy-icon"><i class="fas ${getTypeIcon(type.name)}"></i></div>
+                                <div class="trophy-year">${escapeHtml(item.year || 'Sem ano')}</div>
+                                <div class="trophy-name">${escapeHtml(item.title || 'Troféu sem título')}</div>
+                                <div class="trophy-winner">
+                                    ${item.winnerShield ? `<img src="${escapeHtml(item.winnerShield)}" alt="${escapeHtml(item.winnerName || 'Vencedor')}" class="winner-shield" onerror="this.style.display='none'">` : '<i class="fas fa-user"></i>'}
+                                    ${escapeHtml(item.winnerName || 'Vencedor não informado')}
+                                </div>
+                                <div class="trophy-meta">${escapeHtml(type.name)}</div>
+                            </article>
+                        `).join('')
+                        : '<div class="empty-card"><i class="fas fa-box-open"></i><br><br>Ainda não há troféus cadastrados nessa categoria.</div>';
+
+                    return `
+                        <section class="trophy-group">
+                            <div class="trophy-group-header">
+                                <div class="trophy-group-title"><i class="fas ${getTypeIcon(type.name)}"></i> ${escapeHtml(type.name)}</div>
+                                <div class="group-rank">${escapeHtml(getRankLabel(Number(type.importance || 0)))}</div>
+                            </div>
+                            <div class="trophy-list">${cardsHtml}</div>
+                        </section>
+                    `;
+                })
+                .join('');
+
+            container.innerHTML = groupsHtml || '<div class="empty-card">Nenhum tipo de troféu cadastrado ainda.</div>';
+        }
+
+        function renderMemorial(memorialMap) {
+            const container = document.getElementById('memorial-grid');
+            const memorial = Object.entries(memorialMap)
+                .map(([id, item]) => ({ id, ...item }))
+                .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'));
+
+            if (!memorial.length) {
+                container.innerHTML = '<div class="empty-card">Nenhum jogador póstumo cadastrado ainda.</div>';
+                return;
+            }
+
+            container.innerHTML = memorial.map(item => `
+                <article class="memorial-card">
+                    <img src="${escapeHtml(item.imageUrl || '')}" alt="${escapeHtml(item.name || 'Jogador póstumo')}" onerror="this.src='bdd.png'">
+                    <div class="memorial-body">
+                        <strong>${escapeHtml(item.name || 'Sem nome')}</strong>
+                        <span>Presente na memória eterna da liga.</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        async function loadHallOfFame() {
+            const groupsEl = document.getElementById('trophy-groups');
+            const memorialEl = document.getElementById('memorial-grid');
+
+            try {
+                const [hallSnap, usersSnap, teamsSnap] = await Promise.all([
+                    database.ref('hallOfFame').once('value'),
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value')
+                ]);
+                const snap = hallSnap;
+                const data = snap.val() || {};
+                const dbTypes = data.types || {};
+                const mergedTypes = {};
+                const users = usersSnap.val() || {};
+                const teams = teamsSnap.val() || {};
+
+                DEFAULT_TROPHY_TYPES.forEach(type => { mergedTypes[type.id] = type; });
+                Object.entries(dbTypes).forEach(([id, type]) => { mergedTypes[id] = { id, ...type }; });
+
+                const items = data.items || {};
+                const memorial = data.memorial || {};
+
+                document.getElementById('stats-types').textContent = String(Object.keys(mergedTypes).length);
+                document.getElementById('stats-items').textContent = String(Object.keys(items).length);
+                document.getElementById('stats-memorial').textContent = String(Object.keys(memorial).length);
+
+                renderTrophyGroups(mergedTypes, items, users, teams);
+                renderMemorial(memorial);
+            } catch (error) {
+                console.error(error);
+                groupsEl.innerHTML = '<div class="error"><i class="fas fa-triangle-exclamation"></i> Não foi possível carregar a galeria agora.</div>';
+                memorialEl.innerHTML = '<div class="error"><i class="fas fa-triangle-exclamation"></i> Não foi possível carregar o memorial agora.</div>';
+            }
+        }
+
+        loadHallOfFame();
+    </script>
 </body>
 </html>

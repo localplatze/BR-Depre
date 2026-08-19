@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Fórmula Deprê · BR Depre</title>
+    <link rel="icon" href="./bdd.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07111f;
+            --card: rgba(15, 23, 42, 0.82);
+            --border: rgba(255,255,255,0.08);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --cyan: #22d3ee;
+            --shadow: 0 20px 50px rgba(2, 6, 23, 0.36);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(239, 68, 68, 0.12), transparent 28%),
+                radial-gradient(circle at top right, rgba(245, 158, 11, 0.14), transparent 30%),
+                linear-gradient(180deg, #07111f 0%, #091423 42%, #050a12 100%);
+        }
+
+        .page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 26px 22px 56px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--text);
+            padding: 0.82rem 1rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.22);
+        }
+
+        .hero {
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid rgba(239, 68, 68, 0.18);
+            background:
+                radial-gradient(circle at top, rgba(245, 158, 11, 0.12), transparent 26%),
+                linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.74));
+            box-shadow: var(--shadow);
+            padding: 32px;
+            margin-bottom: 28px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.85rem;
+            border-radius: 999px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
+            gap: 1.4rem;
+            align-items: stretch;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 4vw, 4.8rem);
+            line-height: 0.95;
+            letter-spacing: -0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #fff, #fecaca 45%, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+            line-height: 1.75;
+            font-size: 1rem;
+            max-width: 760px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.85rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1rem;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+
+        .points-board {
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            padding: 1.25rem;
+        }
+
+        .points-board h3 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .points-scale {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.7rem;
+        }
+
+        .points-pill {
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(239,68,68,0.14), rgba(245,158,11,0.08));
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 0.8rem 0.55rem;
+            text-align: center;
+        }
+
+        .points-pill strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.12rem;
+        }
+
+        .points-pill span {
+            color: var(--muted);
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+            margin-bottom: 22px;
+        }
+
+        .panel h2 {
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .panel-subtitle {
+            color: var(--muted);
+            font-size: 0.92rem;
+            margin-bottom: 1rem;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1040px;
+        }
+
+        th, td {
+            padding: 0.95rem 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+        }
+
+        .driver-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+        }
+
+        .driver-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+
+        .driver-name {
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .driver-subtitle {
+            color: var(--muted);
+            font-size: 0.78rem;
+            margin-top: 0.18rem;
+            font-weight: 700;
+        }
+
+        .team-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.38rem 0.72rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            font-weight: 800;
+            font-size: 0.78rem;
+        }
+
+        .team-chip-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+        }
+
+        .pts {
+            font-weight: 900;
+            color: #fde68a;
+        }
+
+        .rank-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            font-weight: 900;
+        }
+
+        .round-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            padding: 0.42rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(34, 211, 238, 0.08);
+            border: 1px solid rgba(34, 211, 238, 0.12);
+            color: #a5f3fc;
+            font-weight: 800;
+            font-size: 0.78rem;
+        }
+
+        .round-chip.muted {
+            color: var(--muted);
+            background: rgba(255,255,255,0.03);
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .rounds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .round-card {
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            padding: 1rem;
+        }
+
+        .round-card strong {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .round-card span {
+            color: var(--muted);
+            font-size: 0.86rem;
+            display: block;
+            margin-bottom: 0.85rem;
+        }
+
+        .round-result {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.45rem 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.86rem;
+        }
+
+        .round-result-pos {
+            width: 38px;
+            flex-shrink: 0;
+            color: #fde68a;
+            font-weight: 900;
+        }
+
+        .round-result-name {
+            flex: 1;
+            min-width: 0;
+            font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .round-result-score {
+            color: var(--muted);
+            min-width: 108px;
+            text-align: right;
+        }
+
+        .round-result-f1 {
+            min-width: 58px;
+            text-align: right;
+            font-weight: 900;
+            color: #f8fafc;
+        }
+
+        .loading,
+        .empty,
+        .error {
+            padding: 1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--muted);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .error {
+            color: #fecaca;
+            border-color: rgba(248,113,113,0.22);
+        }
+
+        @media (max-width: 960px) {
+            .hero-grid { grid-template-columns: 1fr; }
+            .points-scale { grid-template-columns: repeat(5, minmax(52px, 1fr)); }
+        }
+
+        @media (max-width: 720px) {
+            .page { padding: 18px 14px 44px; }
+            .hero { padding: 22px 18px; }
+            .stats { grid-template-columns: 1fr; }
+            .points-scale { grid-template-columns: repeat(3, 1fr); }
+            .rounds-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="topbar">
+            <a href="home.html" class="nav-link"><i class="fas fa-arrow-left"></i> Voltar para a Arena</a>
+            <a href="admin.html" class="nav-link"><i class="fas fa-sliders"></i> Recalcular no Admin</a>
+        </div>
+
+        <section class="hero">
+            <div class="hero-badge"><i class="fas fa-flag-checkered"></i> Temporada 2026</div>
+            <div class="hero-grid">
+                <div>
+                    <h1>Fórmula <span>Deprê</span></h1>
+                    <p id="formula-hero-copy">A Superliga virou grid. Cada rodada finalizada da Superliga distribui pontuação em estilo Fórmula 1 para os melhores da rodada. Empates compartilham a posição e a faixa seguinte é pulada.</p>
+                    <div class="stats">
+                        <div class="stat">
+                            <strong id="formula-rounds-count">0</strong>
+                            <span>Rodadas computadas</span>
+                        </div>
+                        <div class="stat">
+                            <strong id="formula-drivers-count">0</strong>
+                            <span>Pilotos no grid</span>
+                        </div>
+                        <div class="stat">
+                            <strong id="formula-leader-points">0</strong>
+                            <span>Pontos do líder</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="points-board">
+                    <h3>Pontuação oficial usada</h3>
+                    <div class="points-scale" id="formula-points-scale"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2><i class="fas fa-table"></i> Classificação Geral</h2>
+            <div class="panel-subtitle">Vitórias, pódios e evolução rodada a rodada no modelo da F1.</div>
+            <div class="table-wrap" id="formula-standings-wrap">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando classificação...</div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2><i class="fas fa-people-group"></i> Campeonato de Construtores</h2>
+            <div class="panel-subtitle">Soma dos pontos dos pilotos de cada escuderia fictícia da Fórmula Deprê.</div>
+            <div class="table-wrap" id="formula-constructors-wrap">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando construtores...</div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2><i class="fas fa-list-ol"></i> Resultados por Rodada</h2>
+            <div class="panel-subtitle">Cada card abre a classificação completa da rodada da Superliga para deixar o cálculo transparente.</div>
+            <div id="formula-rounds-grid" class="rounds-grid">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando resultados...</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const FORMULA_POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+        const FORMULA_DEPRE_TEAMS = [
+            { id: 'red-burro', name: 'Red Burro FC', color: '#1d4ed8' },
+            { id: 'mc-lata', name: 'McLata FC', color: '#f97316' },
+            { id: 'ferruja', name: 'Ferruja Corse', color: '#dc2626' },
+            { id: 'mercedao', name: 'Mercedao GP', color: '#14b8a6' },
+            { id: 'aston-maula', name: 'Aston Maula', color: '#15803d' },
+            { id: 'alpinada', name: 'Alpinada Racing', color: '#2563eb' },
+            { id: 'willi-massa', name: 'WilliMassa', color: '#60a5fa' },
+            { id: 'rb-bangu', name: 'RB Bangu', color: '#1e40af' },
+            { id: 'saube', name: 'Saube FC', color: '#22c55e' },
+            { id: 'haas-da-massa', name: 'Haas da Massa', color: '#94a3b8' },
+            { id: 'cadilacre', name: 'Cadilacre Speed Team', color: '#f59e0b' }
+        ];
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderPointsScale() {
+            const el = document.getElementById('formula-points-scale');
+            el.innerHTML = FORMULA_POINTS.map((pts, index) => `
+                <div class="points-pill">
+                    <strong>${pts}</strong>
+                    <span>P${index + 1}</span>
+                </div>
+            `).join('');
+        }
+
+        function getFormulaTeamById(teamId) {
+            return FORMULA_DEPRE_TEAMS.find(team => team.id === teamId) || null;
+        }
+
+        function getDisplayTeamName(user, team) {
+            return (user?.customTeamName && user.customTeamName.trim() !== '')
+                ? user.customTeamName.trim()
+                : (user?.name || team?.name || 'Jogador');
+        }
+
+        function renderFormulaTeamChip(teamId) {
+            const team = getFormulaTeamById(teamId);
+            if (!team) return '<span class="team-chip">Sem escuderia</span>';
+            return `<span class="team-chip"><span class="team-chip-dot" style="background:${escapeHtml(team.color)}"></span>${escapeHtml(team.name)}</span>`;
+        }
+
+        function renderStandings(payload, usersMap, teamsMap) {
+            const container = document.getElementById('formula-standings-wrap');
+            const standings = Object.values(payload.standings || {}).sort((a, b) => b.totalFormulaPoints - a.totalFormulaPoints || b.wins - a.wins || String(a.displayName).localeCompare(String(b.displayName), 'pt-BR'));
+            const rounds = Object.values(payload.rounds || {}).sort((a, b) => (a.roundNumber || 0) - (b.roundNumber || 0));
+
+            document.getElementById('formula-rounds-count').textContent = String(rounds.length);
+            document.getElementById('formula-drivers-count').textContent = String(standings.length);
+            document.getElementById('formula-leader-points').textContent = String(standings[0]?.totalFormulaPoints || 0);
+
+            if (!standings.length) {
+                container.innerHTML = '<div class="empty">Nenhum resultado calculado ainda.</div>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>#</th><th>Piloto</th><th>Escuderia</th><th>PTS</th><th>Vitórias</th><th>Pódios</th>';
+            html += rounds.map(round => `<th>${escapeHtml(round.roundNumber ? 'R' + round.roundNumber : 'R?')}</th>`).join('');
+            html += '</tr></thead><tbody>';
+
+            standings.forEach((entry, idx) => {
+                const user = usersMap[entry.userId] || {};
+                const team = teamsMap[user.teamId || user.team] || {};
+                const shield = (user.useCustomShield && user.customShield) ? user.customShield : (team.image || 'bdd.png');
+                const displayName = getDisplayTeamName(user, team);
+                html += `
+                    <tr>
+                        <td><span class="rank-badge">${idx + 1}</span></td>
+                        <td>
+                            <div class="driver-cell">
+                                <img src="${escapeHtml(shield)}" class="driver-avatar" alt="${escapeHtml(displayName)}" onerror="this.src='bdd.png'">
+                                <div>
+                                    <div class="driver-name">${escapeHtml(displayName)}</div>
+                                    <div class="driver-subtitle">${escapeHtml(user.name || 'Sem treinador')}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${renderFormulaTeamChip(user.formulaDepreTeamId)}</td>
+                        <td class="pts">${entry.totalFormulaPoints || 0}</td>
+                        <td>${entry.wins || 0}</td>
+                        <td>${entry.podiums || 0}</td>
+                `;
+                html += rounds.map(round => {
+                    const result = round.results?.[entry.userId];
+                    if (!result) return '<td><span class="round-chip muted">-</span></td>';
+                    return `<td><span class="round-chip">${result.formulaPoints}</span></td>`;
+                }).join('');
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderConstructors(payload, usersMap) {
+            const container = document.getElementById('formula-constructors-wrap');
+            const standings = Object.values(payload.standings || {});
+            const constructorsMap = {};
+
+            standings.forEach(entry => {
+                const user = usersMap[entry.userId] || {};
+                const formulaTeam = getFormulaTeamById(user.formulaDepreTeamId);
+                if (!formulaTeam) return;
+
+                if (!constructorsMap[formulaTeam.id]) {
+                    constructorsMap[formulaTeam.id] = {
+                        id: formulaTeam.id,
+                        name: formulaTeam.name,
+                        color: formulaTeam.color,
+                        totalPoints: 0,
+                        wins: 0,
+                        podiums: 0,
+                        drivers: []
+                    };
+                }
+
+                constructorsMap[formulaTeam.id].totalPoints += entry.totalFormulaPoints || 0;
+                constructorsMap[formulaTeam.id].wins += entry.wins || 0;
+                constructorsMap[formulaTeam.id].podiums += entry.podiums || 0;
+                constructorsMap[formulaTeam.id].drivers.push({
+                    name: entry.displayName || user.name || entry.userId,
+                    points: entry.totalFormulaPoints || 0
+                });
+            });
+
+            const constructors = Object.values(constructorsMap)
+                .sort((a, b) => b.totalPoints - a.totalPoints || b.wins - a.wins || a.name.localeCompare(b.name, 'pt-BR'));
+
+            if (!constructors.length) {
+                container.innerHTML = '<div class="empty">Nenhuma escuderia com pilotos definidos ainda.</div>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>#</th><th>Escuderia</th><th>Pilotos</th><th>PTS</th><th>Vitórias</th><th>Pódios</th></tr></thead><tbody>';
+            constructors.forEach((team, idx) => {
+                const driverNames = team.drivers
+                    .sort((a, b) => b.points - a.points || a.name.localeCompare(b.name, 'pt-BR'))
+                    .map(driver => `${driver.name} (${driver.points})`)
+                    .join(' • ');
+                html += `
+                    <tr>
+                        <td><span class="rank-badge">${idx + 1}</span></td>
+                        <td>${renderFormulaTeamChip(team.id)}</td>
+                        <td>${escapeHtml(driverNames || 'Sem pilotos')}</td>
+                        <td class="pts">${team.totalPoints}</td>
+                        <td>${team.wins}</td>
+                        <td>${team.podiums}</td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderRoundCards(payload) {
+            const container = document.getElementById('formula-rounds-grid');
+            const rounds = Object.values(payload.rounds || {}).sort((a, b) => (a.roundNumber || 0) - (b.roundNumber || 0));
+            if (!rounds.length) {
+                container.innerHTML = '<div class="empty">Nenhuma rodada calculada ainda.</div>';
+                return;
+            }
+
+            container.innerHTML = rounds.map((round, roundIndex) => {
+                const roundLabel = round.label || `R${round.roundNumber || roundIndex + 1} · ${round.stage || 'Temporada'}`;
+                const orderedResults = Object.entries(round.results || {})
+                    .map(([userId, result]) => ({ userId, ...result }))
+                    .sort((a, b) => a.rank - b.rank || b.roundScore - a.roundScore || String(a.displayName || a.userId).localeCompare(String(b.displayName || b.userId), 'pt-BR'));
+
+                return `
+                    <article class="round-card">
+                        <strong>${escapeHtml(roundLabel)}</strong>
+                        <span>${escapeHtml(round.stage || 'Temporada')}</span>
+                        ${orderedResults.map(result => `
+                            <div class="round-result">
+                                <div class="round-result-pos">P${result.rank}</div>
+                                <div class="round-result-name">${escapeHtml(result.displayName || result.userId || `P${result.rank}`)}</div>
+                                <div class="round-result-score">${result.roundScore} pts</div>
+                                <div class="round-result-f1">${result.formulaPoints} F1</div>
+                            </div>
+                        `).join('')}
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function loadFormulaDeprePage() {
+            try {
+                renderPointsScale();
+                const [formulaSnap, usersSnap, teamsSnap] = await Promise.all([
+                    database.ref('tournaments/formulaDepre').once('value'),
+                    database.ref('users').once('value'),
+                    database.ref('teams').once('value')
+                ]);
+
+                const payload = formulaSnap.val() || {};
+                const users = usersSnap.val() || {};
+                const teams = teamsSnap.val() || {};
+                const modeLabel = payload.stageFilterLabel || 'Temporada inteira';
+
+                document.querySelector('.hero-badge').innerHTML = `<i class="fas fa-flag-checkered"></i> ${escapeHtml(modeLabel)} · Temporada 2026`;
+                document.getElementById('formula-hero-copy').textContent = `A Fórmula Deprê está considerando ${modeLabel.toLowerCase()} da Superliga. Cada rodada finalizada distribui pontuação em estilo Fórmula 1 para os melhores da rodada, com empate compartilhando posição e pulando a faixa seguinte.`;
+
+                renderStandings(payload, users, teams);
+                renderConstructors(payload, users);
+                renderRoundCards(payload);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('formula-standings-wrap').innerHTML = '<div class="error">Não foi possível carregar a Fórmula Deprê agora.</div>';
+                document.getElementById('formula-constructors-wrap').innerHTML = '<div class="error">Não foi possível carregar os construtores.</div>';
+                document.getElementById('formula-rounds-grid').innerHTML = '<div class="error">Não foi possível carregar os resultados das rodadas.</div>';
+            }
+        }
+
+        loadFormulaDeprePage();
+    </script>
+</body>
+</html>
