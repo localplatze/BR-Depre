@@ -63,6 +63,10 @@
             transition: 0.2s ease;
         }
 
+        .admin-only-link {
+            display: none;
+        }
+
         .nav-link:hover {
             transform: translateY(-2px);
             background: rgba(239, 68, 68, 0.08);
@@ -218,12 +222,23 @@
 
         .table-wrap {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            padding-bottom: 0.35rem;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             min-width: 1040px;
+        }
+
+        .standings-table {
+            min-width: 980px;
+        }
+
+        .constructors-table {
+            min-width: 760px;
         }
 
         th, td {
@@ -408,14 +423,153 @@
         @media (max-width: 960px) {
             .hero-grid { grid-template-columns: 1fr; }
             .points-scale { grid-template-columns: repeat(5, minmax(52px, 1fr)); }
+            .topbar { justify-content: stretch; }
         }
 
         @media (max-width: 720px) {
             .page { padding: 18px 14px 44px; }
+            .topbar {
+                gap: 10px;
+            }
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+                padding: 0.95rem 1rem;
+            }
             .hero { padding: 22px 18px; }
-            .stats { grid-template-columns: 1fr; }
-            .points-scale { grid-template-columns: repeat(3, 1fr); }
+            .hero h1 {
+                font-size: clamp(2.1rem, 10vw, 3rem);
+            }
+            .hero p {
+                font-size: 0.94rem;
+                line-height: 1.6;
+            }
+            .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .stat {
+                padding: 0.85rem 0.8rem;
+            }
+            .stat strong {
+                font-size: 1.35rem;
+            }
+            .stat span {
+                font-size: 0.66rem;
+                letter-spacing: 0.05em;
+            }
+            .points-board {
+                padding: 1rem;
+            }
+            .points-scale { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; }
+            .points-pill {
+                padding: 0.65rem 0.35rem;
+                border-radius: 14px;
+            }
+            .points-pill strong {
+                font-size: 0.95rem;
+            }
+            .points-pill span {
+                font-size: 0.65rem;
+            }
+            .panel {
+                padding: 18px 14px;
+                border-radius: 22px;
+            }
+            .panel h2 {
+                font-size: 1.15rem;
+                align-items: flex-start;
+            }
+            .panel-subtitle {
+                font-size: 0.85rem;
+                line-height: 1.5;
+            }
+            .table-wrap {
+                margin: 0 -2px;
+            }
+            .standings-table {
+                min-width: 780px;
+            }
+            .constructors-table {
+                min-width: 620px;
+            }
+            th, td {
+                padding: 0.78rem 0.6rem;
+                font-size: 0.85rem;
+            }
+            .driver-cell {
+                gap: 0.6rem;
+            }
+            .driver-avatar {
+                width: 34px;
+                height: 34px;
+            }
+            .driver-name {
+                font-size: 0.9rem;
+            }
+            .driver-subtitle {
+                font-size: 0.72rem;
+            }
+            .team-chip {
+                font-size: 0.72rem;
+                padding: 0.35rem 0.58rem;
+            }
+            .rank-badge {
+                width: 32px;
+                height: 32px;
+                border-radius: 10px;
+            }
             .rounds-grid { grid-template-columns: 1fr; }
+            .round-card {
+                padding: 0.9rem;
+            }
+            .round-card strong {
+                font-size: 1rem;
+            }
+            .round-card span {
+                font-size: 0.78rem;
+                margin-bottom: 0.65rem;
+            }
+            .round-result {
+                display: grid;
+                grid-template-columns: 40px 1fr auto;
+                gap: 0.35rem 0.7rem;
+                align-items: start;
+            }
+            .round-result-pos {
+                grid-row: span 2;
+            }
+            .round-result-name {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: initial;
+            }
+            .round-result-score {
+                min-width: 0;
+                text-align: left;
+                grid-column: 2 / 3;
+            }
+            .round-result-f1 {
+                min-width: 0;
+                grid-column: 3 / 4;
+                grid-row: 1 / span 2;
+                align-self: center;
+            }
+        }
+
+        @media (max-width: 460px) {
+            .page {
+                padding: 16px 12px 38px;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .points-scale {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            .standings-table {
+                min-width: 720px;
+            }
+            .constructors-table {
+                min-width: 560px;
+            }
         }
     </style>
 </head>
@@ -423,7 +577,7 @@
     <div class="page">
         <div class="topbar">
             <a href="home.html" class="nav-link"><i class="fas fa-arrow-left"></i> Voltar para a Arena</a>
-            <a href="admin.html" class="nav-link"><i class="fas fa-sliders"></i> Recalcular no Admin</a>
+            <a href="admin.html" class="nav-link admin-only-link" id="formula-admin-link"><i class="fas fa-sliders"></i> Recalcular no Admin</a>
         </div>
 
         <section class="hero">
@@ -480,6 +634,7 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script>
         const firebaseConfig = {
@@ -494,6 +649,7 @@
         };
 
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const database = firebase.database();
         const FORMULA_POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
         const FORMULA_DEPRE_TEAMS = [
@@ -529,6 +685,26 @@
             `).join('');
         }
 
+        function syncAdminLinkVisibility() {
+            const adminLink = document.getElementById('formula-admin-link');
+            if (!adminLink) return;
+
+            auth.onAuthStateChanged(async (user) => {
+                if (!user) {
+                    adminLink.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const snap = await database.ref('users/' + user.uid + '/isAdmin').once('value');
+                    adminLink.style.display = snap.val() ? 'inline-flex' : 'none';
+                } catch (error) {
+                    console.error('Erro ao validar admin da Fórmula Deprê:', error);
+                    adminLink.style.display = 'none';
+                }
+            });
+        }
+
         function getFormulaTeamById(teamId) {
             return FORMULA_DEPRE_TEAMS.find(team => team.id === teamId) || null;
         }
@@ -559,7 +735,7 @@
                 return;
             }
 
-            let html = '<table><thead><tr><th>#</th><th>Piloto</th><th>Escuderia</th><th>PTS</th><th>Vitórias</th><th>Pódios</th>';
+            let html = '<table class="standings-table"><thead><tr><th>#</th><th>Piloto</th><th>Escuderia</th><th>PTS</th><th>Vitórias</th><th>Pódios</th>';
             html += rounds.map(round => `<th>${escapeHtml(round.roundNumber ? 'R' + round.roundNumber : 'R?')}</th>`).join('');
             html += '</tr></thead><tbody>';
 
@@ -636,7 +812,7 @@
                 return;
             }
 
-            let html = '<table><thead><tr><th>#</th><th>Escuderia</th><th>Pilotos</th><th>PTS</th><th>Vitórias</th><th>Pódios</th></tr></thead><tbody>';
+            let html = '<table class="constructors-table"><thead><tr><th>#</th><th>Escuderia</th><th>Pilotos</th><th>PTS</th><th>Vitórias</th><th>Pódios</th></tr></thead><tbody>';
             constructors.forEach((team, idx) => {
                 const driverNames = team.drivers
                     .sort((a, b) => b.points - a.points || a.name.localeCompare(b.name, 'pt-BR'))
@@ -691,6 +867,7 @@
         async function loadFormulaDeprePage() {
             try {
                 renderPointsScale();
+                syncAdminLinkVisibility();
                 const [formulaSnap, usersSnap, teamsSnap] = await Promise.all([
                     database.ref('tournaments/formulaDepre').once('value'),
                     database.ref('users').once('value'),
