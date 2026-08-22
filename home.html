@@ -940,28 +940,125 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--dark-bg);
+            background:
+                radial-gradient(circle at top, rgba(6, 182, 212, 0.12), transparent 35%),
+                linear-gradient(135deg, rgba(9, 13, 22, 0.98), rgba(17, 24, 39, 0.98));
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            gap: 1.2rem;
+            padding: 2rem;
+        }
+
+        .loading-shell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
 
         .loader {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(6, 182, 212, 0.1);
-            border-top-color: var(--cyan);
+            position: relative;
+            width: 92px;
+            height: 92px;
             border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .loader::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            border: 4px solid rgba(6, 182, 212, 0.12);
+            border-top-color: var(--cyan);
+            border-right-color: var(--primary);
+            animation: spin 0.9s linear infinite;
+        }
+
+        .loader::after {
+            content: '';
+            position: absolute;
+            inset: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.08));
+            box-shadow: inset 0 0 18px rgba(6, 182, 212, 0.18);
+        }
+
+        .loader-icon {
+            position: relative;
+            z-index: 1;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--cyan), var(--primary));
+            color: #03131b;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 24px rgba(6, 182, 212, 0.3);
         }
 
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
+        }
+
+        .loading-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.04em;
+        }
+
+        .loading-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            text-align: center;
+        }
+
+        .powered-signature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.85rem;
+            margin-top: 0.6rem;
+        }
+
+        .powered-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.7rem 1rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .powered-badge strong {
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+
+        .powered-logo {
+            width: min(260px, 62vw);
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.35));
         }
 
         /* Responsive */
@@ -1230,8 +1327,22 @@
 <body>
 
     <div class="loading-screen" id="loading-screen">
-        <div class="loader"></div>
-        <p style="margin-top: 1rem; color: var(--text-secondary);">Carregando Arena...</p>
+        <div class="loading-shell">
+            <div class="loader">
+                <div class="loader-icon">
+                    <i class="fas fa-futbol"></i>
+                </div>
+            </div>
+            <p class="loading-title">Carregando Arena...</p>
+            <p class="loading-subtitle">Preparando rodadas, rankings e resenhas pra voce.</p>
+            <div class="powered-signature">
+                <div class="powered-badge">
+                    <span>Powered by</span>
+                    <strong>Local Platze</strong>
+                </div>
+                <img class="powered-logo" src="local-platze.png" alt="Local Platze">
+            </div>
+        </div>
     </div>
 
     <!-- Sidebar -->

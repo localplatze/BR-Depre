@@ -164,6 +164,28 @@
             color: var(--primary-gold);
         }
 
+        .hero-footer {
+            margin-top: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.7rem 1rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(251, 191, 36, 0.18);
+            color: var(--off-white);
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            width: fit-content;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-footer strong {
+            color: var(--primary-gold);
+            font-weight: 800;
+        }
+
         /* right form panel */
         .form-panel {
             flex: 0.9;
@@ -415,6 +437,10 @@
             .hero-title {
                 font-size: 2.3rem;
             }
+
+            .hero-footer {
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -567,6 +593,10 @@
             <div class="pulse-text">
                 <i class="fas fa-chart-line"></i>
                 <span>Modo competitivo · Vença os atuais campeões</span>
+            </div>
+            <div class="hero-footer">
+                <span>Powered by</span>
+                <strong>Local Platze</strong>
             </div>
         </div>
 
