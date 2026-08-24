@@ -2155,6 +2155,31 @@
             return data;
         }
 
+        function formatCinturaoHistoryDate(timestamp) {
+            if (!timestamp) return '';
+            return new Date(timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        }
+
+        function getCinturaoHistoryList(data) {
+            const history = data?.history || {};
+            return Object.entries(history)
+                .map(([id, item]) => ({ id, ...item }))
+                .sort((a, b) => Number(b.timestamp || 0) - Number(a.timestamp || 0));
+        }
+
+        function listenToCinturaoHome() {
+            database.ref('tournaments/cinturao').off('value');
+            database.ref('tournaments/cinturao').on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                cinturaoChampionId = data.championId || null;
+                loadCinturaoHome(data);
+                const currentUser = auth.currentUser;
+                if (currentUser?.uid) {
+                    loadUserProfile(currentUser.uid);
+                }
+            });
+        }
+
         async function loadTeamsCache() {
             const snapshot = await database.ref('teams').once('value');
             teamsCache = snapshot.val() || {};
@@ -2680,10 +2705,8 @@
             }
         }
 
-        async function loadCinturaoHome() {
-            const snapshot = await database.ref('tournaments/cinturao').once('value');
-            const data = snapshot.val() || {};
-
+        async function loadCinturaoHome(dataOverride) {
+            const data = dataOverride || await loadCinturaoData();
             const container = document.getElementById('cinturao-content');
             const defensesBadge = document.getElementById('cinturao-defenses-badge');
             if (!container) return;
@@ -2705,6 +2728,8 @@
             }
 
             const curMatch = data.currentMatch || {};
+            const historyList = getCinturaoHistoryList(data);
+            const lastFight = historyList[0] || null;
             const resultStr = (curMatch.champScore !== undefined && curMatch.challengerScore !== undefined && curMatch.status > 0)
                 ? `${curMatch.champScore} x ${curMatch.challengerScore}`
                 : 'vs';
@@ -2724,6 +2749,13 @@
                         <span>🔥 ${challName}</span>
                     </div>
                 </div>
+                ${lastFight ? `
+                    <div style="margin-top: 0.9rem; padding-top: 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); display:grid; gap:0.35rem;">
+                        <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--text-muted); font-weight:800;">Última luta registrada</div>
+                        <div style="font-size:0.82rem; font-weight:700; color: var(--text-primary);">${lastFight.championName || 'Campeão'} ${lastFight.result || ''} ${lastFight.challengerName || 'Desafiante'}</div>
+                        <div style="font-size:0.74rem; color: var(--text-secondary);">${lastFight.outcomeLabel || 'Histórico salvo'}${lastFight.timestamp ? ` · ${formatCinturaoHistoryDate(lastFight.timestamp)}` : ''}</div>
+                    </div>
+                ` : ''}
             `;
         }
 
@@ -3113,11 +3145,12 @@
                     loadSuperliga(activeRound, livePoints),
                     loadSupercopa(activeRound, livePoints),
                     loadRestaUmHome(),
-                    loadCinturaoHome(),
                     loadNextRound(),
                     loadResenhaFeed(),
                     loadMonthlyPodium()
                 ]);
+
+                listenToCinturaoHome();
 
                 // Set active sidebar link
                 document.querySelectorAll('.sidebar-nav a').forEach(link => {

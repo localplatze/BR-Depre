@@ -1829,6 +1829,49 @@
                             </div>
                         </div>
 
+                        <div class="card"
+                            style="border: 1px solid #dbeafe; margin-bottom: 20px; padding: 20px; background: #f8fbff;">
+                            <h4 style="color: #1d4ed8; margin-bottom: 15px;"><i class="fas fa-bolt"></i> Automação da Rodada</h4>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                <button type="button" id="btn-process-cinturao-round" class="btn btn-primary"><i class="fas fa-rotate"></i> Processar Última Rodada da Supercopa</button>
+                            </div>
+                            <div style="margin-top:10px; font-size:13px; color:#64748b;">
+                                Fecha automaticamente o duelo do cinturão com base no último confronto finalizado da Supercopa do campeão atual e já puxa o próximo desafiante da fila.
+                            </div>
+                        </div>
+
+                        <div class="card"
+                            style="border: 1px solid #e2e8f0; margin-bottom: 20px; padding: 20px; background: #f8fafc;">
+                            <h4 style="color: #334155; margin-bottom: 15px;"><i class="fas fa-list-ol"></i> Fila de Próximos Desafiantes</h4>
+                            <div class="form-row"
+                                style="display: grid; grid-template-columns: minmax(220px, 1fr) auto; gap: 15px; align-items:end; margin-bottom: 16px;">
+                                <div class="form-group">
+                                    <label>Adicionar desafiante à fila</label>
+                                    <select id="cinturao-queue-select" class="form-control"></select>
+                                </div>
+                                <div>
+                                    <button type="button" id="btn-add-cinturao-queue" class="btn btn-secondary"><i class="fas fa-plus"></i> Adicionar</button>
+                                </div>
+                            </div>
+                            <div id="cinturao-queue-list"
+                                style="display:grid; gap:10px;">
+                                <div style="color:#64748b; font-size:13px;">Nenhum desafiante na fila.</div>
+                            </div>
+                        </div>
+
+                        <div class="card"
+                            style="border: 1px solid #fde68a; margin-bottom: 20px; padding: 20px; background: #fffdf5;">
+                            <h4 style="color: #92400e; margin-bottom: 15px;"><i class="fas fa-timeline"></i> Estado Atual & Histórico</h4>
+                            <div id="cinturao-admin-summary"
+                                style="display:grid; gap:10px; margin-bottom:16px; color:#475569; font-size:14px;">
+                                <div>Carregando resumo do cinturão...</div>
+                            </div>
+                            <div id="cinturao-admin-history"
+                                style="display:grid; gap:10px; max-height:280px; overflow:auto; padding-right:4px;">
+                                <div style="color:#64748b; font-size:13px;">Ainda sem histórico salvo.</div>
+                            </div>
+                        </div>
+
                         <div style="text-align: right;">
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Estado do
                                 Cinturão</button>
@@ -6484,6 +6527,160 @@ ${matchupBlocks}`;
         });
 
         // --- GERENCIAMENTO DO CINTURÃO BR DEPRESSÃO (UFC) ---
+        let cinturaoAdminUsersCache = {};
+        let cinturaoAdminTeamsCache = {};
+        let cinturaoAdminListenerBound = false;
+        let cinturaoChallengerQueue = [];
+
+        function getCinturaoAdminDisplayName(userId) {
+            const user = cinturaoAdminUsersCache[userId] || {};
+            const team = cinturaoAdminTeamsCache[user.teamId || user.team] || {};
+            const teamName = user.customTeamName || team.name || 'Time';
+            return userId ? `${teamName} (${user.name || userId})` : 'A definir';
+        }
+
+        function getCinturaoQueueDisplayName(userId) {
+            return getCinturaoAdminDisplayName(userId);
+        }
+
+        function getSortedSupercopaAdminRounds(supercopaData) {
+            const rounds = supercopaData?.groups?.rounds || {};
+            return Object.entries(rounds).sort((a, b) => {
+                const numA = parseInt(String(a[0]).match(/\d+/)?.[0] || '0', 10);
+                const numB = parseInt(String(b[0]).match(/\d+/)?.[0] || '0', 10);
+                if (numA !== numB) return numA - numB;
+                return Number(a[1]?.timestamp || 0) - Number(b[1]?.timestamp || 0);
+            });
+        }
+
+        function renderCinturaoQueue() {
+            const queueEl = document.getElementById('cinturao-queue-list');
+            if (!queueEl) return;
+
+            queueEl.innerHTML = cinturaoChallengerQueue.length ? cinturaoChallengerQueue.map((userId, index) => `
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; background:#fff;">
+                    <div>
+                        <div style="font-weight:700; color:#0f172a;">${index + 1}. ${getCinturaoQueueDisplayName(userId)}</div>
+                        <div style="font-size:12px; color:#64748b;">ID: ${userId}</div>
+                    </div>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-sm btn-secondary" data-queue-move="up" data-queue-id="${userId}" ${index === 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-queue-move="down" data-queue-id="${userId}" ${index === cinturaoChallengerQueue.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger" data-queue-remove="${userId}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('') : '<div style="color:#64748b; font-size:13px;">Nenhum desafiante na fila.</div>';
+
+            queueEl.querySelectorAll('[data-queue-remove]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const userId = btn.getAttribute('data-queue-remove');
+                    cinturaoChallengerQueue = cinturaoChallengerQueue.filter(id => id !== userId);
+                    persistCinturaoQueue();
+                });
+            });
+
+            queueEl.querySelectorAll('[data-queue-move]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const userId = btn.getAttribute('data-queue-id');
+                    const direction = btn.getAttribute('data-queue-move');
+                    const index = cinturaoChallengerQueue.findIndex(id => id === userId);
+                    if (index < 0) return;
+                    const target = direction === 'up' ? index - 1 : index + 1;
+                    if (target < 0 || target >= cinturaoChallengerQueue.length) return;
+                    const copy = [...cinturaoChallengerQueue];
+                    [copy[index], copy[target]] = [copy[target], copy[index]];
+                    cinturaoChallengerQueue = copy;
+                    persistCinturaoQueue();
+                });
+            });
+        }
+
+        function persistCinturaoQueue() {
+            database.ref('tournaments/cinturao/challengerQueue').set(cinturaoChallengerQueue)
+                .then(() => renderCinturaoQueue())
+                .catch(err => {
+                    console.error('Erro ao salvar fila do Cinturão:', err);
+                    alert('Erro ao salvar fila do Cinturão: ' + err.message);
+                });
+        }
+
+        function populateCinturaoQueueSelect(championId) {
+            const select = document.getElementById('cinturao-queue-select');
+            if (!select) return;
+            select.innerHTML = '<option value="">(Selecione um desafiante)</option>';
+
+            Object.entries(cinturaoAdminUsersCache).forEach(([uId]) => {
+                if (uId === championId) return;
+                const opt = document.createElement('option');
+                opt.value = uId;
+                opt.textContent = getCinturaoAdminDisplayName(uId);
+                select.appendChild(opt);
+            });
+        }
+
+        function renderCinturaoAdminPanels(cinturaoData) {
+            const summaryEl = document.getElementById('cinturao-admin-summary');
+            const historyEl = document.getElementById('cinturao-admin-history');
+            if (!summaryEl || !historyEl) return;
+
+            const currentMatch = cinturaoData.currentMatch || {};
+            const championName = getCinturaoAdminDisplayName(cinturaoData.championId);
+            const challengerName = getCinturaoAdminDisplayName(cinturaoData.challengerId);
+            const statusMap = {
+                0: 'Em agendamento',
+                1: 'Em andamento',
+                2: 'Finalizado'
+            };
+
+            summaryEl.innerHTML = `
+                <div><strong>Campeão atual:</strong> ${championName}</div>
+                <div><strong>Desafiante atual:</strong> ${challengerName}</div>
+                <div><strong>Defesas consecutivas:</strong> ${Number(cinturaoData.defenses || 0)}</div>
+                <div><strong>Status do duelo:</strong> ${statusMap[Number(currentMatch.status || 0)] || 'Não definido'}</div>
+                <div><strong>Placar atual:</strong> ${currentMatch.champScore !== undefined && currentMatch.challengerScore !== undefined ? `${currentMatch.champScore} x ${currentMatch.challengerScore}` : 'Pendente'}</div>
+                <div><strong>Próximos na fila:</strong> ${cinturaoChallengerQueue.length ? cinturaoChallengerQueue.map(getCinturaoQueueDisplayName).join(' → ') : 'Fila vazia'}</div>
+            `;
+
+            const historyList = Object.entries(cinturaoData.history || {})
+                .map(([id, item]) => ({ id, ...item }))
+                .sort((a, b) => Number(b.timestamp || 0) - Number(a.timestamp || 0));
+
+            historyEl.innerHTML = historyList.length ? historyList.map((item) => `
+                <div style="border:1px solid #e5e7eb; border-radius:10px; padding:12px 14px; background:#fff;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
+                        <strong style="color:#111827;">${item.championName || 'Campeão'} ${item.result || ''} ${item.challengerName || 'Desafiante'}</strong>
+                        <span style="font-size:12px; color:#64748b;">${item.timestamp ? new Date(item.timestamp).toLocaleString('pt-BR') : 'Sem data'}</span>
+                    </div>
+                    <div style="font-size:13px; color:#475569;">${item.outcomeLabel || 'Confronto registrado'}</div>
+                    <div style="font-size:12px; color:#64748b; margin-top:4px;">Defesas após a luta: ${Number(item.defensesAfter || 0)}</div>
+                </div>
+            `).join('') : '<div style="color:#64748b; font-size:13px;">Ainda sem histórico salvo.</div>';
+        }
+
+        function bindCinturaoRealtimeListener() {
+            if (cinturaoAdminListenerBound) return;
+            cinturaoAdminListenerBound = true;
+            database.ref('tournaments/cinturao').on('value', (snapshot) => {
+                const cinturaoData = snapshot.val() || {};
+                cinturaoChallengerQueue = Array.isArray(cinturaoData.challengerQueue) ? cinturaoData.challengerQueue.filter(Boolean) : [];
+                document.getElementById('cinturao-defenses-input').value = cinturaoData.defenses || 0;
+
+                const curMatch = cinturaoData.currentMatch || {};
+                document.getElementById('cinturao-champ-score').value = curMatch.champScore !== undefined ? curMatch.champScore : '';
+                document.getElementById('cinturao-challenger-score').value = curMatch.challengerScore !== undefined ? curMatch.challengerScore : '';
+                document.getElementById('cinturao-match-status').value = curMatch.status !== undefined ? curMatch.status : 0;
+
+                const champSelect = document.getElementById('cinturao-champion-select');
+                const challSelect = document.getElementById('cinturao-challenger-select');
+                if (champSelect && cinturaoData.championId) champSelect.value = cinturaoData.championId;
+                if (challSelect) challSelect.value = cinturaoData.challengerId || '';
+
+                populateCinturaoQueueSelect(cinturaoData.championId);
+                renderCinturaoQueue();
+                renderCinturaoAdminPanels(cinturaoData);
+            });
+        }
+
         async function loadCinturaoAdmin() {
             try {
                 const [usersSnap, teamsSnap, cinturaoSnap] = await Promise.all([
@@ -6494,10 +6691,13 @@ ${matchupBlocks}`;
 
                 const usersData = usersSnap.val() || {};
                 const teamsData = teamsSnap.val() || {};
+                cinturaoAdminUsersCache = usersData;
+                cinturaoAdminTeamsCache = teamsData;
                 const cinturaoData = cinturaoSnap.val() || {};
 
                 const champSelect = document.getElementById('cinturao-champion-select');
                 const challSelect = document.getElementById('cinturao-challenger-select');
+                const queueSelect = document.getElementById('cinturao-queue-select');
 
                 if (champSelect && challSelect) {
                     champSelect.innerHTML = '<option value="">(Selecione o Campeão)</option>';
@@ -6522,19 +6722,27 @@ ${matchupBlocks}`;
                     });
                 }
 
+                if (queueSelect) {
+                    populateCinturaoQueueSelect(cinturaoData.championId);
+                }
+
                 document.getElementById('cinturao-defenses-input').value = cinturaoData.defenses || 0;
+                cinturaoChallengerQueue = Array.isArray(cinturaoData.challengerQueue) ? cinturaoData.challengerQueue.filter(Boolean) : [];
 
                 const curMatch = cinturaoData.currentMatch || {};
                 document.getElementById('cinturao-champ-score').value = curMatch.champScore !== undefined ? curMatch.champScore : '';
                 document.getElementById('cinturao-challenger-score').value = curMatch.challengerScore !== undefined ? curMatch.challengerScore : '';
                 document.getElementById('cinturao-match-status').value = curMatch.status !== undefined ? curMatch.status : 0;
+                renderCinturaoQueue();
+                renderCinturaoAdminPanels(cinturaoData);
+                bindCinturaoRealtimeListener();
 
             } catch (err) {
                 console.error('Erro ao carregar admin Cinturão:', err);
             }
         }
 
-        document.getElementById('cinturao-form')?.addEventListener('submit', function (e) {
+        document.getElementById('cinturao-form')?.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const champId = document.getElementById('cinturao-champion-select').value;
@@ -6549,25 +6757,36 @@ ${matchupBlocks}`;
                 return;
             }
 
+            const cinturaoRef = database.ref('tournaments/cinturao');
+            const currentSnapshot = await cinturaoRef.once('value');
+            const currentData = currentSnapshot.val() || {};
+            const previousMatch = currentData.currentMatch || {};
             let newChampId = champId;
             let newDefenses = defenses;
+            let outcomeLabel = 'Confronto atualizado.';
 
             if (matchStatus === 2) {
                 if (challengerScore > champScore && challId) {
                     newChampId = challId;
                     newDefenses = 1;
+                    outcomeLabel = 'Troca de cinturão: o desafiante venceu e assumiu o posto.';
                     alert(`🥊 TROCA DE CINTURÃO! O Desafiante venceu (${challengerScore} x ${champScore}) e conquistou o Cinturão BR Depressão!`);
                 } else if (champScore >= challengerScore && challId) {
                     newDefenses = defenses + 1;
+                    outcomeLabel = 'Defesa bem sucedida: o campeão manteve o cinturão.';
                     alert(`🏆 DEFESA BEM SUCEDIDA! O Campeão manteve o Cinturão (${champScore} x ${challengerScore})! Defesas consecutivas: ${newDefenses}.`);
                 }
             }
 
+            const matchKey = currentData.currentMatch?.matchKey || `belt-${Date.now()}`;
             const cinturaoUpdate = {
                 championId: newChampId,
                 challengerId: challId,
                 defenses: newDefenses,
                 currentMatch: {
+                    matchKey,
+                    championId: champId,
+                    challengerId: challId,
                     champScore: champScore,
                     challengerScore: challengerScore,
                     status: matchStatus,
@@ -6575,13 +6794,184 @@ ${matchupBlocks}`;
                 }
             };
 
-            database.ref('tournaments/cinturao').update(cinturaoUpdate).then(() => {
+            const shouldAppendHistory =
+                matchStatus === 2 &&
+                challId &&
+                (
+                    previousMatch.status !== 2 ||
+                    previousMatch.champScore !== champScore ||
+                    previousMatch.challengerScore !== challengerScore ||
+                    currentData.championId !== newChampId ||
+                    currentData.challengerId !== challId
+                );
+
+            if (shouldAppendHistory) {
+                const historyId = database.ref('tournaments/cinturao/history').push().key;
+                cinturaoUpdate[`history/${historyId}`] = {
+                    matchKey,
+                    previousChampionId: champId,
+                    championId: newChampId,
+                    challengerId: challId,
+                    championName: getCinturaoAdminDisplayName(champId),
+                    challengerName: getCinturaoAdminDisplayName(challId),
+                    result: `${champScore} x ${challengerScore}`,
+                    outcomeLabel,
+                    defensesAfter: newDefenses,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+            }
+
+            cinturaoUpdate.challengerQueue = cinturaoChallengerQueue;
+
+            cinturaoRef.update(cinturaoUpdate).then(() => {
                 alert('Estado do Cinturão salvo com sucesso!');
                 loadCinturaoAdmin();
             }).catch(err => {
                 console.error('Erro ao salvar Cinturão:', err);
                 alert('Erro ao salvar: ' + err.message);
             });
+        });
+
+        document.getElementById('btn-add-cinturao-queue')?.addEventListener('click', () => {
+            const select = document.getElementById('cinturao-queue-select');
+            const champId = document.getElementById('cinturao-champion-select')?.value;
+            const selectedId = select?.value;
+            if (!selectedId) {
+                alert('Selecione um desafiante para adicionar à fila.');
+                return;
+            }
+            if (selectedId === champId) {
+                alert('O campeão atual não pode entrar na própria fila de desafiante.');
+                return;
+            }
+            if (cinturaoChallengerQueue.includes(selectedId)) {
+                alert('Esse jogador já está na fila.');
+                return;
+            }
+            cinturaoChallengerQueue = [...cinturaoChallengerQueue, selectedId];
+            persistCinturaoQueue();
+            select.value = '';
+        });
+
+        document.getElementById('btn-process-cinturao-round')?.addEventListener('click', async () => {
+            try {
+                const [supercopaSnap, cinturaoSnap] = await Promise.all([
+                    database.ref('tournaments/supercopa').once('value'),
+                    database.ref('tournaments/cinturao').once('value')
+                ]);
+
+                const supercopaData = supercopaSnap.val() || {};
+                const cinturaoData = cinturaoSnap.val() || {};
+                const currentChampionId = cinturaoData.championId;
+                if (!currentChampionId) {
+                    alert('Defina primeiro o campeão atual do Cinturão.');
+                    return;
+                }
+
+                const completedRounds = getSortedSupercopaAdminRounds(supercopaData).filter(([, round]) => round?.status === 2);
+                if (!completedRounds.length) {
+                    alert('Nenhuma rodada finalizada da Supercopa foi encontrada.');
+                    return;
+                }
+
+                const [lastRoundKey, lastRoundData] = completedRounds[completedRounds.length - 1];
+                const matchEntry = Object.entries(lastRoundData.matches || {}).find(([, match]) =>
+                    match?.player1Id === currentChampionId || match?.player2Id === currentChampionId
+                );
+
+                if (!matchEntry) {
+                    alert('O campeão atual não teve confronto encontrado na última rodada finalizada da Supercopa.');
+                    return;
+                }
+
+                const [matchKey, match] = matchEntry;
+                const processedMatchKey = `supercopa-${lastRoundKey.replace(/\s+/g, '-')}`;
+                const historyItems = Object.values(cinturaoData.history || {});
+                if (historyItems.some(item => item.matchKey === processedMatchKey)) {
+                    alert(`O duelo do cinturão referente a ${lastRoundKey} já foi processado.`);
+                    return;
+                }
+
+                const scores = String(match.result || '').split('x').map(part => parseInt(part.trim(), 10));
+                if (scores.length !== 2 || scores.some(Number.isNaN)) {
+                    alert('A última rodada finalizada não possui placar válido para o duelo do cinturão.');
+                    return;
+                }
+
+                const challengerId = match.player1Id === currentChampionId ? match.player2Id : match.player1Id;
+                const champScore = match.player1Id === currentChampionId ? scores[0] : scores[1];
+                const challengerScore = match.player1Id === currentChampionId ? scores[1] : scores[0];
+                let newChampionId = currentChampionId;
+                let newDefenses = Number(cinturaoData.defenses || 0);
+                let outcomeLabel = 'Defesa bem sucedida: o campeão manteve o cinturão.';
+
+                if (challengerScore > champScore) {
+                    newChampionId = challengerId;
+                    newDefenses = 1;
+                    outcomeLabel = 'Troca de cinturão: o desafiante venceu e assumiu o posto.';
+                } else {
+                    newDefenses += 1;
+                }
+
+                const queue = Array.isArray(cinturaoData.challengerQueue) ? [...cinturaoData.challengerQueue] : [];
+                let nextChallengerId = '';
+                while (queue.length > 0 && !nextChallengerId) {
+                    const candidate = queue.shift();
+                    if (candidate && candidate !== newChampionId) {
+                        nextChallengerId = candidate;
+                    }
+                }
+
+                const confirmMessage =
+                    `Processar cinturão com base em ${lastRoundKey}?\n\n` +
+                    `Campeão atual: ${getCinturaoAdminDisplayName(currentChampionId)}\n` +
+                    `Desafiante da rodada: ${getCinturaoAdminDisplayName(challengerId)}\n` +
+                    `Placar: ${champScore} x ${challengerScore}\n` +
+                    `Resultado: ${outcomeLabel}\n` +
+                    `Próximo desafiante da fila: ${nextChallengerId ? getCinturaoAdminDisplayName(nextChallengerId) : 'não definido'}`;
+
+                if (!confirm(confirmMessage)) {
+                    return;
+                }
+
+                const historyId = database.ref('tournaments/cinturao/history').push().key;
+                await database.ref('tournaments/cinturao').update({
+                    championId: newChampionId,
+                    challengerId: nextChallengerId,
+                    defenses: newDefenses,
+                    challengerQueue: queue,
+                    currentMatch: {
+                        matchKey: `belt-${Date.now()}`,
+                        sourceRoundKey: lastRoundKey,
+                        processedFromSupercopaMatchKey: matchKey,
+                        championId: newChampionId,
+                        challengerId: nextChallengerId,
+                        champScore: '',
+                        challengerScore: '',
+                        status: 0,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    },
+                    [`history/${historyId}`]: {
+                        matchKey: processedMatchKey,
+                        sourceRoundKey: lastRoundKey,
+                        previousChampionId: currentChampionId,
+                        championId: newChampionId,
+                        challengerId: challengerId,
+                        championName: getCinturaoAdminDisplayName(currentChampionId),
+                        challengerName: getCinturaoAdminDisplayName(challengerId),
+                        result: `${champScore} x ${challengerScore}`,
+                        outcomeLabel,
+                        defensesAfter: newDefenses,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    }
+                });
+
+                alert('Cinturão processado com sucesso a partir da última rodada finalizada da Supercopa.');
+                loadCinturaoAdmin();
+            } catch (err) {
+                console.error('Erro ao processar rodada do Cinturão:', err);
+                alert('Erro ao processar rodada do Cinturão: ' + err.message);
+            }
         });
 
         // --- SEÇÃO DE ANÚNCIOS & RESENHAS ---
