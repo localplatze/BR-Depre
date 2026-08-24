@@ -62,6 +62,11 @@
             margin-bottom: 25px;
             border-bottom: 2px solid #eee;
             gap: 5px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            flex-wrap: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
         }
 
         .tab {
@@ -75,6 +80,8 @@
             font-weight: 500;
             color: #7f8c8d;
             border-radius: var(--border-radius) var(--border-radius) 0 0;
+            flex: 0 0 auto;
+            white-space: nowrap;
         }
 
         .tab:hover {
@@ -868,13 +875,104 @@
             margin-bottom: 0;
         }
 
-        .team-selection-group input[list] {
+        .team-combobox {
+            position: relative;
+        }
+
+        .team-selection-group .team-combobox-input {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             font-size: 14px;
             background: #f8fafc;
+        }
+
+        .team-selection-group .team-combobox-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+            background: #fff;
+        }
+
+        .team-combobox-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #dbe3ee;
+            border-radius: 12px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+            overflow: hidden;
+            z-index: 40;
+        }
+
+        .team-combobox-list {
+            max-height: 260px;
+            overflow-y: auto;
+            padding: 6px;
+        }
+
+        .team-combobox-option {
+            width: 100%;
+            border: none;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            color: #0f172a;
+        }
+
+        .team-combobox-option:hover,
+        .team-combobox-option.is-active {
+            background: #eef4ff;
+        }
+
+        .team-combobox-option img,
+        .team-combobox-preview img {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            flex-shrink: 0;
+        }
+
+        .team-combobox-option span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .team-combobox-empty {
+            padding: 12px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .team-combobox-preview {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 22px;
+            color: #475569;
+            font-size: 12px;
+        }
+
+        .team-combobox-preview.is-hidden,
+        .team-combobox-dropdown.is-hidden {
+            display: none;
+        }
+
+        .team-combobox-preview strong {
+            color: #0f172a;
+            font-weight: 600;
         }
 
         .score-stepper-group {
@@ -1013,17 +1111,96 @@
 
         .api-import-panel {
             border: 1px solid #dbeafe;
-            background: #f8fbff;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 18px;
+            background: linear-gradient(180deg, #f8fbff 0%, #fdfefe 100%);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .api-import-panel h4 {
+            margin: 0 0 6px;
+            font-size: 20px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .api-import-intro {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 16px;
         }
 
         .api-import-grid {
             display: grid;
-            grid-template-columns: 1.4fr 0.8fr 0.8fr 0.8fr auto;
+            grid-template-columns: 1fr 1.2fr 0.7fr 0.8fr 0.8fr;
             gap: 12px;
-            align-items: end;
+            align-items: start;
+            margin-bottom: 14px;
+        }
+
+        .api-import-section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 18px 0 10px;
+        }
+
+        .api-import-section-title strong {
+            color: #334155;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .api-import-search-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+
+        .api-import-search-actions .btn {
+            min-width: 180px;
+        }
+
+        .round-create-layout {
+            display: grid;
+            gap: 18px;
+        }
+
+        .round-stage-panel {
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+        }
+
+        .round-stage-panel h3 {
+            margin: 0 0 6px;
+            color: #0f172a;
+            font-size: 18px;
+        }
+
+        .round-stage-panel .help-text {
+            margin-top: 4px;
+        }
+
+        .matches-empty-state {
+            border: 1px dashed #cbd5e1;
+            border-radius: 14px;
+            background: #f8fafc;
+            padding: 22px 18px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .matches-empty-state strong {
+            display: block;
+            color: #334155;
+            margin-bottom: 6px;
         }
 
         .api-league-grid {
@@ -1128,6 +1305,8 @@
             gap: 12px;
             align-items: center;
             margin-top: 14px;
+            padding-top: 8px;
+            flex-wrap: wrap;
         }
 
         .api-ai-tools {
@@ -1156,9 +1335,62 @@
         }
 
         @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                padding: 20px 16px;
+                border-radius: 0;
+            }
+
+            .header {
+                gap: 16px;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                margin-bottom: 22px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+                line-height: 1.15;
+            }
+
+            .tabs {
+                margin: 0 -16px 22px;
+                padding: 0 16px 6px;
+                gap: 8px;
+                scroll-snap-type: x proximity;
+            }
+
+            .tabs::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .tabs::-webkit-scrollbar-thumb {
+                background: rgba(44, 62, 80, 0.22);
+                border-radius: 999px;
+            }
+
+            .tab {
+                min-width: max-content;
+                padding: 12px 18px;
+                scroll-snap-align: start;
+            }
+
             .match-teams-grid {
                 grid-template-columns: 1fr;
                 gap: 12px;
+            }
+
+            .api-import-panel {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .api-import-search-actions {
+                justify-content: stretch;
+            }
+
+            .api-import-search-actions .btn {
+                width: 100%;
             }
 
             .match-teams-grid>div:nth-child(2) {
@@ -1333,39 +1565,9 @@
 
                     <form id="new-round-form">
                         <div class="form-section">
-                            <h3>Informações da Rodada</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Status da Rodada</label>
-                                    <select id="round-status" class="form-control">
-                                        <option value="0">Não Iniciada</option>
-                                        <option value="1">Em Progresso</option>
-                                        <option value="2">Finalizada</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Data de Término da Rodada</label>
-                                    <input type="datetime-local" id="round-finish-timestamp" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Torneios (separar por vírgula)</label>
-                                <input type="text" id="round-tournaments" placeholder="Ex: superliga, copa"
-                                    class="form-control">
-                                <p class="help-text">Informe em quais torneios esta rodada será válida</p>
-                            </div>
-                        </div>
-
-                        <div class="form-section">
-                            <div class="match-form-header">
-                                <h3>Partidas</h3>
-                                <button type="button" id="add-match-btn" class="btn btn-secondary btn-sm">
-                                    <i class="fas fa-plus"></i> Adicionar Partida
-                                </button>
-                            </div>
-
                             <div class="api-import-panel">
                                 <h4><i class="fas fa-cloud-download-alt"></i> Importar jogos</h4>
+                                <div class="api-import-intro">Busque partidas primeiro. Depois disso a rodada pode ser ajustada manualmente, se precisar.</div>
                                 <div class="api-import-grid">
                                     <div class="form-group">
                                         <label>Fonte</label>
@@ -1394,11 +1596,10 @@
                                         <label>Data fim</label>
                                         <input type="date" id="api-football-date-to" class="form-control">
                                     </div>
-                                    <button type="button" id="api-football-search" class="btn btn-secondary">
-                                        <i class="fas fa-search"></i> Buscar
-                                    </button>
                                 </div>
-                                <label style="display:block; margin-top:14px; font-weight:700;">Campeonatos</label>
+                                <div class="api-import-section-title">
+                                    <strong>Campeonatos</strong>
+                                </div>
                                 <div class="api-league-tools">
                                     <input type="search" id="api-league-filter" placeholder="Filtrar campeonatos...">
                                     <button type="button" id="api-select-all-leagues"
@@ -1492,6 +1693,11 @@
                                             placeholder="Ex: Paulista A1">
                                     </div>
                                 </div>
+                                <div class="api-import-search-actions">
+                                    <button type="button" id="api-football-search" class="btn btn-secondary">
+                                        <i class="fas fa-search"></i> Buscar jogos
+                                    </button>
+                                </div>
                                 <div id="api-football-status" class="help-text">ESPN gratis e a fonte padrao para jogos
                                     atuais. API-Football permanece como opcao.</div>
                                 <div class="api-ai-tools">
@@ -1508,11 +1714,50 @@
                                 </div>
                                 <div id="api-football-results" class="api-import-results"></div>
                             </div>
+                        </div>
 
-                            <div id="matches-container">
-                                <!-- As partidas dinâmicas aparecem aqui -->
+                        <div class="round-create-layout">
+                            <div class="round-stage-panel">
+                                <h3>Informações da Rodada</h3>
+                                <p class="help-text">O status começa em “Não iniciada”. A data final pode vir automaticamente do primeiro jogo selecionado.</p>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Status da Rodada</label>
+                                        <select id="round-status" class="form-control">
+                                            <option value="0">Não Iniciada</option>
+                                            <option value="1">Em Progresso</option>
+                                            <option value="2">Finalizada</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Data de Término da Rodada</label>
+                                        <input type="datetime-local" id="round-finish-timestamp" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Torneios (separar por vírgula)</label>
+                                    <input type="text" id="round-tournaments" placeholder="Ex: superliga, copa"
+                                        class="form-control">
+                                    <p class="help-text">Informe em quais torneios esta rodada será válida</p>
+                                </div>
                             </div>
-                            <p class="help-text">Defina o timestamp limite para cada partida individualmente</p>
+
+                            <div class="form-section">
+                                <div class="match-form-header">
+                                    <h3>Partidas</h3>
+                                    <button type="button" id="add-match-btn" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-plus"></i> Adicionar Partida
+                                    </button>
+                                </div>
+
+                                <div id="matches-container">
+                                    <div class="matches-empty-state">
+                                        <strong>Nenhuma partida adicionada ainda</strong>
+                                        Importe jogos acima ou adicione uma partida manualmente para começar.
+                                    </div>
+                                </div>
+                                <p class="help-text">Defina o timestamp limite para cada partida individualmente</p>
+                            </div>
                         </div>
 
                         <div class="action-buttons">
@@ -3102,9 +3347,10 @@ Time B: 2.20, 44%
         // Create Round Functionality
         document.getElementById('create-round-btn').addEventListener('click', () => {
             document.getElementById('create-round-form').style.display = 'block';
+            document.getElementById('round-status').value = '0';
             populateDatalist();
             document.getElementById('matches-container').innerHTML = '';
-            document.getElementById('add-match-btn').click(); // Auto adiciona a primeira partida
+            renderMatchesEmptyState();
         });
 
         document.getElementById('cancel-round-btn').addEventListener('click', () => {
@@ -3142,6 +3388,9 @@ Time B: 2.20, 44%
 
         function createMatchCardUI(containerId, match = {}) {
             const matchesContainer = document.getElementById(containerId);
+            if (containerId === 'matches-container') {
+                clearMatchesEmptyState();
+            }
             const matchDiv = document.createElement('div');
             matchDiv.className = 'match-card-row';
             matchDiv.dataset.apiProvider = match.apiProvider || '';
@@ -3165,7 +3414,13 @@ Time B: 2.20, 44%
                 <div class="match-teams-grid">
                     <div class="team-selection-group">
                         <label>Time da Casa</label>
-                        <input list="teams-datalist" class="home-team" placeholder="Buscar time da casa..." data-team-id="${match.homeTeam || ''}">
+                        <div class="team-combobox" data-side="home">
+                            <input type="text" class="home-team team-combobox-input" placeholder="Buscar time da casa..." autocomplete="off" data-team-id="${match.homeTeam || ''}">
+                            <div class="team-combobox-preview is-hidden"></div>
+                            <div class="team-combobox-dropdown is-hidden">
+                                <div class="team-combobox-list"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="score-panel">
                         <span class="score-panel-label">Placar final</span>
@@ -3185,7 +3440,13 @@ Time B: 2.20, 44%
                     </div>
                     <div class="team-selection-group">
                         <label>Time Visitante</label>
-                        <input list="teams-datalist" class="away-team" placeholder="Buscar time visitante..." data-team-id="${match.awayTeam || ''}">
+                        <div class="team-combobox" data-side="away">
+                            <input type="text" class="away-team team-combobox-input" placeholder="Buscar time visitante..." autocomplete="off" data-team-id="${match.awayTeam || ''}">
+                            <div class="team-combobox-preview is-hidden"></div>
+                            <div class="team-combobox-dropdown is-hidden">
+                                <div class="team-combobox-list"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="match-card-footer">
@@ -3200,16 +3461,8 @@ Time B: 2.20, 44%
             `;
             matchesContainer.appendChild(matchDiv);
 
-            if (match.homeTeam) {
-                database.ref(`teams/${match.homeTeam}/name`).once('value', s => {
-                    matchDiv.querySelector('.home-team').value = `${s.val()} (${match.homeTeam})`;
-                });
-            }
-            if (match.awayTeam) {
-                database.ref(`teams/${match.awayTeam}/name`).once('value', s => {
-                    matchDiv.querySelector('.away-team').value = `${s.val()} (${match.awayTeam})`;
-                });
-            }
+            initializeTeamCombobox(matchDiv.querySelector('.team-combobox[data-side="home"]'), match.homeTeam || '');
+            initializeTeamCombobox(matchDiv.querySelector('.team-combobox[data-side="away"]'), match.awayTeam || '');
 
             matchDiv.querySelectorAll('.score-stepper-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -3221,27 +3474,38 @@ Time B: 2.20, 44%
                 });
             });
 
-            matchDiv.querySelectorAll('input[list]').forEach(input => {
-                input.addEventListener('change', () => {
-                    const value = input.value;
-                    const regexMatch = value.match(/\(([^)]+)\)$/);
-                    if (regexMatch) input.dataset.teamId = regexMatch[1];
-                    else {
-                        input.dataset.teamId = '';
-                        input.value = '';
-                        alert('Seleção inválida. Escolha da lista.');
-                    }
-                });
-            });
-
             matchDiv.querySelector('.remove-match-btn').addEventListener('click', () => {
                 matchesContainer.removeChild(matchDiv);
+                if (containerId === 'matches-container' && !matchesContainer.querySelector('.match-card-row')) {
+                    renderMatchesEmptyState();
+                }
             });
         }
 
         document.getElementById('add-match-btn').addEventListener('click', () => {
             createMatchCardUI('matches-container');
         });
+
+        function renderMatchesEmptyState() {
+            const matchesContainer = document.getElementById('matches-container');
+            if (!matchesContainer || matchesContainer.querySelector('.match-card-row') || matchesContainer.querySelector('.matches-empty-state')) {
+                return;
+            }
+            matchesContainer.innerHTML = `
+                <div class="matches-empty-state">
+                    <strong>Nenhuma partida adicionada ainda</strong>
+                    Importe jogos acima ou adicione uma partida manualmente para começar.
+                </div>
+            `;
+        }
+
+        function clearMatchesEmptyState() {
+            const matchesContainer = document.getElementById('matches-container');
+            const emptyState = matchesContainer?.querySelector('.matches-empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+        }
 
         function toDateInputValue(date) {
             const year = date.getFullYear();
@@ -3652,8 +3916,18 @@ Time B: 2.20, 44%
             `;
 
             document.getElementById('api-football-add-selected').addEventListener('click', () => {
-                document.querySelectorAll('.api-fixture-check:checked').forEach((checkbox) => {
-                    const fixture = latestApiFixtures[parseInt(checkbox.dataset.index)];
+                const selectedFixtures = Array.from(document.querySelectorAll('.api-fixture-check:checked'))
+                    .map((checkbox) => latestApiFixtures[parseInt(checkbox.dataset.index)])
+                    .filter(Boolean)
+                    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                if (!selectedFixtures.length) {
+                    setApiStatus('Selecione ao menos um jogo antes de adicionar.', 'error');
+                    return;
+                }
+
+                clearMatchesEmptyState();
+                selectedFixtures.forEach((fixture) => {
                     createMatchCardUI('matches-container', {
                         homeTeam: fixture.localHomeTeamId,
                         awayTeam: fixture.localAwayTeamId,
@@ -3670,7 +3944,14 @@ Time B: 2.20, 44%
                         liveScore: fixture.liveScore
                     });
                 });
-                setApiStatus('Jogos selecionados adicionados. Revise os times e horarios antes de salvar a rodada.', 'success');
+
+                const roundFinishInput = document.getElementById('round-finish-timestamp');
+                if (roundFinishInput && !roundFinishInput.value && selectedFixtures[0]?.timestamp) {
+                    roundFinishInput.value = toDatetimeLocalValue(selectedFixtures[0].timestamp);
+                }
+
+                document.getElementById('round-status').value = '0';
+                setApiStatus('Jogos selecionados adicionados. A data final da rodada foi preenchida com o primeiro jogo importado.', 'success');
             });
 
             document.getElementById('deepseek-create-teams').addEventListener('click', createDeepSeekSuggestedTeams);
@@ -4512,8 +4793,8 @@ Time B: 2.20, 44%
                 let roundsHtml = '';
 
                 if (splitNum) {
-                    roundsHtml += renderRoundsTableGroup('Turno Abertura', aberturaRounds, `1 a ${splitNum}`, true);
-                    roundsHtml += renderRoundsTableGroup('Turno Clausura', clausuraRounds, `${splitNum + 1} em diante`, false);
+                    roundsHtml += renderRoundsTableGroup('Turno Abertura', aberturaRounds, `1 a ${splitNum}`, false);
+                    roundsHtml += renderRoundsTableGroup('Turno Clausura', clausuraRounds, `${splitNum + 1} em diante`, true);
                 } else {
                     roundsHtml += renderRoundsTableGroup('Superliga - Rodadas', roundsArray, `1 a ${roundsArray.length}`, true);
                 }
@@ -6041,24 +6322,144 @@ ${matchupBlocks}`;
             }
         }
 
-        function populateDatalist() {
-            const teamsRef = database.ref('teams');
-            teamsRef.once('value', (snapshot) => {
-                let datalist = document.getElementById('teams-datalist');
-                if (!datalist) {
-                    datalist = document.createElement('datalist');
-                    datalist.id = 'teams-datalist';
-                    document.body.appendChild(datalist);
-                } else {
-                    datalist.innerHTML = '';
+        function getTeamImageUrl(team) {
+            return team?.image || './bdd.png';
+        }
+
+        function buildTeamComboboxPreview(team) {
+            if (!team) return '';
+            return `<img src="${escapeHtml(getTeamImageUrl(team))}" alt="${escapeHtml(team.name || 'Time')}"><strong>${escapeHtml(team.name || 'Time')}</strong>`;
+        }
+
+        function getTeamSearchText(teamId, team) {
+            return `${team?.name || ''} ${team?.abbr || ''} ${team?.from || ''} ${teamId || ''}`
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        function renderTeamComboboxOptions(container, teamsMap, filterText = '') {
+            const list = container.querySelector('.team-combobox-list');
+            if (!list) return;
+
+            const normalizedFilter = (filterText || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+
+            const entries = Object.entries(teamsMap || {})
+                .filter(([teamId, team]) => !normalizedFilter || getTeamSearchText(teamId, team).includes(normalizedFilter))
+                .sort(([, a], [, b]) => (a?.name || '').localeCompare(b?.name || '', 'pt-BR'));
+
+            if (!entries.length) {
+                list.innerHTML = '<div class="team-combobox-empty">Nenhum time encontrado.</div>';
+                return;
+            }
+
+            list.innerHTML = entries.map(([teamId, team]) => `
+                <button type="button" class="team-combobox-option" data-team-id="${escapeHtml(teamId)}">
+                    <img src="${escapeHtml(getTeamImageUrl(team))}" alt="${escapeHtml(team?.name || 'Time')}">
+                    <span>${escapeHtml(team?.name || teamId)}</span>
+                </button>
+            `).join('');
+        }
+
+        function selectTeamComboboxOption(container, teamId, teamsMap) {
+            const input = container.querySelector('.team-combobox-input');
+            const preview = container.querySelector('.team-combobox-preview');
+            const dropdown = container.querySelector('.team-combobox-dropdown');
+            const team = teamsMap?.[teamId];
+
+            if (!input) return;
+
+            if (!team) {
+                input.value = '';
+                input.dataset.teamId = '';
+                if (preview) {
+                    preview.innerHTML = '';
+                    preview.classList.add('is-hidden');
                 }
-                snapshot.forEach((childSnapshot) => {
-                    const teamData = childSnapshot.val();
-                    const option = document.createElement('option');
-                    // Formato: "Nome do Time (ID_DO_TIME)"
-                    option.value = `${teamData.name} (${childSnapshot.key})`;
-                    datalist.appendChild(option);
-                });
+                if (dropdown) dropdown.classList.add('is-hidden');
+                return;
+            }
+
+            input.value = team.name || '';
+            input.dataset.teamId = teamId;
+            if (preview) {
+                preview.innerHTML = buildTeamComboboxPreview(team);
+                preview.classList.remove('is-hidden');
+            }
+            if (dropdown) dropdown.classList.add('is-hidden');
+        }
+
+        async function initializeTeamCombobox(container, initialTeamId = '') {
+            if (!container) {
+                return;
+            }
+
+            const input = container.querySelector('.team-combobox-input');
+            const dropdown = container.querySelector('.team-combobox-dropdown');
+            const teamsMap = await getTeamsCache();
+            container._teamsMap = teamsMap;
+
+            renderTeamComboboxOptions(container, container._teamsMap, '');
+            if (initialTeamId) selectTeamComboboxOption(container, initialTeamId, container._teamsMap);
+
+            if (container.dataset.initialized === 'true') {
+                return;
+            }
+
+            container.dataset.initialized = 'true';
+
+            input.addEventListener('focus', () => {
+                renderTeamComboboxOptions(container, container._teamsMap || {}, input.value);
+                dropdown.classList.remove('is-hidden');
+            });
+
+            input.addEventListener('input', () => {
+                input.dataset.teamId = '';
+                renderTeamComboboxOptions(container, container._teamsMap || {}, input.value);
+                dropdown.classList.remove('is-hidden');
+                const preview = container.querySelector('.team-combobox-preview');
+                preview.innerHTML = '';
+                preview.classList.add('is-hidden');
+            });
+
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    dropdown.classList.add('is-hidden');
+                    input.blur();
+                }
+            });
+
+            dropdown.addEventListener('mousedown', (event) => {
+                event.preventDefault();
+            });
+
+            dropdown.addEventListener('click', (event) => {
+                const option = event.target.closest('.team-combobox-option');
+                if (!option) return;
+                selectTeamComboboxOption(container, option.dataset.teamId, container._teamsMap || {});
+            });
+
+            input.addEventListener('blur', () => {
+                window.setTimeout(() => {
+                    const teamId = input.dataset.teamId;
+                    if (!teamId) {
+                        input.value = '';
+                    } else if ((container._teamsMap || {})[teamId]) {
+                        input.value = container._teamsMap[teamId].name || '';
+                    }
+                    dropdown.classList.add('is-hidden');
+                }, 120);
+            });
+        }
+
+        function populateDatalist() {
+            document.querySelectorAll('.team-combobox').forEach(container => {
+                const teamId = container.querySelector('.team-combobox-input')?.dataset.teamId || '';
+                initializeTeamCombobox(container, teamId);
             });
         }
 
