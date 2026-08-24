@@ -20,6 +20,272 @@ function getAppUrl() {
   return (process.env.APP_URL || 'https://brdadepre.vercel.app').replace(/\/$/, '');
 }
 
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getMatchesArray(matches) {
+  if (!matches) return [];
+  return Array.isArray(matches) ? matches.filter(Boolean) : Object.values(matches).filter(Boolean);
+}
+
+function isStarPrediction(prediction) {
+  return Boolean(prediction?.isStarMatch || prediction?.isCaptain || prediction?.star || prediction?.doublePoints);
+}
+
+function getUserDisplayName(user) {
+  return user?.name || user?.email || 'Jogador';
+}
+
+function getTeamDisplayName(allTeams, teamId, fallback = 'Time') {
+  return allTeams?.[teamId]?.name || fallback || teamId || 'Time';
+}
+
+function formatStageName(stageKey) {
+  return {
+    groups: 'Fase de Grupos',
+    quarterFinals: 'Quartas de Final',
+    semiFinals: 'Semifinais',
+    final: 'Final'
+  }[stageKey] || 'Supercopa';
+}
+
+function getSupercopaActiveStage(supercopaData = {}) {
+  if (supercopaData.activeStage) return supercopaData.activeStage;
+  if (supercopaData.final?.status === 1) return 'final';
+  if (supercopaData.semiFinals?.status === 1) return 'semiFinals';
+  if (supercopaData.quarterFinals?.status === 1) return 'quarterFinals';
+  if (supercopaData.groups?.status === 1) return 'groups';
+  return 'groups';
+}
+
+function buildStarPlayersHtml(roundData, participants) {
+  const starPlayers = roundData?.starPlayers || {};
+  const rows = participants.map((participant) => {
+    const selection = starPlayers[participant.uid];
+    const athleteName = selection?.athleteName || 'Não escolheu';
+    return `
+      <tr style="border-bottom: 1px solid #f1f5f9;">
+        <td style="padding: 9px 12px; color: #334155; font-weight: 600;">${escapeHtml(getUserDisplayName(participant))}</td>
+        <td style="padding: 9px 12px; color: #0f172a; text-align: right;">${escapeHtml(athleteName)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <h2 style="margin: 30px 0 14px; font-size: 16px; color: #0f172a; border-bottom: 2px solid #f59e0b; padding-bottom: 6px; font-weight: 700;">
+      🎯 Artilheiros Escolhidos
+    </h2>
+    <table style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; background: #fffef7;">
+      <thead style="background: #fef3c7;">
+        <tr>
+          <th style="padding: 10px 12px; text-align: left; color: #92400e; font-weight: 700;">Jogador</th>
+          <th style="padding: 10px 12px; text-align: right; color: #92400e; font-weight: 700;">Artilheiro</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function buildMatchPredictionsHtml(matches, participants, allTeams, mode = 'start') {
+  return matches.map((match, matchIdx) => {
+    const homeTeamName = getTeamDisplayName(allTeams, match.homeTeam, match.homeTeam);
+    const awayTeamName = getTeamDisplayName(allTeams, match.awayTeam, match.awayTeam);
+    const matchPredictions = match.predictions || {};
+    const hasStarRow = participants.some((participant) => isStarPrediction(matchPredictions[participant.uid]));
+
+    const rows = participants.map((participant) => {
+      const prediction = matchPredictions[participant.uid];
+      const star = isStarPrediction(prediction);
+      let pointsHtml = '';
+
+      if (mode === 'end') {
+        const pts = calculateMatchPoints(match.finalResult, prediction);
+        let badgeBg = '#94a3b8';
+        let badgeColor = '#ffffff';
+        let pointsText = '0 pts';
+        if (pts === 3) {
+          badgeBg = '#10b981';
+          pointsText = '+3 pts';
+        } else if (pts === 1) {
+          badgeBg = '#f59e0b';
+          badgeColor = '#111827';
+          pointsText = '+1 pt';
+        } else if (pts === -1) {
+          badgeBg = '#ef4444';
+          pointsText = '-1 pt';
+        }
+
+        pointsHtml = `
+          <td style="padding: 9px 12px; text-align: right;">
+            <span style="background-color: ${badgeBg}; color: ${badgeColor}; padding: 3px 8px; border-radius: 999px; font-weight: 700; font-size: 11px; display: inline-block;">
+              ${pointsText}
+            </span>
+          </td>
+        `;
+      }
+
+      const predictionText = prediction && prediction.homeScore !== undefined
+        ? `${prediction.homeScore} x ${prediction.awayScore}${star ? ' ⭐' : ''}`
+        : 'Não palpitou';
+
+      return `
+        <tr style="border-bottom: 1px solid #f1f5f9; ${star ? 'background: linear-gradient(90deg, rgba(245, 158, 11, 0.18), rgba(255,255,255,0));' : ''}">
+          <td style="padding: 9px 12px; text-align: left; color: #334155; font-weight: 600;">${escapeHtml(getUserDisplayName(participant))}</td>
+          <td style="padding: 9px 12px; text-align: center; color: ${star ? '#92400e' : '#1e3a8a'}; font-weight: ${star ? '800' : '700'};">
+            ${escapeHtml(predictionText)}
+          </td>
+          ${pointsHtml}
+        </tr>
+      `;
+    }).join('');
+
+    const headerTone = hasStarRow ? 'background: linear-gradient(90deg, #fef3c7, #f8fafc); color: #92400e;' : 'background: #f1f5f9; color: #1e293b;';
+    const scorePill = mode === 'end'
+      ? `<span style="background: #2563eb; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 800; margin-left: 10px; color: white;">FIM: ${match.finalResult.homeScore} x ${match.finalResult.awayScore}</span>`
+      : '';
+
+    return `
+      <div style="background: #ffffff; border: 1px solid ${hasStarRow ? '#f59e0b' : '#e2e8f0'}; border-radius: 10px; margin-bottom: 18px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <div style="${headerTone} padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 700; font-size: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <span>${escapeHtml(homeTeamName)} vs ${escapeHtml(awayTeamName)}</span>
+          ${scorePill}
+        </div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  }).join('');
+}
+
+function buildSupercopaSummaryHtml(supercopaData, allUsers) {
+  if (!supercopaData || Object.keys(supercopaData).length === 0) {
+    return '<p style="margin: 0; color: #64748b;">Supercopa ainda não configurada.</p>';
+  }
+
+  const activeStage = getSupercopaActiveStage(supercopaData);
+  if (activeStage === 'groups') {
+    const activeRound = Object.entries(supercopaData.groups?.rounds || {})
+      .map(([roundId, round]) => ({ roundId, ...round }))
+      .find((round) => round.status === 1) || null;
+
+    const groupMatches = getMatchesArray(activeRound?.matches).map((match) => {
+      const p1 = allUsers[match.homeTeam || match.player1Id]?.name || 'A definir';
+      const p2 = allUsers[match.awayTeam || match.player2Id]?.name || 'A definir';
+      const score = match.result || 'Aguardando';
+      return `<li style="margin-bottom: 4px;"><strong>${escapeHtml(p1)}</strong> vs <strong>${escapeHtml(p2)}</strong> <span style="color:#64748b;">(${escapeHtml(score)})</span></li>`;
+    }).join('');
+
+    return `
+      <p style="margin: 0 0 8px; color: #334155;"><strong>${formatStageName(activeStage)}</strong> em andamento.</p>
+      ${groupMatches ? `<ul style="margin: 0; padding-left: 18px; color: #475569;">${groupMatches}</ul>` : '<p style="margin: 0; color: #64748b;">Nenhum confronto ativo encontrado nos grupos.</p>'}
+    `;
+  }
+
+  const phaseData = supercopaData[activeStage] || {};
+  const phaseLabels = [
+    { key: 'matches', label: 'Série A' },
+    { key: 'b', label: 'Série B' },
+    { key: 'c', label: 'Série C' }
+  ];
+
+  const blocks = phaseLabels.map(({ key, label }) => {
+    const matches = getMatchesArray(phaseData[key]);
+    if (!matches.length) return '';
+    const items = matches.map((match) => {
+      const p1 = allUsers[match.homeTeam || match.player1Id]?.name || 'A definir';
+      const p2 = allUsers[match.awayTeam || match.player2Id]?.name || 'A definir';
+      const score = match.result || match.manualResult || 'Aguardando';
+      return `<li style="margin-bottom: 4px;"><strong>${escapeHtml(p1)}</strong> vs <strong>${escapeHtml(p2)}</strong> <span style="color:#64748b;">(${escapeHtml(score)})</span></li>`;
+    }).join('');
+    return `<div style="margin-top: 10px;"><strong style="color:#0f172a;">${label}</strong><ul style="margin: 6px 0 0; padding-left: 18px; color:#475569;">${items}</ul></div>`;
+  }).join('');
+
+  return `
+    <p style="margin: 0 0 8px; color: #334155;"><strong>${formatStageName(activeStage)}</strong> em andamento.</p>
+    ${blocks || '<p style="margin: 0; color: #64748b;">Nenhum confronto ativo encontrado.</p>'}
+  `;
+}
+
+function buildRestaUmSummaryHtml(restaUmData, allUsers) {
+  const participants = restaUmData?.participants || [];
+  const eliminations = Object.values(restaUmData?.eliminations || {});
+  const eliminatedSet = new Set(eliminations.map((item) => item.eliminatedUserId).filter(Boolean));
+  const survivors = participants.filter((uid) => !eliminatedSet.has(uid));
+  const lastElimination = eliminations.sort((a, b) => Number(b.timestamp || 0) - Number(a.timestamp || 0))[0];
+  const lastEliminatedName = lastElimination?.eliminatedUserId ? (allUsers[lastElimination.eliminatedUserId]?.name || lastElimination.eliminatedUserId) : 'Ninguém na última rodada';
+
+  return `
+    <p style="margin: 0 0 6px; color: #334155;">Sobreviventes: <strong>${survivors.length}</strong> de <strong>${participants.length || Object.keys(allUsers).length}</strong>.</p>
+    <p style="margin: 0; color: #64748b;">Último eliminado: <strong>${escapeHtml(lastEliminatedName)}</strong>.</p>
+  `;
+}
+
+function buildCinturaoSummaryHtml(cinturaoData, allUsers) {
+  const championName = allUsers[cinturaoData?.championId]?.name || 'Ninguém';
+  const challengerName = allUsers[cinturaoData?.challengerId]?.name || 'A definir';
+  const currentMatch = cinturaoData?.currentMatch || {};
+  const scoreText = currentMatch.champScore !== undefined && currentMatch.challengerScore !== undefined
+    ? `${currentMatch.champScore} x ${currentMatch.challengerScore}`
+    : 'Aguardando confronto';
+
+  return `
+    <p style="margin: 0 0 6px; color: #334155;">Campeão: <strong>${escapeHtml(championName)}</strong> (${Number(cinturaoData?.defenses || 0)} defesa(s)).</p>
+    <p style="margin: 0 0 6px; color: #334155;">Desafiante atual: <strong>${escapeHtml(challengerName)}</strong>.</p>
+    <p style="margin: 0; color: #64748b;">Placar do duelo: <strong>${escapeHtml(scoreText)}</strong>.</p>
+  `;
+}
+
+function buildFormulaDepreSummaryHtml(formulaData, allUsers) {
+  const standings = Array.isArray(formulaData?.standings) ? formulaData.standings : [];
+  if (!standings.length) {
+    return '<p style="margin: 0; color: #64748b;">Fórmula Deprê ainda não calculada.</p>';
+  }
+
+  const topThree = standings.slice(0, 3).map((entry, index) => {
+    const userName = allUsers[entry.userId]?.name || entry.userId || `Piloto ${index + 1}`;
+    return `<li style="margin-bottom: 4px;"><strong>${index + 1}º ${escapeHtml(userName)}</strong> - ${Number(entry.points || 0)} pts</li>`;
+  }).join('');
+
+  return `
+    <p style="margin: 0 0 8px; color: #334155;">Recorte atual: <strong>${escapeHtml(formulaData.stageFilterLabel || formulaData.stageFilter || 'Temporada')}</strong>.</p>
+    <ul style="margin: 0; padding-left: 18px; color: #475569;">${topThree}</ul>
+  `;
+}
+
+function buildTournamentContextHtml({ supercopaData, restaUmData, cinturaoData, formulaData, allUsers }) {
+  return `
+    <h2 style="margin: 30px 0 14px; font-size: 16px; color: #0f172a; border-bottom: 2px solid #0ea5e9; padding-bottom: 6px; font-weight: 700;">
+      🧭 Panorama Paralelo da Rodada
+    </h2>
+    <div style="display: grid; gap: 12px;">
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
+        <div style="font-weight: 800; color: #0f172a; margin-bottom: 8px;">🏆 Supercopa</div>
+        ${buildSupercopaSummaryHtml(supercopaData, allUsers)}
+      </div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
+        <div style="font-weight: 800; color: #0f172a; margin-bottom: 8px;">💀 Resta Um</div>
+        ${buildRestaUmSummaryHtml(restaUmData, allUsers)}
+      </div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
+        <div style="font-weight: 800; color: #0f172a; margin-bottom: 8px;">🥊 Cinturão</div>
+        ${buildCinturaoSummaryHtml(cinturaoData, allUsers)}
+      </div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
+        <div style="font-weight: 800; color: #0f172a; margin-bottom: 8px;">🏎️ Fórmula Deprê</div>
+        ${buildFormulaDepreSummaryHtml(formulaData, allUsers)}
+      </div>
+    </div>
+  `;
+}
+
 async function firebaseRestGet(path, query = '', label = path) {
   const baseUrl = getDatabaseUrl();
   if (!baseUrl) throw new Error('FIREBASE_DATABASE_URL nao configurado.');
@@ -89,9 +355,13 @@ export default async function handler(req, res) {
     diagnostics.push(`Rodadas ativas encontradas: ${Object.keys(rounds).length}`);
 
     // 3. Carregar dados auxiliares somente quando houver rodada ativa
-    const [teamsData, usersData] = await Promise.all([
+    const [teamsData, usersData, supercopaData, restaUmData, cinturaoData, formulaData] = await Promise.all([
       firebaseRestGet('teams', '', 'consulta de times'),
-      firebaseRestGet('users', '', 'consulta de usuarios')
+      firebaseRestGet('users', '', 'consulta de usuarios'),
+      firebaseRestGet('tournaments/supercopa', '', 'consulta de supercopa'),
+      firebaseRestGet('tournaments/restaUm', '', 'consulta de resta um'),
+      firebaseRestGet('tournaments/cinturao', '', 'consulta de cinturao'),
+      firebaseRestGet('tournaments/formulaDepre', '', 'consulta de formula depre')
     ]);
 
     const allTeams = teamsData || {};
@@ -300,45 +570,14 @@ export default async function handler(req, res) {
         if (emailList.length === 0) {
           log.push(`Rodada ${roundKey}: Nenhum palpite registrado, pulando e-mail de início.`);
         } else {
-          let matchesListHtml = '';
-
-          matches.forEach((match, matchIdx) => {
-            const homeTeamName = allTeams[match.homeTeam]?.name || match.homeTeam;
-            const awayTeamName = allTeams[match.awayTeam]?.name || match.awayTeam;
-            
-            let predictionsRowsHtml = '';
-            const matchPredictions = match.predictions || {};
-
-            participants.forEach(p => {
-              const pred = matchPredictions[p.uid];
-              const predictionText = pred && pred.homeScore !== undefined 
-                ? `${pred.homeScore} x ${pred.awayScore}`
-                : '<span style="color: #94a3b8; font-style: italic;">Não palpitou</span>';
-
-              predictionsRowsHtml += `
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 8px 12px; text-align: left; color: #334155; font-weight: 500;">
-                    ${p.name}
-                  </td>
-                  <td style="padding: 8px 12px; text-align: right; font-weight: 700; color: #1e3a8a;">
-                    ${predictionText}
-                  </td>
-                </tr>
-              `;
-            });
-
-            matchesListHtml += `
-              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                <div style="background: #f1f5f9; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 700; color: #1e293b; font-size: 15px;">
-                  ${homeTeamName} vs ${awayTeamName}
-                </div>
-                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                  <tbody>
-                    ${predictionsRowsHtml}
-                  </tbody>
-                </table>
-              </div>
-            `;
+          const matchesListHtml = buildMatchPredictionsHtml(matches, participants, allTeams, 'start');
+          const starPlayersHtml = buildStarPlayersHtml(roundData, participants);
+          const contextHtml = buildTournamentContextHtml({
+            supercopaData,
+            restaUmData,
+            cinturaoData,
+            formulaData,
+            allUsers
           });
 
           const startEmailHtml = `
@@ -352,7 +591,12 @@ export default async function handler(req, res) {
                   <p style="margin: 6px 0 0; font-size: 14px; opacity: 0.9;">Confira o que cada jogador palpitou nesta rodada.</p>
                 </div>
                 <div style="background: white; border: 1px solid #e2e8f0; border-radius: 0 0 12px 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                  <h2 style="margin-top: 0; margin-bottom: 16px; font-size: 16px; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; font-weight: 700;">
+                    📋 Jogos e Palpites Consolidados
+                  </h2>
                   ${matchesListHtml}
+                  ${starPlayersHtml}
+                  ${contextHtml}
                 </div>
                 <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #94a3b8;">
                   <p style="margin: 0;">BR Depressão - Palpites Consolidados</p>
@@ -447,73 +691,14 @@ export default async function handler(req, res) {
             `;
           });
 
-          // HTML dos Detalhes Jogo a Jogo
-          let resultsListHtml = '';
-          matches.forEach((match, matchIdx) => {
-            const homeTeamName = allTeams[match.homeTeam]?.name || match.homeTeam;
-            const awayTeamName = allTeams[match.awayTeam]?.name || match.awayTeam;
-            const finalScoreText = `${match.finalResult.homeScore} x ${match.finalResult.awayScore}`;
-            
-            let predictionDetailsHtml = '';
-
-            playersPerformance.forEach(p => {
-              const scoreDetail = p.scores.find(s => s.matchIdx === matchIdx);
-              const pred = scoreDetail?.prediction;
-              const pts = scoreDetail?.points;
-
-              let badgeBg = '#94a3b8';
-              let badgeText = 'white';
-              let pointsText = '0 pts';
-
-              if (pts === 3) {
-                badgeBg = '#10b981';
-                pointsText = '+3 pts';
-              } else if (pts === 1) {
-                badgeBg = '#f59e0b';
-                badgeText = '#000';
-                pointsText = '+1 pt';
-              } else if (pts === -1) {
-                badgeBg = '#ef4444';
-                pointsText = '-1 pt';
-              }
-
-              const predText = pred && pred.homeScore !== undefined
-                ? `${pred.homeScore} x ${pred.awayScore}`
-                : 'Não palpitou';
-
-              predictionDetailsHtml += `
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 8px 12px; text-align: left; color: #334155; font-weight: 500;">
-                    ${p.name}
-                  </td>
-                  <td style="padding: 8px 12px; text-align: center; color: #64748b; font-size: 12px;">
-                    ${predText}
-                  </td>
-                  <td style="padding: 8px 12px; text-align: right;">
-                    <span style="background-color: ${badgeBg}; color: ${badgeText}; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; display: inline-block;">
-                      ${pointsText}
-                    </span>
-                  </td>
-                </tr>
-              `;
-            });
-
-            resultsListHtml += `
-              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                <div style="background: #0f172a; color: white; padding: 12px 16px; font-weight: 700; font-size: 14px; display: flex; justify-content: space-between; align-items: center;">
-                  <span style="margin-right: auto;">${homeTeamName} vs ${awayTeamName}</span>
-                  <span style="background: #2563eb; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 800; float: right; margin-left: 10px;">
-                    FIM: ${finalScoreText}
-                  </span>
-                  <div style="clear: both;"></div>
-                </div>
-                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                  <tbody>
-                    ${predictionDetailsHtml}
-                  </tbody>
-                </table>
-              </div>
-            `;
+          const resultsListHtml = buildMatchPredictionsHtml(matches, playersPerformance, allTeams, 'end');
+          const starPlayersHtml = buildStarPlayersHtml(roundData, participants);
+          const contextHtml = buildTournamentContextHtml({
+            supercopaData,
+            restaUmData,
+            cinturaoData,
+            formulaData,
+            allUsers
           });
 
           const endEmailHtml = `
@@ -541,6 +726,8 @@ export default async function handler(req, res) {
                     📊 Detalhe por Partida
                   </h2>
                   ${resultsListHtml}
+                  ${starPlayersHtml}
+                  ${contextHtml}
                 </div>
                 
                 <div style="background: #f1f5f9; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; padding: 16px; text-align: center; font-size: 12px; color: #94a3b8;">

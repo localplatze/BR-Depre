@@ -2133,6 +2133,7 @@
         let usersCache = {};
         let countdownInterval;
         let sidebarSyncTimer = null;
+        let sidebarSyncLocalLock = null;
         const ESPN_SYNC_MIN_INTERVAL_MS = 30 * 60 * 1000;
         const ESPN_SYNC_LOCK_PATH = 'system/espnGlobalSync';
 
@@ -2672,7 +2673,15 @@
 
         async function getSidebarSyncLock() {
             const snapshot = await database.ref(ESPN_SYNC_LOCK_PATH).once('value');
-            return snapshot.val() || null;
+            const remoteLock = snapshot.val() || null;
+            if (!remoteLock) {
+                return sidebarSyncLocalLock;
+            }
+            if (!sidebarSyncLocalLock || Number(remoteLock.lastRunAt || 0) >= Number(sidebarSyncLocalLock.lastRunAt || 0)) {
+                sidebarSyncLocalLock = remoteLock;
+                return remoteLock;
+            }
+            return sidebarSyncLocalLock;
         }
 
         function updateSidebarSyncButtonState(lockData = null) {
@@ -2990,6 +2999,13 @@
                 }
 
                 const result = await syncEspnScoresFromHome();
+                sidebarSyncLocalLock = {
+                    lastRunAt: now,
+                    lastRunBy: user?.uid || '',
+                    lastRunByName: userName,
+                    lastOutcome: result.unchanged ? 'unchanged' : 'success'
+                };
+                updateSidebarSyncButtonState(sidebarSyncLocalLock);
                 await lockRef.set({
                     lastRunAt: firebase.database.ServerValue.TIMESTAMP,
                     lastRunBy: user?.uid || '',
