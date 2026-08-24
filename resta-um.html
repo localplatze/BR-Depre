@@ -169,6 +169,77 @@
             font-weight: 500;
         }
 
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .insight-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .insight-card h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .insight-kicker {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .insight-highlight {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .insight-subcopy {
+            margin-top: 0.35rem;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .risk-list {
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .risk-item img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .survivor-rank {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
         /* Main Sections */
         .section-header {
             display: flex;
@@ -242,6 +313,26 @@
             padding: 2px 8px;
             border-radius: 10px;
             margin-top: 4px;
+        }
+
+        .survivor-meta {
+            margin-top: 0.45rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .survivor-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         /* Eliminations Timeline */
@@ -389,6 +480,21 @@
                 </div>
             </div>
 
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h3><i class="fas fa-bolt" style="color: var(--warning);"></i> Momento da Edição</h3>
+                    <div id="restaum-round-summary"></div>
+                </div>
+                <div class="insight-card">
+                    <h3><i class="fas fa-triangle-exclamation" style="color: var(--primary);"></i> Risco de Eliminação</h3>
+                    <div id="restaum-danger-zone"></div>
+                </div>
+                <div class="insight-card">
+                    <h3><i class="fas fa-chart-line" style="color: var(--info);"></i> Ranking dos Vivos</h3>
+                    <div id="restaum-live-ranking"></div>
+                </div>
+            </div>
+
             <!-- Sobreviventes -->
             <div class="section-header">
                 <h2><i class="fas fa-shield-halved" style="color: var(--success);"></i> Sobreviventes Vivos</h2>
@@ -425,41 +531,192 @@
         let usersCache = {};
         let teamsCache = {};
 
+        function getManausTimestamp(dateString) {
+            if (!dateString) return 0;
+            if (typeof dateString === 'number') return dateString;
+            if (dateString.includes('Z') || dateString.match(/[+-]\d\d:\d\d$/)) {
+                return new Date(dateString).getTime();
+            }
+            return new Date(dateString + '-04:00').getTime();
+        }
+
+        function calculateRoundPoints(roundData) {
+            if (!roundData?.matches) return {};
+            const points = {};
+
+            const matches = Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches);
+            matches.forEach(match => {
+                if (!match || !match.result || !match.predictions) return;
+                const [homeResult, awayResult] = String(match.result).split('x').map(s => parseInt(String(s).trim(), 10));
+                if (Number.isNaN(homeResult) || Number.isNaN(awayResult)) return;
+
+                Object.entries(match.predictions).forEach(([pid, pred]) => {
+                    if (!Number.isFinite(Number(pred?.homeScore)) || !Number.isFinite(Number(pred?.awayScore))) return;
+                    const predHome = Number(pred.homeScore);
+                    const predAway = Number(pred.awayScore);
+                    let pts = 0;
+
+                    if (predHome === homeResult && predAway === awayResult) pts = 3;
+                    else {
+                        const finalWinner = Math.sign(homeResult - awayResult);
+                        const predWinner = Math.sign(predHome - predAway);
+                        if (finalWinner === predWinner) pts = 1;
+                        else if (homeResult === predAway && awayResult === predHome) pts = -1;
+                    }
+
+                    if (pred.isStarMatch || pred.isCaptain || pred.star || pred.doublePoints) {
+                        pts *= 2;
+                    }
+
+                    points[pid] = (points[pid] || 0) + pts;
+                });
+            });
+
+            const starPlayers = roundData.starPlayers || {};
+            const playerGoals = roundData.playerGoals || {};
+            Object.entries(starPlayers).forEach(([pid, sp]) => {
+                if (!sp?.athleteId) return;
+                const goalInfo = playerGoals[sp.athleteId] || 0;
+                const goalCount = typeof goalInfo === 'number' ? goalInfo : (goalInfo.count || 0);
+                points[pid] = (points[pid] || 0) + goalCount;
+            });
+
+            return points;
+        }
+
+        function getUserDisplayInfo(uid) {
+            const user = usersCache[uid];
+            if (!user) {
+                return { name: 'Jogador', avatar: 'default-avatar.png' };
+            }
+            const team = teamsCache[user.teamId || user.team] || {};
+            return {
+                name: (user.customTeamName && user.customTeamName.trim() !== '') ? user.customTeamName.trim() : (user.name || team.name || 'Jogador'),
+                avatar: (user.useCustomShield && user.customShield) ? user.customShield : (team.image || 'default-avatar.png')
+            };
+        }
+
+        function getLatestCompletedRound(roundsMap) {
+            const rounds = Object.values(roundsMap || {}).filter(round => round?.status === 2);
+            rounds.sort((a, b) => getManausTimestamp(b.finishTimestamp || b.deadline || 0) - getManausTimestamp(a.finishTimestamp || a.deadline || 0));
+            return rounds[0] || null;
+        }
+
         async function initRestaUm() {
             try {
-                const [usersSnap, teamsSnap, restaSnap] = await Promise.all([
+                const [usersSnap, teamsSnap, restaSnap, roundsSnap] = await Promise.all([
                     database.ref('users').once('value'),
                     database.ref('teams').once('value'),
-                    database.ref('tournaments/restaUm').once('value')
+                    database.ref('tournaments/restaUm').once('value'),
+                    database.ref('rounds').once('value')
                 ]);
 
                 usersCache = usersSnap.val() || {};
                 teamsCache = teamsSnap.val() || {};
                 const restaData = restaSnap.val() || {};
+                const roundsData = roundsSnap.val() || {};
 
                 const loader = document.getElementById('loader');
                 const mainContent = document.getElementById('main-content');
                 loader.style.display = 'none';
                 mainContent.style.display = 'block';
 
-                renderRestaUm(restaData);
+                renderRestaUm(restaData, roundsData);
             } catch (err) {
                 console.error('Erro ao carregar Resta Um:', err);
                 document.getElementById('loader').innerHTML = '<div class="empty-state">Erro ao carregar dados do Resta Um.</div>';
             }
         }
 
-        function renderRestaUm(data) {
+        function renderRestaUm(data, roundsData) {
             const participants = data.participants || Object.keys(usersCache);
             const eliminations = data.eliminations || {};
             const eliminatedUserIds = new Set(Object.values(eliminations).map(e => e.eliminatedUserId));
 
             const survivors = participants.filter(uid => !eliminatedUserIds.has(uid));
             const totalRounds = Object.keys(eliminations).length;
+            const activeRound = Object.values(roundsData || {}).find(round => round?.status === 1) || null;
+            const latestCompletedRound = getLatestCompletedRound(roundsData);
+            const referenceRound = activeRound || latestCompletedRound;
+            const roundPoints = referenceRound ? calculateRoundPoints(referenceRound) : {};
+            const survivorStandings = survivors.map(uid => ({
+                uid,
+                points: Number(roundPoints[uid] || 0)
+            })).sort((a, b) => b.points - a.points || getUserDisplayInfo(a.uid).name.localeCompare(getUserDisplayInfo(b.uid).name));
+            const ascStandings = [...survivorStandings].sort((a, b) => a.points - b.points || getUserDisplayInfo(a.uid).name.localeCompare(getUserDisplayInfo(b.uid).name));
+            const atRiskPoints = ascStandings[0]?.points ?? null;
+            const dangerZone = atRiskPoints === null ? [] : ascStandings.filter(entry => entry.points === atRiskPoints);
+            const leaderEntry = survivorStandings[0] || null;
+            const safeCutoff = ascStandings.length > dangerZone.length ? ascStandings[dangerZone.length].points : atRiskPoints;
 
             document.getElementById('stat-survivors-count').textContent = survivors.length;
             document.getElementById('stat-eliminated-count').textContent = eliminatedUserIds.size;
             document.getElementById('stat-rounds-count').textContent = totalRounds;
+
+            const roundSummaryEl = document.getElementById('restaum-round-summary');
+            const dangerZoneEl = document.getElementById('restaum-danger-zone');
+            const liveRankingEl = document.getElementById('restaum-live-ranking');
+
+            if (roundSummaryEl) {
+                if (!referenceRound || !leaderEntry) {
+                    roundSummaryEl.innerHTML = '<div class="empty-state" style="padding: 1.2rem;">Ainda não há rodada suficiente para montar o panorama.</div>';
+                } else {
+                    const leaderInfo = getUserDisplayInfo(leaderEntry.uid);
+                    roundSummaryEl.innerHTML = `
+                        <div class="insight-kicker">${activeRound ? 'Rodada em andamento' : 'Última rodada encerrada'}</div>
+                        <div class="insight-highlight">${leaderInfo.name}</div>
+                        <div class="insight-subcopy">Lidera o Resta Um neste recorte com <strong>${leaderEntry.points} pts</strong>.</div>
+                        <div class="insight-subcopy">${survivors.length} jogadores seguem vivos na edição.</div>
+                    `;
+                }
+            }
+
+            if (dangerZoneEl) {
+                if (!referenceRound || dangerZone.length === 0) {
+                    dangerZoneEl.innerHTML = '<div class="empty-state" style="padding: 1.2rem;">Sem zona de eliminação definida ainda.</div>';
+                } else {
+                    dangerZoneEl.innerHTML = `
+                        <div class="insight-kicker">Menor pontuação atual</div>
+                        <div class="insight-highlight" style="color: var(--primary);">${atRiskPoints} pts</div>
+                        <div class="insight-subcopy">${safeCutoff !== atRiskPoints ? `Para escapar, hoje precisa chegar a pelo menos <strong>${safeCutoff} pts</strong>.` : 'No momento não há margem de corte acima da zona de risco.'}</div>
+                        <div class="risk-list" style="margin-top: 0.9rem;">
+                            ${dangerZone.map(entry => {
+                                const info = getUserDisplayInfo(entry.uid);
+                                return `
+                                    <div class="risk-item">
+                                        <img src="${info.avatar}" onerror="this.src='default-avatar.png'">
+                                        <div>
+                                            <div style="font-weight: 700; font-size: 0.85rem;">${info.name}</div>
+                                            <div style="font-size: 0.74rem; color: var(--text-muted);">${entry.points} pts na rodada</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+            }
+
+            if (liveRankingEl) {
+                if (!referenceRound || survivorStandings.length === 0) {
+                    liveRankingEl.innerHTML = '<div class="empty-state" style="padding: 1.2rem;">Ranking indisponível.</div>';
+                } else {
+                    liveRankingEl.innerHTML = survivorStandings.slice(0, 5).map((entry, index) => {
+                        const info = getUserDisplayInfo(entry.uid);
+                        return `
+                            <div class="risk-item" style="margin-bottom: 0.7rem;">
+                                <img src="${info.avatar}" onerror="this.src='default-avatar.png'" style="border-color: rgba(59, 130, 246, 0.35);">
+                                <div style="flex:1;">
+                                    <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
+                                        <strong style="font-size:0.85rem;">#${index + 1} ${info.name}</strong>
+                                        <span style="font-size:0.8rem; font-weight:800; color: var(--info);">${entry.points} pts</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
 
             // Renderizar Campeão se restar apenas 1 participante
             const champContainer = document.getElementById('champion-container');
@@ -500,6 +757,10 @@
                             <div class="survivor-details">
                                 <div class="survivor-name">${displayName}</div>
                                 <span class="survivor-badge"><i class="fas fa-shield-halved"></i> VIVO</span>
+                                <div class="survivor-meta">
+                                    <span class="survivor-pill"><i class="fas fa-bolt"></i> ${Number(roundPoints[uid] || 0)} pts</span>
+                                    <span class="survivor-pill"><i class="fas fa-ranking-star"></i> ${survivorStandings.findIndex(entry => entry.uid === uid) + 1}º entre os vivos</span>
+                                </div>
                             </div>
                         </div>
                     `;

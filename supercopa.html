@@ -119,6 +119,29 @@
         .analysis-slide { display: none; color: #E2E8F0; line-height: 1.55; font-size: 0.9rem; white-space: pre-wrap; }
         .analysis-slide.active { display: block; }
         .analysis-slide-title { font-weight: 800; color: #ffffff; font-size: 1rem; margin-bottom: 8px; }
+        .analysis-slide-body { position: relative; overflow-wrap: anywhere; }
+        .analysis-slide-body.collapsed { max-height: 72px; overflow: hidden; }
+        .analysis-slide-body.collapsed::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 28px;
+            background: linear-gradient(180deg, rgba(26, 32, 39, 0), rgba(26, 32, 39, 0.96));
+            pointer-events: none;
+        }
+        .analysis-expand {
+            margin-top: 10px;
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            background: rgba(6, 182, 212, 0.08);
+            color: #E2E8F0;
+            border-radius: 999px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
         .analysis-carousel-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; border-top: 1px solid rgba(6, 182, 212, 0.15); }
         .analysis-carousel-controls button {
             border: 1px solid rgba(6, 182, 212, 0.35); background: rgba(6, 182, 212, 0.08); color: #E2E8F0;
@@ -602,6 +625,7 @@
                 <div class="tab group-tab" data-group="group2">Grupo B</div>
                 <div class="tab group-tab" data-group="group3">Grupo C</div>
                 <div class="tab group-tab" data-group="group4">Grupo D</div>
+                <div class="tab group-tab" data-group="overall">Geral</div>
             </div>
             <div class="groups-content-grid">
                 <div id="standings-container">
@@ -808,7 +832,13 @@
 
         function loadGroupData(groupKey) {
             renderGroupStandings(groupKey);
-            renderGroupMatches();
+            const matchesContainer = document.getElementById('matches-container');
+            if (matchesContainer) {
+                matchesContainer.style.display = groupKey === 'overall' ? 'none' : 'block';
+            }
+            if (groupKey !== 'overall') {
+                renderGroupMatches();
+            }
             renderSupercopaIaPredictions();
         }
 
@@ -821,13 +851,15 @@
             if (iaData && iaData.text && supercopaDataCache?.groups?.status === 1) {
                 const slides = parseSupercopaAnalysisSlides(iaData.text);
                 let currentSlide = 0;
+                const expandedSlides = {};
                 const renderSlide = () => {
                     textEl.innerHTML = `
                         <div>
                             ${slides.map((slide, index) => `
                                 <article class="analysis-slide ${index === currentSlide ? 'active' : ''}">
                                     <div class="analysis-slide-title">${escapeHtml(slide.title)}</div>
-                                    <div>${escapeHtml(slide.body)}</div>
+                                    <div class="analysis-slide-body ${expandedSlides[index] ? '' : 'collapsed'}" data-analysis-body>${escapeHtml(slide.body)}</div>
+                                    <button type="button" class="analysis-expand" data-analysis-expand="${index}" style="display:none;">Ler mais</button>
                                 </article>
                             `).join('')}
                         </div>
@@ -846,6 +878,26 @@
                     textEl.querySelector('[data-analysis-next]')?.addEventListener('click', () => {
                         currentSlide = Math.min(slides.length - 1, currentSlide + 1);
                         renderSlide();
+                    });
+                    textEl.querySelectorAll('[data-analysis-expand]').forEach((button) => {
+                        const slideIndex = Number(button.getAttribute('data-analysis-expand'));
+                        const article = button.closest('.analysis-slide');
+                        const body = article?.querySelector('[data-analysis-body]');
+                        if (!body) return;
+
+                        const syncButton = () => {
+                            const isExpanded = Boolean(expandedSlides[slideIndex]);
+                            body.classList.toggle('collapsed', !isExpanded);
+                            const needsCollapse = body.scrollHeight > body.clientHeight + 4;
+                            button.style.display = (needsCollapse || isExpanded) ? 'inline-flex' : 'none';
+                            button.textContent = isExpanded ? 'Ler menos' : 'Ler mais';
+                        };
+
+                        syncButton();
+                        button.addEventListener('click', () => {
+                            expandedSlides[slideIndex] = !expandedSlides[slideIndex];
+                            syncButton();
+                        });
                     });
                 };
                 renderSlide();
@@ -1011,6 +1063,38 @@
             return liveStandings;
         }
 
+        function sortStandingsWithRules(standingsMap, playerIds) {
+            const h2hUsedMap = new Set();
+            const standings = playerIds
+                .map(id => standingsMap[id])
+                .filter(Boolean)
+                .sort((a, b) => {
+                    const a_pts = a.points || 0;
+                    const b_pts = b.points || 0;
+                    const a_wins = a.wins || 0;
+                    const b_wins = b.wins || 0;
+                    const a_gd = (a.goalsFor || 0) - (a.goalsAg || 0);
+                    const b_gd = (b.goalsFor || 0) - (b.goalsAg || 0);
+                    const a_gf = a.goalsFor || 0;
+                    const b_gf = b.goalsFor || 0;
+
+                    if (b_pts !== a_pts) return b_pts - a_pts;
+                    if (b_wins !== a_wins) return b_wins - a_wins;
+                    if (b_gd !== a_gd) return b_gd - a_gd;
+                    if (b_gf !== a_gf) return b_gf - a_gf;
+
+                    const h2h = getHeadToHeadWinner(a.playerId, b.playerId);
+                    if (h2h !== 0) {
+                        h2hUsedMap.add(a.playerId);
+                        h2hUsedMap.add(b.playerId);
+                        return h2h;
+                    }
+                    return 0;
+                });
+
+            return { standings, h2hUsedMap };
+        }
+
         function getPlayerHistory(playerId) {
             return getSortedSupercopaRounds().flatMap(([roundKey, roundData], index) => {
                 const matches = roundData.matches ? Object.values(roundData.matches) : [];
@@ -1143,42 +1227,21 @@
 
         function renderGroupStandings(groupKey) {
             const { standings = {}, status, ...groups } = supercopaDataCache.groups || {};
-            const groupPlayerIds = groups[groupKey] || [];
-            const displayStandings = getLiveGroupStandings(groupPlayerIds);
-
-            const h2hUsedMap = new Set();
-            
-            const groupStandings = groupPlayerIds
-                .map(id => displayStandings[id])
-                .filter(Boolean)
-                .sort((a, b) => {
-                    const a_pts = a.points || 0;
-                    const b_pts = b.points || 0;
-                    const a_wins = a.wins || 0;
-                    const b_wins = b.wins || 0;
-                    const a_gd = (a.goalsFor || 0) - (a.goalsAg || 0);
-                    const b_gd = (b.goalsFor || 0) - (b.goalsAg || 0);
-                    const a_gf = a.goalsFor || 0;
-                    const b_gf = b.goalsFor || 0;
-
-                    // 1. Pontos
-                    if (b_pts !== a_pts) return b_pts - a_pts;
-                    // 2. Vitórias
-                    if (b_wins !== a_wins) return b_wins - a_wins;
-                    // 3. Saldo de Gols
-                    if (b_gd !== a_gd) return b_gd - a_gd;
-                    // 4. Gols Pró (Feitos)
-                    if (b_gf !== a_gf) return b_gf - a_gf;
-
-                    // 5. Confronto Direto
-                    const h2h = getHeadToHeadWinner(a.playerId, b.playerId);
-                    if (h2h !== 0) {
-                        h2hUsedMap.add(a.playerId);
-                        h2hUsedMap.add(b.playerId);
-                        return h2h;
-                    }
-                    return 0;
-                });
+            const isOverall = groupKey === 'overall';
+            const groupPlayerIds = isOverall
+                ? Object.entries(groups)
+                    .filter(([key, value]) => key.startsWith('group') && Array.isArray(value))
+                    .flatMap(([, value]) => value)
+                : (groups[groupKey] || []);
+            const uniquePlayerIds = [...new Set(groupPlayerIds)];
+            const displayStandings = getLiveGroupStandings(uniquePlayerIds);
+            const { standings: groupStandings, h2hUsedMap } = sortStandingsWithRules(displayStandings, uniquePlayerIds);
+            const standingsHeader = document.querySelector('#standings-container .section-header');
+            if (standingsHeader) {
+                standingsHeader.innerHTML = isOverall
+                    ? '<i class="fas fa-earth-americas"></i> Tabela Geral Simulada'
+                    : '<i class="fas fa-list-ol"></i> Classificação';
+            }
 
             ui.standingsList.innerHTML = groupStandings.map((playerData, index) => {
                 const player = usersDataCache[playerData.playerId];
@@ -1189,11 +1252,11 @@
                 const position = index + 1;
                 
                 let statusClass = '', statusHtml = '';
-                if (position <= 2) {
+                if (!isOverall && position <= 2) {
                     statusClass = 'status-top-two';
                 }
 
-                if (status === 2) {
+                if (!isOverall && status === 2) {
                     if (position <= 2) {
                         statusClass = 'status-classified status-top-two';
                         statusHtml = `<div class="status-badge"><i class="fas fa-crown"></i> Série A</div>`;
@@ -1230,12 +1293,14 @@
                 const beltBadge = playerData.playerId === cinturaoChampionId ? '<span class="cinturao-badge" title="Detentor do Cinturão"><i class="fas fa-hand-fist"></i> Cinturão</span>' : '';
                 const activeCopaRound = Object.values(supercopaDataCache?.groups?.rounds || {}).find(r => r.status === 1);
                 const liveBadge = activeCopaRound ? '<span class="live-badge" title="Estatísticas com rodada ao vivo"><span class="live-dot"></span> LIVE</span>' : '';
+                const groupLabel = isOverall ? getPlayerGroupLabel(playerData.playerId) : '';
                 return `
                     <div class="player-standing-card ${statusClass}" data-player-id="${playerData.playerId}" style="animation-delay: ${index * 50}ms">
                         <span class="pos">${position}</span>
                         <img src="${playerAvatar}" alt="${displayName}" class="logo" onerror="this.src='default-avatar.png'">
                         <div class="name-container" style="flex-grow: 1;">
                             <div class="name">${displayName} ${h2hBadge}${beltBadge}</div>
+                            ${groupLabel ? `<div style="font-size:0.72rem; color: var(--text-color-light); font-weight:600; margin-top:2px;">${groupLabel}</div>` : ''}
                             ${statusHtml}
                             ${formHtml}
                         </div>

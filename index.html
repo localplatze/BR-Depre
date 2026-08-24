@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Brasileirão da Depressão · Palpite Cabuloso</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -15,41 +15,63 @@
         }
 
         :root {
-            --field-green: #0A2F2A;
-            --grass-light: #1E4A3B;
-            --pitch-glow: #2C7A4B;
-            --primary-gold: #FBBF24;
-            --gold-dark: #D97706;
-            --pure-white: #F9FAFB;
-            --off-white: #E5E7EB;
-            --charcoal: #111827;
-            --card-bg: rgba(17, 24, 39, 0.85);
-            --card-border: rgba(251, 191, 36, 0.25);
-            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            --transition-smooth: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            --bg: #03140f;
+            --bg-soft: #0b211b;
+            --panel: #ffffff;
+            --panel-strong: #f8fbf9;
+            --surface: #f4f7f5;
+            --surface-strong: #edf2ef;
+            --border: rgba(6, 31, 23, 0.1);
+            --text: #f7fbf9;
+            --muted: #adc5ba;
+            --accent: #f5c443;
+            --accent-strong: #ffd95e;
+            --success: #2b8a3e;
+            --danger: #ff9b7c;
+            --ink: #112019;
+            --ink-soft: #587065;
+            --shadow-xl: 0 32px 70px rgba(0, 0, 0, 0.4);
+            --transition-smooth: all 0.24s ease;
         }
 
-        body, html {
-            height: 100%;
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 10% 30%, #0B3B2F, #041E1A);
-            color: var(--pure-white);
+        html, body {
+            min-height: 100%;
+            font-family: 'Manrope', sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(245, 196, 67, 0.14), transparent 28%),
+                radial-gradient(circle at 15% 20%, rgba(31, 120, 65, 0.22), transparent 35%),
+                linear-gradient(180deg, #082019 0%, #04130f 52%, #020b08 100%);
+            color: var(--text);
             overflow-x: hidden;
         }
 
-        /* animated pitch lines */
-        body::before {
+        body::before,
+        body::after {
             content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                repeating-linear-gradient(90deg, rgba(255,215,0,0.08) 0px, rgba(255,215,0,0.08) 2px, transparent 2px, transparent 40px),
-                repeating-linear-gradient(0deg, rgba(255,215,0,0.05) 0px, rgba(255,215,0,0.05) 2px, transparent 2px, transparent 60px);
+            inset: auto;
             pointer-events: none;
             z-index: 0;
+            filter: blur(20px);
+            opacity: 0.7;
+        }
+
+        body::before {
+            width: 220px;
+            height: 220px;
+            top: 8%;
+            right: -60px;
+            border-radius: 50%;
+            background: rgba(245, 196, 67, 0.14);
+        }
+
+        body::after {
+            width: 260px;
+            height: 260px;
+            bottom: 6%;
+            left: -120px;
+            border-radius: 50%;
+            background: rgba(46, 125, 50, 0.18);
         }
 
         .container {
@@ -59,143 +81,160 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 24px 18px;
         }
 
-        /* glassmorphic card grid */
         .auth-grid {
             width: 100%;
-            max-width: 1280px;
-            display: flex;
-            flex-wrap: wrap;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(12px);
-            border-radius: 2.5rem;
+            max-width: 1080px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(320px, 420px);
+            gap: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 36px;
             overflow: hidden;
             box-shadow: var(--shadow-xl);
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            transition: transform 0.2s ease;
+            backdrop-filter: blur(18px);
         }
 
-        /* left hero zone */
         .hero-zone {
-            flex: 1.2;
-            padding: 3rem 2.5rem;
-            background: linear-gradient(135deg, rgba(10, 47, 42, 0.7), rgba(6, 27, 24, 0.85));
+            position: relative;
+            padding: 42px 42px 36px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            position: relative;
+            justify-content: space-between;
+            background:
+                linear-gradient(160deg, rgba(14, 48, 34, 0.9), rgba(4, 16, 12, 0.92)),
+                radial-gradient(circle at top left, rgba(245, 196, 67, 0.12), transparent 28%);
         }
 
-        .badge-icon {
-            display: flex;
+        .hero-copy {
+            max-width: 480px;
+        }
+
+        .brand-block {
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 2rem;
+            gap: 16px;
+            margin-bottom: 28px;
         }
 
-        .trophy-icon {
-            font-size: 2.5rem;
-            color: var(--primary-gold);
-            filter: drop-shadow(0 0 6px rgba(251,191,36,0.5));
+        .brand-logo-shell {
+            width: 78px;
+            height: 78px;
+            border-radius: 24px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+        }
+
+        .brand-logo-shell img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            margin-bottom: 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #dce8e2;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
         .brand {
+            display: block;
+            font-size: 0.86rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .brand-name {
+            display: block;
+            font-size: 1.38rem;
             font-weight: 800;
-            font-size: 1.7rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #FFF6E0, #FBBF24);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+            letter-spacing: -0.03em;
+            color: var(--text);
         }
 
         .hero-title {
-            font-size: 3rem;
+            font-size: clamp(2.35rem, 4vw, 4rem);
             font-weight: 800;
-            line-height: 1.2;
-            margin: 1rem 0 1rem;
+            line-height: 1.02;
+            letter-spacing: -0.05em;
+            margin-bottom: 16px;
         }
 
         .hero-title span {
-            color: var(--primary-gold);
-            border-bottom: 3px solid var(--primary-gold);
-            display: inline-block;
+            color: var(--accent-strong);
         }
 
-        .hero-stats {
-            display: flex;
-            gap: 1.8rem;
-            margin: 2rem 0 1.5rem;
+        .hero-subtitle {
+            max-width: 420px;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 28px;
         }
 
-        .stat-item {
-            display: flex;
-            flex-direction: column;
+        .hero-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            max-width: 460px;
         }
 
-        .stat-number {
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: var(--primary-gold);
+        .highlight-card {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .stat-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--off-white);
+        .highlight-card strong {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
         }
 
-        .pulse-text {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(251,191,36,0.12);
-            padding: 0.7rem 1.2rem;
-            border-radius: 40px;
-            width: fit-content;
-            backdrop-filter: blur(4px);
-        }
-
-        .pulse-text i {
-            font-size: 0.9rem;
-            color: var(--primary-gold);
+        .highlight-card span {
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.5;
         }
 
         .hero-footer {
-            margin-top: 2rem;
+            margin-top: 36px;
             display: inline-flex;
             align-items: center;
-            gap: 0.55rem;
-            padding: 0.7rem 1rem;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(251, 191, 36, 0.18);
-            color: var(--off-white);
-            font-size: 0.82rem;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            width: fit-content;
-            backdrop-filter: blur(8px);
+            gap: 10px;
+            color: #cfe0d7;
+            font-size: 0.88rem;
         }
 
-        .hero-footer strong {
-            color: var(--primary-gold);
-            font-weight: 800;
+        .hero-footer i {
+            color: var(--accent);
         }
 
-        /* right form panel */
         .form-panel {
-            flex: 0.9;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            padding: 2.5rem;
+            background: linear-gradient(180deg, #f5f8f6 0%, #eef4f0 100%);
+            padding: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 1px solid rgba(251,191,36,0.3);
+            border-left: 1px solid rgba(8, 28, 20, 0.06);
         }
 
         .form-container {
@@ -204,54 +243,73 @@
         }
 
         .form-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 28px 22px 22px;
             transition: var(--transition-smooth);
+            box-shadow: 0 22px 50px rgba(12, 35, 25, 0.08);
+        }
+
+        .form-topline {
+            display: inline-block;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #9b7a18;
+            margin-bottom: 10px;
         }
 
         h2 {
             font-size: 1.9rem;
-            font-weight: 700;
-            margin-bottom: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.04em;
+            color: var(--ink);
         }
 
-        h2 i {
-            color: var(--primary-gold);
-            font-size: 1.8rem;
+        .form-description {
+            color: var(--ink-soft);
+            font-size: 0.94rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
         }
 
         .input-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 16px;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-            color: var(--off-white);
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #2e433a;
         }
 
         .input-group input, .custom-select-trigger {
             width: 100%;
-            padding: 0.9rem 1rem;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 1rem;
-            color: white;
-            font-size: 1rem;
+            min-height: 56px;
+            padding: 0.95rem 1rem;
+            background: var(--surface);
+            border: 1px solid rgba(9, 34, 25, 0.09);
+            border-radius: 18px;
+            color: var(--ink);
+            font-size: 0.98rem;
             transition: var(--transition-smooth);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(66, 92, 82, 0.48);
         }
 
         .input-group input:focus {
             outline: none;
-            border-color: var(--primary-gold);
-            background: rgba(0,0,0,0.4);
-            box-shadow: 0 0 0 3px rgba(251,191,36,0.2);
+            border-color: rgba(245, 196, 67, 0.55);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(245, 196, 67, 0.12);
         }
 
         .custom-select {
@@ -263,7 +321,7 @@
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            background: rgba(255,255,255,0.07);
+            background: var(--surface);
         }
 
         .custom-select-trigger span {
@@ -285,15 +343,15 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: #0F2C26;
+            background: #0b231b;
             backdrop-filter: blur(12px);
-            border-radius: 1rem;
+            border-radius: 18px;
             margin-top: 8px;
             max-height: 240px;
             overflow-y: auto;
             z-index: 40;
-            border: 1px solid rgba(251,191,36,0.3);
-            box-shadow: 0 12px 28px black;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
             display: none;
         }
 
@@ -311,14 +369,14 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 0.8rem 1rem;
+            padding: 0.9rem 1rem;
             cursor: pointer;
             transition: background 0.2s;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
         }
 
         .team-option:hover {
-            background: rgba(251,191,36,0.2);
+            background: rgba(255,255,255,0.06);
         }
 
         .team-option img {
@@ -329,38 +387,40 @@
 
         .btn-primary {
             width: 100%;
-            background: linear-gradient(95deg, #FBBF24, #F59E0B);
+            background: linear-gradient(135deg, #f3c744, #ffd95e);
             border: none;
-            padding: 0.9rem;
-            border-radius: 2rem;
-            font-weight: 700;
+            padding: 1rem;
+            border-radius: 18px;
+            font-weight: 800;
             font-size: 1rem;
-            color: #0A2F2A;
+            color: #10281f;
             transition: all 0.2s;
-            margin-top: 0.5rem;
+            margin-top: 0.35rem;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-family: 'Manrope', sans-serif;
+            box-shadow: 0 16px 30px rgba(245, 196, 67, 0.22);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            background: linear-gradient(95deg, #FFD966, #FBBF24);
-            box-shadow: 0 12px 20px -8px rgba(251,191,36,0.4);
+            background: linear-gradient(135deg, #ffd966, #ffe68f);
+            box-shadow: 0 18px 34px rgba(245, 196, 67, 0.26);
         }
 
         .form-footer {
-            margin-top: 1.5rem;
+            margin-top: 18px;
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            font-size: 0.85rem;
+            gap: 0.85rem;
+            font-size: 0.84rem;
+            color: var(--ink-soft);
+            flex-wrap: wrap;
         }
 
         .form-footer a {
-            color: var(--primary-gold);
+            color: var(--accent);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 700;
             transition: 0.2s;
         }
 
@@ -371,13 +431,13 @@
         .back-action {
             background: none;
             border: none;
-            color: var(--off-white);
+            color: var(--ink-soft);
             font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
-            margin-bottom: 1rem;
+            margin-bottom: 18px;
             transition: color 0.2s;
         }
 
@@ -386,84 +446,144 @@
         }
 
         .back-action:hover {
-            color: var(--primary-gold);
+            color: var(--accent);
         }
 
         .error-msg {
-            color: #FFA27B;
-            background: rgba(255,70,50,0.12);
-            padding: 0.6rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
+            color: var(--danger);
+            background: rgba(180, 48, 22, 0.14);
+            border: 1px solid rgba(255, 155, 124, 0.16);
+            padding: 0.75rem 0.85rem;
+            border-radius: 16px;
+            font-size: 0.82rem;
+            margin-bottom: 16px;
             text-align: center;
-            backdrop-filter: blur(4px);
         }
 
         .success-toast {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #0F2C26;
-            border-left: 4px solid #FBBF24;
-            padding: 12px 20px;
-            border-radius: 50px;
+            bottom: 18px;
+            left: 50%;
+            transform: translate(-50%, 140%);
+            background: rgba(9, 32, 24, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 14px 18px;
+            border-radius: 18px;
             color: white;
-            font-weight: 500;
+            font-weight: 700;
             backdrop-filter: blur(8px);
             z-index: 200;
-            transform: translateX(120%);
             transition: transform 0.3s ease;
+            width: calc(100% - 32px);
+            max-width: 360px;
+            text-align: center;
         }
 
-        /* responsive */
         @media (max-width: 920px) {
             .auth-grid {
-                flex-direction: column;
-                border-radius: 2rem;
-            }
-            .hero-zone {
-                text-align: center;
-                align-items: center;
-                padding: 2rem;
-            }
-            .hero-stats {
-                justify-content: center;
-            }
-            .form-panel {
-                border-left: none;
-                border-top: 1px solid rgba(251,191,36,0.2);
-            }
-            .hero-title {
-                font-size: 2.3rem;
+                grid-template-columns: 1fr;
+                border-radius: 30px;
             }
 
-            .hero-footer {
-                justify-content: center;
+            .hero-zone {
+                padding: 24px 24px 18px;
+            }
+
+            .form-panel {
+                border-left: none;
+                border-top: 1px solid rgba(8, 28, 20, 0.06);
+            }
+
+            .hero-highlights {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 1rem;
+                padding: 0;
+                align-items: stretch;
             }
-            .form-panel {
-                padding: 1.8rem;
+
+            .auth-grid {
+                min-height: 100vh;
+                border-radius: 0;
+                max-width: none;
+                border: none;
             }
+
+            .hero-zone {
+                padding: max(22px, env(safe-area-inset-top)) 20px 10px;
+                background: transparent;
+            }
+
+            .brand-block {
+                gap: 12px;
+                margin-bottom: 0;
+                align-items: center;
+            }
+
+            .brand-logo-shell {
+                width: 56px;
+                height: 56px;
+                border-radius: 16px;
+                box-shadow: none;
+            }
+
+            .brand {
+                font-size: 0.74rem;
+                margin-bottom: 2px;
+            }
+
+            .brand-name {
+                font-size: 1rem;
+            }
+
+            .eyebrow,
+            .hero-subtitle,
+            .hero-highlights,
+            .hero-footer {
+                display: none;
+            }
+
             .hero-title {
-                font-size: 1.9rem;
+                font-size: 1.55rem;
+                line-height: 1.1;
+                margin: 18px 0 0;
+                max-width: 260px;
+            }
+
+            .form-panel {
+                padding: 8px 16px max(18px, env(safe-area-inset-bottom));
+                background: #f5f8f6;
+            }
+
+            .form-card {
+                border-radius: 26px 26px 0 0;
+                padding: 22px 18px 18px;
+                box-shadow: none;
+                min-height: calc(100vh - 170px);
+            }
+
+            .form-topline,
+            .form-description {
+                display: none;
+            }
+
+            h2 {
+                font-size: 1.65rem;
+                margin-bottom: 20px;
             }
         }
 
-        /* scrollbar custom */
         .dropdown-list::-webkit-scrollbar {
             width: 4px;
         }
         .dropdown-list::-webkit-scrollbar-track {
-            background: #1E4A3B;
+            background: #13372c;
         }
         .dropdown-list::-webkit-scrollbar-thumb {
-            background: #FBBF24;
+            background: var(--accent);
             border-radius: 8px;
         }
 
@@ -473,7 +593,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(1, 7, 5, 0.72);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -490,7 +610,7 @@
         .loader-ball {
             width: 40px;
             height: 40px;
-            background: radial-gradient(circle, #FBBF24, #B45309);
+            background: radial-gradient(circle, #ffe17f, #e0ab22);
             border-radius: 50%;
             animation: bounceBall 0.6s infinite alternate;
         }
@@ -501,8 +621,8 @@
 
         #teamSearchInput:focus {
             outline: none;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 0 2px rgba(251,191,36,0.2);
+            border-color: rgba(245, 196, 67, 0.55);
+            box-shadow: 0 0 0 2px rgba(245,196,67,0.14);
         }
         #teamSearchInput::placeholder {
             color: rgba(255,255,255,0.5);
@@ -510,32 +630,31 @@
         .no-results {
             padding: 12px;
             text-align: center;
-            color: var(--off-white);
+            color: var(--muted);
             font-size: 0.85rem;
         }
 
-        /* Adicione ao style existente */
         .dropdown-list {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: #0F2C26;
+            background: #0b231b;
             backdrop-filter: blur(12px);
-            border-radius: 1rem;
+            border-radius: 18px;
             margin-top: 8px;
             max-height: 280px;
             overflow-y: auto;
-            z-index: 1000; /* Aumentado para garantir que fique acima */
-            border: 1px solid rgba(251,191,36,0.3);
-            box-shadow: 0 12px 28px black;
+            z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
             display: none;
         }
 
         .search-box {
             position: sticky;
             top: 0;
-            background: #0F2C26;
+            background: #0b231b;
             z-index: 10;
             padding: 8px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -544,18 +663,18 @@
         #teamSearchInput {
             width: 100%;
             padding: 8px 12px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(251,191,36,0.3);
+            background: #f3f6f4;
+            border: 1px solid rgba(9,34,25,0.08);
             border-radius: 8px;
-            color: white;
+            color: var(--ink);
             font-size: 0.85rem;
-            pointer-events: auto; /* Garantir que o input seja clicável */
+            pointer-events: auto;
         }
 
         #teamSearchInput:focus {
             outline: none;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 0 2px rgba(251,191,36,0.2);
+            border-color: rgba(245, 196, 67, 0.55);
+            box-shadow: 0 0 0 2px rgba(245,196,67,0.14);
         }
     </style>
 </head>
@@ -566,37 +685,41 @@
 
 <div class="container">
     <div class="auth-grid">
-        <!-- LEFT HERO - SEM IMAGENS EXTERNAS, APENAS TEXTO/ÍCONES -->
         <div class="hero-zone">
-            <div class="badge-icon">
-                <i class="fas fa-futbol trophy-icon"></i>
-                <span class="brand">BRASILEIRÃO DA DEPRESSÃO</span>
-            </div>
-            <div class="hero-title">
-                O CAMPO É <span>MENTAL</span><br>
-                FAÇA SEU PALPITE
-            </div>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <div class="stat-number">+2</div>
-                    <div class="stat-label">TORCEDORES</div>
+            <div class="hero-copy">
+                <div class="brand-block">
+                    <div class="brand-logo-shell">
+                        <img src="./app-logo.png" alt="Logo do Brasileirão da Depressão">
+                    </div>
+                    <div>
+                        <span class="brand">Brasileirão da Depressão</span>
+                        <span class="brand-name">Palpite Cabuloso</span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">+30</div>
-                    <div class="stat-label">RODADAS</div>
+                <div class="eyebrow">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Nova experiência mobile</span>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">🔥</div>
-                    <div class="stat-label">ADM LÍDER</div>
+                <div class="hero-title">
+                    Entre rápido. <span>Palpite melhor.</span> Sofra com estilo.
                 </div>
-            </div>
-            <div class="pulse-text">
-                <i class="fas fa-chart-line"></i>
-                <span>Modo competitivo · Vença os atuais campeões</span>
+                <p class="hero-subtitle">
+                    Uma entrada mais limpa, mais moderna e com cara de app para acompanhar o caos do campeonato sem excesso de informação na primeira tela.
+                </p>
+                <div class="hero-highlights">
+                    <div class="highlight-card">
+                        <strong>Visual mais clean</strong>
+                        <span>Menos cara de site, mais sensação de app nativo.</span>
+                    </div>
+                    <div class="highlight-card">
+                        <strong>Fluxo direto</strong>
+                        <span>Login, cadastro e recuperação com foco total na ação principal.</span>
+                    </div>
+                </div>
             </div>
             <div class="hero-footer">
-                <span>Powered by</span>
-                <strong>Local Platze</strong>
+                <i class="fas fa-shield-heart"></i>
+                <span>Primeira impressão mais leve, sem perder a identidade do app.</span>
             </div>
         </div>
 
@@ -605,17 +728,19 @@
             <div class="form-container">
                 <!-- LOGIN FORM -->
                 <div id="loginFormContainer" class="form-card">
-                    <h2><i class="fas fa-sign-in-alt"></i> Acessar arena</h2>
+                    <span class="form-topline">Entrar</span>
+                    <h2>Acessar conta</h2>
+                    <p class="form-description">Faça login para continuar seus palpites, acompanhar rodadas e voltar para o caos organizado do campeonato.</p>
                     <div id="loginError" class="error-msg" style="display: none;"></div>
                     <div class="input-group">
-                        <label>E-MAIL</label>
+                        <label>E-mail</label>
                         <input type="email" id="loginEmail" placeholder="seu@email.com">
                     </div>
                     <div class="input-group">
-                        <label>SENHA</label>
+                        <label>Senha</label>
                         <input type="password" id="loginPassword" placeholder="••••••••">
                     </div>
-                    <button class="btn-primary" id="btnLogin">Entrar no campeonato</button>
+                    <button class="btn-primary" id="btnLogin">Entrar no app</button>
                     <div class="form-footer">
                         <a href="#" id="showRecoverLink">Esqueci a senha</a>
                         <span>•</span>
@@ -626,34 +751,36 @@
                 <!-- REGISTER FORM (inicialmente hidden) -->
                 <div id="registerFormContainer" class="form-card" style="display: none;">
                     <button class="back-action" id="backToLoginFromReg"><i class="fas fa-arrow-left"></i> Voltar</button>
-                    <h2><i class="fas fa-user-plus"></i> Novo atleta</h2>
+                    <span class="form-topline">Cadastro</span>
+                    <h2>Criar conta</h2>
+                    <p class="form-description">Monte seu perfil, escolha seu time e entre no campeonato com uma identidade própria.</p>
                     <div id="registerError" class="error-msg" style="display: none;"></div>
                     <div class="input-group">
-                        <label>NOME COMPLETO</label>
+                        <label>Nome completo</label>
                         <input type="text" id="regName" placeholder="Ex: Thiago Machucado">
                     </div>
                     <div class="input-group">
-                        <label>SIGLA (3 LETRAS)</label>
+                        <label>Sigla (3 letras)</label>
                         <input type="text" id="regAbbr" maxlength="3" placeholder="R10">
                     </div>
                     <div class="input-group">
-                        <label>E-MAIL</label>
+                        <label>E-mail</label>
                         <input type="email" id="regEmail" placeholder="craque@email.com">
                     </div>
                     <div class="input-group">
-                        <label>SENHA</label>
+                        <label>Senha</label>
                         <input type="password" id="regPassword" placeholder="mínimo 6 caracteres">
                     </div>
                     <div class="input-group">
-                        <label>MEU TIME DO CORAÇÃO</label>
+                        <label>Meu time do coração</label>
                         <div class="custom-select" id="teamSelectWrapper">
                             <div class="custom-select-trigger" id="teamTrigger">
                                 <span><i class="fas fa-shield-alt"></i> Selecionar clube</span>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
                             <div class="dropdown-list" id="teamDropdown">
-                                <div class="search-box" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                    <input type="text" id="teamSearchInput" placeholder="🔍 Buscar time..." style="width: 100%; padding: 8px 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; color: white; font-size: 0.85rem;">
+                                <div class="search-box">
+                                    <input type="text" id="teamSearchInput" placeholder="🔍 Buscar time...">
                                 </div>
                                 <div id="teamsListContainer"></div>
                             </div>
@@ -665,15 +792,17 @@
                 <!-- RECOVER FORM -->
                 <div id="recoverFormContainer" class="form-card" style="display: none;">
                     <button class="back-action" id="backToLoginFromRec"><i class="fas fa-arrow-left"></i> Voltar ao login</button>
-                    <h2><i class="fas fa-key"></i> Recuperar acesso</h2>
+                    <span class="form-topline">Recuperação</span>
+                    <h2>Recuperar acesso</h2>
+                    <p class="form-description">Digite seu e-mail para receber o link de redefinição e voltar para o campeonato.</p>
                     <div id="recoverError" class="error-msg" style="display: none;"></div>
                     <div class="input-group">
-                        <label>E-MAIL CADASTRADO</label>
+                        <label>E-mail cadastrado</label>
                         <input type="email" id="recoverEmail" placeholder="exemplo@dominio.com">
                     </div>
-                    <button class="btn-primary" id="btnSendRecover">Enviar link mágico</button>
+                    <button class="btn-primary" id="btnSendRecover">Enviar link</button>
                     <div class="form-footer">
-                        <span style="font-size: 0.7rem;">Enviamos um e-mail elegante com instruções</span>
+                        <span style="font-size: 0.76rem;">As instruções chegam por e-mail em instantes.</span>
                     </div>
                 </div>
             </div>
@@ -723,9 +852,9 @@
         const toast = document.getElementById('toastMessage');
         toast.textContent = message;
         toast.style.backgroundColor = isError ? '#AA2E1E' : '#0F2C26';
-        toast.style.transform = 'translateX(0)';
+        toast.style.transform = 'translate(-50%, 0)';
         setTimeout(() => {
-            toast.style.transform = 'translateX(120%)';
+            toast.style.transform = 'translate(-50%, 140%)';
         }, 3800);
     }
 
