@@ -100,14 +100,21 @@
         .form-badge.draw { background-color: #64748b; } /* X - Empate (Cinza) */
 
         /* --- CONTEÚDO DO MATA-MATA --- */
-        .knockout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .knockout-series-container { display: flex; flex-direction: column; gap: 15px; }
+        .knockout-grid { display: grid; grid-template-columns: repeat(3, minmax(300px, 1fr)); gap: 22px; align-items: stretch; }
+        .knockout-series-container { display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015)); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px; }
         .series-title { font-size: 1.5em; font-weight: 700; color: #fff; text-align: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid; }
         .series-a .series-title { border-color: var(--gold); }
         .series-b .series-title { border-color: var(--silver); }
         .series-c .series-title { border-color: var(--mud); }
         
         .match-card { display: flex; align-items: center; background-color: var(--card-bg-color); border-radius: var(--border-radius); padding: 16px; border: 1px solid var(--border-color); animation: fadeIn 0.5s ease-out backwards; }
+        .knockout-series-container .match-card { display:grid; grid-template-columns:1fr; gap:10px; position: relative; }
+        .knockout-series-container .match-card::after { content: '→'; position:absolute; right:-19px; top:50%; color:var(--primary-color); font-size:24px; font-weight:800; }
+        .knockout-series-container .match-card:last-child::after { display:none; }
+        .leg-score { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 9px; border-radius:8px; background:rgba(255,255,255,.045); color:var(--text-color-light); font-size:.78rem; }
+        .leg-score strong { color:#fff; font-size:.95rem; }
+        .aggregate-score { text-align:center; padding:6px; border-radius:8px; background:rgba(0,123,255,.12); color:#8ec5ff; font-weight:800; font-size:.8rem; }
+        @media (max-width: 900px) { .knockout-grid { grid-template-columns: 1fr; } .knockout-series-container .match-card::after { display:none; } }
         .match-player { display: flex; align-items: center; gap: 10px; flex: 1; }
         .match-player.away { justify-content: flex-end; text-align: right; }
         .match-player .logo { width: 40px; height: 40px; }
@@ -1456,7 +1463,8 @@
                             ${group1 ? `<span class="match-player-group">${group1}</span>` : ''}
                         </div>
                     </div>
-                    <div class="match-result">${result}</div>
+                    ${!isGroupStage ? `<div class="leg-score"><span>IDA</span><strong>${match.score1Ida !== undefined && match.score2Ida !== undefined ? `${match.score1Ida} x ${match.score2Ida}` : '—'}</strong></div><div class="leg-score"><span>VOLTA</span><strong>${match.score1Volta !== undefined && match.score2Volta !== undefined ? `${match.score1Volta} x ${match.score2Volta}` : '—'}</strong></div><div class="aggregate-score">AGREGADO: ${[match.score1Ida, match.score2Ida, match.score1Volta, match.score2Volta].every(v => v !== undefined && v !== '') ? `${Number(match.score1Ida)+Number(match.score1Volta)} x ${Number(match.score2Ida)+Number(match.score2Volta)}` : 'PENDENTE'}</div>` : ''}
+                    <div class="match-result">${isGroupStage ? result : ''}</div>
                     <div class="match-player away">
                         <div class="match-player-info">
                             <span class="name">${name2}${beltBadge2}</span>
@@ -1782,7 +1790,7 @@
                 sp1Played = teamAlreadyPlayed(sp1.teamId);
                 sp1CanStillScore = !sp1Played;
                 const playedNote = sp1Played ? ` (✓ já jogou)` : ` (ainda joga)`;
-                sp1Text = `⚽ ${sp1.athleteName || sp1.name} +${goals1} pts${playedNote}`;
+                sp1Text = `⚽ ${sp1.athleteName || sp1.name} ${goals1 >= 0 ? '+' : ''}${goals1} pts${playedNote}`;
             }
 
             let sp2Text = 'Nenhum';
@@ -1795,7 +1803,7 @@
                 sp2Played = teamAlreadyPlayed(sp2.teamId);
                 sp2CanStillScore = !sp2Played;
                 const playedNote = sp2Played ? ` (✓ já jogou)` : ` (ainda joga)`;
-                sp2Text = `⚽ ${sp2.athleteName || sp2.name} +${goals2} pts${playedNote}`;
+                sp2Text = `⚽ ${sp2.athleteName || sp2.name} ${goals2 >= 0 ? '+' : ''}${goals2} pts${playedNote}`;
             }
 
             // Apply to base score
@@ -1811,8 +1819,8 @@
                 sp1CanStillScore = false;
                 sp2CanStillScore = false;
                 const sharedNote = sp1Played ? ` (✓ já jogou — neutralizado)` : ` (ainda joga — neutralizado)`;
-                sp1Text = `⚽ ${sp1.athleteName || sp1.name} +${goals1} pts${sharedNote}`;
-                sp2Text = `⚽ ${sp2.athleteName || sp2.name} +${goals2} pts${sharedNote}`;
+                sp1Text = `⚽ ${sp1.athleteName || sp1.name} ${goals1 >= 0 ? '+' : ''}${goals1} pts${sharedNote}`;
+                sp2Text = `⚽ ${sp2.athleteName || sp2.name} ${goals2 >= 0 ? '+' : ''}${goals2} pts${sharedNote}`;
             }
 
             const battleOdds = getBattleOddsData(score1, score2, remainingDetails, sp1CanStillScore, sp2CanStillScore, p1Id, p2Id);

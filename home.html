@@ -2878,7 +2878,16 @@
                                 updatedAt: Date.now()
                             };
                         }
-                        playerGoalsMap[athleteId].count += 1;
+                        
+                        const typeText = (event.type?.text || '').toLowerCase();
+                        const typeType = (event.type?.type || '').toLowerCase();
+                        const isOwnGoal = typeText.includes('own') || typeType.includes('own') || typeText.includes('contra') || typeType.includes('contra');
+                        
+                        if (isOwnGoal) {
+                            playerGoalsMap[athleteId].count -= 1;
+                        } else {
+                            playerGoalsMap[athleteId].count += 1;
+                        }
                     });
                 } catch (error) {
                     console.warn(`[home][goal-sync] Falha no jogo ${match.apiFixtureId}:`, error);
@@ -3563,7 +3572,18 @@
                 }
 
                 podiumHtml += `</div>`;
-                container.innerHTML = podiumHtml;
+                container.innerHTML = podiumHtml + `<div id="monthly-scorer-history" style="margin-top:1.25rem;display:grid;gap:.55rem;"><div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;font-weight:800;letter-spacing:.05em;">Melhores pontuadores — últimos 3 meses</div><div style="color:var(--text-secondary);font-size:.8rem;">Carregando histórico...</div></div>`;
+                const history = [];
+                for (let offset = 0; offset < 3; offset++) {
+                    const target = new Date(currentYear, currentMonth - offset, 1);
+                    const totals = {};
+                    Object.entries(completedRounds).filter(([, r]) => { const d = new Date(r.finishTimestamp); return d.getMonth() === target.getMonth() && d.getFullYear() === target.getFullYear(); }).forEach(([, r]) => {
+                        Object.values(r.matches || {}).forEach(m => Object.entries(m.predictions || {}).forEach(([uid, pred]) => { if (m.finalResult && pred.homeScore !== undefined) totals[uid] = (totals[uid] || 0) + calculateMatchPoints(m.finalResult, pred); }));
+                    });
+                    const top = Object.entries(totals).sort((a,b) => b[1]-a[1])[0];
+                    history.push(`<div style="display:flex;justify-content:space-between;gap:8px;padding:.65rem .75rem;border-radius:9px;background:rgba(255,255,255,.04);font-size:.8rem;"><span>${monthNames[target.getMonth()]} / ${target.getFullYear()}</span><strong style="color:#fbbf24;">${top ? `${usersData[top[0]]?.name || 'Jogador'} · ${top[1]} pts` : 'Sem rodada encerrada'}</strong></div>`);
+                }
+                document.getElementById('monthly-scorer-history').innerHTML = `<div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;font-weight:800;letter-spacing:.05em;">Melhores pontuadores — últimos 3 meses</div>${history.join('')}`;
 
             } catch (err) {
                 console.error('Erro ao processar pódio mensal:', err);

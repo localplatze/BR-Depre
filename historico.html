@@ -674,8 +674,8 @@
                                     <div style="background: rgba(15, 23, 42, 0.6); padding: 0.65rem 0.85rem; border-radius: 0.5rem; border: 1px solid var(--card-border); font-size: 0.85rem;">
                                         <div><strong>${user.name}</strong></div>
                                         <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 2px;">⚽ ${sp.athleteName} (${sp.teamName || ''})</div>
-                                        <div style="font-weight: 700; color: ${goalsCount > 0 ? 'var(--success)' : '#f59e0b'}; margin-top: 4px;">
-                                            ${goalsCount} gol(s) = +${goalsCount} pts
+                                        <div style="font-weight: 700; color: ${goalsCount > 0 ? 'var(--success)' : (goalsCount < 0 ? '#ef4444' : '#f59e0b')}; margin-top: 4px;">
+                                            ${goalsCount} gol(s) = ${goalsCount >= 0 ? '+' : ''}${goalsCount} pts
                                         </div>
                                     </div>
                                 `;
@@ -846,7 +846,7 @@
             const goalsCount = typeof goalsInfo === 'number' ? goalsInfo : (goalsInfo.count || 0);
             const starHtml = starPlayer ? `
                 <div style="grid-column: 1 / -1; background: var(--card-bg); padding: 1rem; border-radius: 1rem; border: 1px dashed rgba(245, 158, 11, 0.4);">
-                    <strong style="color:#f59e0b;">Artilheiro:</strong> ${starPlayer.athleteName || starPlayer.name || 'Atleta'} (${starPlayer.teamName || ''}) - ${goalsCount} gol(s), +${goalsCount} pts
+                    <strong style="color:#f59e0b;">Artilheiro:</strong> ${starPlayer.athleteName || starPlayer.name || 'Atleta'} (${starPlayer.teamName || ''}) - ${goalsCount} gol(s), ${goalsCount >= 0 ? '+' : ''}${goalsCount} pts
                 </div>
             ` : '';
 

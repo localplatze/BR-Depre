@@ -4457,7 +4457,16 @@ Time B: 2.20, 44%
                             if (!playerGoalsMap[athId]) {
                                 playerGoalsMap[athId] = { count: 0, athleteName: athName, updatedAt: Date.now() };
                             }
-                            playerGoalsMap[athId].count += 1;
+                            
+                            const typeText = (g.type?.text || '').toLowerCase();
+                            const typeType = (g.type?.type || '').toLowerCase();
+                            const isOwnGoal = typeText.includes('own') || typeType.includes('own') || typeText.includes('contra') || typeType.includes('contra');
+                            
+                            if (isOwnGoal) {
+                                playerGoalsMap[athId].count -= 1;
+                            } else {
+                                playerGoalsMap[athId].count += 1;
+                            }
                         }
                     });
                 } catch (err) {
@@ -6264,10 +6273,10 @@ ${matchupBlocks}`;
                             if (hasValidPrediction && starPlayer && starPlayer.athleteId) {
                                 const athleteGoalsInfo = playerGoals[starPlayer.athleteId] || 0;
                                 const goalsCount = typeof athleteGoalsInfo === 'number' ? athleteGoalsInfo : (athleteGoalsInfo.count || 0);
-                                if (goalsCount > 0) {
+                                if (goalsCount !== 0) {
                                     const bonusPts = goalsCount * 1;
                                     roundPoints += bonusPts;
-                                    console.log(`     -> Bônus de Artilheiro da Rodada (${starPlayer.athleteName}): ${goalsCount} gol(s) = +${bonusPts} pts para ${userId}`);
+                                    console.log(`     -> Bônus de Artilheiro da Rodada (${starPlayer.athleteName}): ${goalsCount} gol(s) = ${bonusPts >= 0 ? '+' : ''}${bonusPts} pts para ${userId}`);
                                 }
                             }
 
@@ -7276,6 +7285,13 @@ ${matchupBlocks}`;
                 }
 
                 const [lastRoundKey, lastRoundData] = completedRounds[completedRounds.length - 1];
+                const lastFinishedAt = Number(lastRoundData.finishTimestamp || 0);
+                const lastDate = lastFinishedAt ? new Date(lastFinishedAt) : null;
+                const nowDate = new Date();
+                if (!lastDate || lastDate.getFullYear() === nowDate.getFullYear() && lastDate.getMonth() === nowDate.getMonth()) {
+                    alert('O Cinturão só é disputado uma vez por mês, na primeira rodada do mês seguinte. O detentor segue aguardando.');
+                    return;
+                }
                 const matchEntry = Object.entries(lastRoundData.matches || {}).find(([, match]) =>
                     match?.player1Id === currentChampionId || match?.player2Id === currentChampionId
                 );
@@ -7288,6 +7304,11 @@ ${matchupBlocks}`;
                 const [matchKey, match] = matchEntry;
                 const processedMatchKey = `supercopa-${lastRoundKey.replace(/\s+/g, '-')}`;
                 const historyItems = Object.values(cinturaoData.history || {});
+                const currentMonthKey = `${new Date().getFullYear()}-${new Date().getMonth()}`;
+                if (historyItems.some(item => item.processedMonth === currentMonthKey)) {
+                    alert('A batalha do Cinturão deste mês já foi processada.');
+                    return;
+                }
                 if (historyItems.some(item => item.matchKey === processedMatchKey)) {
                     alert(`O duelo do cinturão referente a ${lastRoundKey} já foi processado.`);
                     return;
@@ -7344,7 +7365,8 @@ ${matchupBlocks}`;
                     currentMatch: {
                         matchKey: `belt-${Date.now()}`,
                         sourceRoundKey: lastRoundKey,
-                        processedFromSupercopaMatchKey: matchKey,
+                    processedFromSupercopaMatchKey: matchKey,
+                    processedMonth: currentMonthKey,
                         championId: newChampionId,
                         challengerId: nextChallengerId,
                         champScore: '',
@@ -7561,7 +7583,7 @@ Responda somente com blocos:
 [SLIDE: Titulo curto]
 Texto do slide em 1 ou 2 paragrafos.
 
-Use entre 5 e 8 slides. Inclua: panorama da rodada, Mito da Rodada, Zicador da Rodada, destaques positivos/negativos, zebras ou jogos obvios errados, Cinturao, Resta Um e um resumo curto da Supercopa quando fizer sentido. Nao invente dados.
+Use entre 5 e 8 slides. Inclua: panorama da rodada, Mito da Rodada, Zicador da Rodada, destaques positivos/negativos, zebras ou jogos obvios errados, Cinturao, Resta Um e um resumo curto da Supercopa. A Supercopa está na fase de mata-mata: trate Quartas, Semifinais ou Final como chaveamento, destaque Série A, Série B e Série C, placares de ida e volta, agregado e classificados/eliminados quando esses dados existirem. Nao invente dados.
 
 TOM E HUMOR
 - Escreva com mais humor de mesa de bar, provocacao entre amigos e ironia esportiva, mas sem ofensa pesada.
@@ -7572,7 +7594,7 @@ TOM E HUMOR
 - Considere o historico competitivo dos jogadores quando isso enriquecer a narrativa: legado, jejum, freguesia, jogador cascudo, surpresa improvavel, chance de entrar na estante ou manter fama de pipocar.
 - Se a rodada mexer em corrida por trofeu novo, defesa de cinturao, sobrevivencia no Resta Um, afirmacao na Formula Depre ou moral para a Supercopa, deixe isso explicito nos slides.
 
-CONTEXTO GERAL
+ CONTEXTO GERAL
 Rodada: ${roundId}
 Status da rodada: ${roundData.status === 2 ? 'finalizada' : roundData.status === 1 ? 'em andamento' : 'pendente'}
 Partidas finalizadas: ${finishedMatches}/${matches.length}; pendentes: ${pendingMatches}
@@ -7761,6 +7783,7 @@ Outros participantes importantes da rodada: ${scores.slice(1, -1).map(s => `${s.
 
 Contexto do Torneio Cinturão (UFC do Bolão):
 ${cinturaoStatus}
+Regra do Cinturão: a batalha acontece somente uma vez por mês, na primeira rodada do mês seguinte. Se ainda não houver rodada elegível, ou se o torneio estiver parado, diga que o detentor está aguardando; não trate isso como duelo ativo.
 
 Contexto do Resta Um (Sobrevivência):
 ${restaUmStatus}
@@ -7771,6 +7794,7 @@ ${trophyRace || 'Sem histórico consolidado de troféus.'}
 Por favor, faça um texto hilário, zoeiro, ácido e provocativo em português brasileiro. Exalte o Mito com zoeira (ou diga que foi pura cagada/pacto) e destrua o Zicador com piadinhas ácidas. Faça piadas sobre a luta pelo Cinturão e quem sobrou ou rodou no Resta Um.
 Considere o histórico competitivo dos jogadores, quem está brigando por troféu novo, quem está defendendo legado, quem vive seca de título e quem pode estar montando temporada marcante.
 Considere também que você pode conhecer notícias públicas recentes dos clubes reais até 19/08/2026. Use isso só como tempero leve e apenas quando fizer sentido; se não tiver certeza, prefira comentário genérico e não invente notícia específica.
+A Supercopa está na fase de mata-mata. Quando houver dados, mencione a chave de Quartas, Semifinais ou Final, separando Séries A, B e C e mostrando os placares de ida, volta e agregado, além dos classificados. Se não houver confronto/placar válido, apenas informe que está aguardando.
 Varie o tom entre zoeira, elogio desconfiado, drama exagerado e leitura esportiva. Preserve os dados do bolão como verdade principal.
 
 IMPORTANTE FORMATO:
