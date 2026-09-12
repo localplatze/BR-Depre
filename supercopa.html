@@ -110,6 +110,18 @@
         .knockout-round-column:not(:first-child)::before { content:'›'; position:absolute; left:-4px; top:50%; transform:translate(-50%,-50%); color:#38bdf8; font-size:30px; font-weight:800; text-shadow:0 0 12px rgba(56,189,248,.55); }
         .knockout-round-label { text-align:center; color:var(--text-color-light); font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.1); }
         .knockout-round-column .match-card { margin-bottom:10px; }
+        .knockout-match-card { padding:10px; }
+        .knockout-match-card .match-rows { display:grid; gap:4px; }
+        .knockout-match-card .match-row { display:grid; grid-template-columns:minmax(0,1fr) 34px 34px 46px; align-items:center; gap:5px; min-height:38px; padding:4px 6px; border-radius:8px; background:rgba(255,255,255,.035); }
+        .knockout-match-card .match-row.winner { background:linear-gradient(90deg, rgba(245,158,11,.22), rgba(245,158,11,.07)); border:1px solid rgba(245,158,11,.45); }
+        .knockout-match-card .match-row.winner .aggregate { color:#fbbf24; }
+        .knockout-match-card .match-team { display:flex; align-items:center; gap:7px; min-width:0; font-size:.78rem; font-weight:700; }
+        .knockout-match-card .match-team .logo { width:26px; height:26px; flex:0 0 26px; }
+        .knockout-match-card .match-team .team-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .knockout-match-card .match-score { text-align:center; color:var(--text-color-light); font-size:.82rem; }
+        .knockout-match-card .aggregate { text-align:center; font-weight:900; color:#fff; font-size:.9rem; }
+        .knockout-match-card .score-head { display:grid; grid-template-columns:minmax(0,1fr) 34px 34px 46px; gap:5px; padding:0 6px 3px; color:var(--text-color-light); font-size:.58rem; text-align:center; text-transform:uppercase; letter-spacing:.05em; }
+        .knockout-match-card .score-head span:first-child { text-align:left; }
         .knockout-series-tabs { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:0 auto 18px; }
         .knockout-series-tab { flex:0 0 auto; border:1px solid var(--border-color); border-radius:999px; padding:8px 18px; background:rgba(255,255,255,.04); color:var(--text-color-light); font-weight:800; cursor:pointer; }
         .knockout-series-tab.active { color:#111; background:var(--gold); border-color:var(--gold); }
@@ -968,6 +980,15 @@
                 container.innerHTML = `<div class="knockout-round-label">${phaseNames[phaseKey]} · ${filledCount} confronto(s)</div><div>${filledCount ? '' : '<div class="empty-state" style="padding:28px 8px;font-size:.78rem;">Aguardando confrontos</div>'}</div>`;
                 if (filledCount) renderKnockoutSeries(phaseMatches, container.lastElementChild);
             });
+            const savedPhase = supercopaDataCache?.activeStage;
+            const currentPhase = ['quarterFinals', 'semiFinals', 'final'].includes(savedPhase) ? savedPhase
+                : (supercopaDataCache?.final?.status === 1 ? 'final' : supercopaDataCache?.semiFinals?.status === 1 ? 'semiFinals' : 'quarterFinals');
+            const activeColumn = ui.knockoutRounds[currentPhase];
+            document.querySelectorAll('.knockout-round-column').forEach(column => column.removeAttribute('data-current-phase'));
+            activeColumn?.setAttribute('data-current-phase', 'true');
+            if (activeColumn && window.matchMedia('(max-width: 900px)').matches) {
+                window.setTimeout(() => activeColumn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 40);
+            }
         }
 
         function getPlayerRecentForm(playerId) {
@@ -1419,7 +1440,7 @@
             }
             container.innerHTML = filledMatches.map(([matchKey, match]) => {
                 match.id = matchKey;
-                return renderMatchCard(match, false, true);
+                return renderKnockoutMatchCard(match);
             }).join('');
         }
         
@@ -1434,6 +1455,35 @@
                 }
             }
             return '';
+        }
+
+        function renderKnockoutMatchCard(match) {
+            const p1Id = match.homeTeam || match.player1Id;
+            const p2Id = match.awayTeam || match.player2Id;
+            const player1 = p1Id ? usersDataCache[p1Id] : null;
+            const player2 = p2Id ? usersDataCache[p2Id] : null;
+            const team1 = player1 ? teamsDataCache[player1.teamId || player1.team] : null;
+            const team2 = player2 ? teamsDataCache[player2.teamId || player2.team] : null;
+            const avatar1 = player1?.useCustomShield && player1?.customShield ? player1.customShield : (team1?.image || 'default-avatar.png');
+            const avatar2 = player2?.useCustomShield && player2?.customShield ? player2.customShield : (team2?.image || 'default-avatar.png');
+            const name = (player, team) => player ? ((player.customTeamName || '').trim() || player.name || team?.name || 'Jogador') : 'A definir';
+            const name1 = name(player1, team1);
+            const name2 = name(player2, team2);
+            const scoresReady = [match.score1Ida, match.score2Ida, match.score1Volta, match.score2Volta].every(value => value !== undefined && value !== '');
+            const s1 = scoresReady ? Number(match.score1Ida) + Number(match.score1Volta) : null;
+            const s2 = scoresReady ? Number(match.score2Ida) + Number(match.score2Volta) : null;
+            const winner1 = scoresReady && s1 > s2;
+            const winner2 = scoresReady && s2 > s1;
+            const beltBadge1 = p1Id === cinturaoChampionId ? ' 🥊' : '';
+            const beltBadge2 = p2Id === cinturaoChampionId ? ' 🥊' : '';
+            const row = (avatar, playerName, ida, volta, aggregate, winner, badge) => `
+                <div class="match-row ${winner ? 'winner' : ''}">
+                    <div class="match-team"><img src="${avatar}" alt="" class="logo" onerror="this.src='default-avatar.png'"><span class="team-name">${playerName}${badge}</span></div>
+                    <span class="match-score">${ida ?? '—'}</span>
+                    <span class="match-score">${volta ?? '—'}</span>
+                    <strong class="aggregate">${aggregate ?? '—'}${winner ? ' ★' : ''}</strong>
+                </div>`;
+            return `<div class="match-card knockout-match-card"><div class="score-head"><span>Jogador</span><span>Ida</span><span>Volta</span><span>Total</span></div><div class="match-rows">${row(avatar1, name1, match.score1Ida, match.score1Volta, s1, winner1, beltBadge1)}${row(avatar2, name2, match.score2Ida, match.score2Volta, s2, winner2, beltBadge2)}</div></div>`;
         }
 
         function renderMatchCard(match, isGroupStage, isRoundActive = true) {
