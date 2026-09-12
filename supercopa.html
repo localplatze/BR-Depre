@@ -101,6 +101,8 @@
 
         /* --- CONTEÚDO DO MATA-MATA --- */
         .knockout-grid { display: grid; grid-template-columns: repeat(3, minmax(300px, 1fr)); gap: 22px; align-items: stretch; }
+        .knockout-bracket-card { background: radial-gradient(circle at 50% 0%, rgba(0,123,255,.18), transparent 48%), var(--card-bg-color); border: 1px solid rgba(0,123,255,.32); border-radius: 20px; padding: 22px; box-shadow: var(--shadow); }
+        .knockout-bracket-card .bracket-kicker { text-align:center; text-transform:uppercase; letter-spacing:.16em; color:#8ec5ff; font-size:.68rem; font-weight:800; margin-bottom:5px; }
         .knockout-series-container { display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015)); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px; }
         .series-title { font-size: 1.5em; font-weight: 700; color: #fff; text-align: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid; }
         .series-a .series-title { border-color: var(--gold); }
@@ -655,7 +657,9 @@
 
         <!-- Conteúdo do Mata-Mata -->
         <div id="knockout-stage-content" style="display:none;">
-             <h2 class="section-header" id="knockout-title-main"></h2>
+             <div class="knockout-bracket-card">
+             <div class="bracket-kicker">Chave do mata-mata</div>
+             <h2 class="section-header" id="knockout-title-main" style="justify-content:center;"></h2>
              <div class="knockout-grid">
                 <div class="knockout-series-container series-a">
                     <h3 class="series-title">Série A</h3>
@@ -669,6 +673,7 @@
                     <h3 class="series-title">Série C</h3>
                     <div id="knockout-matches-c"></div>
                 </div>
+             </div>
              </div>
         </div>
     </div>
@@ -944,7 +949,10 @@
             ui.knockoutTitleMain.textContent = stageNameMap[stageKey] || 'Mata-Mata';
             
             const stageData = supercopaDataCache[stageKey];
-            
+            const countFilled = (value) => Object.values(value || {}).filter(m => m && (m.homeTeam || m.awayTeam || m.player1Id || m.player2Id)).length;
+            document.querySelector('.series-a .series-title').textContent = `Série A · ${countFilled(stageData?.matches)} confronto(s)`;
+            document.querySelector('.series-b .series-title').textContent = `Série B · ${countFilled(stageData?.b)} confronto(s)`;
+            document.querySelector('.series-c .series-title').textContent = `Série C · ${countFilled(stageData?.c)} confronto(s)`;
             renderKnockoutSeries(stageData?.matches, ui.knockoutMatches.a);
             renderKnockoutSeries(stageData?.b, ui.knockoutMatches.b);
             renderKnockoutSeries(stageData?.c, ui.knockoutMatches.c);
@@ -1392,7 +1400,12 @@
                 container.innerHTML = `<div class="empty-state">Confrontos não definidos.</div>`;
                 return;
             }
-            container.innerHTML = Object.entries(matches).map(([matchKey, match]) => {
+            const filledMatches = Object.entries(matches).filter(([, match]) => match && (match.homeTeam || match.awayTeam || match.player1Id || match.player2Id));
+            if (!filledMatches.length) {
+                container.innerHTML = `<div class="empty-state">Nenhum confronto preenchido.</div>`;
+                return;
+            }
+            container.innerHTML = filledMatches.map(([matchKey, match]) => {
                 match.id = matchKey;
                 return renderMatchCard(match, false, true);
             }).join('');
