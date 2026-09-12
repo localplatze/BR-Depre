@@ -2321,11 +2321,14 @@
             const points = {};
             const hasPrediction = {};
             Object.values(roundData.matches).forEach(match => {
-                if (match.finalResult && match.predictions) {
+                const finalResult = match.finalResult || (match.result ? (() => { const [homeScore, awayScore] = String(match.result).split('x').map(v => Number(v.trim())); return Number.isFinite(homeScore) && Number.isFinite(awayScore) ? { homeScore, awayScore } : null; })() : null);
+                if (finalResult && match.predictions) {
                     Object.entries(match.predictions).forEach(([pid, pred]) => {
-                        if (!points[pid]) points[pid] = 0;
-                        points[pid] += calculateMatchPoints(match.finalResult, pred);
-                        hasPrediction[pid] = true;
+                        if (pred?.homeScore !== undefined && pred?.awayScore !== undefined) {
+                            if (!points[pid]) points[pid] = 0;
+                            points[pid] += calculateMatchPoints(finalResult, pred);
+                            hasPrediction[pid] = true;
+                        }
                     });
                 }
             });

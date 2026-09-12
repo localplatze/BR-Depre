@@ -100,10 +100,19 @@
         .form-badge.draw { background-color: #64748b; } /* X - Empate (Cinza) */
 
         /* --- CONTEÚDO DO MATA-MATA --- */
-        .knockout-grid { display: grid; grid-template-columns: repeat(3, minmax(300px, 1fr)); gap: 22px; align-items: stretch; }
+        .knockout-grid { display: grid; grid-template-columns: repeat(3, minmax(230px, 1fr)); gap: 0; align-items: stretch; overflow-x: auto; padding-bottom: 4px; }
         .knockout-bracket-card { background: radial-gradient(circle at 50% 0%, rgba(0,123,255,.18), transparent 48%), var(--card-bg-color); border: 1px solid rgba(0,123,255,.32); border-radius: 20px; padding: 22px; box-shadow: var(--shadow); }
         .knockout-bracket-card .bracket-kicker { text-align:center; text-transform:uppercase; letter-spacing:.16em; color:#8ec5ff; font-size:.68rem; font-weight:800; margin-bottom:5px; }
-        .knockout-series-container { display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015)); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px; }
+        .knockout-series-container { display: flex; flex-direction: column; gap: 15px; min-width: 230px; padding: 14px; border-right: 1px solid var(--border-color); }
+        .knockout-series-container:last-child { border-right: 0; }
+        .knockout-round-column { display:flex; flex-direction:column; gap:12px; min-height:220px; }
+        .knockout-round-column:not(:first-child) { position:relative; }
+        .knockout-round-column:not(:first-child)::before { content:'›'; position:absolute; left:-4px; top:50%; transform:translate(-50%,-50%); color:#38bdf8; font-size:30px; font-weight:800; text-shadow:0 0 12px rgba(56,189,248,.55); }
+        .knockout-round-label { text-align:center; color:var(--text-color-light); font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.1); }
+        .knockout-round-column .match-card { margin-bottom:10px; }
+        .knockout-series-tabs { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:0 auto 18px; }
+        .knockout-series-tab { flex:0 0 auto; border:1px solid var(--border-color); border-radius:999px; padding:8px 18px; background:rgba(255,255,255,.04); color:var(--text-color-light); font-weight:800; cursor:pointer; }
+        .knockout-series-tab.active { color:#111; background:var(--gold); border-color:var(--gold); }
         .series-title { font-size: 1.5em; font-weight: 700; color: #fff; text-align: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid; }
         .series-a .series-title { border-color: var(--gold); }
         .series-b .series-title { border-color: var(--silver); }
@@ -116,7 +125,7 @@
         .leg-score { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 9px; border-radius:8px; background:rgba(255,255,255,.045); color:var(--text-color-light); font-size:.78rem; }
         .leg-score strong { color:#fff; font-size:.95rem; }
         .aggregate-score { text-align:center; padding:6px; border-radius:8px; background:rgba(0,123,255,.12); color:#8ec5ff; font-weight:800; font-size:.8rem; }
-        @media (max-width: 900px) { .knockout-grid { grid-template-columns: 1fr; } .knockout-series-container .match-card::after { display:none; } }
+        @media (max-width: 900px) { .knockout-grid { grid-template-columns: repeat(3, minmax(220px, 1fr)); } .knockout-series-container .match-card::after { display:none; } }
         .match-player { display: flex; align-items: center; gap: 10px; flex: 1; }
         .match-player.away { justify-content: flex-end; text-align: right; }
         .match-player .logo { width: 40px; height: 40px; }
@@ -612,9 +621,7 @@
         <h1 class="header-title"><i class="fas fa-shield-alt"></i> Supercopa</h1>
         <div class="tabs main-tabs">
             <div class="tab active" data-stage="groups">Fase de Grupos</div>
-            <div class="tab" data-stage="quarterFinals">Quartas</div>
-            <div class="tab" data-stage="semiFinals">Semifinais</div>
-            <div class="tab" data-stage="final">Final</div>
+            <div class="tab" data-stage="knockout">Mata-Mata</div>
         </div>
 
         <!-- Conteúdo da Fase de Grupos -->
@@ -658,20 +665,22 @@
         <!-- Conteúdo do Mata-Mata -->
         <div id="knockout-stage-content" style="display:none;">
              <div class="knockout-bracket-card">
-             <div class="bracket-kicker">Chave do mata-mata</div>
-             <h2 class="section-header" id="knockout-title-main" style="justify-content:center;"></h2>
+             <div class="bracket-kicker">Chave oficial da competição</div>
+             <h2 class="section-header" id="knockout-title-main" style="justify-content:center;">Mata-Mata</h2>
+             <div class="knockout-series-tabs" role="tablist" aria-label="Séries do mata-mata">
+                <button type="button" class="knockout-series-tab active" data-series="a">Série A · Título</button>
+                <button type="button" class="knockout-series-tab" data-series="b">Série B</button>
+                <button type="button" class="knockout-series-tab" data-series="c">Série C</button>
+             </div>
              <div class="knockout-grid">
-                <div class="knockout-series-container series-a">
-                    <h3 class="series-title">Série A</h3>
-                    <div id="knockout-matches-a"></div>
+                <div class="knockout-series-container">
+                    <div class="knockout-round-column" id="knockout-round-quarterFinals"></div>
                 </div>
-                <div class="knockout-series-container series-b">
-                    <h3 class="series-title">Série B</h3>
-                    <div id="knockout-matches-b"></div>
+                <div class="knockout-series-container">
+                    <div class="knockout-round-column" id="knockout-round-semiFinals"></div>
                 </div>
-                <div class="knockout-series-container series-c">
-                    <h3 class="series-title">Série C</h3>
-                    <div id="knockout-matches-c"></div>
+                <div class="knockout-series-container">
+                    <div class="knockout-round-column" id="knockout-round-final"></div>
                 </div>
              </div>
              </div>
@@ -723,6 +732,7 @@
         let supercopaDataCache = null;
         let activeSuperligaRoundData = null;
         let selectedGroupRoundKey = null;
+        let selectedKnockoutSeries = 'a';
 
         // --- MAPEAMENTO DA UI ---
         const ui = {
@@ -733,10 +743,10 @@
             standingsList: document.getElementById('standings-list'),
             matchesList: document.getElementById('matches-list'),
             knockoutTitleMain: document.getElementById('knockout-title-main'),
-            knockoutMatches: {
-                a: document.getElementById('knockout-matches-a'),
-                b: document.getElementById('knockout-matches-b'),
-                c: document.getElementById('knockout-matches-c'),
+            knockoutRounds: {
+                quarterFinals: document.getElementById('knockout-round-quarterFinals'),
+                semiFinals: document.getElementById('knockout-round-semiFinals'),
+                final: document.getElementById('knockout-round-final')
             }
         };
 
@@ -802,7 +812,7 @@
                         else activeStage = 'groups';
                     }
                     
-                    const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage}"]`);
+                    const activeTab = document.querySelector(`.main-tabs .tab[data-stage="${activeStage === 'groups' ? 'groups' : 'knockout'}"]`);
                     if (activeTab) {
                         ui.mainTabs.forEach(t => t.classList.remove('active'));
                         activeTab.classList.add('active');
@@ -838,7 +848,7 @@
                     loadGroupData(activeGroupTab.dataset.group);
                 }
             } else {
-                loadKnockoutData(stage);
+                loadKnockoutData();
             }
         }
 
@@ -944,18 +954,20 @@
                 .replace(/'/g, '&#039;');
         }
 
-        function loadKnockoutData(stageKey) {
-            const stageNameMap = { quarterFinals: 'Quartas de Final', semiFinals: 'Semifinais', final: 'Final' };
-            ui.knockoutTitleMain.textContent = stageNameMap[stageKey] || 'Mata-Mata';
-            
-            const stageData = supercopaDataCache[stageKey];
-            const countFilled = (value) => Object.values(value || {}).filter(m => m && (m.homeTeam || m.awayTeam || m.player1Id || m.player2Id)).length;
-            document.querySelector('.series-a .series-title').textContent = `Série A · ${countFilled(stageData?.matches)} confronto(s)`;
-            document.querySelector('.series-b .series-title').textContent = `Série B · ${countFilled(stageData?.b)} confronto(s)`;
-            document.querySelector('.series-c .series-title').textContent = `Série C · ${countFilled(stageData?.c)} confronto(s)`;
-            renderKnockoutSeries(stageData?.matches, ui.knockoutMatches.a);
-            renderKnockoutSeries(stageData?.b, ui.knockoutMatches.b);
-            renderKnockoutSeries(stageData?.c, ui.knockoutMatches.c);
+        function loadKnockoutData() {
+            const seriesLabel = { a: 'Série A · Disputa do título', b: 'Série B', c: 'Série C' };
+            ui.knockoutTitleMain.textContent = seriesLabel[selectedKnockoutSeries] || 'Mata-Mata';
+            const seriesKey = selectedKnockoutSeries === 'a' ? 'matches' : selectedKnockoutSeries;
+            const phaseNames = { quarterFinals: 'Quartas de final', semiFinals: 'Semifinais', final: 'Final' };
+            ['quarterFinals', 'semiFinals', 'final'].forEach(phaseKey => {
+                const phaseData = supercopaDataCache?.[phaseKey] || {};
+                const phaseMatches = phaseData[seriesKey] || [];
+                const filledCount = Object.values(phaseMatches).filter(match => match && (match.homeTeam || match.awayTeam || match.player1Id || match.player2Id)).length;
+                const container = ui.knockoutRounds[phaseKey];
+                if (!container) return;
+                container.innerHTML = `<div class="knockout-round-label">${phaseNames[phaseKey]} · ${filledCount} confronto(s)</div><div>${filledCount ? '' : '<div class="empty-state" style="padding:28px 8px;font-size:.78rem;">Aguardando confrontos</div>'}</div>`;
+                if (filledCount) renderKnockoutSeries(phaseMatches, container.lastElementChild);
+            });
         }
 
         function getPlayerRecentForm(playerId) {
@@ -2171,6 +2183,13 @@
                 ui.mainTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 loadStage(tab.dataset.stage);
+            }));
+
+            document.querySelectorAll('.knockout-series-tab').forEach(tab => tab.addEventListener('click', () => {
+                document.querySelectorAll('.knockout-series-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                selectedKnockoutSeries = tab.dataset.series || 'a';
+                loadKnockoutData();
             }));
 
             ui.groupTabs.forEach(tab => tab.addEventListener('click', () => {

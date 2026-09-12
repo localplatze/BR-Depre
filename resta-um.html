@@ -546,8 +546,10 @@
 
             const matches = Array.isArray(roundData.matches) ? roundData.matches : Object.values(roundData.matches);
             matches.forEach(match => {
-                if (!match || !match.result || !match.predictions) return;
-                const [homeResult, awayResult] = String(match.result).split('x').map(s => parseInt(String(s).trim(), 10));
+                if (!match || !match.predictions) return;
+                const resultText = match.result || (match.finalResult ? `${match.finalResult.homeScore}x${match.finalResult.awayScore}` : '');
+                if (!resultText) return;
+                const [homeResult, awayResult] = String(resultText).split('x').map(s => parseInt(String(s).trim(), 10));
                 if (Number.isNaN(homeResult) || Number.isNaN(awayResult)) return;
 
                 Object.entries(match.predictions).forEach(([pid, pred]) => {
