@@ -4004,18 +4004,33 @@ Time B: 2.20, 44%
                 throw new Error(`${name}: sem codigo ESPN configurado.`);
             }
 
-            const params = new URLSearchParams({
-                dates: getEspnDateRange(dateFrom, dateTo),
-                limit: '200'
-            });
-            const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${espnCode}/scoreboard?${params.toString()}`);
-
-            if (!response.ok) {
-                throw new Error(`${name}: ESPN HTTP ${response.status}`);
+            // A ESPN rejeita intervalos de datas neste endpoint para algumas ligas
+            // (incluindo Libertadores). Consulte cada dia e combine os eventos.
+            const requestedDates = [];
+            const cursor = new Date(`${dateFrom}T00:00:00Z`);
+            const endDate = new Date(`${dateTo}T00:00:00Z`);
+            while (cursor <= endDate) {
+                requestedDates.push(cursor.toISOString().slice(0, 10));
+                cursor.setUTCDate(cursor.getUTCDate() + 1);
             }
 
-            const payload = await response.json();
-            return (payload.events || []).map((event) => {
+            const events = [];
+            for (const requestedDate of requestedDates) {
+                const params = new URLSearchParams({
+                    dates: toEspnDate(requestedDate),
+                    limit: '200'
+                });
+                const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${espnCode}/scoreboard?${params.toString()}`);
+
+                if (!response.ok) {
+                    throw new Error(`${name}: ESPN HTTP ${response.status} (${requestedDate})`);
+                }
+
+                const payload = await response.json();
+                events.push(...(payload.events || []));
+            }
+
+            return events.map((event) => {
                 const competition = event.competitions?.[0] || {};
                 const competitors = competition.competitors || [];
                 const homeCompetitor = competitors.find((competitor) => competitor.homeAway === 'home') || competitors[0] || {};
