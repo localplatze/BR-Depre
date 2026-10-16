@@ -1128,7 +1128,12 @@
             athleteSelect.innerHTML = '<option value="">Carregando elenco da ESPN...</option>';
 
             try {
-                const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${leagueCode || 'bra.1'}/teams/${espnTeamId}?enable=roster`);
+                const params = new URLSearchParams({
+                    resource: 'team',
+                    league: leagueCode || 'bra.1',
+                    teamId: String(espnTeamId)
+                });
+                const res = await fetch(`/api/espn?${params.toString()}`);
                 if (!res.ok) throw new Error('Erro na API ESPN');
                 const data = await res.json();
                 const athletes = data.team?.athletes || [];

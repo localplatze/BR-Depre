@@ -4020,7 +4020,9 @@ Time B: 2.20, 44%
                     dates: toEspnDate(requestedDate),
                     limit: '200'
                 });
-                const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${espnCode}/scoreboard?${params.toString()}`);
+                params.set('resource', 'scoreboard');
+                params.set('league', espnCode);
+                const response = await fetch(`/api/espn?${params.toString()}`);
 
                 if (!response.ok) {
                     throw new Error(`${name}: ESPN HTTP ${response.status} (${requestedDate})`);
@@ -4453,7 +4455,12 @@ Time B: 2.20, 44%
                 if (!match.apiFixtureId) continue;
                 const code = leagueCode || match.apiLeagueCode || 'bra.1';
                 try {
-                    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${code}/summary?event=${match.apiFixtureId}`);
+                    const params = new URLSearchParams({
+                        resource: 'summary',
+                        league: code,
+                        event: String(match.apiFixtureId)
+                    });
+                    const res = await fetch(`/api/espn?${params.toString()}`);
                     if (!res.ok) continue;
                     const data = await res.json();
                     const keyEvents = data.keyEvents || [];
