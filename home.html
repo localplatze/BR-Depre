@@ -11,6 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -1847,10 +1848,39 @@
             background: var(--primary);
             transform: scale(1.2);
         }
+
+        /* Homenagem especial de casamento */
+        .wedding-dialog { position: fixed; inset: 0; margin: auto; width: min(92vw, 520px); max-height: 90vh; overflow: auto; border: 1px solid #c6bca9; padding: 0; color: #28251f; background: #f4f0e7; box-shadow: 0 24px 80px rgba(0,0,0,.45); }
+        .wedding-dialog::backdrop { background: rgba(9,13,22,.8); backdrop-filter: blur(5px); }
+        .wedding-card { position: relative; overflow: hidden; text-align: center; padding: 58px 44px 42px; background: radial-gradient(ellipse at top left, #fffdf7, transparent 55%), repeating-linear-gradient(115deg, rgba(126,112,88,.025) 0 1px, transparent 1px 4px), #f4f0e7; font-family: 'Cormorant Garamond', Georgia, serif; }
+        .wedding-card::before, .wedding-card::after { content: '❀'; position: absolute; color: #bcb3a2; opacity: .5; font-size: 110px; line-height: 1; pointer-events: none; }
+        .wedding-card::before { top: -25px; left: -18px; }
+        .wedding-card::after { bottom: -30px; right: -12px; }
+        .wedding-close { position: absolute; z-index: 1; top: 12px; right: 14px; border: 0; background: transparent; color: #655f53; font-size: 26px; cursor: pointer; line-height: 1; padding: 6px; }
+        .wedding-eyebrow { font-size: 15px; letter-spacing: .25em; text-transform: uppercase; }
+        .wedding-names { margin: 24px 0 16px; font-family: 'Great Vibes', cursive; font-size: clamp(48px, 10vw, 72px); font-weight: 400; line-height: 1.15; }
+        .wedding-divider { width: 74%; margin: 0 auto 22px; border: 0; border-top: 1px solid #8c8374; }
+        .wedding-message { max-width: 370px; margin: auto; font-size: 21px; line-height: 1.42; }
+        .wedding-signature { margin-top: 24px; font-size: 15px; letter-spacing: .12em; text-transform: uppercase; }
+        .wedding-button { margin-top: 25px; padding: 10px 28px; border: 1px solid #817767; background: transparent; color: #383329; font: 600 15px 'Cormorant Garamond', Georgia, serif; letter-spacing: .08em; cursor: pointer; }
+        .wedding-button:hover, .wedding-button:focus-visible { background: #e5ded0; }
+        @media (max-width: 480px) { .wedding-card { padding: 52px 25px 34px; } .wedding-message { font-size: 19px; } }
     </style>
 </head>
 
 <body>
+    <dialog id="wedding-dialog" class="wedding-dialog" aria-labelledby="wedding-title" aria-describedby="wedding-message">
+        <div class="wedding-card">
+            <button class="wedding-close" type="button" aria-label="Fechar homenagem">&times;</button>
+            <p class="wedding-eyebrow">Uma rodada especial</p>
+            <h2 id="wedding-title" class="wedding-names">Katrine &amp; Guilherme</h2>
+            <hr class="wedding-divider">
+            <p id="wedding-message" class="wedding-message">Hoje a nossa torcida é pelo amor! Parabéns pelo casamento. Que esta nova jornada seja repleta de carinho, parceria e muitas felicidades para vocês dois.</p>
+            <p class="wedding-signature">Com carinho, a turma do bolão</p>
+            <p class="wedding-message" style="margin-top: 16px;">Parabéns, Guilherme. Você merece pika!</p>
+            <button class="wedding-button" type="button">Fechar</button>
+        </div>
+    </dialog>
 
     <div class="loading-screen" id="loading-screen">
         <div class="loading-shell">
@@ -3613,6 +3643,22 @@
             }
         }
 
+        function showWeddingTribute(userId) {
+            const profile = usersCache[userId] || {};
+            const dateInManaus = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'America/Manaus', year: 'numeric', month: '2-digit', day: '2-digit'
+            }).format(new Date());
+            const eligible = profile.isAdmin === true || (typeof profile.name === 'string' && profile.name.toLocaleLowerCase('pt-BR').includes('guilherme'));
+            if (!eligible || (dateInManaus !== '2026-11-20' && dateInManaus !== '2026-11-21')) return;
+            const dialog = document.getElementById('wedding-dialog');
+            if (!dialog.open) dialog.showModal();
+        }
+
+        const weddingDialog = document.getElementById('wedding-dialog');
+        weddingDialog.querySelectorAll('.wedding-close, .wedding-button').forEach(button => {
+            button.addEventListener('click', () => weddingDialog.close());
+        });
+
         async function init() {
             try {
                 await Promise.all([loadTeamsCache(), loadUsersCache(), loadCinturaoData()]);
@@ -3621,6 +3667,7 @@
 
                 await loadUserProfile(user.uid);
                 await checkAdminStatus(user.uid);
+                showWeddingTribute(user.uid);
 
                 const activeRound = await findActiveRound();
                 const livePoints = calculateLiveRoundPoints(activeRound);
