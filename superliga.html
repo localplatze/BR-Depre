@@ -10,6 +10,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -1224,18 +1225,18 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="superliga-editorial.css">
 </head>
 
 <body>
     <div class="app-container">
         <!-- Header -->
-        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="header newspaper-masthead">
             <a href="home.html" class="back-btn">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
-            <h1 class="header-title">
-                <i class="fas fa-trophy" style="color: var(--primary);"></i> Superliga
-            </h1>
+            <div class="masthead-title"><h1 class="header-title">Superliga</h1><p id="edition-headline">A classificação que rende assunto na arquibancada.</p></div>
+            <span class="edition-stamp">Edição oficial<br>Proibido para cardíacos</span>
             <a href="perfil.html" class="back-btn" title="Meu Perfil">
                 <i class="fas fa-user-cog"></i> Perfil
             </a>
@@ -1243,9 +1244,9 @@
 
         <!-- Tabs -->
         <div class="tabs">
-            <div class="tab" data-stage="abertura">Abertura</div>
-            <div class="tab" data-stage="clausura">Clausura</div>
-            <div class="tab" data-stage="final" style="display: none;">Final</div>
+            <button type="button" class="tab" data-stage="abertura" aria-pressed="false">Abertura</button>
+            <button type="button" class="tab" data-stage="clausura" aria-pressed="false">Clausura</button>
+            <button type="button" class="tab" data-stage="final" aria-pressed="false" style="display: none;">Final</button>
         </div>
 
         <!-- Stage Content: Abertura -->
@@ -1255,8 +1256,8 @@
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
                     <div class="header-actions">
                         <div class="view-toggle-group">
-                            <button class="btn-toggle active" data-view="compact" onclick="setTableView('compact')">Resumo</button>
-                            <button class="btn-toggle" data-view="stats" onclick="setTableView('stats')">Estatísticas</button>
+                            <button class="btn-toggle active" data-view="compact" aria-pressed="true" onclick="setTableView('compact')">Resumo</button>
+                            <button class="btn-toggle" data-view="stats" aria-pressed="false" onclick="setTableView('stats')">Estatísticas</button>
                         </div>
                         <button class="btn-race" data-race-stage="abertura"><i class="fas fa-horse"></i> Corridinha</button>
                     </div>
@@ -1266,13 +1267,15 @@
                 </div>
                 <div class="legend">
                     <span class="legend-item"><span class="legend-color"
-                            style="background: var(--color-libertadores);"></span> Libertadores</span>
+                            style="background: var(--color-libertadores);"></span> G4 · Zona da glória (Libertadores)</span>
                     <span class="legend-item"><span class="legend-color"
                             style="background: var(--color-pre-libertadores);"></span> Pré-Libertadores</span>
                     <span class="legend-item"><span class="legend-color" style="background: var(--color-sula);"></span>
                         Sul-Americana</span>
+                    <span class="legend-item">Meio · Limbo</span>
+                    <span class="legend-item">Forma: V acima, E perto e D abaixo da média da rodada</span>
                     <span class="legend-item"><span class="legend-color"
-                            style="background: var(--color-rebaixamento);"></span> Rebaixamento</span>
+                            style="background: var(--color-rebaixamento);"></span> Z4 · Zona da degola (Rebaixamento)</span>
                 </div>
             </div>
         </div>
@@ -1284,8 +1287,8 @@
                     <div class="table-title"><i class="fas fa-chart-simple"></i> Tabela de Classificação</div>
                     <div class="header-actions">
                         <div class="view-toggle-group">
-                            <button class="btn-toggle active" data-view="compact" onclick="setTableView('compact')">Resumo</button>
-                            <button class="btn-toggle" data-view="stats" onclick="setTableView('stats')">Estatísticas</button>
+                            <button class="btn-toggle active" data-view="compact" aria-pressed="true" onclick="setTableView('compact')">Resumo</button>
+                            <button class="btn-toggle" data-view="stats" aria-pressed="false" onclick="setTableView('stats')">Estatísticas</button>
                         </div>
                         <button class="btn-race" data-race-stage="clausura"><i class="fas fa-horse"></i> Corridinha</button>
                     </div>
@@ -1295,13 +1298,15 @@
                 </div>
                 <div class="legend">
                     <span class="legend-item"><span class="legend-color"
-                            style="background: var(--color-libertadores);"></span> Libertadores</span>
+                            style="background: var(--color-libertadores);"></span> G4 · Zona da glória (Libertadores)</span>
                     <span class="legend-item"><span class="legend-color"
                             style="background: var(--color-pre-libertadores);"></span> Pré-Libertadores</span>
                     <span class="legend-item"><span class="legend-color" style="background: var(--color-sula);"></span>
                         Sul-Americana</span>
+                    <span class="legend-item">Meio · Limbo</span>
+                    <span class="legend-item">Forma: V acima, E perto e D abaixo da média da rodada</span>
                     <span class="legend-item"><span class="legend-color"
-                            style="background: var(--color-rebaixamento);"></span> Rebaixamento</span>
+                            style="background: var(--color-rebaixamento);"></span> Z4 · Zona da degola (Rebaixamento)</span>
                 </div>
             </div>
         </div>
@@ -1377,6 +1382,7 @@
         </div>
         <div class="dialog-body">
             <div class="race-stage-badge" id="race-stage-label" hidden>Abertura</div>
+            <p class="race-intro">A posição final representa os pontos da tabela. O ritmo é uma animação inspirada na última rodada.</p>
             <div class="race-track" id="race-track">
                 <div class="race-track-inner" id="race-track-inner">
                     <div class="race-start-line"></div>
@@ -1386,8 +1392,9 @@
                 </div>
             </div>
             <div class="race-actions">
-                <button class="btn-race" id="rerun-race-btn"><i class="fas fa-rotate-right"></i> Correr de novo</button>
+                <button class="btn-race" id="rerun-race-btn">Dar largada</button>
             </div>
+            <div id="race-podium" class="race-podium" aria-live="polite" hidden></div>
         </div>
     </dialog>
 
@@ -1519,6 +1526,7 @@
         function setTableView(view) {
             currentTableView = view;
             document.querySelectorAll('.btn-toggle').forEach(btn => {
+                btn.setAttribute('aria-pressed', String(btn.dataset.view === view));
                 if (btn.dataset.view === view) {
                     btn.classList.add('active');
                 } else {
@@ -1531,193 +1539,125 @@
             });
         }
 
+        let raceRunToken = 0;
+        const horseIllustration = `<svg viewBox="0 0 180 110" aria-hidden="true" class="race-horse-art">
+            <g class="horse-legs rear-leg"><path d="M58 70 L44 92 L25 96 M62 71 L61 91 L49 102"/></g>
+            <g class="horse-legs front-leg"><path d="M116 66 L131 87 L150 91 M111 69 L108 92 L120 102"/></g>
+            <path class="horse-tail" d="M51 48 Q31 27 18 39 Q32 37 27 55 Q39 49 53 55Z"/>
+            <path class="horse-body" d="M50 48 Q62 36 91 43 Q111 48 122 39 L139 19 Q147 13 151 23 L162 34 Q166 40 158 44 L145 44 Q137 59 120 67 Q109 76 87 74 L60 71 Q44 67 50 48Z"/>
+            <path class="horse-detail" d="M124 39 Q135 27 139 20 M148 32 L151 32 M70 59 Q90 66 106 57"/>
+            <path class="jockey-trouser" d="M87 35 L105 48 L95 56 L76 43Z"/>
+            <path class="jockey-shirt" d="M77 18 Q87 15 94 24 L100 39 L85 43 L72 31Z"/>
+            <path class="jockey-arm" d="M86 25 L104 33 L120 28"/>
+            <circle class="jockey-face" cx="73" cy="16" r="8"/><path class="jockey-cap" d="M64 14 Q69 3 79 10 L82 15Z"/>
+        </svg>`;
         function renderHorseRace(stage) {
-            const raceDialog = document.getElementById('horse-race-dialog');
-            const raceTrack = document.getElementById('race-track');
-            const raceTrackInner = document.getElementById('race-track-inner');
-            const raceMudZone = raceTrackInner.querySelector('.race-mud-zone');
-            const raceItems = document.getElementById('race-items');
-            const raceScale = document.getElementById('race-scale');
-            const raceStageLabel = document.getElementById('race-stage-label');
+            raceRunToken++;
+            const dialog = document.getElementById('horse-race-dialog');
+            const track = document.getElementById('race-track');
+            const inner = document.getElementById('race-track-inner');
+            const items = document.getElementById('race-items');
+            const podium = document.getElementById('race-podium');
+            const button = document.getElementById('rerun-race-btn');
             const standings = standingsByStage[stage] || [];
-
-            if (raceStageLabel) raceStageLabel.textContent = getStageLabel(stage);
-            raceDialog.dataset.stage = stage;
-
+            dialog.dataset.stage = stage;
+            document.getElementById('race-stage-label').textContent = getStageLabel(stage);
+            track.classList.remove('race-running');
+            podium.hidden = true;
+            podium.replaceChildren();
+            button.disabled = !standings.length;
+            button.textContent = 'Dar largada';
+            items.replaceChildren();
+            document.getElementById('race-scale').textContent = '';
+            const width = Math.max(track.clientWidth, 700);
+            inner.style.width = `${width}px`;
+            inner.style.height = `${Math.max(220, standings.length * 96 + 45)}px`;
             if (!standings.length) {
-                raceItems.innerHTML = '<div class="loading" style="height: 320px;"><i class="fas fa-flag-checkered"></i> Carregue a tabela antes de largar a corrida.</div>';
-                raceScale.innerHTML = '';
+                items.textContent = 'Ainda não há classificação disponível para esta fase.';
                 return;
             }
-
-            const pointsList = standings.map(player => Math.max(0, Number(player.totalPoints || 0)));
-            const maxPoints = Math.max(...pointsList, 1);
-            const minPoints = Math.min(...pointsList, 0);
-            const pointRange = Math.max(maxPoints - minPoints, 1);
-            const tieCounts = pointsList.reduce((acc, points) => {
-                acc[points] = (acc[points] || 0) + 1;
-                return acc;
-            }, {});
-            const maxTieCount = Math.max(...Object.values(tieCounts), 1);
-            const runnerGap = 34;
-            const pointGap = Math.max(76, (maxTieCount * runnerGap) + 24);
-            const leftPad = 64;
-            const rightPad = 160;
-            const viewportWidth = raceTrack.clientWidth || 0;
-            const trackWidth = Math.max(viewportWidth + 320, leftPad + (pointRange * pointGap) + (maxTieCount * runnerGap) + rightPad);
-            const lineTop = 180;
-            const lastSafePosition = Math.max(standings.length - 4, 0);
-            const usedTies = {};
-            const runnerPositions = [];
-  
-            raceTrackInner.style.width = `${trackWidth}px`;
-            raceItems.innerHTML = standings.map((player, index) => {
+            const points = standings.map(p => Number(p.totalPoints) || 0);
+            const maximum = Math.max(...points), minimum = Math.min(...points);
+            const travel = width - 300;
+            standings.forEach((player, index) => {
                 const team = teamsDataCache[player.teamId || player.team] || {};
-                const playerAvatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
-                const displayName = (player.customTeamName && player.customTeamName.trim() !== '')
-                    ? player.customTeamName.trim()
-                    : (player.name || team.name || 'Jogador');
-                const points = Math.max(0, Number(player.totalPoints || 0));
-                const tieIndex = usedTies[points] || 0;
-                usedTies[points] = tieIndex + 1;
-                
-                // Distribuir verticalmente em pistas (lanes) alternadas e manter aproximação horizontal sem sobreposição
-                const tieOffset = tieIndex * runnerGap;
-                const lanes = [0, -18, 18, -34, 34];
-                const laneOffset = lanes[tieIndex % lanes.length];
-                const runnerTop = lineTop + laneOffset;
- 
-                const distanceFromLeader = maxPoints - points;
-                const x = leftPad + (distanceFromLeader * pointGap) + tieOffset;
-                const relegationClass = index + 1 > lastSafePosition ? 'is-relegation' : '';
-                const lastClass = index + 1 === standings.length ? 'is-last' : '';
-                runnerPositions[index] = x;
-  
-                // Escurecer e esmaecer os corredores à medida que se aproximam do lanterna
-                const positionFactor = index / Math.max(standings.length - 1, 1);
-                const brightness = Math.max(0.42, 1 - (positionFactor * 0.58));
-                const saturation = Math.max(0.45, 1 - (positionFactor * 0.5));
-                const mudFilter = `filter: brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)});`;
-
-                const isLeader = index === 0;
-                const crownHtml = isLeader ? '<i class="fas fa-crown race-crown"></i>' : '';
-                const horseHtml = `
-                    <div class="styled-horse horse-color-${index % 5}">
-                        <svg viewBox="0 0 100 60" class="wild-stallion-svg" fill="currentColor">
-                            <!-- Corpo -->
-                            <ellipse cx="45" cy="30" rx="20" ry="9" />
-                            <!-- Pescoco & Cabeca -->
-                            <path d="M 58,25 C 65,22 72,15 75,10 C 77,8 79,8 77,11 C 75,14 74,17 78,16 C 81,15 83,18 78,21 C 72,25 65,28 58,29 Z" />
-                            <!-- Orelhas -->
-                            <path d="M 74,10 L 76,4 L 77,9 Z" />
-                            <!-- Perna Dianteira 1 (estendida para frente) -->
-                            <path d="M 60,32 L 72,44 L 78,43 L 64,32 Z" />
-                            <!-- Perna Dianteira 2 (dobrada para tras) -->
-                            <path d="M 56,32 L 62,40 L 59,48 L 54,32 Z" />
-                            <!-- Perna Traseira 1 (estendida para tras) -->
-                            <path d="M 28,31 Q 15,38 8,46 L 12,47 Q 20,39 32,32 Z" />
-                            <!-- Perna Traseira 2 (dobrada para baixo) -->
-                            <path d="M 32,32 L 28,42 L 31,48 L 36,32 Z" />
-                            <!-- Rabo (voando ao vento) -->
-                            <path d="M 27,27 C 20,24 12,23 5,26 C 10,28 18,29 25,30 Z" opacity="0.85" />
-                            <!-- Crina -->
-                            <path d="M 62,20 C 58,15 54,12 50,15 C 54,16 58,18 60,22 Z" opacity="0.8" />
-                        </svg>
-                        <div class="dust-trail"></div>
-                    </div>
-                `;
-                const lanternHtml = lastClass ? '<span class="race-lantern"><i class="fas fa-fire text-danger animate-pulse"></i></span>' : '';
- 
-                return `
-                    <div class="race-runner ${relegationClass} ${lastClass}" style="left: ${x}px; top: ${runnerTop}px; ${mudFilter}">
-                        <div class="race-horse-row">
-                            ${crownHtml}
-                            <img src="${playerAvatar}" class="race-avatar" alt="${displayName}" onerror="this.src='default-avatar.png'">
-                            ${horseHtml}
-                            ${lanternHtml}
-                        </div>
-                        <div class="race-score-board"><strong>${points}</strong><span>pts</span></div>
-                        <div class="race-runner-name">${displayName}</div>
-                    </div>
-                `;
-            }).join('');
-
-            const firstRelegationX = runnerPositions[lastSafePosition] ?? (trackWidth * 0.76);
-            if (raceMudZone) {
-                raceMudZone.style.left = `${Math.max(leftPad, firstRelegationX - 24)}px`;
-            }
-
-            const scaleValues = [maxPoints, Math.round(maxPoints - (pointRange * 0.25)), Math.round(maxPoints - (pointRange * 0.5)), Math.round(maxPoints - (pointRange * 0.75)), minPoints];
-            raceScale.innerHTML = scaleValues.map(value => {
-                const clampedValue = Math.max(minPoints, Math.min(maxPoints, value));
-                const x = leftPad + ((maxPoints - clampedValue) * pointGap);
-                return `<span style="left: ${x}px;">${clampedValue} pts</span>`;
-            }).join('');
-
-            animateRaceCamera(raceTrack, runnerPositions[0] || leftPad, runnerPositions[runnerPositions.length - 1] || leftPad);
-        }
-
-        function animateRaceCamera(raceTrack, leaderX, lastRunnerX) {
-            const maxScroll = Math.max(raceTrack.scrollWidth - raceTrack.clientWidth, 0);
-            const startScroll = Math.min(maxScroll, Math.max(0, leaderX + 180));
-            const finalScroll = Math.min(maxScroll, Math.max(0, lastRunnerX - raceTrack.clientWidth + 260));
-            const revealDuration = 1400;
-            const tourDuration = Math.max(2600, Math.min(7600, Math.max(finalScroll, 1) * 7));
-            const startTime = performance.now();
-            const runId = String(startTime);
-
-            raceTrack.dataset.cameraRun = runId;
-            raceTrack.classList.add('is-camera-running');
-            raceTrack.scrollLeft = startScroll;
-
-            function revealLeader(now) {
-                if (raceTrack.dataset.cameraRun !== runId) return;
-
-                const progress = Math.min((now - startTime) / revealDuration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
-                raceTrack.scrollLeft = startScroll * (1 - eased);
-
-                if (progress < 1) {
-                    requestAnimationFrame(revealLeader);
-                    return;
-                }
-
-                window.setTimeout(() => {
-                    if (raceTrack.dataset.cameraRun !== runId) return;
-                    const tourStart = performance.now();
-
-                    function tourTrack(nowTour) {
-                        if (raceTrack.dataset.cameraRun !== runId) return;
-
-                        const tourProgress = Math.min((nowTour - tourStart) / tourDuration, 1);
-                        const tourEased = tourProgress < 0.5
-                            ? 2 * tourProgress * tourProgress
-                            : 1 - Math.pow(-2 * tourProgress + 2, 2) / 2;
-                        raceTrack.scrollLeft = finalScroll * tourEased;
-
-                        if (tourProgress < 1) {
-                            requestAnimationFrame(tourTrack);
-                            return;
+                const avatar = (player.useCustomShield && player.customShield) ? player.customShield : (team.image || 'default-avatar.png');
+                const name = (player.customTeamName && player.customTeamName.trim()) || player.name || team.name || 'Jogador';
+                const score = Number(player.totalPoints) || 0;
+                const fraction = maximum === minimum ? 1 : (score - minimum) / (maximum - minimum);
+                const runner = document.createElement('div');
+                runner.className = 'race-runner';
+                runner.style.top = `${index * 96 + 20}px`;
+                runner.dataset.distance = String(110 + fraction * travel);
+                runner.dataset.last = String(Number(player.lastRoundPoints) || 0);
+                runner.innerHTML = `<div class="race-horse-row">${horseIllustration}<span class="race-dust"></span></div><div class="race-identity"><img class="race-avatar" alt="" src="default-avatar.png"><span class="race-number"></span><span class="race-runner-name"></span><strong class="race-score-board"></strong></div>`;
+                const img = runner.querySelector('.race-avatar');
+                img.src = avatar;
+                img.onerror = () => { img.onerror = null; img.src = 'default-avatar.png'; };
+                runner.querySelector('.race-number').textContent = String(index + 1);
+                runner.querySelector('.race-runner-name').textContent = name;
+                runner.querySelector('.race-score-board').textContent = `${score} pts`;
+                items.appendChild(runner);
+                const sample = new Image();
+                sample.crossOrigin = 'anonymous';
+                sample.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas'); canvas.width = canvas.height = 16;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(sample, 0, 0, 16, 16);
+                        const pixels = ctx.getImageData(0, 0, 16, 16).data; let best = null, bestSat = 0;
+                        for (let i = 0; i < pixels.length; i += 4) {
+                            const max = Math.max(pixels[i], pixels[i+1], pixels[i+2]), min = Math.min(pixels[i], pixels[i+1], pixels[i+2]);
+                            if (pixels[i+3] > 180 && max > 70 && max < 245 && max - min > bestSat) { bestSat = max - min; best = `rgb(${pixels[i]}, ${pixels[i+1]}, ${pixels[i+2]})`; }
                         }
-
-                        raceTrack.classList.remove('is-camera-running');
-                    }
-
-                    requestAnimationFrame(tourTrack);
-                }, 550);
-            }
-
-            if (maxScroll <= 0) {
-                raceTrack.classList.remove('is-camera-running');
-                return;
-            }
-
-            requestAnimationFrame(revealLeader);
+                        if (best && bestSat > 35) runner.style.setProperty('--jockey-color', best);
+                    } catch (_) { /* Escudos externos podem impedir a leitura; usa a cor padrão. */ }
+                };
+                sample.src = avatar;
+            });
         }
-
+        function startHorseRace() {
+            const dialog = document.getElementById('horse-race-dialog');
+            const track = document.getElementById('race-track');
+            const standings = standingsByStage[dialog.dataset.stage] || [];
+            const runners = [...document.querySelectorAll('#race-items .race-runner')];
+            if (!runners.length) return;
+            const token = ++raceRunToken;
+            const podium = document.getElementById('race-podium');
+            const button = document.getElementById('rerun-race-btn');
+            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const duration = reduced ? 0 : 5200;
+            podium.hidden = true;
+            button.disabled = true;
+            track.classList.add('race-running');
+            runners.forEach(r => { r.style.transform = 'translateX(0)'; });
+            const start = performance.now();
+            function frame(now) {
+                if (token !== raceRunToken || !dialog.open) return;
+                const progress = duration ? Math.min((now - start) / duration, 1) : 1;
+                runners.forEach(r => {
+                    const last = Number(r.dataset.last);
+                    const curve = last > 0 ? Math.pow(progress, 1.22) : last < 0 ? 1 - Math.pow(1 - progress, 1.22) : progress;
+                    r.style.transform = `translateX(${Number(r.dataset.distance) * curve}px)`;
+                });
+                if (progress < 1) { requestAnimationFrame(frame); return; }
+                track.classList.remove('race-running');
+                podium.replaceChildren();
+                const heading = document.createElement('h4'); heading.textContent = 'Pódio da classificação'; podium.appendChild(heading);
+                const list = document.createElement('ol');
+                standings.slice(0, 3).forEach(player => {
+                    const li = document.createElement('li');
+                    const team = teamsDataCache[player.teamId || player.team] || {};
+                    li.textContent = `${(player.customTeamName && player.customTeamName.trim()) || player.name || team.name || 'Jogador'} · ${Number(player.totalPoints) || 0} pts`;
+                    list.appendChild(li);
+                });
+                podium.appendChild(list); podium.hidden = false;
+                button.disabled = false; button.textContent = 'Correr de novo';
+            }
+            requestAnimationFrame(frame);
+        }
         function openHorseRace(stage) {
-            renderHorseRace(stage);
             document.getElementById('horse-race-dialog').showModal();
+            renderHorseRace(stage);
         }
 
         function renderTable(standings, containerId, stage, prevPositionMap) {
@@ -1798,7 +1738,7 @@
                     </div>
                 `;
                 html += `
-                    <tr class="${zoneClass} ${isCurrentUser ? 'current-user-row' : ''}" data-userid="${player.id}" data-stage="${stage}" data-position="${position}">
+                    <tr class="${zoneClass} ${isCurrentUser ? 'current-user-row' : ''} ${position === totalPlayers && totalPlayers > 1 ? 'last-place-row' : ''}" data-userid="${player.id}" data-stage="${stage}" data-position="${position}">
                         <td class="col-pos"><span class="position-badge ${zoneClass ? '' : 'default'}">${position}</span></td>
                         <td class="col-player">
                             <div class="player-cell">
@@ -1834,6 +1774,14 @@
 
             // Adicionar event listeners
             container.querySelectorAll('tr[data-userid]').forEach(row => {
+                row.tabIndex = 0;
+                row.setAttribute('title', 'Abrir detalhes do jogador');
+                row.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        showPlayerDetails(row.dataset.userid, stage, row.dataset.position);
+                    }
+                });
                 row.addEventListener('click', (e) => {
                     if (e.target.tagName === 'IMG' || e.target.closest('.view-toggle-group') || e.target.tagName === 'BUTTON') return;
                     const userId = row.dataset.userid;
@@ -2000,7 +1948,8 @@
                         cls = 'loss';
                     }
 
-                    formHtml += `<span class="form-badge ${cls}" title="${tooltipText}"></span>`;
+                    const mark = cls === 'win' ? 'V' : cls === 'loss' ? 'D' : 'E';
+                    formHtml += `<span class="form-badge ${cls}" title="${tooltipText}" aria-label="${tooltipText}">${mark}</span>`;
                 });
 
                 // Formatar medalhas de ouro ganhas
@@ -2212,11 +2161,14 @@
                 const stage = tab.dataset.stage;
                 const content = document.getElementById(`${stage}-content`);
                 if (stage === activeStageKey) {
+                    document.getElementById('edition-headline').textContent = stage === 'final' ? 'A final está na mesa. A resenha também.' : `${getStageLabel(stage)}: acompanhe a disputa ponto a ponto.`;
                     tab.classList.add('active');
+                    tab.setAttribute('aria-pressed', 'true');
                     content.style.display = 'block';
                     loadStageData(stage);
                 } else {
                     tab.classList.remove('active');
+                    tab.setAttribute('aria-pressed', 'false');
                     content.style.display = 'none';
                 }
             });
@@ -2228,9 +2180,11 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     const stage = tab.dataset.stage;
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.getElementById('edition-headline').textContent = stage === 'final' ? 'A final está na mesa. A resenha também.' : `${getStageLabel(stage)}: acompanhe a disputa ponto a ponto.`;
+                    document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
                     document.querySelectorAll('.stage-content').forEach(c => c.style.display = 'none');
                     tab.classList.add('active');
+                    tab.setAttribute('aria-pressed', 'true');
                     document.getElementById(`${stage}-content`).style.display = 'block';
                     loadStageData(stage);
                 });
@@ -2250,9 +2204,8 @@
             raceCloseBtn?.addEventListener('click', () => raceDialog.close());
             raceDialog?.addEventListener('click', (e) => { if (e.target === raceDialog) raceDialog.close(); });
 
-            document.getElementById('rerun-race-btn')?.addEventListener('click', () => {
-                renderHorseRace(raceDialog?.dataset.stage || currentStage);
-            });
+            document.getElementById('rerun-race-btn')?.addEventListener('click', startHorseRace);
+            raceDialog?.addEventListener('close', () => { raceRunToken++; document.getElementById('race-track').classList.remove('race-running'); });
         }
 
         auth.onAuthStateChanged(user => {

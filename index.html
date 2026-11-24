@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-type="software">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="Entre no Palpite Cabuloso para acompanhar as rodadas e dar seus palpites.">
+    <meta name="page-type" content="software">
+    <meta name="site-kind" content="software">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Brasileirão da Depressão · Palpite Cabuloso</title>
     <link rel="icon" href="./bdd.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -676,6 +679,140 @@
             border-color: rgba(245, 196, 67, 0.55);
             box-shadow: 0 0 0 2px rgba(245,196,67,0.14);
         }
+        /* Placar editorial */
+        html, body { background: #0b2b1e; }
+        body::before, body::after { display: none; }
+        .container { padding: 28px; }
+        .auth-grid { max-width: 1320px; min-height: min(780px, calc(100vh - 56px)); grid-template-columns: minmax(0, 1.15fr) minmax(380px, .85fr); background: #f5f2e8; border: 0; border-radius: 0; box-shadow: 0 24px 70px #00180d55; backdrop-filter: none; }
+        .hero-zone { padding: clamp(32px, 5vw, 72px); background: #12452c; color: #fffdf3; }
+        .brand-block { gap: 14px; margin-bottom: clamp(65px, 10vh, 110px); }
+        .brand-logo-shell { width: 64px; height: 64px; padding: 7px; background: #f7f3e7; border-radius: 50%; box-shadow: none; }
+        .brand { color: #d3e0d1; font-size: .7rem; letter-spacing: .12em; }
+        .brand-name { font-size: 1.1rem; }
+        .eyebrow { padding: 0; background: none; color: #f4d342; font-size: .72rem; letter-spacing: .13em; }
+        .hero-title { font-family: 'Barlow Condensed', Impact, sans-serif; text-transform: uppercase; font-size: clamp(4.3rem, 7.7vw, 7.6rem); line-height: .88; letter-spacing: -.025em; margin: 0 0 24px; }
+        .hero-title span { color: #f5d43f; }
+        .hero-subtitle { color: #e0eade; max-width: 390px; font-size: 1rem; line-height: 1.65; margin-bottom: 36px; }
+        .hero-highlights { max-width: 500px; gap: 0; border-top: 1px solid #ffffff55; }
+        .highlight-card { padding: 16px 20px 0 0; border: 0; border-radius: 0; background: none; }
+        .highlight-card strong { color: #f5d43f; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+        .highlight-card span { color: #e0eade; font-size: .86rem; }
+        .hero-footer { width: 100%; justify-content: space-between; border-top: 1px solid #ffffff55; padding-top: 18px; color: #d3e0d1; font-size: .65rem; font-weight: 800; letter-spacing: .1em; }
+        .hero-footer span:last-child { font-size: 1.6rem; color: #f5d43f; }
+        .form-panel { background: #f5f2e8; padding: 48px; border: 0; }
+        .form-container { max-width: 390px; }
+        .form-card { background: none; padding: 0; border: 0; border-radius: 0; box-shadow: none; }
+        .form-topline { color: #54705c; letter-spacing: .14em; }
+        h2 { font-family: 'Barlow Condensed', Impact, sans-serif; font-size: 3.4rem; line-height: 1; text-transform: uppercase; letter-spacing: -.01em; color: #102c1e; }
+        .form-description { color: #526458; margin: 14px 0 28px; }
+        .input-group label { color: #233b2c; }
+        .input-group input, .custom-select-trigger { min-height: 54px; border: 1px solid #b5c0b1; border-radius: 2px; background: #fffef9; }
+        .input-group input:focus, .custom-select-trigger:focus-visible { outline: 2px solid #155934; outline-offset: 2px; border-color: #155934; box-shadow: none; }
+        .btn-primary { min-height: 56px; background: #f2d13e; border-radius: 2px; box-shadow: none; color: #102c1e; }
+        .btn-primary:hover { background: #ffdf48; box-shadow: none; }
+        .btn-primary:active { transform: translateY(1px); }
+        .form-footer { justify-content: space-between; }
+        .form-footer a { color: #155934; min-height: 44px; display: inline-flex; align-items: center; }
+        .back-action { min-height: 44px; color: #315842; }
+        .error-msg { color: #852a19; background: #fae9e2; border-color: #e2a795; border-radius: 2px; }
+        .dropdown-list, .search-box { background: #153a29; }
+        .dropdown-list { border-radius: 2px; }
+        #teamSearchInput::placeholder { color: #65776a; }
+        :focus-visible { outline: 3px solid #d49f00; outline-offset: 3px; }
+        @media (max-width: 920px) {
+            .auth-grid { grid-template-columns: minmax(0, 1fr) minmax(330px, .9fr); border-radius: 0; }
+            .hero-zone { padding: 36px; }
+            .hero-highlights { grid-template-columns: 1fr 1fr; }
+            .form-panel { padding: 36px; }
+        }
+        @media (max-width: 700px) {
+            .container { padding: 0; }
+            .auth-grid { display: block; min-height: 100vh; }
+            .hero-zone { padding: max(24px, env(safe-area-inset-top)) 24px 28px; }
+            .brand-block { margin-bottom: 38px; }
+            .brand-logo-shell { width: 54px; height: 54px; }
+            .eyebrow, .hero-subtitle { display: block; }
+            .hero-title { max-width: none; font-size: clamp(4rem, 15vw, 6rem); margin: 0 0 18px; }
+            .hero-subtitle { font-size: .9rem; margin-bottom: 0; }
+            .hero-highlights, .hero-footer { display: none; }
+            .form-panel { display: block; padding: 36px 24px max(36px, env(safe-area-inset-bottom)); }
+            .form-container { max-width: none; }
+            .form-card { min-height: 0; padding: 0; border-radius: 0; }
+            .form-topline, .form-description { display: block; }
+            h2 { font-size: 2.8rem; margin-bottom: 0; }
+        }
+        /* Temporada nova: uma capa esportiva em azul, laranja e papel. */
+        html, body { background: #101c2b; }
+        .container { min-height: 100svh; padding: 18px; }
+        .auth-grid { width: 100%; max-width: 1500px; min-height: calc(100svh - 36px); background: #f6f2e8; }
+        .hero-zone { isolation: isolate; overflow: hidden; padding: clamp(32px, 4vw, 64px); background: #152b42; }
+        .hero-zone::before { content: ''; position: absolute; z-index: -1; width: 48%; aspect-ratio: 1; right: -12%; bottom: -16%; border: 1px solid #ffffff25; border-radius: 50%; box-shadow: 0 0 0 45px #ffffff08, 0 0 0 90px #ffffff08; }
+        .hero-copy { max-width: none; position: relative; z-index: 1; }
+        .brand-block { margin-bottom: clamp(45px, 9vh, 95px); }
+        .brand { color: #c1cddd; }
+        .eyebrow { color: #ffad78; }
+        .hero-title { position: relative; max-width: 600px; font-size: clamp(4.3rem, 7vw, 7.2rem); }
+        .hero-title span { color: #ff9b62; }
+        .hero-subtitle { color: #e0e6ec; max-width: 410px; }
+        .hero-highlights { max-width: 420px; }
+        .highlight-card strong { color: #ffb387; }
+        .highlight-card span, .hero-footer { color: #d6e0e8; }
+        .hero-footer { position: relative; z-index: 1; }
+        .hero-footer span:last-child { color: #ff9b62; }
+        .hero-players { position: absolute; z-index: 0; right: -2%; bottom: 8%; width: min(49%, 390px); opacity: .78; pointer-events: none; }
+        .hero-players img { width: 100%; height: auto; display: block; }
+        .hero-copy { animation: entrance .6s ease-out both; }
+        .hero-players { animation: players-in .8s ease-out both; }
+        @keyframes entrance { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes players-in { from { opacity: 0; transform: translateX(16px); } to { opacity: .78; transform: translateX(0); } }
+        .form-panel { background: #f6f2e8; }
+        .form-topline { color: #a34b22; }
+        h2 { color: #16283b; }
+        .form-description { color: #52606b; }
+        .input-group label { color: #263b4b; }
+        .input-group input, .custom-select-trigger { border-color: #b8c1c4; }
+        .input-group input:focus, .custom-select-trigger:focus-visible { outline-color: #204d70; border-color: #204d70; }
+        .btn-primary { color: #192838; background: #ff9b62; }
+        .btn-primary:hover { background: #ffb385; }
+        .form-footer a, .back-action { color: #194c6b; }
+        .dropdown-list, .search-box { background: #203a50; }
+        :focus-visible { outline-color: #b84d18; }
+        @media (min-width: 701px) and (min-height: 600px) {
+            .auth-grid { height: calc(100svh - 36px); }
+            .form-panel { min-height: 0; overflow-y: auto; }
+            .form-container { margin: auto; }
+        }
+        @media (max-height: 760px) and (min-width: 701px) {
+            .hero-zone { padding: 30px 40px; }
+            .brand-block { margin-bottom: 38px; }
+            .hero-title { font-size: clamp(4rem, 6vw, 6rem); }
+            .hero-subtitle { margin-bottom: 22px; }
+            .form-panel { padding: 25px 40px; }
+            .form-description { margin: 10px 0 18px; }
+            .input-group { margin-bottom: 12px; }
+        }
+        @media (max-width: 700px) {
+            .container { padding: 0; }
+            .auth-grid { min-height: 100svh; }
+            .hero-zone { min-height: 350px; padding: max(24px, env(safe-area-inset-top)) 24px 32px; }
+            .brand-block { margin-bottom: 38px; }
+            .hero-title { font-size: clamp(3.8rem, 14vw, 5.5rem); }
+            .hero-subtitle { max-width: 75%; }
+            .hero-players { width: 43%; right: -5%; bottom: 5%; opacity: .55; }
+            .form-panel { padding: 34px 24px max(36px, env(safe-area-inset-bottom)); }
+        }
+        @media (max-width: 380px) { .hero-subtitle { max-width: 100%; padding-right: 20%; } .hero-players { opacity: .35; } }
+        /* Ilustração original: cena esportiva integrada à capa. */
+        .hero-players { inset: auto 0 0; width: 100%; height: 58%; opacity: 1; animation: artwork-in .8s ease-out both; }
+        .hero-players::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, #152b42 0%, #152b42a8 42%, #152b4266 100%); }
+        .hero-players img { width: 100%; height: 100%; object-fit: cover; object-position: center 58%; }
+        @keyframes artwork-in { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 700px) {
+            .hero-players { inset: auto 0 0; width: 100%; height: 65%; opacity: 1; }
+            .hero-players::after { background: linear-gradient(180deg, #152b42 0%, #152b42dd 45%, #152b4299 100%); }
+            .hero-subtitle { max-width: 100%; padding-right: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
     </style>
 </head>
 <body>
@@ -685,7 +822,7 @@
 
 <div class="container">
     <div class="auth-grid">
-        <div class="hero-zone">
+        <div class="hero-zone" data-enter>
             <div class="hero-copy">
                 <div class="brand-block">
                     <div class="brand-logo-shell">
@@ -696,30 +833,25 @@
                         <span class="brand-name">Palpite Cabuloso</span>
                     </div>
                 </div>
-                <div class="eyebrow">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span>Nova experiência mobile</span>
-                </div>
-                <div class="hero-title">
-                    Entre rápido. <span>Palpite melhor.</span> Sofra com estilo.
-                </div>
+                <div class="eyebrow">O bolão do Brasileirão da Depressão</div>
+                <h1 class="hero-title">A rodada começa<br><span>no palpite.</span></h1>
                 <p class="hero-subtitle">
-                    Uma entrada mais limpa, mais moderna e com cara de app para acompanhar o caos do campeonato sem excesso de informação na primeira tela.
+                    Acerte o placar, acompanhe a rodada e venha para a resenha. Sofrer pelo seu time é só a metade da diversão.
                 </p>
                 <div class="hero-highlights">
                     <div class="highlight-card">
-                        <strong>Visual mais clean</strong>
-                        <span>Menos cara de site, mais sensação de app nativo.</span>
+                        <strong>01 / Dê seu palpite</strong>
+                        <span>Escolha os placares da rodada.</span>
                     </div>
                     <div class="highlight-card">
-                        <strong>Fluxo direto</strong>
-                        <span>Login, cadastro e recuperação com foco total na ação principal.</span>
+                        <strong>02 / Acompanhe os jogos</strong>
+                        <span>Torça, confira e volte para a resenha.</span>
                     </div>
                 </div>
             </div>
+            <div class="hero-players" aria-hidden="true"><img src="./hero-futebol-temporada.png" alt="" data-source="illustration" data-subject="partida de futebol"></div>
             <div class="hero-footer">
-                <i class="fas fa-shield-heart"></i>
-                <span>Primeira impressão mais leve, sem perder a identidade do app.</span>
+                <span>Futebol, palpites &amp; um pouco de sofrimento.</span><span aria-hidden="true">✳</span>
             </div>
         </div>
 
@@ -730,14 +862,14 @@
                 <div id="loginFormContainer" class="form-card">
                     <span class="form-topline">Entrar</span>
                     <h2>Acessar conta</h2>
-                    <p class="form-description">Faça login para continuar seus palpites, acompanhar rodadas e voltar para o caos organizado do campeonato.</p>
+                    <p class="form-description">Entre para dar seus palpites e acompanhar cada rodada.</p>
                     <div id="loginError" class="error-msg" style="display: none;"></div>
                     <div class="input-group">
-                        <label>E-mail</label>
+                        <label for="loginEmail">E-mail</label>
                         <input type="email" id="loginEmail" placeholder="seu@email.com">
                     </div>
                     <div class="input-group">
-                        <label>Senha</label>
+                        <label for="loginPassword">Senha</label>
                         <input type="password" id="loginPassword" placeholder="••••••••">
                     </div>
                     <button class="btn-primary" id="btnLogin">Entrar no app</button>
@@ -753,34 +885,34 @@
                     <button class="back-action" id="backToLoginFromReg"><i class="fas fa-arrow-left"></i> Voltar</button>
                     <span class="form-topline">Cadastro</span>
                     <h2>Criar conta</h2>
-                    <p class="form-description">Monte seu perfil, escolha seu time e entre no campeonato com uma identidade própria.</p>
+                    <p class="form-description">Crie seu perfil, escolha seu time e entre para o bolão.</p>
                     <div id="registerError" class="error-msg" style="display: none;"></div>
                     <div class="input-group">
-                        <label>Nome completo</label>
+                        <label for="regName">Nome completo</label>
                         <input type="text" id="regName" placeholder="Ex: Thiago Machucado">
                     </div>
                     <div class="input-group">
-                        <label>Sigla (3 letras)</label>
+                        <label for="regAbbr">Sigla (3 letras)</label>
                         <input type="text" id="regAbbr" maxlength="3" placeholder="R10">
                     </div>
                     <div class="input-group">
-                        <label>E-mail</label>
+                        <label for="regEmail">E-mail</label>
                         <input type="email" id="regEmail" placeholder="craque@email.com">
                     </div>
                     <div class="input-group">
-                        <label>Senha</label>
+                        <label for="regPassword">Senha</label>
                         <input type="password" id="regPassword" placeholder="mínimo 6 caracteres">
                     </div>
                     <div class="input-group">
-                        <label>Meu time do coração</label>
+                        <label id="teamLabel">Meu time do coração</label>
                         <div class="custom-select" id="teamSelectWrapper">
-                            <div class="custom-select-trigger" id="teamTrigger">
+                            <div class="custom-select-trigger" id="teamTrigger" role="button" tabindex="0" aria-labelledby="teamLabel" aria-expanded="false">
                                 <span><i class="fas fa-shield-alt"></i> Selecionar clube</span>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
                             <div class="dropdown-list" id="teamDropdown">
                                 <div class="search-box">
-                                    <input type="text" id="teamSearchInput" placeholder="🔍 Buscar time...">
+                                    <input type="text" aria-label="Buscar time" id="teamSearchInput" placeholder="🔍 Buscar time...">
                                 </div>
                                 <div id="teamsListContainer"></div>
                             </div>
@@ -794,15 +926,15 @@
                     <button class="back-action" id="backToLoginFromRec"><i class="fas fa-arrow-left"></i> Voltar ao login</button>
                     <span class="form-topline">Recuperação</span>
                     <h2>Recuperar acesso</h2>
-                    <p class="form-description">Digite seu e-mail para receber o link de redefinição e voltar para o campeonato.</p>
+                    <p class="form-description">Informe seu e-mail e enviaremos um link para criar uma nova senha.</p>
                     <div id="recoverError" class="error-msg" style="display: none;"></div>
                     <div class="input-group">
-                        <label>E-mail cadastrado</label>
+                        <label for="recoverEmail">E-mail cadastrado</label>
                         <input type="email" id="recoverEmail" placeholder="exemplo@dominio.com">
                     </div>
                     <button class="btn-primary" id="btnSendRecover">Enviar link</button>
                     <div class="form-footer">
-                        <span style="font-size: 0.76rem;">As instruções chegam por e-mail em instantes.</span>
+                        <span style="font-size: 0.76rem;">Confira também sua caixa de spam.</span>
                     </div>
                 </div>
             </div>
@@ -953,6 +1085,7 @@ function renderTeamsList(teams) {
         e.stopPropagation();
         const dropdown = document.getElementById('teamDropdown');
         dropdown.classList.toggle('show');
+        teamTrigger.setAttribute('aria-expanded', String(dropdown.classList.contains('show')));
         // Focar na busca quando abrir
         if(dropdown.classList.contains('show')) {
             setTimeout(() => {
@@ -971,6 +1104,7 @@ function renderTeamsList(teams) {
             return;
         }
         if(dropdown) dropdown.classList.remove('show');
+        teamTrigger.setAttribute('aria-expanded', 'false');
     });
 
     // alternar formulários

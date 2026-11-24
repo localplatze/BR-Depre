@@ -1,0 +1,148 @@
+/* Superliga: caderno esportivo, com prioridade para a classificação. */
+:root {
+    --primary: #f3a15d; --primary-dark: #c87135; --primary-glow: transparent;
+    --success: #8bc6a0; --warning: #f3c77c; --danger: #f18b7d;
+    --dark-bg: #171715; --card-bg: #22221f; --card-border: #ffffff2e;
+    --text-primary: #f4f1e9; --text-secondary: #d2cec3; --text-muted: #b5b0a4;
+    --shadow-sm: none; --shadow-md: none; --shadow-lg: none;
+    --color-libertadores: #4d8d69; --color-pre-libertadores: #8ebc8b;
+    --color-sula: #758fa9; --color-rebaixamento: #bb655a;
+}
+body { font-family: Manrope, sans-serif; background: var(--dark-bg); color: var(--text-primary); }
+body::before { display: none; }
+::selection { background: var(--primary); color: var(--dark-bg); }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.app-container { max-width: 1220px; padding: 30px 32px 70px; }
+.header { margin-bottom: 25px; padding-bottom: 24px; border-bottom: 3px solid var(--text-primary); gap: 20px; }
+.header-title { display: block; font: 800 clamp(3.5rem, 7vw, 6rem)/.9 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0; background: none; color: var(--text-primary); -webkit-text-fill-color: initial; }
+.back-btn { min-height: 44px; padding: 10px 0; margin: 0; border: 0; border-radius: 0; background: none; color: var(--text-secondary); font-weight: 700; }
+.back-btn:hover { background: none; color: var(--primary); text-decoration: underline; text-underline-offset: 5px; }
+.tabs { justify-content: flex-start; gap: 28px; margin: 0 0 36px; padding: 0; background: transparent; border: 0; border-bottom: 1px solid var(--card-border); border-radius: 0; }
+.tab { flex: 0 0 auto; min-height: 50px; padding: 12px 2px; border-radius: 0; border-bottom: 3px solid transparent; color: var(--text-secondary); font: 800 1.3rem/1 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+.tab.active { background: transparent; border-color: var(--primary); color: var(--text-primary); box-shadow: none; }
+.tab:hover:not(.active) { background: transparent; color: var(--primary); }
+.standings-card { background: transparent; border: 0; border-radius: 0; backdrop-filter: none; overflow: visible; }
+.table-header-controls { gap: 20px; padding: 0 0 20px; border-bottom: 2px solid var(--text-primary); }
+.table-title { font: 800 clamp(2rem, 3vw, 2.8rem)/1 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+.table-title i { display: none; }
+.header-actions { gap: 10px; }
+.view-toggle-group { padding: 0; margin: 0; background: none; border: 1px solid var(--card-border); border-radius: 3px; }
+.btn-toggle, .btn-race { min-height: 44px; padding: 9px 14px; border-radius: 2px; font: 700 .78rem Manrope, sans-serif; }
+.btn-toggle { color: var(--text-secondary); }
+.btn-toggle.active { background: var(--primary); color: #171715; }
+.btn-race { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+.btn-race:hover { background: var(--primary); color: #171715; border-color: var(--primary); }
+#abertura-table-container, #clausura-table-container { scrollbar-color: var(--primary) var(--card-bg); }
+.standings-table { font-variant-numeric: tabular-nums; }
+.standings-table th { padding-top: 16px; padding-bottom: 16px; color: var(--text-muted); font-size: .72rem; font-weight: 800; }
+.standings-table td { padding-top: 14px; padding-bottom: 14px; border-color: var(--card-border); }
+.standings-table tr[data-userid] { cursor: pointer; }
+.standings-table tr[data-userid]:hover { background: #ffffff0a; }
+.standings-table .current-user-row { background: #f3a15d1a; border-left: 3px solid var(--primary); }
+.player-name { font-weight: 700; color: var(--text-primary); }
+.player-avatar { border-color: var(--card-border); background: #fff; }
+.position-badge, tr[class*="zone-"] .position-badge { box-shadow: none; border-radius: 3px; }
+tr.zone-pre-libertadores .position-badge { color: #17231b; }
+.form-badge, .form-badge.win, .form-badge.draw, .form-badge.loss { box-shadow: none; }
+.group-title td { color: var(--text-secondary); font-weight: 800; }
+.legend { gap: 12px 22px; padding: 20px 0; border-color: var(--card-border); }
+.legend-item { color: var(--text-secondary); font-size: .75rem; }
+.loading { color: var(--text-secondary); }
+dialog { max-height: min(90vh, 900px); overflow: auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; box-shadow: none; backdrop-filter: none; }
+dialog::backdrop { background: #000b; backdrop-filter: none; }
+.dialog-header { border-color: var(--card-border); }
+.dialog-header h3 { font: 800 1.8rem/1 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+.close-btn { width: 44px; height: 44px; border-radius: 2px; }
+.stat-item, .chart-container { background: #171715; border-radius: 3px; }
+.stat-item .value { font: 800 2rem/1 'Barlow Condensed', sans-serif; }
+.final-match-container { border-radius: 4px; background: var(--card-bg); border-color: var(--card-border); }
+.final-result { border-radius: 4px; background: var(--card-bg); }
+.player-avatar-wrapper.has-cinturao .player-avatar { box-shadow: none; animation: none; }
+.avatar-cinturao-mini { background: var(--primary); box-shadow: none; border-color: var(--dark-bg); }
+@media (max-width: 640px) {
+    .app-container { padding: 18px 16px 48px; }
+    .header { gap: 8px; margin-bottom: 18px; padding-bottom: 18px; }
+    .header-title { font-size: clamp(2.35rem, 10vw, 3.5rem) !important; }
+    .back-btn { min-height: 44px; padding: 8px 0; font-size: .72rem; }
+    .tabs { gap: 22px; margin-bottom: 24px; }
+    .tab { min-height: 48px; padding: 10px 0; font-size: 1.15rem; }
+    .table-header-controls { padding: 0 0 16px; gap: 16px; }
+    .table-title { font-size: 2rem; }
+    .header-actions { gap: 8px; }
+    .btn-toggle, .btn-race { padding: 8px 10px; }
+    .standings-table th, .standings-table td { padding-top: 12px; padding-bottom: 12px; }
+    .standings-table.view-stats .player-name { display: inline; }
+    .standings-table.view-stats .col-player { width: auto !important; min-width: 140px !important; text-align: left; }
+    .standings-table.view-stats { min-width: 700px; }
+    .legend { padding: 16px 0; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+/* Edição de banca e corrida: os dados da classificação seguem intactos. */
+body { background-image: url('./superliga-noise.png'); background-repeat: repeat; }
+.newspaper-masthead { position: relative; min-height: 230px; padding: 30px clamp(20px, 4vw, 48px); background: #f2ede2; color: #171715; border-bottom: 7px double #171715; gap: 20px; }
+.newspaper-masthead { background-image: url('./superliga-noise.png'); }
+.newspaper-masthead .header-title { color: #171715; font-size: clamp(4.2rem, 10vw, 8rem); }
+.masthead-title { text-align: center; }
+.masthead-title p { margin: 12px 0 0; color: #403d36; font: 700 clamp(.8rem, 1.4vw, 1rem)/1.35 Manrope, sans-serif; }
+.newspaper-masthead .back-btn { color: #252521; }
+.newspaper-masthead .back-btn:hover { color: #9b4615; }
+.edition-stamp { position: absolute; top: 18px; right: 17%; border: 2px solid #a84219; color: #a84219; padding: 5px 8px; font: 800 .62rem/1.15 Manrope, sans-serif; text-transform: uppercase; text-align: center; transform: rotate(7deg); }
+.standings-table td.col-pts { font: 800 clamp(1.45rem, 2.5vw, 2rem)/1 'Barlow Condensed', sans-serif; font-variant-numeric: tabular-nums; color: var(--primary); }
+.standings-table tr.zone-libertadores td:first-child { border-left: 3px solid var(--color-libertadores); }
+.standings-table tr.zone-pre-libertadores td:first-child { border-left: 3px solid var(--color-pre-libertadores); }
+.standings-table tr.zone-sula td:first-child { border-left: 3px solid var(--color-sula); }
+.standings-table tr.zone-rebaixamento td:first-child { border-left: 3px solid var(--color-rebaixamento); }
+.standings-table tr.last-place-row { background-color: #bb655a18; }
+.form-badge { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 2px; color: #171715; font: 800 .67rem Manrope, sans-serif; }
+.form-badge.loss { color: #171715; }
+.race-dialog .dialog-body { padding: 20px; }
+.race-intro { color: var(--text-secondary); font-size: .83rem; line-height: 1.5; margin-bottom: 14px; }
+.race-track { min-height: 220px; max-height: min(55vh, 650px); overflow: auto; border: 1px solid #8eaa7b; border-radius: 4px; background: #54704c; box-shadow: none; }
+.race-track::after, .race-track-inner::before, .race-mud-zone { display: none; }
+.race-track-inner { min-height: 220px; background: repeating-linear-gradient(180deg, #54704c 0 94px, #ecdfc644 94px 96px); }
+.race-track-inner::after { content: ''; position: absolute; right: 70px; top: 0; bottom: 0; width: 12px; background: conic-gradient(#f2ede2 25%, #242421 0 50%, #f2ede2 0 75%, #242421 0) 0 0 / 12px 12px; }
+.race-start-line { top: 0; bottom: 0; left: 90px; width: 2px; background: #f2ede2; opacity: .65; }
+.race-runner { left: 0; width: 170px; gap: 0; transition: none; z-index: 3; }
+.race-horse-row { height: 61px; justify-content: flex-start; }
+.race-horse-art { width: 122px; height: 72px; overflow: visible; }
+.horse-body, .horse-tail { fill: #54372a; stroke: #2b211e; stroke-width: 2; stroke-linejoin: round; }
+.horse-detail, .horse-legs { fill: none; stroke: #30241d; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.horse-detail { stroke-width: 2; }
+.jockey-shirt, .jockey-cap { fill: var(--jockey-color, #ef9b59); stroke: #30241d; stroke-width: 2; }
+.jockey-face { fill: #ddb38e; stroke: #30241d; stroke-width: 2; }
+.jockey-trouser { fill: #f2ede2; stroke: #30241d; stroke-width: 2; }
+.jockey-arm { fill: none; stroke: var(--jockey-color, #ef9b59); stroke-width: 6; stroke-linecap: round; }
+.race-running .race-horse-art { animation: race-bob .36s ease-in-out infinite alternate; }
+.race-running .front-leg { transform-origin: 112px 70px; animation: gallop-front .36s ease-in-out infinite alternate; }
+.race-running .rear-leg { transform-origin: 57px 70px; animation: gallop-rear .36s ease-in-out infinite alternate; }
+.race-running .horse-tail { transform-origin: 50px 50px; animation: race-tail .5s ease-in-out infinite alternate; }
+.race-dust { position: absolute; left: 8px; bottom: 0; width: 7px; height: 7px; border-radius: 50%; background: #ddc395; opacity: 0; }
+.race-running .race-dust { animation: race-dust .45s ease-out infinite; }
+@keyframes race-bob { to { transform: translateY(-4px); } }
+@keyframes gallop-front { from { transform: rotate(-17deg); } to { transform: rotate(20deg); } }
+@keyframes gallop-rear { from { transform: rotate(18deg); } to { transform: rotate(-20deg); } }
+@keyframes race-tail { to { transform: rotate(13deg); } }
+@keyframes race-dust { from { opacity: .8; transform: translate(0,0); } to { opacity: 0; transform: translate(-18px,-8px) scale(1.8); } }
+.race-identity { width: 155px; display: flex; align-items: center; gap: 4px; padding: 3px 5px; background: #22251f; color: #fff; border-radius: 2px; }
+.race-avatar { position: static; width: 24px; height: 24px; flex: none; border: 1px solid #f2ede2; background: white; box-shadow: none; }
+.race-number { flex: none; background: #f2ede2; color: #171715; font-size: .65rem; font-weight: 800; padding: 3px 5px; }
+.race-runner-name { flex: 1; min-width: 0; color: #fff; font-size: .62rem; text-align: left; text-shadow: none; }
+.race-score-board { min-width: 0; margin: 0; padding: 0; background: none; color: #ffbf83; box-shadow: none; white-space: nowrap; font-size: .65rem; }
+.race-actions { justify-content: flex-start; }
+.race-actions .btn-race { background: var(--primary); color: #171715; font-size: .9rem; text-transform: uppercase; }
+.race-actions .btn-race:disabled { opacity: .6; cursor: wait; }
+.race-podium { margin-top: 18px; padding: 16px; border-top: 2px solid var(--primary); background: #30302b; }
+.race-podium:not([hidden]) { animation: podium-arrival .45s ease-out both; }
+@keyframes podium-arrival { from { opacity: .4; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.race-podium h4 { color: var(--primary); font: 800 1.6rem 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+.race-podium ol { margin: 10px 0 0 24px; line-height: 1.8; color: var(--text-primary); }
+@media (max-width: 640px) {
+ .newspaper-masthead { min-height: 185px; padding: 20px 14px; align-items: end !important; }
+ .newspaper-masthead .header-title { font-size: clamp(3rem, 14vw, 4.8rem) !important; }
+ .masthead-title p { font-size: .7rem; }
+ .edition-stamp { right: 8px; top: 8px; font-size: .48rem; }
+ .newspaper-masthead .back-btn { font-size: .68rem; }
+ .standings-table td.col-pts { font-size: 1.45rem; }
+ .race-dialog .dialog-body { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .race-running .race-horse-art, .race-running .front-leg, .race-running .rear-leg, .race-running .horse-tail, .race-running .race-dust, .race-podium:not([hidden]) { animation: none; } }

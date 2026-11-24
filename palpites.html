@@ -7,6 +7,7 @@
     <link rel="icon" href="./bdd.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
         * {
@@ -744,6 +745,7 @@
         .wedding-button:hover, .wedding-button:focus-visible { background: #e5ded0; }
         @media (max-width: 480px) { .wedding-card { padding: 52px 25px 34px; } .wedding-message { font-size: 19px; } }
     </style>
+    <link rel="stylesheet" href="palpites-editorial.css">
 </head>
 <body>
     <dialog id="wedding-dialog" class="wedding-dialog" aria-labelledby="wedding-title" aria-describedby="wedding-message">
@@ -760,7 +762,7 @@
     </dialog>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-futbol"></i> Próxima Rodada</h1>
+            <div class="masthead-copy"><h1>Palpites</h1><p>Os jogos da rodada, do seu jeito.</p></div>
             <a href="home.html" class="back-btn"><i class="fas fa-arrow-left"></i> Voltar</a>
         </div>
 
@@ -771,13 +773,10 @@
             </div>
         </div>
 
-        <div class="tabs">
-            <button id="matches-tab" class="tab active"><i class="fas fa-futbol"></i> Jogos</button>
-            <button id="player-status-tab" class="tab"><i class="fas fa-users"></i> Status</button>
+        <div class="round-toolbar">
+            <h2>Jogos da rodada</h2>
+            <button id="player-status-tab" class="status-trigger" type="button" aria-haspopup="dialog" aria-controls="player-status-dialog"><i class="fas fa-table-list" aria-hidden="true"></i> Ver status dos palpites</button>
         </div>
-
-        <div id="loader" class="loader"><i class="fas fa-spinner fa-pulse"></i> Carregando jogos...</div>
-        <div id="matches-container" class="matches-grid" style="display: none;"></div>
 
         <!-- Seção: Artilheiro da Rodada -->
         <div id="star-player-section" class="star-player-card" style="display: none;">
@@ -788,7 +787,7 @@
             <div class="star-player-body">
                 <div class="star-player-controls">
                     <div class="control-group">
-                        <label><i class="fas fa-shield-alt"></i> Escolha o Time:</label>
+                        <label for="star-team-select">Escolha o time:</label>
                         <div style="display: flex; align-items: center; gap: 0.6rem;">
                             <img id="star-team-logo" src="" alt="" style="width: 32px; height: 32px; object-fit: contain; display: none; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));">
                             <select id="star-team-select" class="form-control-select">
@@ -797,7 +796,7 @@
                         </div>
                     </div>
                     <div class="control-group">
-                        <label><i class="fas fa-user-ninja"></i> Escolha o Jogador do Elenco:</label>
+                        <label for="star-athlete-select">Escolha o jogador do elenco:</label>
                         <select id="star-athlete-select" class="form-control-select" disabled>
                             <option value="">Selecione o time primeiro...</option>
                         </select>
@@ -807,19 +806,22 @@
             </div>
         </div>
 
+        <div id="loader" class="loader"><i class="fas fa-spinner fa-pulse"></i> Carregando jogos...</div>
+        <div id="matches-container" class="matches-grid" style="display: none;"></div>
+
         <div class="save-container">
             <button id="save-predictions" class="save-btn" disabled><i class="fas fa-save"></i> Salvar Palpites</button>
         </div>
     </div>
 
     <!-- Dialogs -->
-    <dialog id="player-status-dialog">
+    <dialog id="player-status-dialog" aria-labelledby="status-dialog-title" aria-describedby="status-dialog-description">
         <div class="dialog-header">
-            <h2><i class="fas fa-clipboard-list"></i> Status dos Palpites</h2>
-            <button class="close-btn">×</button>
+            <div><h2 id="status-dialog-title">Status dos palpites</h2><p id="status-dialog-description">Acompanhe os palpites de cada jogador. Deslize a tabela para ver todos os jogos.</p></div>
+            <button class="close-btn" aria-label="Fechar status">×</button>
         </div>
         <div class="dialog-content">
-            <div style="overflow-x: auto;">
+            <div class="status-table-scroll" tabindex="0" role="region" aria-label="Tabela de palpites por jogador e jogo">
                 <table class="status-table" id="status-table">
                     <thead id="status-header"></thead>
                     <tbody id="status-body"></tbody>
@@ -845,7 +847,7 @@
     <dialog id="predictions-dialog">
         <div class="dialog-header">
             <h2 id="predictions-title"><i class="fas fa-eye"></i> Palpites do Jogo</h2>
-            <button class="close-btn">×</button>
+            <button class="close-btn" aria-label="Fechar palpites">×</button>
         </div>
         <div class="dialog-content">
             <div id="predictions-list" class="predictions-list"></div>
@@ -885,7 +887,6 @@
         const timerContainer = document.getElementById('timer-container');
         const saveBtn = document.getElementById('save-predictions');
         const loader = document.getElementById('loader');
-        const matchesTab = document.getElementById('matches-tab');
         const statusTab = document.getElementById('player-status-tab');
         const statusDialog = document.getElementById('player-status-dialog');
         const predictionsDialog = document.getElementById('predictions-dialog');
@@ -1298,18 +1299,18 @@
                             ` : `
                                 <div class="prediction-inputs">
                                     <div class="score-control">
-                                        <button class="score-btn dec" data-match="${idx}" data-team="home" ${isLocked ? 'disabled' : ''}>-</button>
-                                        <input type="number" class="score-input" data-match="${idx}" data-team="home" value="${homeScore}" placeholder="-" ${isLocked ? 'disabled' : ''}>
-                                        <button class="score-btn inc" data-match="${idx}" data-team="home" ${isLocked ? 'disabled' : ''}>+</button>
+                                        <button class="score-btn dec" aria-label="Diminuir gols do mandante" data-match="${idx}" data-team="home" ${isLocked ? 'disabled' : ''}>-</button>
+                                        <input type="number" class="score-input" aria-label="Gols do mandante" inputmode="numeric" data-match="${idx}" data-team="home" value="${homeScore}" placeholder="-" ${isLocked ? 'disabled' : ''}>
+                                        <button class="score-btn inc" aria-label="Aumentar gols do mandante" data-match="${idx}" data-team="home" ${isLocked ? 'disabled' : ''}>+</button>
                                     </div>
                                     <span style="color: var(--text-muted);">×</span>
                                     <div class="score-control">
-                                        <button class="score-btn dec" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>-</button>
-                                        <input type="number" class="score-input" data-match="${idx}" data-team="away" value="${awayScore}" placeholder="-" ${isLocked ? 'disabled' : ''}>
-                                        <button class="score-btn inc" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>+</button>
+                                        <button class="score-btn dec" aria-label="Diminuir gols do visitante" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>-</button>
+                                        <input type="number" class="score-input" aria-label="Gols do visitante" inputmode="numeric" data-match="${idx}" data-team="away" value="${awayScore}" placeholder="-" ${isLocked ? 'disabled' : ''}>
+                                        <button class="score-btn inc" aria-label="Aumentar gols do visitante" data-match="${idx}" data-team="away" ${isLocked ? 'disabled' : ''}>+</button>
                                     </div>
                                 </div>
-                                <button class="star-match-btn ${isStar ? 'active' : ''}" data-match="${idx}" ${isLocked || roundStarted ? 'disabled' : ''}>
+                                <button class="star-match-btn ${isStar ? 'active' : ''}" aria-pressed="${isStar}" data-match="${idx}" ${isLocked || roundStarted ? 'disabled' : ''}>
                                     <i class="${isStar ? 'fas' : 'far'} fa-star"></i> ${isStar ? '⭐ Jogo Estrela (Pontuação Duplicada 2x)' : 'Definir como Jogo Estrela (2x)'}
                                 </button>
                             `}
@@ -1439,7 +1440,7 @@
                         const starBadge = pred.isStarMatch ? '⭐ ' : '';
                         if (hasFinalResult(match)) {
                             const points = calculateMatchPoints(match.finalResult, pred);
-                            let badgeClass = '';
+                            let badgeClass = 'points-0-badge';
                             if (points >= 3) badgeClass = 'points-3-badge';
                             else if (points >= 1) badgeClass = 'points-1-badge';
                             else if (points < 0) badgeClass = 'points--1-badge';
@@ -1664,8 +1665,7 @@
             matchesContainer.style.display = 'grid';
             
             saveBtn.onclick = () => savePredictions(user.uid);
-            matchesTab.onclick = () => { matchesTab.classList.add('active'); statusTab.classList.remove('active'); };
-            statusTab.onclick = () => { statusTab.classList.add('active'); matchesTab.classList.remove('active'); showStatusDialog(); };
+            statusTab.onclick = showStatusDialog;
             
             document.querySelectorAll('.close-btn').forEach(btn => {
                 btn.onclick = () => btn.closest('dialog')?.close();

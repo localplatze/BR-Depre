@@ -13,6 +13,7 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -1866,6 +1867,7 @@
         .wedding-button:hover, .wedding-button:focus-visible { background: #e5ded0; }
         @media (max-width: 480px) { .wedding-card { padding: 52px 25px 34px; } .wedding-message { font-size: 19px; } }
     </style>
+    <link rel="stylesheet" href="home-editorial.css">
 </head>
 
 <body>
@@ -1913,7 +1915,7 @@
                     <span class="sidebar-logo">BR Depressão</span>
                 </div>
             </div>
-            <button class="sidebar-close" id="sidebar-close">×</button>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">×</button>
         </div>
         <nav class="sidebar-nav">
             <a href="home.html" class="active"><i class="fas fa-home"></i> Início</a>
@@ -1944,28 +1946,33 @@
     <header class="site-header">
         <div class="header-container">
             <div class="logo-area">
-                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false"><i class="fas fa-bars"></i></button>
                 <div class="brand-badge">
                     <img src="./app-logo.png" alt="BR Depressão">
                 </div>
                 <div class="brand-copy">
-                    <span class="brand-eyebrow">Arena Principal</span>
                     <span class="logo">BRASILEIRÃO DA DEPRESSÃO</span>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="icon-btn theme-toggle" id="theme-toggle" title="Alternar tema"><i class="fas fa-moon"></i></button>
-                <button class="icon-btn" id="admin-header-btn" style="display: none;"><i
+                <button class="icon-btn theme-toggle" id="theme-toggle" title="Alternar tema" aria-label="Alternar tema"><i class="fas fa-moon"></i></button>
+                <button class="icon-btn" id="admin-header-btn" aria-label="Administração" style="display: none;"><i
                         class="fas fa-crown"></i></button>
-                <button class="icon-btn" id="logout-header-btn"><i class="fas fa-sign-out-alt"></i></button>
+                <button class="icon-btn" id="logout-header-btn" aria-label="Sair"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </div>
     </header>
 
+    <nav class="edition-nav" aria-label="Acesso rápido">
+        <a href="palpites.html">Palpites</a>
+        <a href="historico.html">Histórico</a>
+        <a href="trofeus.html">Sala de troféus</a>
+    </nav>
+
     <!-- Profile Section -->
     <section class="profile-section">
         <div class="hero-overview">
-            <div class="profile-card" id="profile-card" onclick="window.location.href='perfil.html'" style="cursor: pointer;" title="Clique para editar seu perfil, time, sigla e escudo">
+            <div class="profile-card" id="profile-card" role="link" tabindex="0" onclick="window.location.href='perfil.html'" style="cursor: pointer;" title="Clique para editar seu perfil, time, sigla e escudo">
                 <div class="profile-avatar">
                     <img id="profile-avatar" src="default-avatar.png" alt="Avatar">
                 </div>
@@ -1977,8 +1984,8 @@
             </div>
             <div>
                 <div class="section-header">
-                    <div class="section-title"><i class="fas fa-clock"></i> Próxima Rodada</div>
-                    <a href="palpites.html" class="section-link">Fazer palpite →</a>
+                    <div class="section-title">Próxima rodada</div>
+                    <a href="palpites.html" class="section-link">Dar palpites →</a>
                 </div>
                 <div class="countdown-card" id="next-round-card">
                     <div class="countdown-label" id="round-deadline">Carregando...</div>
@@ -2002,18 +2009,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="expired-message" id="expired-message">⏰ Tempo esgotado! Clique para ver a rodada atual</div>
+                    <div class="expired-message" id="expired-message">Prazo encerrado. Veja a rodada atual.</div>
                 </div>
             </div>
             <div id="resenha-feed-container" style="display: none;">
                 <div class="resenha-card">
                     <div class="resenha-header">
                         <div class="resenha-title-wrap">
-                            <div class="resenha-icon">
-                                <i class="fas fa-newspaper"></i>
-                            </div>
                             <div>
-                                <span class="resenha-label">Atualização da rodada</span>
                                 <div class="resenha-heading">Resenha & destaques</div>
                             </div>
                         </div>
@@ -2024,9 +2027,9 @@
                             <!-- Slides rendered by JS -->
                         </div>
                         <div class="carousel-nav">
-                            <button class="carousel-btn" id="carousel-prev" type="button"><i class="fas fa-chevron-left"></i></button>
+                            <button class="carousel-btn" id="carousel-prev" type="button" aria-label="Notícia anterior"><i class="fas fa-chevron-left"></i></button>
                             <div class="carousel-dots" id="carousel-dots"></div>
-                            <button class="carousel-btn" id="carousel-next" type="button"><i class="fas fa-chevron-right"></i></button>
+                            <button class="carousel-btn" id="carousel-next" type="button" aria-label="Próxima notícia"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                 </div>
@@ -2036,16 +2039,12 @@
 
     <main class="main-content">
 
-        <!-- Botões Rápidos - NOVOS BOTÕES SOLICITADOS -->
-        <div class="quick-actions">
-            <a href="historico.html" class="action-btn"><i class="fas fa-clock"></i> Histórico</a>
-            <a href="trofeus.html" class="action-btn"><i class="fas fa-medal"></i> Sala de Troféus</a>
-        </div>
-
         <!-- Torneios Grid -->
+        <div class="section-header competitions-heading"><h2 class="section-title">Acompanhe o campeonato</h2><span class="section-note">Classificações, disputas e conquistas</span></div>
         <div class="tournaments-grid">
             <!-- Superliga Card -->
-            <div class="tournament-card" id="superliga-card">
+            <div class="tournament-card" id="superliga-card" role="link" tabindex="0" aria-label="Abrir Superliga">
+                <div class="tournament-art art-league" aria-hidden="true"><span class="field-mark"></span><i class="fas fa-futbol"></i></div>
                 <div class="tournament-header">
                     <div class="tournament-title"><i class="fas fa-trophy"></i> Superliga</div>
                     <span class="status-badge status-active" id="superliga-status">Em andamento</span>
@@ -2071,7 +2070,8 @@
             </div>
 
             <!-- Supercopa Card -->
-            <div class="tournament-card" id="supercopa-card">
+            <div class="tournament-card" id="supercopa-card" role="link" tabindex="0" aria-label="Abrir Supercopa">
+                <div class="tournament-art art-cup" aria-hidden="true"><span class="cup-lines"></span><i class="fas fa-trophy"></i></div>
                 <div class="tournament-header">
                     <div class="tournament-title"><i class="fas fa-shield-alt"></i> Supercopa</div>
                     <span class="status-badge status-upcoming" id="supercopa-status">Carregando</span>
@@ -2082,7 +2082,8 @@
             </div>
 
             <!-- Fórmula Deprê Card -->
-            <div class="tournament-card coming-soon-card" id="formula-depre-card" onclick="window.location.href='formula-depre.html'" style="border-color: rgba(239, 68, 68, 0.35);">
+            <div class="tournament-card coming-soon-card" id="formula-depre-card" role="link" tabindex="0" aria-label="Abrir Fórmula Deprê" onclick="window.location.href='formula-depre.html'" style="border-color: rgba(239, 68, 68, 0.35);">
+                <div class="tournament-art art-racing" aria-hidden="true"><span class="race-track"></span><i class="fas fa-flag-checkered"></i></div>
                 <div class="tournament-header" style="background: linear-gradient(90deg, rgba(239, 68, 68, 0.14), rgba(245, 158, 11, 0.08));">
                     <div class="tournament-title" style="color: #fca5a5;"><i class="fas fa-flag-checkered" style="color: #ef4444;"></i> Fórmula Deprê</div>
                     <span class="status-badge" style="background: rgba(239, 68, 68, 0.16); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.26);">Abrir</span>
@@ -2094,7 +2095,6 @@
                             <strong>Pole, ritmo e classificação</strong>
                             <span>Veja quem está pontuando melhor no campeonato em estilo F1.</span>
                         </div>
-                        <div class="f1-preview-car">🏎️</div>
                     </div>
                     <div class="future-card-highlight" style="background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2);">
                         <i class="fas fa-bolt"></i> Classificação baseada na Superliga
@@ -2104,6 +2104,7 @@
 
             <!-- Pódio do Mês Card -->
             <div class="tournament-card" id="podio-mes-card" style="border-color: rgba(6, 182, 212, 0.4);">
+                <div class="tournament-art art-podium" aria-hidden="true"><span class="podium-mark"></span><i class="fas fa-medal"></i></div>
                 <div class="tournament-header" style="background: rgba(6, 182, 212, 0.1);">
                     <div class="tournament-title" style="color: #06b6d4;"><i class="fas fa-medal" style="color: #06b6d4;"></i> Pódio do Mês</div>
                     <span class="status-badge" style="background: rgba(6, 182, 212, 0.2); color: #06b6d4;" id="podio-mes-title">--/----</span>
@@ -2114,7 +2115,8 @@
             </div>
 
             <!-- Resta Um Card -->
-            <div class="tournament-card" id="restaum-card" onclick="window.location.href='resta-um.html'">
+            <div class="tournament-card" id="restaum-card" role="link" tabindex="0" aria-label="Abrir Resta Um" onclick="window.location.href='resta-um.html'">
+                <div class="tournament-art art-chess" aria-hidden="true"><span class="chess-board"></span><i class="fas fa-chess-knight"></i></div>
                 <div class="tournament-header">
                     <div class="tournament-title" style="color: #ef4444;"><i class="fas fa-skull-crossbones" style="color: #ef4444;"></i> Torneio Resta Um</div>
                     <span class="status-badge status-active" id="restaum-status">VIVO</span>
@@ -2126,6 +2128,7 @@
 
             <!-- Cinturão BR Depressão Card -->
             <div class="tournament-card" id="cinturao-card" style="border-color: rgba(245, 158, 11, 0.4);">
+                <div class="tournament-art art-belt" aria-hidden="true"><span class="belt-mark"></span><i class="fas fa-star"></i></div>
                 <div class="tournament-header" style="background: rgba(245, 158, 11, 0.1);">
                     <div class="tournament-title" style="color: #f59e0b;"><i class="fas fa-hand-fist" style="color: #f59e0b;"></i> Cinturão BR Depressão</div>
                     <span class="status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" id="cinturao-defenses-badge">0 Defesas</span>
@@ -2209,11 +2212,14 @@
         const nextRoundCard = document.getElementById('next-round-card');
 
         // Sidebar Functions
-        function openSidebar() { sidebar.classList.add('active'); sidebarOverlay.classList.add('active'); }
-        function closeSidebar() { sidebar.classList.remove('active'); sidebarOverlay.classList.remove('active'); }
+        function openSidebar() { sidebar.classList.add('active'); sidebarOverlay.classList.add('active'); menuToggle.setAttribute('aria-expanded', 'true'); }
+        function closeSidebar() { sidebar.classList.remove('active'); sidebarOverlay.classList.remove('active'); menuToggle.setAttribute('aria-expanded', 'false'); }
         menuToggle?.addEventListener('click', openSidebar);
         sidebarClose?.addEventListener('click', closeSidebar);
         sidebarOverlay?.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', event => { if (event.key === 'Escape' && sidebar.classList.contains('active')) { closeSidebar(); menuToggle.focus(); } });
+        document.getElementById('profile-card')?.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click(); } });
+        document.querySelectorAll('.tournament-card[role="link"]').forEach(card => card.addEventListener('keydown', event => { if (event.target === card && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); card.click(); } }));
 
         function applyTheme(theme) {
             const resolvedTheme = theme === 'light' ? 'light' : 'dark';
@@ -2572,8 +2578,8 @@
 
                                 const isRivalryClasico = (me.rivalId === opponentId || opponent?.rivalId === currentUser?.uid);
                                 const clasicoBadge = isRivalryClasico ? `
-                                    <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 12px; text-align: center; margin-bottom: 8px; box-shadow: 0 0 12px rgba(239,68,68,0.5); letter-spacing: 0.5px;">
-                                        🔥 CLÁSSICO DOS RIVAIS 🔥
+                                    <div class="rivalry-label">
+                                        Clássico dos rivais
                                     </div>
                                 ` : '';
 

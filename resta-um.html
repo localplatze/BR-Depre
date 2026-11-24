@@ -7,6 +7,7 @@
     <link rel="icon" href="./bdd.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -437,17 +438,18 @@
             color: var(--text-secondary);
         }
     </style>
+    <link rel="stylesheet" href="resta-um-editorial.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="header-title">
-                <i class="fas fa-skull-crossbones"></i>
                 <div>
-                    <h1>Torneio Resta Um</h1>
-                    <p>A cada rodada o menor pontuador da liga é eliminado. Sobreviva até o fim!</p>
+                    <h1>Resta <span>Um</span></h1>
+                    <p>A cada rodada, o menor pontuador da liga é eliminado. A disputa continua até restar um.</p>
                 </div>
             </div>
+            <div class="header-piece" aria-hidden="true"><i class="fas fa-chess-knight"></i></div>
             <a href="home.html" class="back-btn"><i class="fas fa-arrow-left"></i> Voltar</a>
         </div>
 
@@ -461,21 +463,21 @@
                     <div class="stat-icon survivors"><i class="fas fa-heart"></i></div>
                     <div class="stat-info">
                         <h3 id="stat-survivors-count">0</h3>
-                        <p>Sobreviventes Vivos</p>
+                        <p>Seguem na disputa</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon eliminated"><i class="fas fa-skull"></i></div>
                     <div class="stat-info">
                         <h3 id="stat-eliminated-count">0</h3>
-                        <p>Jogadores Eliminados</p>
+                        <p>Eliminados</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon round"><i class="fas fa-calendar-check"></i></div>
                     <div class="stat-info">
                         <h3 id="stat-rounds-count">0</h3>
-                        <p>Rodadas Processadas</p>
+                        <p>Eliminações registradas</p>
                     </div>
                 </div>
             </div>
@@ -497,13 +499,13 @@
 
             <!-- Sobreviventes -->
             <div class="section-header">
-                <h2><i class="fas fa-shield-halved" style="color: var(--success);"></i> Sobreviventes Vivos</h2>
+                <h2>Quem segue no jogo</h2>
             </div>
             <div id="survivors-container" class="survivors-grid"></div>
 
             <!-- Linha do Tempo -->
             <div class="section-header">
-                <h2><i class="fas fa-skull-crossbones" style="color: var(--primary);"></i> Histórico de Eliminações</h2>
+                <h2>Histórico de eliminações</h2>
             </div>
             <div id="eliminations-container" class="elimination-timeline"></div>
         </div>
