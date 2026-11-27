@@ -1,0 +1,21 @@
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
+import { auth, onAuthStateChanged } from '../services/firebaseAuth';
+import { database, onValue, ref, update } from '../services/firebaseDatabase';
+
+const CATEGORIES=[['deadline','Prazos'],['result','Resultados'],['competition','Torneios'],['resenha','Resenhas'],['general','Geral']];
+export default function NotificationsScreen(){
+ const router=useRouter();const [uid,setUid]=useState(null);const [items,setItems]=useState({});const [prefs,setPrefs]=useState({});const [loading,setLoading]=useState(true);
+ useEffect(()=>onAuthStateChanged(auth,user=>setUid(user?.uid||null)),[]);
+ useEffect(()=>{if(!uid){setLoading(false);return;}const a=onValue(ref(database,`users/${uid}/notifications/2027`),s=>{setItems(s.val()||{});setLoading(false);});const b=onValue(ref(database,`users/${uid}/notificationPreferences`),s=>setPrefs(s.val()||{}));return()=>{a();b();};},[uid]);
+ const toggle=category=>update(ref(database,`users/${uid}/notificationPreferences`),{[category]:prefs[category]===false?true:false});
+ const markRead=(id,item)=>{if(!item.read)update(ref(database,`users/${uid}/notifications/2027/${id}`),{read:true,readAt:Date.now()});};
+ const rows=Object.entries(items).map(([id,item])=>({id,...item})).sort((a,b)=>Number(b.sentAt||0)-Number(a.sentAt||0));
+ return <SafeAreaView style={s.safe}><View style={s.header}><Pressable onPress={()=>router.back()} style={s.back}><MaterialDesignIcons name="arrow-left" size={21} color="#F4F7FB"/></Pressable><View style={{flex:1}}><Text style={s.title}>Notificações</Text><Text style={s.sub}>Avisos da temporada 2027</Text></View><MaterialDesignIcons name="bell-outline" size={22} color="#B9F276"/></View>
+ <ScrollView contentContainerStyle={s.content}><View style={s.panel}><Text style={s.heading}>Preferências</Text><Text style={s.hint}>Escolha as categorias que deseja receber.</Text>{CATEGORIES.map(([id,label])=><Pressable key={id} onPress={()=>toggle(id)} style={s.pref}><Text style={s.itemTitle}>{label}</Text><MaterialDesignIcons name={prefs[id]===false?'toggle-switch-off-outline':'toggle-switch'} size={25} color={prefs[id]===false?'#8098B2':'#B9F276'}/></Pressable>)}</View>
+ <Text style={s.heading}>Caixa de entrada</Text>{loading?<ActivityIndicator color="#B9F276"/>:rows.map(item=><Pressable key={item.id} onPress={()=>markRead(item.id,item)} style={[s.panel,s.card,!item.read&&s.unread]}><View style={s.row}><View style={{flex:1}}><Text style={s.itemTitle}>{item.title}</Text><Text style={s.hint}>{CATEGORIES.find(x=>x[0]===item.category)?.[1]||'Geral'} · {new Date(Number(item.sentAt||item.createdAt||0)).toLocaleDateString('pt-BR')}</Text></View>{!item.read&&<View style={s.dot}/>}</View><Text style={s.body}>{item.body}</Text></Pressable>)}{!loading&&!rows.length&&<View style={s.panel}><Text style={s.hint}>Você ainda não recebeu notificações.</Text></View>}</ScrollView></SafeAreaView>;
+}
+const s=StyleSheet.create({safe:{flex:1,backgroundColor:'#071A31'},header:{minHeight:64,paddingHorizontal:16,flexDirection:'row',alignItems:'center',gap:12,borderBottomWidth:1,borderBottomColor:'#203A58'},back:{width:36,height:36,alignItems:'center',justifyContent:'center'},title:{color:'#F4F7FB',fontSize:19,fontWeight:'900'},sub:{color:'#91A9C7',fontSize:10,marginTop:3},content:{padding:15,gap:10,paddingBottom:30},panel:{padding:13,borderRadius:12,borderWidth:1,borderColor:'#29496B',backgroundColor:'#0C2547'},heading:{color:'#F0F5FA',fontSize:13,fontWeight:'900',marginTop:7},hint:{color:'#9FB5CB',fontSize:9,lineHeight:14,marginTop:4},pref:{minHeight:39,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:'rgba(153,182,211,.12)',marginTop:4},itemTitle:{color:'#DDE8F4',fontSize:11,fontWeight:'800'},card:{gap:8},unread:{borderColor:'#7A7549'},row:{flexDirection:'row',alignItems:'center',gap:8},body:{color:'#D1DEEB',fontSize:11,lineHeight:17},dot:{width:8,height:8,borderRadius:4,backgroundColor:'#B9F276'}});

@@ -1,0 +1,903 @@
+{
+  "version": 1,
+  "viewBox": "0 0 240 320",
+  "layerOrder": [
+    "hair-back",
+    "body",
+    "sleeves",
+    "jersey",
+    "collar",
+    "head",
+    "eyes",
+    "brows",
+    "nose",
+    "beard",
+    "mouth",
+    "hair-front",
+    "accessory",
+    "wrist"
+  ],
+  "badgeAnchor": {
+    "x": 153,
+    "y": 248,
+    "width": 22,
+    "height": 25
+  },
+  "defaultColors": {
+    "SKIN": "#e4a078",
+    "HAIR": "#493025",
+    "JERSEY": "#245bc4",
+    "TRIM": "#e33b45",
+    "EYE": "#49352d",
+    "ITEM": "#f4e9d9"
+  },
+  "parts": {
+    "body-slim": {
+      "layer": "body",
+      "variant": "slim",
+      "file": "assets/body-slim.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "body-athletic": {
+      "layer": "body",
+      "variant": "athletic",
+      "file": "assets/body-athletic.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "body-robust": {
+      "layer": "body",
+      "variant": "robust",
+      "file": "assets/body-robust.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "body-feminine-slim": {
+      "layer": "body",
+      "variant": "feminine-slim",
+      "file": "assets/body-feminine-slim.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "body-feminine-athletic": {
+      "layer": "body",
+      "variant": "feminine-athletic",
+      "file": "assets/body-feminine-athletic.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "body-feminine-robust": {
+      "layer": "body",
+      "variant": "feminine-robust",
+      "file": "assets/body-feminine-robust.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "sleeves-slim-short": {
+      "layer": "sleeves",
+      "variant": "slim-short",
+      "file": "assets/sleeves-slim-short.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "slim",
+      "style": "short"
+    },
+    "sleeves-slim-long": {
+      "layer": "sleeves",
+      "variant": "slim-long",
+      "file": "assets/sleeves-slim-long.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "slim",
+      "style": "long"
+    },
+    "sleeves-athletic-short": {
+      "layer": "sleeves",
+      "variant": "athletic-short",
+      "file": "assets/sleeves-athletic-short.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "athletic",
+      "style": "short"
+    },
+    "sleeves-athletic-long": {
+      "layer": "sleeves",
+      "variant": "athletic-long",
+      "file": "assets/sleeves-athletic-long.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "athletic",
+      "style": "long"
+    },
+    "sleeves-robust-short": {
+      "layer": "sleeves",
+      "variant": "robust-short",
+      "file": "assets/sleeves-robust-short.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "robust",
+      "style": "short"
+    },
+    "sleeves-robust-long": {
+      "layer": "sleeves",
+      "variant": "robust-long",
+      "file": "assets/sleeves-robust-long.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "robust",
+      "style": "long"
+    },
+    "sleeves-feminine-slim-short": {
+      "layer": "sleeves",
+      "variant": "feminine-slim-short",
+      "file": "assets/sleeves-feminine-slim-short.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "feminine-slim",
+      "style": "short"
+    },
+    "sleeves-feminine-slim-long": {
+      "layer": "sleeves",
+      "variant": "feminine-slim-long",
+      "file": "assets/sleeves-feminine-slim-long.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "feminine-slim",
+      "style": "long"
+    },
+    "sleeves-feminine-athletic-short": {
+      "layer": "sleeves",
+      "variant": "feminine-athletic-short",
+      "file": "assets/sleeves-feminine-athletic-short.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "feminine-athletic",
+      "style": "short"
+    },
+    "sleeves-feminine-athletic-long": {
+      "layer": "sleeves",
+      "variant": "feminine-athletic-long",
+      "file": "assets/sleeves-feminine-athletic-long.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "feminine-athletic",
+      "style": "long"
+    },
+    "sleeves-feminine-robust-short": {
+      "layer": "sleeves",
+      "variant": "feminine-robust-short",
+      "file": "assets/sleeves-feminine-robust-short.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "feminine-robust",
+      "style": "short"
+    },
+    "sleeves-feminine-robust-long": {
+      "layer": "sleeves",
+      "variant": "feminine-robust-long",
+      "file": "assets/sleeves-feminine-robust-long.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ],
+      "body": "feminine-robust",
+      "style": "long"
+    },
+    "jersey-solid": {
+      "layer": "jersey",
+      "variant": "solid",
+      "file": "assets/jersey-solid.svg",
+      "colors": [
+        "JERSEY"
+      ]
+    },
+    "jersey-vertical": {
+      "layer": "jersey",
+      "variant": "vertical",
+      "file": "assets/jersey-vertical.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-horizontal": {
+      "layer": "jersey",
+      "variant": "horizontal",
+      "file": "assets/jersey-horizontal.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-diagonal": {
+      "layer": "jersey",
+      "variant": "diagonal",
+      "file": "assets/jersey-diagonal.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-split": {
+      "layer": "jersey",
+      "variant": "split",
+      "file": "assets/jersey-split.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-central": {
+      "layer": "jersey",
+      "variant": "central",
+      "file": "assets/jersey-central.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-chevron": {
+      "layer": "jersey",
+      "variant": "chevron",
+      "file": "assets/jersey-chevron.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-pinstripe": {
+      "layer": "jersey",
+      "variant": "pinstripe",
+      "file": "assets/jersey-pinstripe.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-shoulder": {
+      "layer": "jersey",
+      "variant": "shoulder",
+      "file": "assets/jersey-shoulder.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "jersey-retro": {
+      "layer": "jersey",
+      "variant": "retro",
+      "file": "assets/jersey-retro.svg",
+      "colors": [
+        "JERSEY",
+        "TRIM"
+      ]
+    },
+    "collar-crew": {
+      "layer": "collar",
+      "variant": "crew",
+      "file": "assets/collar-crew.svg",
+      "colors": [
+        "TRIM"
+      ]
+    },
+    "collar-v": {
+      "layer": "collar",
+      "variant": "v",
+      "file": "assets/collar-v.svg",
+      "colors": [
+        "TRIM"
+      ]
+    },
+    "collar-polo": {
+      "layer": "collar",
+      "variant": "polo",
+      "file": "assets/collar-polo.svg",
+      "colors": [
+        "TRIM"
+      ]
+    },
+    "head-round": {
+      "layer": "head",
+      "variant": "round",
+      "file": "assets/head-round.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "head-square": {
+      "layer": "head",
+      "variant": "square",
+      "file": "assets/head-square.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "head-oval": {
+      "layer": "head",
+      "variant": "oval",
+      "file": "assets/head-oval.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "head-feminine-round": {
+      "layer": "head",
+      "variant": "feminine-round",
+      "file": "assets/head-feminine-round.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "head-feminine-oval": {
+      "layer": "head",
+      "variant": "feminine-oval",
+      "file": "assets/head-feminine-oval.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "head-feminine-angular": {
+      "layer": "head",
+      "variant": "feminine-angular",
+      "file": "assets/head-feminine-angular.svg",
+      "colors": [
+        "SKIN"
+      ]
+    },
+    "eyes-round": {
+      "layer": "eyes",
+      "variant": "round",
+      "file": "assets/eyes-round.svg",
+      "colors": [
+        "EYE"
+      ]
+    },
+    "eyes-sport": {
+      "layer": "eyes",
+      "variant": "sport",
+      "file": "assets/eyes-sport.svg",
+      "colors": [
+        "EYE"
+      ]
+    },
+    "eyes-soft": {
+      "layer": "eyes",
+      "variant": "soft",
+      "file": "assets/eyes-soft.svg",
+      "colors": [
+        "EYE"
+      ]
+    },
+    "eyes-narrow": {
+      "layer": "eyes",
+      "variant": "narrow",
+      "file": "assets/eyes-narrow.svg",
+      "colors": [
+        "EYE"
+      ]
+    },
+    "eyes-happy": {
+      "layer": "eyes",
+      "variant": "happy",
+      "file": "assets/eyes-happy.svg",
+      "colors": []
+    },
+    "eyes-lashes": {
+      "layer": "eyes",
+      "variant": "lashes",
+      "file": "assets/eyes-lashes.svg",
+      "colors": [
+        "EYE"
+      ]
+    },
+    "brows-natural": {
+      "layer": "brows",
+      "variant": "natural",
+      "file": "assets/brows-natural.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "brows-bold": {
+      "layer": "brows",
+      "variant": "bold",
+      "file": "assets/brows-bold.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "brows-thin": {
+      "layer": "brows",
+      "variant": "thin",
+      "file": "assets/brows-thin.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "brows-determined": {
+      "layer": "brows",
+      "variant": "determined",
+      "file": "assets/brows-determined.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "brows-arched": {
+      "layer": "brows",
+      "variant": "arched",
+      "file": "assets/brows-arched.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "nose-small": {
+      "layer": "nose",
+      "variant": "small",
+      "file": "assets/nose-small.svg",
+      "colors": []
+    },
+    "nose-round": {
+      "layer": "nose",
+      "variant": "round",
+      "file": "assets/nose-round.svg",
+      "colors": []
+    },
+    "nose-wide": {
+      "layer": "nose",
+      "variant": "wide",
+      "file": "assets/nose-wide.svg",
+      "colors": []
+    },
+    "mouth-smile": {
+      "layer": "mouth",
+      "variant": "smile",
+      "file": "assets/mouth-smile.svg",
+      "colors": []
+    },
+    "mouth-grin": {
+      "layer": "mouth",
+      "variant": "grin",
+      "file": "assets/mouth-grin.svg",
+      "colors": []
+    },
+    "mouth-neutral": {
+      "layer": "mouth",
+      "variant": "neutral",
+      "file": "assets/mouth-neutral.svg",
+      "colors": []
+    },
+    "mouth-smirk": {
+      "layer": "mouth",
+      "variant": "smirk",
+      "file": "assets/mouth-smirk.svg",
+      "colors": []
+    },
+    "mouth-lips": {
+      "layer": "mouth",
+      "variant": "lips",
+      "file": "assets/mouth-lips.svg",
+      "colors": []
+    },
+    "beard-none": {
+      "layer": "beard",
+      "variant": "none",
+      "file": "assets/beard-none.svg",
+      "colors": []
+    },
+    "beard-mustache": {
+      "layer": "beard",
+      "variant": "mustache",
+      "file": "assets/beard-mustache.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "beard-short": {
+      "layer": "beard",
+      "variant": "short",
+      "file": "assets/beard-short.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "beard-full": {
+      "layer": "beard",
+      "variant": "full",
+      "file": "assets/beard-full.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "beard-goatee": {
+      "layer": "beard",
+      "variant": "goatee",
+      "file": "assets/beard-goatee.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-short": {
+      "layer": "hair-back",
+      "variant": "short",
+      "file": "assets/hair-back-short.svg",
+      "colors": []
+    },
+    "hair-front-short": {
+      "layer": "hair-front",
+      "variant": "short",
+      "file": "assets/hair-front-short.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-quiff": {
+      "layer": "hair-back",
+      "variant": "quiff",
+      "file": "assets/hair-back-quiff.svg",
+      "colors": []
+    },
+    "hair-front-quiff": {
+      "layer": "hair-front",
+      "variant": "quiff",
+      "file": "assets/hair-front-quiff.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-sidepart": {
+      "layer": "hair-back",
+      "variant": "sidepart",
+      "file": "assets/hair-back-sidepart.svg",
+      "colors": []
+    },
+    "hair-front-sidepart": {
+      "layer": "hair-front",
+      "variant": "sidepart",
+      "file": "assets/hair-front-sidepart.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-rocker": {
+      "layer": "hair-back",
+      "variant": "rocker",
+      "file": "assets/hair-back-rocker.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-front-rocker": {
+      "layer": "hair-front",
+      "variant": "rocker",
+      "file": "assets/hair-front-rocker.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-mullet": {
+      "layer": "hair-back",
+      "variant": "mullet",
+      "file": "assets/hair-back-mullet.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-front-mullet": {
+      "layer": "hair-front",
+      "variant": "mullet",
+      "file": "assets/hair-front-mullet.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-long-wavy": {
+      "layer": "hair-back",
+      "variant": "long-wavy",
+      "file": "assets/hair-back-long-wavy.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-front-long-wavy": {
+      "layer": "hair-front",
+      "variant": "long-wavy",
+      "file": "assets/hair-front-long-wavy.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-bob": {
+      "layer": "hair-back",
+      "variant": "bob",
+      "file": "assets/hair-back-bob.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-front-bob": {
+      "layer": "hair-front",
+      "variant": "bob",
+      "file": "assets/hair-front-bob.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-pixie": {
+      "layer": "hair-back",
+      "variant": "pixie",
+      "file": "assets/hair-back-pixie.svg",
+      "colors": []
+    },
+    "hair-front-pixie": {
+      "layer": "hair-front",
+      "variant": "pixie",
+      "file": "assets/hair-front-pixie.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-ponytail": {
+      "layer": "hair-back",
+      "variant": "ponytail",
+      "file": "assets/hair-back-ponytail.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-front-ponytail": {
+      "layer": "hair-front",
+      "variant": "ponytail",
+      "file": "assets/hair-front-ponytail.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-bun": {
+      "layer": "hair-back",
+      "variant": "bun",
+      "file": "assets/hair-back-bun.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-front-bun": {
+      "layer": "hair-front",
+      "variant": "bun",
+      "file": "assets/hair-front-bun.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-buzz": {
+      "layer": "hair-back",
+      "variant": "buzz",
+      "file": "assets/hair-back-buzz.svg",
+      "colors": []
+    },
+    "hair-front-buzz": {
+      "layer": "hair-front",
+      "variant": "buzz",
+      "file": "assets/hair-front-buzz.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-bald": {
+      "layer": "hair-back",
+      "variant": "bald",
+      "file": "assets/hair-back-bald.svg",
+      "colors": []
+    },
+    "hair-front-bald": {
+      "layer": "hair-front",
+      "variant": "bald",
+      "file": "assets/hair-front-bald.svg",
+      "colors": []
+    },
+    "hair-back-curly": {
+      "layer": "hair-back",
+      "variant": "curly",
+      "file": "assets/hair-back-curly.svg",
+      "colors": []
+    },
+    "hair-front-curly": {
+      "layer": "hair-front",
+      "variant": "curly",
+      "file": "assets/hair-front-curly.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-afro": {
+      "layer": "hair-back",
+      "variant": "afro",
+      "file": "assets/hair-back-afro.svg",
+      "colors": []
+    },
+    "hair-front-afro": {
+      "layer": "hair-front",
+      "variant": "afro",
+      "file": "assets/hair-front-afro.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-coily": {
+      "layer": "hair-back",
+      "variant": "coily",
+      "file": "assets/hair-back-coily.svg",
+      "colors": []
+    },
+    "hair-front-coily": {
+      "layer": "hair-front",
+      "variant": "coily",
+      "file": "assets/hair-front-coily.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-braids": {
+      "layer": "hair-back",
+      "variant": "braids",
+      "file": "assets/hair-back-braids.svg",
+      "colors": []
+    },
+    "hair-front-braids": {
+      "layer": "hair-front",
+      "variant": "braids",
+      "file": "assets/hair-front-braids.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-back-dreads": {
+      "layer": "hair-back",
+      "variant": "dreads",
+      "file": "assets/hair-back-dreads.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "hair-front-dreads": {
+      "layer": "hair-front",
+      "variant": "dreads",
+      "file": "assets/hair-front-dreads.svg",
+      "colors": [
+        "HAIR"
+      ]
+    },
+    "accessory-none": {
+      "layer": "accessory",
+      "variant": "none",
+      "file": "assets/accessory-none.svg",
+      "colors": []
+    },
+    "accessory-headband": {
+      "layer": "accessory",
+      "variant": "headband",
+      "file": "assets/accessory-headband.svg",
+      "colors": [
+        "ITEM"
+      ]
+    },
+    "accessory-glasses": {
+      "layer": "accessory",
+      "variant": "glasses",
+      "file": "assets/accessory-glasses.svg",
+      "colors": [
+        "ITEM"
+      ]
+    },
+    "accessory-freckles": {
+      "layer": "accessory",
+      "variant": "freckles",
+      "file": "assets/accessory-freckles.svg",
+      "colors": []
+    },
+    "accessory-earrings": {
+      "layer": "accessory",
+      "variant": "earrings",
+      "file": "assets/accessory-earrings.svg",
+      "colors": [
+        "ITEM"
+      ]
+    },
+    "accessory-facepaint": {
+      "layer": "accessory",
+      "variant": "facepaint",
+      "file": "assets/accessory-facepaint.svg",
+      "colors": [
+        "ITEM"
+      ]
+    },
+    "wrist-none": {
+      "layer": "wrist",
+      "variant": "none",
+      "file": "assets/wrist-none.svg",
+      "colors": []
+    },
+    "wrist-slim": {
+      "layer": "wrist",
+      "variant": "slim",
+      "file": "assets/wrist-slim.svg",
+      "colors": [
+        "ITEM"
+      ],
+      "body": "slim"
+    },
+    "wrist-athletic": {
+      "layer": "wrist",
+      "variant": "athletic",
+      "file": "assets/wrist-athletic.svg",
+      "colors": [
+        "ITEM"
+      ],
+      "body": "athletic"
+    },
+    "wrist-robust": {
+      "layer": "wrist",
+      "variant": "robust",
+      "file": "assets/wrist-robust.svg",
+      "colors": [
+        "ITEM"
+      ],
+      "body": "robust"
+    },
+    "wrist-feminine-slim": {
+      "layer": "wrist",
+      "variant": "feminine-slim",
+      "file": "assets/wrist-feminine-slim.svg",
+      "colors": [
+        "ITEM"
+      ],
+      "body": "feminine-slim"
+    },
+    "wrist-feminine-athletic": {
+      "layer": "wrist",
+      "variant": "feminine-athletic",
+      "file": "assets/wrist-feminine-athletic.svg",
+      "colors": [
+        "ITEM"
+      ],
+      "body": "feminine-athletic"
+    },
+    "wrist-feminine-robust": {
+      "layer": "wrist",
+      "variant": "feminine-robust",
+      "file": "assets/wrist-feminine-robust.svg",
+      "colors": [
+        "ITEM"
+      ],
+      "body": "feminine-robust"
+    }
+  }
+}

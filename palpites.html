@@ -783,6 +783,7 @@
             <div class="star-player-header">
                 <h3><i class="fas fa-running" style="color: #f59e0b;"></i> Artilheiro da Rodada (+1 pt por gol)</h3>
                 <p>Escolha um jogador de futebol do elenco de um dos times desta rodada. Cada gol marcado por ele soma +1 ponto bônus!</p>
+                <p id="star-player-locked-message" hidden>A escolha do artilheiro fica bloqueada após o início da rodada.</p>
             </div>
             <div class="star-player-body">
                 <div class="star-player-controls">
@@ -994,11 +995,21 @@
 
         function getManausTimestamp(dateString) {
             if (!dateString) return 0;
-            if (typeof dateString === 'number') return dateString;
+            if (typeof dateString === 'number') return Number.isFinite(dateString) ? dateString : 0;
+            if (typeof dateString !== 'string') return 0;
             if (dateString.includes('Z') || dateString.match(/[+-]\d\d:\d\d$/)) {
-                return new Date(dateString).getTime();
+                return new Date(dateString).getTime() || 0;
             }
-            return new Date(dateString + '-04:00').getTime();
+            return new Date(dateString + '-04:00').getTime() || 0;
+        }
+
+        function getMatchDeadline(match) {
+            return getManausTimestamp(match?.timestamp) || roundFinishTimestamp || 0;
+        }
+
+        function getRoundStartTimestamp() {
+            const deadlines = Array.from(allMatches || [], getMatchDeadline).filter(timestamp => timestamp > 0);
+            return deadlines.length ? Math.min(...deadlines) : roundFinishTimestamp || 0;
         }
 
         function hasFinalResult(match) {
@@ -1196,20 +1207,30 @@
 
         function startCountdown() {
             if (countdownInterval) clearInterval(countdownInterval);
-            
+            let lastLockState = null;
             const updateTimer = () => {
-                const now = new Date().getTime();
-                const diff = roundFinishTimestamp - now;
-                
-                if (diff <= 0) {
-                    clearInterval(countdownInterval);
+                const now = Date.now();
+                const matches = Array.from(allMatches || []);
+                const deadlines = matches.map(getMatchDeadline);
+                const upcoming = deadlines.filter((timestamp, index) => timestamp > now && !hasFinalResult(matches[index]));
+                const lockState = matches.map(match => isMatchLocked(match) ? '1' : '0').join('');
+                if (lastLockState !== null && lastLockState !== lockState && auth.currentUser) {
+                    renderMatches(auth.currentUser.uid);
+                    updateSaveButton();
+                }
+                lastLockState = lockState;
+                updateStarPlayerAvailability();
+                saveBtn.style.display = upcoming.length ? '' : 'none';
+                if (!upcoming.length && deadlines.some(timestamp => !timestamp)) {
+                    timerContainer.innerHTML = '<div class="timer-info"><i class="fas fa-info-circle"></i><span>Horário dos jogos indisponível</span></div>';
+                } else if (!upcoming.length) {
                     timerContainer.innerHTML = '<div class="timer-info"><i class="fas fa-clock"></i><span>Tempo esgotado!</span></div>';
-                    saveBtn.style.display = 'none';
                 } else {
+                    const diff = Math.min(...upcoming) - now;
                     const hours = Math.floor(diff / 3600000);
                     const minutes = Math.floor((diff % 3600000) / 60000);
                     timerContainer.innerHTML = `
-                        <div class="timer-info"><i class="fas fa-hourglass-half"></i><span>Prazo para palpites</span></div>
+                        <div class="timer-info"><i class="fas fa-hourglass-half"></i><span>Prazo até o próximo jogo</span></div>
                         <div class="timer-value"><i class="fas fa-clock"></i> ${hours}h ${minutes}m restantes</div>
                     `;
                 }
@@ -1219,14 +1240,23 @@
         }
 
         function isMatchLocked(match) {
-            const now = new Date().getTime();
-            const deadline = match.timestamp ? getManausTimestamp(match.timestamp) : roundFinishTimestamp;
-            return now >= deadline;
+            const deadline = getMatchDeadline(match);
+            return !deadline || Date.now() >= deadline || Boolean(hasFinalResult(match));
         }
 
         function isRoundStarted() {
-            if (!roundFinishTimestamp) return false;
-            return new Date().getTime() >= roundFinishTimestamp;
+            const start = getRoundStartTimestamp();
+            return Boolean(start && Date.now() >= start);
+        }
+
+        function updateStarPlayerAvailability() {
+            if (!isRoundStarted()) return;
+            const team = document.getElementById('star-team-select');
+            const athlete = document.getElementById('star-athlete-select');
+            const message = document.getElementById('star-player-locked-message');
+            if (team) team.disabled = true;
+            if (athlete) athlete.disabled = true;
+            if (message) message.hidden = false;
         }
 
         function renderMatches(userId) {
@@ -1286,7 +1316,7 @@
                                             Pontuação: ${userPoints !== null ? `${userPoints > 0 ? '+' : ''}${userPoints} pts` : '-'}
                                         </div>
                                     </div>
-                                    ${opponentUser ? `
+                                    ${opponentUser && isRoundStarted() ? `
                                         <div style="border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 0.4rem; text-align: center;">
                                             <div style="font-size: 0.75rem; color: #f59e0b; font-weight: 600;"><i class="fas fa-shield-alt"></i> Adversário na Supercopa (${opponentUser.name})</div>
                                             <div style="margin-top: 0.2rem;"><span style="color: var(--text-secondary);">Palpite:</span> <strong>${oppPred && oppPred.homeScore !== undefined ? `${oppPred.homeScore} × ${oppPred.awayScore}` : 'Sem palpite'}</strong> ${oppPred?.isStarMatch ? '<span style="color:#f59e0b; font-size:0.75rem;">⭐ 2x</span>' : ''}</div>
@@ -1392,6 +1422,7 @@
         }
 
         async function showPredictions(matchId) {
+            if (!isRoundStarted()) return;
             const match = allMatches[matchId];
             const homeTeam = allTeams[match.homeTeam]?.name || 'Time A';
             const awayTeam = allTeams[match.awayTeam]?.name || 'Time B';
@@ -1435,6 +1466,10 @@
             body.innerHTML = Object.entries(allPlayers).map(([pid, player]) => {
                 let row = `<tr><td style="text-align:left;">${player.name}</td>`;
                 allMatches.forEach(match => {
+                    if (!isRoundStarted() && pid !== auth.currentUser?.uid) {
+                        row += '<td><i class="fas fa-lock" aria-label="Palpite oculto até o início da rodada" title="Palpite oculto até o início da rodada"></i></td>';
+                        return;
+                    }
                     const pred = match.predictions?.[pid];
                     if (pred) {
                         const starBadge = pred.isStarMatch ? '⭐ ' : '';
@@ -1536,6 +1571,7 @@
                 const updates = {};
                 for (let idx = 0; idx < allMatches.length; idx++) {
                     const match = allMatches[idx];
+                    if (isMatchLocked(match)) continue;
                     const savedPred = match.predictions?.[userId] || {};
                     const unsaved = unsavedPredictions[idx];
                     const homeVal = unsaved?.homeScore ?? savedPred.homeScore;
@@ -1557,7 +1593,7 @@
                 // Salvar Artilheiro da Rodada (Star Player)
                 const teamSelect = document.getElementById('star-team-select');
                 const athleteSelect = document.getElementById('star-athlete-select');
-                if (athleteSelect && athleteSelect.value) {
+                if (athleteSelect && athleteSelect.value && !isRoundStarted()) {
                     const selectedOption = athleteSelect.options[athleteSelect.selectedIndex];
                     const athleteName = selectedOption.dataset.name || selectedOption.text;
                     const teamId = teamSelect.value;
@@ -1659,6 +1695,7 @@
             startCountdown();
             renderMatches(user.uid);
             await setupStarPlayerSection(user.uid, selectedRoundData || {});
+            updateStarPlayerAvailability();
             updateSaveButton();
             
             loader.style.display = 'none';
